@@ -17,7 +17,7 @@ public class HeaderParameters extends Parameters {
     public static HeaderParameters headerParameters(final HttpServletRequest request) {
         return (HeaderParameters) Sequences.<String>sequence(request.getHeaderNames()).foldLeft(new HeaderParameters(), new Callable2<Parameters, String, Parameters>() {
             public Parameters call(Parameters result, final String name) throws Exception {
-                return Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, addParameter(name));
+                return (Parameters) Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, HeaderParameters.addParameter(name));
             }
         });
     }
