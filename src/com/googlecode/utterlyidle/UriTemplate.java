@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle
+package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
@@ -13,6 +13,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import static com.googlecode.totallylazy.regex.Regex.regex;
+import static com.googlecode.utterlyidle.PathParameters.pairIntoParameters;
 
 public class UriTemplate implements Extractor<String, PathParameters>, Matcher<String> {
     Regex pathParameters = regex("\\{([^\\}]+?)(?:\\:([^\\}]+))?\\}");
@@ -29,7 +30,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
                 return m.group(1);
             }
         });
-        regex(matches.replace(new Callable1<CharSequence, CharSequence>() {
+        templateRegex = regex(matches.replace(new Callable1<CharSequence, CharSequence>() {
             public CharSequence call(CharSequence notMatched) throws Exception {
                 return Pattern.quote(notMatched.toString());
             }
@@ -41,16 +42,12 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
     }
 
     public boolean isMatch(String uri) {
-        return templateRegex.isMatch(uri);
+        return false; //templateRegex.isMatch(uri);
     }
 
     public PathParameters extract(String uri) {
         List<String> values = groupValues(templateRegex.matches(uri).head());
-        names.zip(values).foldLeft(new PathParameters(), new Callable2<PathParameters, Pair<String, String>, Object>() {
-            public PathParameters call(PathParameters params, Pair<String, String> pair) throws Exception {
-                return params.add(pair.first(), pair.second());
-            }
-        });
+        return (PathParameters) names.zip(values).foldLeft(new PathParameters(), pairIntoParameters());
     }
 
     private List<String> groupValues(MatchResult matchResult) {
@@ -63,14 +60,15 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
 
     public String generate(final PathParameters parameters)
     {
-        matches.replace(new Callable1<MatchResult, CharSequence>() {
+        return matches.replace(new Callable1<MatchResult, CharSequence>() {
             public CharSequence call(MatchResult matchResult) throws Exception {
                 return parameters.getValue(matchResult.group(1));
             }
-        })
+        });
     }
 
-
-    override public toString=template
+    @Override
+    public String toString() {
+        return template;
+    }
 }
-
