@@ -1,11 +1,11 @@
 package com.googlecode.utterlyidle;
 
 import org.hamcrest.CoreMatchers.*;
-import org.junit.Assert.*;
-import org.junit.*;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Path;
 import com.googlecode.utterlyidle.Redirect.resource;
+import org.junit.Test;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.Response.Status
@@ -43,8 +43,8 @@ class RedirectTest{
     Response response = Response();
     BasePath base = BasePath("");
     Redirect("foo").applyTo(base, response);
-    assertThat(response.headers.getValue(HttpHeaders.LOCATION), is("/foo"));
-    assertThat(response.code, is(Status.SEE_OTHER));
+    assertThat(response.headers().getValue(HttpHeaders.LOCATION), is("/foo"));
+    assertThat(response.code(), is(Status.SEE_OTHER));
   }
 
   @Path("path/{id}")
@@ -75,8 +75,24 @@ class RedirectTest{
     }
   }
 
+    static class Id{
+        private final String value;
+
+        Id(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
   @Path("path/{id}")
   static class CustomType{
-    public void getHtml(@PathParam("id") Id id): String = "bob"
+    public String getHtml(@PathParam("id") Id id){
+      return "bob";
+    }
+
   }
 }
