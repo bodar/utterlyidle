@@ -1,9 +1,8 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle;
 
-import org.webfabric.collections.Iterable.convertEnumeration
 import javax.servlet.http.HttpServletRequest
 
-class HeaderParameters extends Parameters
+public class HeaderParameters extends Parameters
 
 object HeaderParameters{
   def apply(pairs: (String, String)*): HeaderParameters = {
