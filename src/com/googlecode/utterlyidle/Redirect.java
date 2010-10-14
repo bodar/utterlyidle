@@ -69,7 +69,9 @@ public class Redirect {
                     writer.flush();
                 }
             };
-        } else if (returnType == StreamingWriter.class) {
+        }
+
+        if (returnType == StreamingWriter.class) {
             return new StreamingWriter()
             {
                 public void write(Writer writer) {
@@ -80,9 +82,9 @@ public class Redirect {
                     }
                 }
             };
-        } else {
-            return path;
         }
+
+        return path;
     }
 
     static class ResourcePath implements MethodInterceptor {
