@@ -1,22 +1,33 @@
 package com.googlecode.utterlyidle;
 
-import javax.servlet.http.HttpServletRequest
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequences;
 
-public class HeaderParameters extends Parameters
+import javax.servlet.http.HttpServletRequest;
 
-object HeaderParameters{
-  def apply(pairs: (String, String)*): HeaderParameters = {
-    val result = new HeaderParameters
-    pairs.foreach(pair => result.add(pair._1, pair._2))
-    result
-  }
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.PathParameters.pairIntoParameters;
 
-  def apply(request: HttpServletRequest):HeaderParameters = {
-    val result = new HeaderParameters
-    request.getHeaderNames.foreach(n => {
-      val name = n.asInstanceOf[String]
-      request.getHeaders(name).foreach(v => result.add(name, v.asInstanceOf[String]))
-    })
-    result
-  }
+public class HeaderParameters extends Parameters {
+    public static HeaderParameters headerParameters(Pair<String, String>... pairs) {
+        return (HeaderParameters) sequence(pairs).foldLeft(new PathParameters(), pairIntoParameters());
+    }
+
+    public static HeaderParameters headerParameters(final HttpServletRequest request) {
+        return (HeaderParameters) Sequences.<String>sequence(request.getHeaderNames()).foldLeft(new HeaderParameters(), new Callable2<Parameters, String, Parameters>() {
+            public Parameters call(Parameters result, final String name) throws Exception {
+                return Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, addParameter(name));
+            }
+        });
+    }
+
+    public static Callable2<Parameters, String, Parameters> addParameter(final String name) {
+        return new Callable2<Parameters, String, Parameters>() {
+            public Parameters call(Parameters result, String value) throws Exception {
+                return result.add(name, value);
+            }
+        };
+    }
+
 }
