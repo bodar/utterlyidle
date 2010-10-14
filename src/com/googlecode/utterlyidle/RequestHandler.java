@@ -1,5 +1,5 @@
 package com.googlecode.utterlyidle;
 
 public interface RequestHandler {
-    void handle(Request request, Response response);
+    void handle(org.webfabric.rest.Request request, org.webfabric.rest.Response response);
 }
