@@ -43,7 +43,7 @@ public class Redirect {
         return new Redirect(output.toString());
     }
 
-    public <T> T resource(Class<T> aClass)
+    public static <T> T resource(Class<T> aClass)
     {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(aClass);
@@ -56,7 +56,7 @@ public class Redirect {
     public static String getPath(Method method, Object[] arguments){
         UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
         RequestGenerator requestGenerator = new RequestGenerator(uriTemplate, method);
-        return requestGenerator.generate(arguments).path();
+        return requestGenerator.generate(arguments).getPath();
     }
 
     public static Object createReturnType(Class returnType, final String path){
