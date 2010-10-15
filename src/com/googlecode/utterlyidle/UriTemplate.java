@@ -41,8 +41,12 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
         }));
     }
 
-    public boolean isMatch(String uri) {
-        return false; //templateRegex.isMatch(uri);
+    public boolean isMatch(final String uri) {
+        return templateRegex.matches(uri).headOption().map(new Callable1<MatchResult, Boolean>() {
+            public Boolean call(MatchResult matchResult) throws Exception {
+                return matchResult.start() == 0 && matchResult.end() == uri.length();
+            }
+        }).getOrElse(false);
     }
 
     public PathParameters extract(String uri) {
@@ -52,14 +56,13 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
 
     private List<String> groupValues(MatchResult matchResult) {
         List<String> result = new ArrayList<String>();
-        for (int i = 0; i < matchResult.groupCount(); i++) {
+        for (int i = 1; i < matchResult.groupCount(); i++) {
             result.add(matchResult.group(i));
         }
         return result;
     }
 
-    public String generate(final PathParameters parameters)
-    {
+    public String generate(final PathParameters parameters){
         return matches.replace(new Callable1<MatchResult, CharSequence>() {
             public CharSequence call(MatchResult matchResult) throws Exception {
                 return parameters.getValue(matchResult.group(1));
