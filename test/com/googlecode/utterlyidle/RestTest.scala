@@ -1,10 +1,10 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle
 
 import org.hamcrest.CoreMatchers._
 import org.junit.Assert._
 import org.junit._
 import org.webfabric.io.Converter.asString
-import org.webfabric.rest.RestTest._
+import com.googlecode.utterlyidle.RestTest._
 import javax.ws.rs._
 import core.Response.Status
 import core.{HttpHeaders, StreamingOutput}

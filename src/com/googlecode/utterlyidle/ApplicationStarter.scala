@@ -1,4 +1,4 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle
 
 import org.webfabric.servlet.{ContextPath, BasePath, WarRoot}
 import javax.servlet.{ServletContext, ServletContextEvent, ServletContextListener}
