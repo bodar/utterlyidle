@@ -63,22 +63,26 @@ public class Response {
     }
 
 
-    public static Response response(final HttpServletResponse response) throws IOException {
-        return new Response(response.getOutputStream()) {
-            @Override
-            public Response header(String name, String value) {
-                response.setHeader(name, value);
-                super.header(name, value);
-                return this;
-            }
+    public static Response response(final HttpServletResponse response) {
+        try {
+            return new Response(response.getOutputStream()) {
+                @Override
+                public Response header(String name, String value) {
+                    response.setHeader(name, value);
+                    super.header(name, value);
+                    return this;
+                }
 
-            @Override
-            public Response code(Status value) {
-                response.setStatus(value.getStatusCode());
-                super.code(value);
-                return this;
-            }
-        };
+                @Override
+                public Response code(Status value) {
+                    response.setStatus(value.getStatusCode());
+                    super.code(value);
+                    return this;
+                }
+            };
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Response response(OutputStream output) {

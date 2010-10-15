@@ -10,7 +10,6 @@ import java.util.List;
 
 public class HierarchicalPath implements Path {
     private static final String DUPLICATE_SEPARATORS = "\\/+";
-
     private final String value;
 
     public static HierarchicalPath hierarchicalPath(String value) {
@@ -22,26 +21,25 @@ public class HierarchicalPath implements Path {
     }
 
     private Sequence<String> segments() {
-        return sequence(reverse(asList(value.split("/"))));
+        return sequence(value.split("/"));
     }
 
-
-    private String joinDirectories(Iterable<String> list) {
+    private String joinDirectories(Sequence<String> list) {
         return join(list) + "/";
     }
 
-    private String join(Iterable<String> list) {
-        return sequence(reverse(list)).toString("/");
+    private String join(Sequence<String> list) {
+        return list.toString("/");
     }
 
     public HierarchicalPath parent() {
         String path = toString();
         if ("".equals(path) || "/".equals(path)) return this;
-        return new HierarchicalPath(joinDirectories(sequence(segments()).tail()));
+        return new HierarchicalPath(joinDirectories(segments().reverse().tail().reverse()));
     }
 
     public HierarchicalPath subDirectory(String name) {
-        return new HierarchicalPath(joinDirectories(segments().cons(name)));
+        return new HierarchicalPath(joinDirectories(segments().add(name)));
     }
 
     public String file() {
@@ -49,7 +47,7 @@ public class HierarchicalPath implements Path {
     }
 
     public HierarchicalPath file(String name) {
-        return new HierarchicalPath(join(segments().cons(name)));
+        return new HierarchicalPath(join(segments().add(name)));
     }
 
     public String toString() {
@@ -70,19 +68,5 @@ public class HierarchicalPath implements Path {
         if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
-    }
-
-    public static <T> List<T> reverse(Iterable<T> list) {
-        List<T> result = list(list);
-        Collections.reverse(result);
-        return result;
-    }
-
-    public static <T> List<T> list(Iterable<T> iterable) {
-        List<T> list = new ArrayList<T>();
-        for (T item : iterable) {
-            list.add(item);
-        }
-        return list;
     }
 }
