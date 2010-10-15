@@ -11,7 +11,7 @@ public class UriTemplateTest {
     @Test
     public void supportedMultiplePathParams() {
         UriTemplate template = new UriTemplate("properties/{id}/{name}");
-        assertThat(template.isMatch("properties/123/bob"), is(true));
+        assertThat(template.matches("properties/123/bob"), is(true));
         PathParameters parameters = template.extract("properties/123/bob");
         assertThat(parameters.getValue("id"), is("123"));
         assertThat(parameters.getValue("name"), is("bob"));
@@ -21,24 +21,24 @@ public class UriTemplateTest {
     @Test
     public void canCaptureEnd() {
         UriTemplate template = new UriTemplate("path/{id}");
-        assertThat(template.isMatch("path/123/someotherpath"), is(true));
+        assertThat(template.matches("path/123/someotherpath"), is(true));
         assertThat(template.extract("path/123/someotherpath").getValue("$"), is("/someotherpath"));
-        assertThat(template.isMatch("path/123"), is(true));
+        assertThat(template.matches("path/123"), is(true));
         assertThat(template.generate(pathParameters(pair("id", "123"), pair("$","/someotherpath"))), is("path/123/someotherpath"));
     }
 
     @Test
     public void supportsCustomRegex() {
         UriTemplate template = new UriTemplate("path/{id:\\d}");
-        assertThat(template.isMatch("path/foo"), is(false));
-        assertThat(template.isMatch("path/1"), is(true));
+        assertThat(template.matches("path/foo"), is(false));
+        assertThat(template.matches("path/1"), is(true));
         assertThat(template.extract("path/1").getValue("id"), is("1"));
     }
 
     @Test
     public void canMatch() {
         UriTemplate template = new UriTemplate("path/{id}");
-        assertThat(template.isMatch("path/foo"), is(true));
+        assertThat(template.matches("path/foo"), is(true));
     }
 
     @Test
