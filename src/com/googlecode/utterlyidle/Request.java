@@ -20,9 +20,13 @@ public class Request {
     private final FormParameters form;
     private final InputStream input;
 
-    public Request(HttpServletRequest request) throws IOException {
-        this(request.getMethod(), basePath(request), request.getPathInfo(), headerParameters(request),
-                queryParameters(request), formParameters(request), request.getInputStream());
+    public static Request request(HttpServletRequest request) {
+        try {
+            return new Request(request.getMethod(), basePath(request), request.getPathInfo(), headerParameters(request),
+                    queryParameters(request), formParameters(request), request.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Request(String method, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
