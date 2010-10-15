@@ -13,7 +13,7 @@ import static com.googlecode.utterlyidle.PathParameters.pairIntoParameters;
 
 public class QueryParameters extends Parameters {
     public static QueryParameters queryParameters(Pair<String, String>... pairs) {
-        return (QueryParameters) sequence(pairs).foldLeft(new PathParameters(), pairIntoParameters());
+        return (QueryParameters) sequence(pairs).foldLeft(new QueryParameters(), pairIntoParameters());
     }
 
     public static QueryParameters queryParameters(final HttpServletRequest request) {

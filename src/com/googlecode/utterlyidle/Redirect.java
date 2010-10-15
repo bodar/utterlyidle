@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 
+import com.googlecode.totallylazy.proxy.IgnoreConstructorsEnhancer;
 import com.googlecode.utterlyidle.servlet.BasePath;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -22,35 +23,42 @@ import java.lang.reflect.Method;
 public class Redirect {
     private final String location;
 
-    public Redirect(String location) {
+    private Redirect(String location) {
         this.location = location;
     }
 
-    public void applyTo(BasePath base, Response response) {
-        response.setHeader(HttpHeaders.LOCATION, base + "/" + location);
-        response.setCode(Status.SEE_OTHER);
+    public String location() {
+        return location;
     }
 
-    public Redirect redirect(StreamingOutput path) throws IOException {
+    public void applyTo(BasePath base, Response response) {
+        response.header(HttpHeaders.LOCATION, base + "/" + location);
+        response.code(Status.SEE_OTHER);
+    }
+
+    public static Redirect redirect(StreamingOutput path) throws IOException {
         OutputStream output = new ByteArrayOutputStream();
         path.write(output);
-        return new Redirect(output.toString());
+        return redirect(output.toString());
     }
 
-    public Redirect redirect(StreamingWriter path){
+    public static Redirect redirect(StreamingWriter path){
         Writer output = new StringWriter();
         path.write(output);
-        return new Redirect(output.toString());
+        return redirect(output.toString());
     }
+
+    public static Redirect redirect(String location) {
+        return new Redirect(location);
+    }
+
 
     public static <T> T resource(Class<T> aClass)
     {
-        Enhancer enhancer = new Enhancer();
+        Enhancer enhancer = new IgnoreConstructorsEnhancer();
         enhancer.setSuperclass(aClass);
         enhancer.setCallback(new ResourcePath());
-        Constructor constructorWithLeastArguments = aClass.getConstructors()[0];
-        Class[] argumentTypes = constructorWithLeastArguments.getParameterTypes();
-        return null;
+        return (T) enhancer.create();
     }
 
     public static String getPath(Method method, Object[] arguments){
@@ -86,6 +94,7 @@ public class Redirect {
 
         return path;
     }
+
 
     static class ResourcePath implements MethodInterceptor {
         public Object intercept(Object o, Method method, Object[] arguments, MethodProxy methodProxy) throws Throwable {
