@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.servlet.ContextPath;
+import com.googlecode.utterlyidle.servlet.WarRoot;
 import com.googlecode.yadic.SimpleContainer;
 
 import javax.servlet.ServletContext;
@@ -29,7 +31,7 @@ public class ApplicationStarter implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
-        Application application = createApplication(context).addInstance(warRoot(context)).addInstance(contextPath(context));
+        Application application = createApplication(context).addInstance(WarRoot.class, warRoot(context)).addInstance(ContextPath.class, contextPath(context));
         context.setAttribute(Application.class.getCanonicalName(), application);
     }
 
