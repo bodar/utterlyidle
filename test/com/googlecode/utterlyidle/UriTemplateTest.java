@@ -52,5 +52,4 @@ public class UriTemplateTest {
         UriTemplate template = new UriTemplate("path/{id}");
         assertThat(template.generate(pathParameters(pair("id","foo"))), is("path/foo"));
     }
-
 }

@@ -19,6 +19,7 @@
 
     <path id="all.dependancies">
         <fileset id="release.dependancies" dir="lib" includes="**/*.jar"/>
+        <fileset id="build.dependancies" dir="${build}/lib" includes="**/*.jar"/>
     </path>
 
     <path id="all.jars">
