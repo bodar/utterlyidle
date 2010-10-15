@@ -1,4 +1,4 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle
 
 import javax.ws.rs.HttpMethod
 import java.io.{ByteArrayInputStream, InputStream}

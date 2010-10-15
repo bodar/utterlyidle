@@ -1,4 +1,4 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle
 
 class PathMatcher(uriTemplate:UriTemplate) extends Matcher[Request] {
   def isMatch(request: Request) = uriTemplate.isMatch(removeLeadingSlash(request.path))

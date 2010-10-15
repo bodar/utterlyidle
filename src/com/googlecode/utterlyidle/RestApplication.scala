@@ -1,4 +1,4 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle
 
 import org.webfabric.collections.List
 import com.googlecode.yadic.{Container, SimpleContainer}

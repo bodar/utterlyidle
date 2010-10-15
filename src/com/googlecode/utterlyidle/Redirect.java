@@ -67,38 +67,37 @@ public class Redirect {
         return requestGenerator.generate(arguments).getPath();
     }
 
-    public static Object createReturnType(Class returnType, final String path){
-        if (returnType == StreamingOutput.class) {
-            return new StreamingOutput()
-            {
-                public void write(OutputStream output) throws IOException, WebApplicationException {
-                    Writer writer = new OutputStreamWriter(output);
-                    writer.write(path);
-                    writer.flush();
-                }
-            };
-        }
-
-        if (returnType == StreamingWriter.class) {
-            return new StreamingWriter()
-            {
-                public void write(Writer writer) {
-                    try {
-                        writer.write(path);
-                    } catch (IOException e) {
-                        throw new UnsupportedOperationException(e);
-                    }
-                }
-            };
-        }
-
-        return path;
-    }
-
-
     static class ResourcePath implements MethodInterceptor {
         public Object intercept(Object o, Method method, Object[] arguments, MethodProxy methodProxy) throws Throwable {
                 return createReturnType(method.getReturnType(), getPath(method, arguments));
+        }
+
+        private Object createReturnType(Class returnType, final String path){
+            if (returnType == StreamingOutput.class) {
+                return new StreamingOutput()
+                {
+                    public void write(OutputStream output) throws IOException, WebApplicationException {
+                        Writer writer = new OutputStreamWriter(output);
+                        writer.write(path);
+                        writer.flush();
+                    }
+                };
+            }
+
+            if (returnType == StreamingWriter.class) {
+                return new StreamingWriter()
+                {
+                    public void write(Writer writer) {
+                        try {
+                            writer.write(path);
+                        } catch (IOException e) {
+                            throw new UnsupportedOperationException(e);
+                        }
+                    }
+                };
+            }
+
+            return path;
         }
     }
 }
