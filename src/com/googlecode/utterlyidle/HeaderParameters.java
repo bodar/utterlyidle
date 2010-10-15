@@ -11,13 +11,13 @@ import static com.googlecode.utterlyidle.PathParameters.pairIntoParameters;
 
 public class HeaderParameters extends Parameters {
     public static HeaderParameters headerParameters(Pair<String, String>... pairs) {
-        return (HeaderParameters) sequence(pairs).foldLeft(new PathParameters(), pairIntoParameters());
+        return (HeaderParameters) sequence(pairs).foldLeft(new HeaderParameters(), pairIntoParameters());
     }
 
     public static HeaderParameters headerParameters(final HttpServletRequest request) {
         return (HeaderParameters) Sequences.<String>sequence(request.getHeaderNames()).foldLeft(new HeaderParameters(), new Callable2<Parameters, String, Parameters>() {
             public Parameters call(Parameters result, final String name) throws Exception {
-                return (Parameters) Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, HeaderParameters.addParameter(name));
+                return (HeaderParameters) Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, HeaderParameters.addParameter(name));
             }
         });
     }
