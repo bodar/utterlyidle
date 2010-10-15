@@ -1,4 +1,4 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle
 
 import org.hamcrest.CoreMatchers._
 import org.junit.Assert._

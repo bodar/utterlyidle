@@ -1,4 +1,4 @@
-package org.webfabric.rest
+package com.googlecode.utterlyidle
 
 import com.googlecode.yadic.{SimpleContainer, Container}
 import java.lang.reflect.Method
