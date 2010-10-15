@@ -1,0 +1,60 @@
+package com.googlecode.utterlyidle;
+
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Predicate;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+
+@SuppressWarnings({"NullArgumentToVariableArgMethod"})
+public class Param {
+    private final Annotation annotation;
+    private static final String METHOD_NAME = "value";
+
+    private Param(Annotation annotation) {
+        this.annotation = annotation;
+    }
+
+    public static Predicate<Annotation> isParam() {
+        return new Predicate<Annotation>() {
+            public boolean matches(Annotation annotation) {
+                return isParam(annotation);
+            }
+        };
+    }
+
+    public static boolean isParam(Annotation annotation) {
+        try {
+            return annotation.getClass().getMethod(METHOD_NAME, null) != null;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+    }
+
+    public static Callable1<Annotation, Param> toParam() {
+        return new Callable1<Annotation, Param>() {
+            public Param call(Annotation annotation) throws Exception {
+                return param(annotation);
+            }
+        };
+    }
+
+    public static Param param(Annotation annotation) {
+        if (!isParam(annotation)) {
+            throw new IllegalArgumentException("annotation");
+        }
+        return new Param(annotation);
+    }
+
+    public String value() {
+        try {
+            return (String) annotation.getClass().getMethod(METHOD_NAME, null).invoke(annotation, null);
+        } catch (NoSuchMethodException e) {
+            throw new UnsupportedOperationException(e);
+        } catch (InvocationTargetException e) {
+            throw new UnsupportedOperationException(e);
+        } catch (IllegalAccessException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
+}
