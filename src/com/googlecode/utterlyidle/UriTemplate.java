@@ -24,7 +24,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
 
     public UriTemplate(String template) {
         this.template = template;
-        matches = pathParameters.matches(template + "{$:(/.*)?}");
+        matches = pathParameters.findMatches(template + "{$:(/.*)?}");
         names = matches.map(new Callable1<MatchResult, String>() {
             public String call(MatchResult m) throws Exception {
                 return m.group(1);
@@ -42,7 +42,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
     }
 
     public boolean isMatch(final String uri) {
-        return templateRegex.matches(uri).headOption().map(new Callable1<MatchResult, Boolean>() {
+        return templateRegex.findMatches(uri).headOption().map(new Callable1<MatchResult, Boolean>() {
             public Boolean call(MatchResult matchResult) throws Exception {
                 return matchResult.start() == 0 && matchResult.end() == uri.length();
             }
@@ -50,7 +50,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
     }
 
     public PathParameters extract(String uri) {
-        List<String> values = groupValues(templateRegex.matches(uri).head());
+        List<String> values = groupValues(templateRegex.findMatches(uri).head());
         return (PathParameters) names.zip(values).foldLeft(new PathParameters(), pairIntoParameters());
     }
 
