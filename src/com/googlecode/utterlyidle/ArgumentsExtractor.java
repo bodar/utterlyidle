@@ -114,7 +114,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }
 
         public HeaderParameters call() throws Exception {
-            return request.getHeaders();
+            return request.headers();
         }
     }
 
@@ -126,7 +126,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }
 
         public QueryParameters call() throws Exception {
-            return request.getQuery();
+            return request.query();
         }
     }
 
@@ -138,7 +138,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }
 
         public FormParameters call() throws Exception {
-            return request.getForm();
+            return request.form();
         }
     }
 
@@ -150,7 +150,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }
 
         public InputStream call() throws Exception {
-            return request.getInput();
+            return request.input();
         }
     }
 }

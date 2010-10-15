@@ -43,11 +43,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public boolean matches(final String uri) {
-        return templateRegex.findMatches(uri).headOption().map(new Callable1<MatchResult, Boolean>() {
-            public Boolean call(MatchResult matchResult) throws Exception {
-                return matchResult.start() == 0 && matchResult.end() == uri.length();
-            }
-        }).getOrElse(false);
+        return templateRegex.matches(uri);
     }
 
     public PathParameters extract(String uri) {
