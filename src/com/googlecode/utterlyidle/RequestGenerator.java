@@ -14,6 +14,8 @@ import java.lang.reflect.Method;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.Param.isParam;
+import static com.googlecode.utterlyidle.Param.toParam;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 
@@ -27,40 +29,32 @@ public class RequestGenerator {
     }
 
     public Request generate(Object[] arguments) {
-        final PathParameters pathParams = pathParameters();
+        final PathParameters paths = pathParameters();
         final HeaderParameters headers = headerParameters();
-        final FormParameters formParams = formParameters();
-        final QueryParameters queryParams = queryParameters();
-        InputStream input = new ByteArrayInputStream(new byte[0]);
+        final FormParameters forms = formParameters();
+        final QueryParameters queries = queryParameters();
 
         sequence(arguments).zip(sequence(method.getParameterAnnotations())).forEach(new Runnable1<Pair<Object, Annotation[]>>() {
             public void run(Pair<Object, Annotation[]> pair) {
                 final Object value = pair.first();
-                Sequence<Annotation> annotations = sequence(pair.second());
+                Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
 
-                annotations.safeCast(PathParam.class).foldLeft(pathParams, new Callable2<Parameters, PathParam, Parameters>() {
-                    public Parameters call(Parameters parameters, PathParam param) throws Exception {
-                        return parameters.add(param.value(), value.toString());
-                    }
-                });
-                annotations.safeCast(FormParam.class).foldLeft(formParams, new Callable2<Parameters, FormParam, Parameters>() {
-                    public Parameters call(Parameters parameters, FormParam param) throws Exception {
-                        return parameters.add(param.value(), value.toString());
-                    }
-                });
-                annotations.safeCast(QueryParam.class).foldLeft(queryParams, new Callable2<Parameters, QueryParam, Parameters>() {
-                    public Parameters call(Parameters parameters, QueryParam param) throws Exception {
-                        return parameters.add(param.value(), value.toString());
-                    }
-                });
-                annotations.safeCast(HeaderParam.class).foldLeft(headers, new Callable2<Parameters, HeaderParam, Parameters>() {
-                    public Parameters call(Parameters parameters, HeaderParam param) throws Exception {
-                        return parameters.add(param.value(), value.toString());
-                    }
-                });
+                annotations.safeCast(PathParam.class).map(toParam()).foldLeft(paths, add(value));
+                annotations.safeCast(FormParam.class).map(toParam()).foldLeft(forms, add(value));
+                annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(queries, add(value));
+                annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(headers, add(value));
             }
         });
 
-        return new Request(null,uriTemplate.generate(pathParams),headers,queryParams,formParams,input);
+        return new Request(null,uriTemplate.generate(paths),headers,queries,forms, new ByteArrayInputStream(new byte[0]));
     }
+
+    public static Callable2<Parameters, Param, Parameters> add(final Object value) {
+        return new Callable2<Parameters, Param, Parameters>() {
+            public Parameters call(Parameters parameters, Param param) throws Exception {
+                return parameters.add(param.value(), value.toString());
+            }
+        };
+    }
+
 }

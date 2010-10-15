@@ -63,7 +63,7 @@ public class Request {
         return method;
     }
 
-    public String getPath() {
+    public String path() {
         return path;
     }
 

@@ -1,4 +1,6 @@
 package com.googlecode.utterlyidle;
 
-public interface RequestExtractor<T> extends Extractor<Request, T>, Matcher<Request> {
+import com.googlecode.totallylazy.Predicate;
+
+public interface RequestExtractor<T> extends Extractor<Request, T>, Predicate<Request> {
 }

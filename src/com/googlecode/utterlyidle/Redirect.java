@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 public class Redirect {
@@ -64,7 +63,7 @@ public class Redirect {
     public static String getPath(Method method, Object[] arguments){
         UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
         RequestGenerator requestGenerator = new RequestGenerator(uriTemplate, method);
-        return requestGenerator.generate(arguments).getPath();
+        return requestGenerator.generate(arguments).path();
     }
 
     static class ResourcePath implements MethodInterceptor {

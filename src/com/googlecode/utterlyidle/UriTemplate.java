@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.regex.Matches;
 import com.googlecode.totallylazy.regex.Regex;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.PathParameters.pairIntoParameters;
 
-public class UriTemplate implements Extractor<String, PathParameters>, Matcher<String> {
+public class UriTemplate implements Extractor<String, PathParameters>, Predicate<String> {
     Regex pathParameters = regex("\\{([^\\}]+?)(?:\\:([^\\}]+))?\\}");
     private final String template;
     private final Matches matches;
@@ -41,7 +42,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Matcher<S
         }));
     }
 
-    public boolean isMatch(final String uri) {
+    public boolean matches(final String uri) {
         return templateRegex.findMatches(uri).headOption().map(new Callable1<MatchResult, Boolean>() {
             public Boolean call(MatchResult matchResult) throws Exception {
                 return matchResult.start() == 0 && matchResult.end() == uri.length();
