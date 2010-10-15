@@ -13,7 +13,7 @@ class PathParameters extends Parameters{
     public static Callable2<Parameters, Pair<String, String>, Parameters> pairIntoParameters() {
         return new Callable2<Parameters, Pair<String, String>, Parameters>() {
             public Parameters call(Parameters result, Pair<String, String> pair) throws Exception {
-                return result.add(pair.first(), pair.first());
+                return result.add(pair.first(), pair.second());
             }
         };
     }
