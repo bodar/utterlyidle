@@ -13,11 +13,8 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class ConsumesMimeMatcher implements Predicate<Request> {
     private final String mimeType;
-    private final Method method;
 
     public ConsumesMimeMatcher(Method method) {
-        this.method = method;
-
         mimeType = sequence(method.getAnnotation(Consumes.class), method.getDeclaringClass().getAnnotation(Consumes.class)).
                 find(notNull(Consumes.class)).map(firstValue()).getOrElse(MediaType.WILDCARD);
     }

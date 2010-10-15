@@ -29,8 +29,8 @@ public class Request {
         }
     }
 
-    public Request(String method, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
-        this(method, basePath(""), path, headers, query, form, input);
+    public static Request request(String method, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
+        return new Request(method, basePath(""), path, headers, query, form, input);
     }
 
     public Request(String method, BasePath base, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
