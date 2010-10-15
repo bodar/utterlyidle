@@ -18,6 +18,7 @@ import static com.googlecode.utterlyidle.Param.isParam;
 import static com.googlecode.utterlyidle.Param.toParam;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
+import static com.googlecode.utterlyidle.Request.request;
 
 public class RequestGenerator {
     private final UriTemplate uriTemplate;
@@ -46,7 +47,7 @@ public class RequestGenerator {
             }
         });
 
-        return new Request(null,uriTemplate.generate(paths),headers,queries,forms, new ByteArrayInputStream(new byte[0]));
+        return request(null,uriTemplate.generate(paths),headers,queries,forms, new ByteArrayInputStream(new byte[0]));
     }
 
     public static Callable2<Parameters, Param, Parameters> add(final Object value) {

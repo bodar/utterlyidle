@@ -19,7 +19,7 @@ public class Accept {
         return mediaRanges.exists(sameValue(value));
     }
 
-    public Number quality(String value) {
+    public float quality(String value) {
         return mediaRanges.find(sameValue(value)).get().quality;
     }
 
@@ -34,7 +34,7 @@ public class Accept {
     public static Accept accept(String header) {
         Sequence<MediaRange> mediaRanges = regex.findMatches(header).map(new Callable1<MatchResult, MediaRange>() {
             public MediaRange call(MatchResult m) throws Exception {
-                Number quality = m.group(3) == null ? 1.0f : Float.valueOf(m.group(3));
+                float quality = m.group(3) == null ? 1.0f : Float.valueOf(m.group(3));
                 return new MediaRange(m.group(1), quality);
 
 
