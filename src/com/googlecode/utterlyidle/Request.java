@@ -43,23 +43,23 @@ public class Request {
         this.input = input;
     }
 
-    public BasePath getBase() {
+    public BasePath base() {
         return base;
     }
 
-    public FormParameters getForm() {
+    public FormParameters form() {
         return form;
     }
 
-    public HeaderParameters getHeaders() {
+    public HeaderParameters headers() {
         return headers;
     }
 
-    public InputStream getInput() {
+    public InputStream input() {
         return input;
     }
 
-    public String getMethod() {
+    public String method() {
         return method;
     }
 
@@ -67,7 +67,7 @@ public class Request {
         return path;
     }
 
-    public QueryParameters getQuery() {
+    public QueryParameters query() {
         return query;
     }
 }
