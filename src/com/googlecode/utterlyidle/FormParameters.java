@@ -12,7 +12,7 @@ import static com.googlecode.utterlyidle.PathParameters.pairIntoParameters;
 
 public class FormParameters extends Parameters {
     public static FormParameters formParameters(Pair<String, String>... pairs) {
-        return (FormParameters) sequence(pairs).foldLeft(new PathParameters(), pairIntoParameters());
+        return (FormParameters) sequence(pairs).foldLeft(new FormParameters(), pairIntoParameters());
     }
 
     public static FormParameters formParameters(final HttpServletRequest request) {

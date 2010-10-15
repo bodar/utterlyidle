@@ -25,15 +25,30 @@ public class Response {
         this(new ByteArrayOutputStream());
     }
 
+    public Status code() {
+        return code;
+    }
 
-    public Response setCode(Status value) {
+    public Response code(Status value) {
         this.code = value;
         return this;
     }
 
-    public Response setHeader(String name, String value) {
+    public Response header(String name, String value) {
         headers.add(name, value);
         return this;
+    }
+
+    public HeaderParameters headers() {
+        return headers;
+    }
+
+    public OutputStream output() {
+        return output;
+    }
+
+    public Writer writer() {
+        return writer;
     }
 
     public Response write(String value) throws IOException {
@@ -51,16 +66,16 @@ public class Response {
     public static Response response(final HttpServletResponse response) throws IOException {
         return new Response(response.getOutputStream()) {
             @Override
-            public Response setHeader(String name, String value) {
+            public Response header(String name, String value) {
                 response.setHeader(name, value);
-                headers.add(name, value);
+                super.header(name, value);
                 return this;
             }
 
             @Override
-            public Response setCode(Status value) {
+            public Response code(Status value) {
                 response.setStatus(value.getStatusCode());
-                code = value;
+                super.code(value);
                 return this;
             }
         };
