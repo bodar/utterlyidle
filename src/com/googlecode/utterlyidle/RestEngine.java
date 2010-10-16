@@ -37,9 +37,7 @@ public class RestEngine implements Engine {
     }
 
     public void handle(Resolver container, Request request, Response response) {
-        findActivator(request).
-                getOrElse(callThrows(new WebApplicationException(NOT_FOUND), HttpMethodActivator.class)).
-                activate(container, request, response);
+        findActivator(request).get().activate(container, request, response);
     }
 
     public Option<HttpMethodActivator> findActivator(final Request request) {

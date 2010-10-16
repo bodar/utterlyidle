@@ -27,21 +27,21 @@ public class RequestBuilder {
     }
 
     public RequestBuilder accepting(String value) {
-        return withHeader(pair(HttpHeaders.ACCEPT, value));
+        return withHeader(HttpHeaders.ACCEPT, value);
     }
 
-    public RequestBuilder withHeader(Pair<String, String> pair) {
-        headers.add(pair.first(), pair.second());
+    public RequestBuilder withHeader(String name, String value) {
+        headers.add(name, value);
         return this;
     }
 
-    public RequestBuilder withQuery(Pair<String, String> pair) {
-        query.add(pair.first(), pair.second());
+    public RequestBuilder withQuery(String name, String value) {
+        query.add(name, value);
         return this;
     }
 
-    public RequestBuilder withForm(Pair<String, String> pair) {
-        form.add(pair.first(), pair.second());
+    public RequestBuilder withForm(String name, String value) {
+        form.add(name, value);
         return this;
     }
 
