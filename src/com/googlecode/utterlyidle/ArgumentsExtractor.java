@@ -63,16 +63,16 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 }
 
                 container.remove(String.class);
-                annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, into(QueryParameters.class));
-                annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, into(FormParameters.class));
-                annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, into(PathParameters.class));
-                annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, into(HeaderParameters.class));
+                annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, with(QueryParameters.class));
+                annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, with(FormParameters.class));
+                annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
+                annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
                 return container.resolve(aClass);
             }
         }).toArray(Object.class);
     }
 
-    private Callable2<? super Container, ? super Param, Container> into(final Class<? extends Parameters> paramsClass) {
+    private Callable2<? super Container, ? super Param, Container> with(final Class<? extends Parameters> paramsClass) {
         return new Callable2<Container, Param, Container>() {
             public Container call(final Container container, final Param param) throws Exception {
                 return container.addActivator(String.class, new Callable<String>() {
