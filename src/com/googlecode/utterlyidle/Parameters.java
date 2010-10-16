@@ -11,7 +11,6 @@ import java.util.*;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Parameters implements Iterable<Pair<String, List<String>>> {
-
     private final Map<String, List<String>> values = new HashMap<String, List<String>>();
 
     public Parameters add(String name, String value) {
@@ -49,7 +48,7 @@ public class Parameters implements Iterable<Pair<String, List<String>>> {
     public static <T extends Parameters> Callable2<T, String, T> addParameters(final HttpServletRequest request) {
         return new Callable2<T, String, T>() {
             public T call(T result, final String name) throws Exception {
-                return (T) sequence(request.getParameterValues(name)).foldLeft(result, addParameter(name));
+                return sequence(request.getParameterValues(name)).foldLeft(result, Parameters.<T>addParameter(name));
             }
         };
     }
