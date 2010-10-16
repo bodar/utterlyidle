@@ -31,7 +31,7 @@ public class RestEngine implements Engine {
     public Option<HttpMethod> getHttpMethod(Method method) {
         return sequence(method.getAnnotations()).tryPick(new Callable1<Annotation, Option<HttpMethod>>() {
             public Option<HttpMethod> call(Annotation annotation) throws Exception {
-                return sequence(annotation.annotationType()).safeCast(HttpMethod.class).headOption();
+                return sequence(annotation.annotationType().getDeclaredAnnotations()).safeCast(HttpMethod.class).headOption();
             }
         });
     }
@@ -54,8 +54,8 @@ public class RestEngine implements Engine {
                 float firstQuality = first.matchQuality(request);
                 float secondQuality = second.matchQuality(request);
                 if (firstQuality == secondQuality)
-                    return first.numberOfArguments() - second.numberOfArguments();
-                return (int) (firstQuality - secondQuality);
+                    return second.numberOfArguments() - first.numberOfArguments();
+                return firstQuality > secondQuality ? -1 : 1;
             }
         };
     }

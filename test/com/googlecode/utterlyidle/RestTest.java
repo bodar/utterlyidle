@@ -12,6 +12,7 @@ import java.io.*;
 import static com.googlecode.utterlyidle.Redirect.redirect;
 import static com.googlecode.utterlyidle.Redirect.resource;
 import static com.googlecode.utterlyidle.RequestBuilder.*;
+import static com.googlecode.utterlyidle.io.Converter.asString;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -314,7 +315,7 @@ public class RestTest {
     public static class PutContent {
         @PUT
         public String put(@PathParam("id") String id, InputStream input) {
-            throw new UnsupportedOperationException();//asString(input);
+            return asString(input);
         }
     }
 
