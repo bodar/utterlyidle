@@ -86,7 +86,7 @@ public class RedirectTest {
     public static class Id {
         private final String value;
 
-        private Id(String value) {
+        public Id(String value) {
             this.value = value;
         }
 

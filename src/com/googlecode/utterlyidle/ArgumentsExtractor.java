@@ -35,6 +35,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
             extract(request);
             return true;
         } catch (Exception e) {
+            System.out.println("e = " + e);
             return false;
         }
     }
@@ -48,18 +49,20 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     }
 
     public Object[] extract(Request request) {
-        final Container container = getArgumentContainer();
-        container.addInstance(Request.class, request);
+        final Container container = getArgumentContainer(request);
 
-        return sequence(method.getParameterTypes()).zip(sequence(method.getParameterAnnotations())).map(new Callable1<Pair<Class<?>, Annotation[]>, Object>() {
+        Sequence<Pair<Class<?>, Annotation[]>> parametersWithAnnotations = sequence(method.getParameterTypes()).
+                zip(sequence(method.getParameterAnnotations()));
+
+        return parametersWithAnnotations.map(new Callable1<Pair<Class<?>, Annotation[]>, Object>() {
             public Object call(Pair<Class<?>, Annotation[]> pair) throws Exception {
                 Class<?> aClass = pair.first();
                 Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
                 if (!container.contains(aClass)) {
                     container.add(aClass);
                 }
-                container.remove(String.class);
 
+                container.remove(String.class);
                 annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, into(QueryParameters.class));
                 annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, into(FormParameters.class));
                 annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, into(PathParameters.class));
@@ -81,76 +84,16 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         };
     }
 
-    public Container getArgumentContainer() {
+    public Container getArgumentContainer(Request request) {
         Container container = new SimpleContainer();
+        container.addInstance(Request.class, request);
         container.addInstance(UriTemplate.class, uriTemplate);
-        container.addActivator(PathParameters.class, PathParametersActivator.class);
-        container.addActivator(HeaderParameters.class, HeaderParamertersActivator.class);
-        container.addActivator(QueryParameters.class, QueryParametersActivator.class);
-        container.addActivator(FormParameters.class, FormParametersActivator.class);
-        container.addActivator(InputStream.class, InputStreamActivator.class);
+        container.addInstance(PathParameters.class, uriTemplate.extract(request.path()));
+        container.addInstance(HeaderParameters.class, request.headers());
+        container.addInstance(QueryParameters.class, request.query());
+        container.addInstance(FormParameters.class, request.form());
+        container.addInstance(InputStream.class, request.input());
         return container;
     }
 
-    public static class PathParametersActivator implements Callable<PathParameters> {
-        private final UriTemplate uriTemplate;
-        private final Request request;
-
-        public PathParametersActivator(UriTemplate uriTemplate, Request request) {
-            this.uriTemplate = uriTemplate;
-            this.request = request;
-        }
-
-        public PathParameters call() throws Exception {
-            return uriTemplate.extract(request.path());
-        }
-    }
-
-    public static class HeaderParamertersActivator implements Callable<HeaderParameters> {
-        private final Request request;
-
-        public HeaderParamertersActivator(Request request) {
-            this.request = request;
-        }
-
-        public HeaderParameters call() throws Exception {
-            return request.headers();
-        }
-    }
-
-    public static class QueryParametersActivator implements Callable<QueryParameters> {
-        private final Request request;
-
-        public QueryParametersActivator(Request request) {
-            this.request = request;
-        }
-
-        public QueryParameters call() throws Exception {
-            return request.query();
-        }
-    }
-
-    public static class FormParametersActivator implements Callable<FormParameters> {
-        private final Request request;
-
-        public FormParametersActivator(Request request) {
-            this.request = request;
-        }
-
-        public FormParameters call() throws Exception {
-            return request.form();
-        }
-    }
-
-    public static class InputStreamActivator implements Callable<InputStream> {
-        private final Request request;
-
-        public InputStreamActivator(Request request) {
-            this.request = request;
-        }
-
-        public InputStream call() throws Exception {
-            return request.input();
-        }
-    }
 }

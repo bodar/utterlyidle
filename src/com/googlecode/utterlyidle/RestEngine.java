@@ -6,16 +6,13 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.WebApplicationException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Callables.callThrows;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 public class RestEngine implements Engine {
     List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
