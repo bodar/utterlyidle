@@ -15,19 +15,10 @@ public class HeaderParameters extends Parameters {
     }
 
     public static HeaderParameters headerParameters(final HttpServletRequest request) {
-        return (HeaderParameters) Sequences.<String>sequence(request.getHeaderNames()).foldLeft(new HeaderParameters(), new Callable2<Parameters, String, Parameters>() {
-            public Parameters call(Parameters result, final String name) throws Exception {
-                return (HeaderParameters) Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, HeaderParameters.addParameter(name));
+        return (HeaderParameters) Sequences.<String>sequence(request.getHeaderNames()).foldLeft(new HeaderParameters(), new Callable2<HeaderParameters, String, HeaderParameters>() {
+            public HeaderParameters call(HeaderParameters result, final String name) throws Exception {
+                return (HeaderParameters) Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, Parameters.<HeaderParameters>addParameter(name));
             }
         });
     }
-
-    public static Callable2<Parameters, String, Parameters> addParameter(final String name) {
-        return new Callable2<Parameters, String, Parameters>() {
-            public Parameters call(Parameters result, String value) throws Exception {
-                return result.add(name, value);
-            }
-        };
-    }
-
 }

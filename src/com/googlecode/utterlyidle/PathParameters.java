@@ -9,12 +9,4 @@ class PathParameters extends Parameters{
   public static PathParameters pathParameters(Pair<String, String>... pairs) {
       return (PathParameters) sequence(pairs).foldLeft(new PathParameters(), pairIntoParameters());
   }
-
-    public static Callable2<Parameters, Pair<String, String>, Parameters> pairIntoParameters() {
-        return new Callable2<Parameters, Pair<String, String>, Parameters>() {
-            public Parameters call(Parameters result, Pair<String, String> pair) throws Exception {
-                return result.add(pair.first(), pair.second());
-            }
-        };
-    }
 }

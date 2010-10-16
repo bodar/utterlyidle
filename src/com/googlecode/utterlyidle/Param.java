@@ -52,7 +52,7 @@ public class Param {
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException(e);
         } catch (InvocationTargetException e) {
-            throw new UnsupportedOperationException(e);
+            throw new RuntimeException(e.getCause());
         } catch (IllegalAccessException e) {
             throw new UnsupportedOperationException(e);
         }
