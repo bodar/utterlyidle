@@ -83,23 +83,6 @@ public class RedirectTest {
         }
     }
 
-    public static class Id {
-        private final String value;
-
-        public Id(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value;
-        }
-
-        public static Id id(String value) {
-            return new Id(value);
-        }
-    }
-
     @Path("path/{id}")
     static class CustomType {
         public String getHtml(@PathParam("id") Id id) {
