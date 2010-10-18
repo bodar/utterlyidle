@@ -358,7 +358,7 @@ public class RestTest {
     @Path("path/{id}")
     public static class GetWithStrongType {
         @GET
-        public String get(@PathParam("id") RedirectTest.Id id) {
+        public String get(@PathParam("id") Id id) {
             return id.toString();
         }
     }

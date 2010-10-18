@@ -59,7 +59,12 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 Class<?> aClass = pair.first();
                 Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
                 if (!container.contains(aClass)) {
-                    container.add(aClass);
+                    if (aClass.getConstructors().length == 0) {
+                        container.addInstance((Class)aClass.getClass(), aClass);
+                        container.addActivator(aClass, StaticMethodActivator.class);
+                    } else {
+                        container.add(aClass);
+                    }
                 }
 
                 container.remove(String.class);
