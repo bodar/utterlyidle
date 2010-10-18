@@ -48,9 +48,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         return params.getValue(param.value());
     }
 
-    public Object[] extract(Request request) {
-        final Container container = getArgumentContainer(request);
-
+    public Object[] extract(final Request request) {
         Sequence<Pair<Class<?>, Annotation[]>> parametersWithAnnotations = sequence(method.getParameterTypes()).
                 zip(sequence(method.getParameterAnnotations()));
 
@@ -58,6 +56,8 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
             public Object call(Pair<Class<?>, Annotation[]> pair) throws Exception {
                 Class<?> aClass = pair.first();
                 Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
+
+                final Container container = createContainer(request);
                 if (!container.contains(aClass)) {
                     if (aClass.getConstructors().length == 0) {
                         container.addInstance((Class)aClass.getClass(), aClass);
@@ -66,8 +66,8 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                         container.add(aClass);
                     }
                 }
-
                 container.remove(String.class);
+
                 annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, with(QueryParameters.class));
                 annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, with(FormParameters.class));
                 annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
@@ -89,7 +89,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         };
     }
 
-    public Container getArgumentContainer(Request request) {
+    public Container createContainer(Request request) {
         Container container = new SimpleContainer();
         container.addInstance(Request.class, request);
         container.addInstance(UriTemplate.class, uriTemplate);
