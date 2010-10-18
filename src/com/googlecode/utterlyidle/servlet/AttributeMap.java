@@ -14,7 +14,7 @@ public class AttributeMap {
             }
 
             @Override
-            <T> T get(String name, Class<T> aClass) {
+            public <T> T get(String name, Class<T> aClass) {
                 return aClass.cast(context.getAttribute(name));
             }
         };
@@ -31,7 +31,7 @@ public class AttributeMap {
         return new AttributeMap();
     }
 
-    <T> T get(String name, Class<T> aClass) {
+    public <T> T get(String name, Class<T> aClass) {
         return aClass.cast(values.get(name));
     }
 }
