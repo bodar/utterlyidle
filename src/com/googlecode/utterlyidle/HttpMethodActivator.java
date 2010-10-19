@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.ResponseBody.responseBody;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 
 public class HttpMethodActivator implements Predicate<Request> {
@@ -47,30 +48,12 @@ public class HttpMethodActivator implements Predicate<Request> {
         return method.getParameterTypes().length;
     }
 
-    public void activate(Resolver container, Request request, Response response) {
+    public ResponseBody activate(Resolver container, Request request) {
         try {
             Object instance = container.resolve(method.getDeclaringClass());
-            Object result = method.invoke(instance, argumentsExtractor.extract(request));
-            response.header(HttpHeaders.CONTENT_TYPE, producesMatcher.mimeType());
-            if (result == null) {
-                response.code(NO_CONTENT);
-            }
-            if (result instanceof Redirect) {
-                ((Redirect) result).applyTo(request.base(), response);
-            }
-            if (result instanceof String) {
-                response.write((String) result);
-            }
-            if (result instanceof StreamingOutput) {
-                ((StreamingOutput) result).write(response.output());
-            }
-            if (result instanceof StreamingWriter) {
-                ((StreamingWriter) result).write(response.writer());
-            }
+            return responseBody(producesMatcher.mimeType(), method.invoke(instance, argumentsExtractor.extract(request)));
         } catch (InvocationTargetException e1) {
             throw new RuntimeException(e1.getCause());
-        } catch (IOException e1) {
-            throw new RuntimeException(e1);
         } catch (IllegalAccessException e1) {
             throw new RuntimeException(e1);
         }
