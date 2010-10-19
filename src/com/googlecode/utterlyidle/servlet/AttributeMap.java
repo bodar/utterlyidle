@@ -3,19 +3,24 @@ package com.googlecode.utterlyidle.servlet;
 import javax.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class AttributeMap {
-    public static AttributeMap attributeMap(final ServletContext context){
-        return new AttributeMap() {
-            @Override
-            public AttributeMap put(String name, Object value) {
-                context.setAttribute(name, value);
-                return this;
-            }
+    public static Callable<AttributeMap> attributeMap(final ServletContext context){
+        return new Callable<AttributeMap>() {
+            public AttributeMap call() throws Exception {
+                return new AttributeMap() {
+                    @Override
+                    public AttributeMap put(String name, Object value) {
+                        context.setAttribute(name, value);
+                        return this;
+                    }
 
-            @Override
-            public <T> T get(String name, Class<T> aClass) {
-                return aClass.cast(context.getAttribute(name));
+                    @Override
+                    public <T> T get(String name, Class<T> aClass) {
+                        return aClass.cast(context.getAttribute(name));
+                    }
+                };
             }
         };
     }

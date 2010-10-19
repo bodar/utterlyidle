@@ -5,5 +5,5 @@ import com.googlecode.yadic.Container;
 public interface Application extends RequestHandler{
     Container createRequestScope();
     Application add(Module module);
-    <T> Application addInstance(Class<T> aClass, T instance);
+    Container applicationScope();
 }
