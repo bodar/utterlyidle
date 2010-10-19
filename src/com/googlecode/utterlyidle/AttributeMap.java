@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.servlet;
+package com.googlecode.utterlyidle;
 
 import java.util.HashMap;
 import java.util.Map;

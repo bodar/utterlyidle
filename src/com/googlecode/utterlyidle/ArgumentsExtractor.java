@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.yadic.Container;
@@ -14,6 +15,8 @@ import javax.ws.rs.QueryParam;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 
@@ -49,22 +52,18 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     }
 
     public Object[] extract(final Request request) {
-        Sequence<Pair<Class<?>, Annotation[]>> parametersWithAnnotations = sequence(method.getParameterTypes()).
+        Sequence<Pair<Type, Annotation[]>> parametersWithAnnotations = sequence(method.getGenericParameterTypes()).
                 zip(sequence(method.getParameterAnnotations()));
 
-        return parametersWithAnnotations.map(new Callable1<Pair<Class<?>, Annotation[]>, Object>() {
-            public Object call(Pair<Class<?>, Annotation[]> pair) throws Exception {
-                Class<?> aClass = pair.first();
+        return parametersWithAnnotations.map(new Callable1<Pair<Type, Annotation[]>, Object>() {
+            public Object call(Pair<Type, Annotation[]> pair) throws Exception {
+                Type type = pair.first();
                 Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
 
                 final Container container = createContainer(request);
+                Class<?> aClass = getClassFrom(type);
                 if (!container.contains(aClass)) {
-                    if (aClass.getConstructors().length == 0) {
-                        container.addInstance((Class)aClass.getClass(), aClass);
-                        container.addActivator(aClass, StaticMethodActivator.class);
-                    } else {
-                        container.add(aClass);
-                    }
+                    addActivator(type, container);
                 }
                 container.remove(String.class);
 
@@ -75,6 +74,40 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 return container.resolve(aClass);
             }
         }).toArray(Object.class);
+    }
+
+    private void addActivator(Type type, final Container container) {
+        Class<?> aClass = getClassFrom(type);
+
+        if(aClass.equals(Option.class)){
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            final Class<?> typeClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+            addActualType(typeClass, container);
+            container.addActivator(Option.class, new StaticMethodActivator(Option.class, container, typeClass));
+        }
+
+        else {
+            addActualType(aClass, container);
+        }
+    }
+
+    private void addActualType(Class<?> aClass, Container container) {
+        if (aClass.getConstructors().length == 0) {
+            container.addActivator(aClass, new StaticMethodActivator(aClass, container, String.class));
+        } else {
+            container.add(aClass);
+        }
+    }
+
+    private Class<?> getClassFrom(Type type) {
+        if(type instanceof Class){
+            return (Class) type;
+        }
+        if(type instanceof ParameterizedType){
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            return (Class<?>) parameterizedType.getRawType();
+        }
+        throw new UnsupportedOperationException(type.toString());
     }
 
     private Callable2<? super Container, ? super Param, Container> with(final Class<? extends Parameters> paramsClass) {

@@ -3,40 +3,42 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.yadic.Container;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
-import static com.googlecode.totallylazy.Sequences.characters;
+import static com.googlecode.totallylazy.Predicates.and;
+import static com.googlecode.totallylazy.Predicates.arguments;
+import static com.googlecode.totallylazy.Predicates.modifier;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static java.lang.Character.toLowerCase;
+import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.reflect.Modifier.STATIC;
 
-public class StaticMethodActivator implements Callable {
-    private final Class aClass;
-    private final String value;
+public class StaticMethodActivator<T> implements Callable<T> {
+    private final Class<T> returnType;
+    private final Container container;
+    private final Class<?> argumentType;
 
-    public StaticMethodActivator(Class aClass, String value) {
-        this.aClass = aClass;
-        this.value = value;
+    public StaticMethodActivator(Class<T> returnType, Container container, Class<?> argumentType) {
+        this.returnType = returnType;
+        this.container = container;
+        this.argumentType = argumentType;
     }
 
-    public Object call() throws Exception {
-        return sequence("valueOf", getFactoryMethodName()).pick(new Callable1<String, Option<Object>>() {
-            public Option<Object> call(String name) throws Exception {
+    public T call() throws Exception {
+        final Sequence<Method> methods = sequence(returnType.getMethods()).filter(and(modifier(PUBLIC), modifier(STATIC), arguments(argumentType)));
+        return methods.pick(new Callable1<Method, Option<T>>() {
+            public Option<T> call(Method method) throws Exception {
                 try {
-                    return some(aClass.getMethod(name, String.class).invoke(null, value));
-                } catch (NoSuchMethodException e) {
-                    return none();
-                } catch (NullPointerException fromNonStaticMethod) {
+                    return some(returnType.cast(method.invoke(null, container.get(argumentType))));
+                } catch (InvocationTargetException e) {
                     return none();
                 }
             }
         });
-    }
-
-    private String getFactoryMethodName() {
-        final Sequence<Character> characters = characters(aClass.getSimpleName());
-        return characters.tail().cons(toLowerCase(characters.head())).toString("");
     }
 }
