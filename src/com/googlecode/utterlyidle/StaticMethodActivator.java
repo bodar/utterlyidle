@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.yadic.Container;
+import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,12 +21,12 @@ import static java.lang.reflect.Modifier.STATIC;
 
 public class StaticMethodActivator<T> implements Callable<T> {
     private final Class<T> returnType;
-    private final Container container;
+    private final Resolver resolver;
     private final Class<?> argumentType;
 
-    public StaticMethodActivator(Class<T> returnType, Container container, Class<?> argumentType) {
+    public StaticMethodActivator(Class<T> returnType, Resolver resolver, Class<?> argumentType) {
         this.returnType = returnType;
-        this.container = container;
+        this.resolver = resolver;
         this.argumentType = argumentType;
     }
 
@@ -34,7 +35,7 @@ public class StaticMethodActivator<T> implements Callable<T> {
         return methods.pick(new Callable1<Method, Option<T>>() {
             public Option<T> call(Method method) throws Exception {
                 try {
-                    return some(returnType.cast(method.invoke(null, container.get(argumentType))));
+                    return some(returnType.cast(method.invoke(null, resolver.resolve(argumentType))));
                 } catch (InvocationTargetException e) {
                     return none();
                 }

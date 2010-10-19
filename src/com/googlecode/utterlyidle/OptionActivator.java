@@ -3,7 +3,11 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.yadic.Container;
 
+import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
+
+import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Option.some;
 
 public class OptionActivator implements Callable<Option> {
     private final Container container;
@@ -15,7 +19,10 @@ public class OptionActivator implements Callable<Option> {
     }
 
     public Option call() throws Exception {
-        final Object instance = container.get(typeClass);
-        return Option.option(instance);
+        try {
+            return some(container.get(typeClass));
+        } catch (NoSuchElementException e) {
+            return none();
+        }
     }
 }

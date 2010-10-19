@@ -62,15 +62,15 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
 
                 final Container container = createContainer(request);
                 Class<?> aClass = getClassFrom(type);
-                if (!container.contains(aClass)) {
-                    addActivator(type, container);
-                }
-                container.remove(String.class);
-
                 annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, with(QueryParameters.class));
                 annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, with(FormParameters.class));
                 annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
                 annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
+
+                if (!container.contains(aClass)) {
+                    addActivator(type, container);
+                }
+
                 return container.resolve(aClass);
             }
         }).toArray(Object.class);
@@ -80,20 +80,23 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         Class<?> aClass = getClassFrom(type);
 
         if(aClass.equals(Option.class)){
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            final Class<?> typeClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-            addActualType(typeClass, container);
-            container.addActivator(Option.class, new StaticMethodActivator(Option.class, container, typeClass));
+            addOptionType(type, container);
         }
-
         else {
             addActualType(aClass, container);
         }
     }
 
-    private void addActualType(Class<?> aClass, Container container) {
+    private void addOptionType(Type type, Container container) {
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        final Class<?> typeClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+        addActualType(typeClass, container);
+        container.addActivator(Option.class, new OptionActivator(container, typeClass));
+    }
+
+    private <T> void addActualType(Class<T> aClass, Container container) {
         if (aClass.getConstructors().length == 0) {
-            container.addActivator(aClass, new StaticMethodActivator(aClass, container, String.class));
+            container.addActivator(aClass, new StaticMethodActivator<T>(aClass, container, String.class));
         } else {
             container.add(aClass);
         }
