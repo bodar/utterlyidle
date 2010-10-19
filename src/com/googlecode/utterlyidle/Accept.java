@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.regex.Regex;
 
+import javax.ws.rs.core.MediaType;
 import java.util.regex.MatchResult;
 
 import static java.lang.Float.valueOf;
@@ -28,6 +29,9 @@ public class Accept {
     private Predicate<MediaRange> sameValue(final String value) {
         return new Predicate<MediaRange>() {
             public boolean matches(MediaRange mediaRange) {
+                if (mediaRange.value.equals(MediaType.WILDCARD)) {
+                    return true;
+                }
                 return mediaRange.value.equals(value);
             }
         };
