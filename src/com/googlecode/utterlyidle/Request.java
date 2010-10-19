@@ -1,15 +1,8 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.servlet.BasePath;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.InputStream;
 
-import static com.googlecode.utterlyidle.FormParameters.formParameters;
-import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
-import static com.googlecode.utterlyidle.servlet.BasePath.basePath;
+import static com.googlecode.utterlyidle.BasePath.basePath;
 
 public class Request {
     private final String method;
@@ -19,15 +12,6 @@ public class Request {
     private final QueryParameters query;
     private final FormParameters form;
     private final InputStream input;
-
-    public static Request request(HttpServletRequest request) {
-        try {
-            return new Request(request.getMethod(), basePath(request), request.getPathInfo(), headerParameters(request),
-                    queryParameters(request), formParameters(request), request.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static Request request(String method, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
         return new Request(method, basePath(""), path, headers, query, form, input);
