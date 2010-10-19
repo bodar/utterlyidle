@@ -199,6 +199,19 @@ public class RestTest {
         assertThat(engine.handle(get("path/")), is("default"));
     }
 
+    @Test
+    public void supportsCustomRenderer() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.addRenderer(MyCustomClass.class, new Renderer<MyCustomClass>() {
+            public String render(MyCustomClass value) {
+                return "foo";
+            }
+        });
+        engine.add(GetReturningMyCustomClass.class);
+        assertThat(engine.handle(get("path")), is("foo"));
+    }
+
+
     public static class TestEngine {
         RestEngine engine = new RestEngine();
         Container container = new SimpleContainer();
@@ -227,6 +240,10 @@ public class RestTest {
 
         public void handle(Request request, Response response) {
             engine.handle(container, request, response);
+        }
+
+        public <T> void addRenderer(Class<T> customClass, Renderer<T> renderer) {
+            engine.addRenderer(customClass, renderer);
         }
     }
 
@@ -401,6 +418,17 @@ public class RestTest {
         @GET
         public String get(@QueryParam("id") Option<Id> id) {
             return id.getOrElse(Id.id("default")).toString();
+        }
+    }
+
+    public static class MyCustomClass {
+    }
+
+    @Path("path")
+    public static class GetReturningMyCustomClass {
+        @GET
+        public MyCustomClass get() {
+            return new MyCustomClass();
         }
     }
 }
