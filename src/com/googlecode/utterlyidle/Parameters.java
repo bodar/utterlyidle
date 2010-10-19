@@ -1,12 +1,14 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Pair;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
@@ -41,14 +43,6 @@ public class Parameters implements Iterable<Pair<String, List<String>>> {
         return new Callable2<T, String, T>() {
             public T call(T result, String value) throws Exception {
                 return (T) result.add(name, value);
-            }
-        };
-    }
-
-    public static <T extends Parameters> Callable2<T, String, T> addParameters(final HttpServletRequest request) {
-        return new Callable2<T, String, T>() {
-            public T call(T result, final String name) throws Exception {
-                return sequence(request.getParameterValues(name)).foldLeft(result, Parameters.<T>addParameter(name));
             }
         };
     }

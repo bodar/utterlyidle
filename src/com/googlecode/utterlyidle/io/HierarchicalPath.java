@@ -1,12 +1,8 @@
 package com.googlecode.utterlyidle.io;
 
 import com.googlecode.totallylazy.Sequence;
-import static com.googlecode.totallylazy.Sequences.sequence;
 
-import java.util.ArrayList;
-import static java.util.Arrays.asList;
-import java.util.Collections;
-import java.util.List;
+import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class HierarchicalPath implements Path {
     private static final String DUPLICATE_SEPARATORS = "\\/+";
@@ -40,6 +36,10 @@ public class HierarchicalPath implements Path {
 
     public HierarchicalPath subDirectory(String name) {
         return new HierarchicalPath(joinDirectories(segments().add(name)));
+    }
+
+    public HierarchicalPath subDirectory(HierarchicalPath name) {
+        return subDirectory(name.toString());
     }
 
     public String file() {
