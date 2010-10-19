@@ -31,4 +31,12 @@ public class AcceptTest{
     assertThat(accept.contains("*/*"), is(true));
     assertThat(accept.quality("*/*"), NumberMatcher.is(0.2f));
   }
+
+  @Test
+  public void wildcardWillMatch() {
+    Accept accept = accept("text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2");
+
+    assertThat(accept.contains("application/xml"), is(true));
+    assertThat(accept.quality("application/xml"), NumberMatcher.is(0.2f));
+  }
 }
