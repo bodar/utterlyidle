@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 import org.junit.Test;
@@ -181,6 +182,13 @@ public class RestTest {
     public void canCoerceTypes() throws Exception {
         TestEngine engine = new TestEngine();
         engine.add(GetWithStrongType.class);
+        assertThat(engine.handle(get("path/4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+    }
+
+    @Test
+    public void canCoerceOptionalTypes() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithOptionalStrongType.class);
         assertThat(engine.handle(get("path/4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
@@ -378,6 +386,14 @@ public class RestTest {
         @GET
         public String get(@PathParam("id") Id id) {
             return id.toString();
+        }
+    }
+
+    @Path("path/{id}")
+    public static class GetWithOptionalStrongType {
+        @GET
+        public String get(@PathParam("id") Option<Id> id) {
+            return id.getOrElse(Id.id("default")).toString();
         }
     }
 }
