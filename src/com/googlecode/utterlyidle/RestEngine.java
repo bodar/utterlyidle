@@ -69,6 +69,7 @@ public class RestEngine implements Engine {
                 final Renderer renderer = renderers.get(result.getClass());
                 response.write(renderer.render(result));
             }
+            response.flush();
         } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
