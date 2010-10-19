@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.servlet.BasePath;
 import org.junit.Test;
 
 import javax.ws.rs.Path;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import static com.googlecode.utterlyidle.Redirect.redirect;
 import static com.googlecode.utterlyidle.Redirect.resource;
 import static com.googlecode.utterlyidle.Response.response;
-import static com.googlecode.utterlyidle.servlet.BasePath.basePath;
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 
 import static com.googlecode.totallylazy.Sequences.sequence;

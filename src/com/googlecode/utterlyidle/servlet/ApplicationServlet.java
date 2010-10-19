@@ -1,10 +1,15 @@
-package com.googlecode.utterlyidle;
+package com.googlecode.utterlyidle.servlet;
 
-import javax.servlet.http.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.RequestHandler;
+
 import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import static com.googlecode.utterlyidle.Request.request;
-import static com.googlecode.utterlyidle.Response.response;
+import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.request;
+import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.response;
 
 public class ApplicationServlet extends HttpServlet{
   RequestHandler application = null;

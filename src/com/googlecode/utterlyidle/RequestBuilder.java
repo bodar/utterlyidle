@@ -1,13 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Pair;
-
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;

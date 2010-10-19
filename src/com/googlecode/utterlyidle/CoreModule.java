@@ -5,6 +5,7 @@ import com.googlecode.yadic.Container;
 
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {
+        container.add(BasePath.class);
         return this;
     }
 
