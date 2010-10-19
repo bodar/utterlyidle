@@ -29,10 +29,8 @@ public class RestApplication implements Application {
         return this;
     }
 
-    public <T> Application addInstance(Class<T> aClass, T instance) {
-        applicationScope.remove(aClass);
-        applicationScope.addInstance(aClass, instance);
-        return this;
+    public Container applicationScope() {
+        return applicationScope;
     }
 
     public void handle(Request request, Response response) {

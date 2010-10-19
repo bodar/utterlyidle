@@ -33,10 +33,11 @@ public class ApplicationStarter implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent event) {
         ServletContext context = event.getServletContext();
-        Application application = createApplication(context).
-                addInstance(WarRoot.class, warRoot(context)).
-                addInstance(ContextPath.class, contextPath(context)).
-                addInstance(AttributeMap.class, attributeMap(context));
+        Application application = createApplication(context);
+        application.applicationScope().
+                addActivator(WarRoot.class, warRoot(context)).
+                addActivator(ContextPath.class, contextPath(context)).
+                addActivator(AttributeMap.class, attributeMap(context));
         context.setAttribute(Application.class.getCanonicalName(), application);
     }
 
