@@ -189,7 +189,14 @@ public class RestTest {
     public void canCoerceOptionalTypes() throws Exception {
         TestEngine engine = new TestEngine();
         engine.add(GetWithOptionalStrongType.class);
-        assertThat(engine.handle(get("path/4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+        assertThat(engine.handle(get("path").withQuery("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+    }
+
+    @Test
+    public void canCoerceOptionalTypesEvenWhenNoValueIsPresent() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithOptionalStrongType.class);
+        assertThat(engine.handle(get("path/")), is("default"));
     }
 
     public static class TestEngine {
@@ -389,10 +396,10 @@ public class RestTest {
         }
     }
 
-    @Path("path/{id}")
+    @Path("path")
     public static class GetWithOptionalStrongType {
         @GET
-        public String get(@PathParam("id") Option<Id> id) {
+        public String get(@QueryParam("id") Option<Id> id) {
             return id.getOrElse(Id.id("default")).toString();
         }
     }
