@@ -20,7 +20,6 @@ public class HttpMethodActivator implements Activator {
     private final Method method;
     private final ArgumentsExtractor argumentsExtractor;
     private final ProducesMimeMatcher producesMatcher;
-    private final Sequence<Predicate<Request>> matchers;
     private final PathMatcher pathMatcher;
     private MethodMatcher methodMatcher;
     private ConsumesMimeMatcher consumesMatcher;
@@ -33,8 +32,6 @@ public class HttpMethodActivator implements Activator {
         pathMatcher = new PathMatcher(uriTemplate);
         methodMatcher = new MethodMatcher(httpMethod);
         consumesMatcher = new ConsumesMimeMatcher(method);
-        matchers = sequence(methodMatcher, pathMatcher, producesMatcher,
-                consumesMatcher, argumentsExtractor);
     }
 
     public float matchQuality(Request request) {
