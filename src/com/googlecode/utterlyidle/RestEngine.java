@@ -6,6 +6,12 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.handlers.NullHandler;
+import com.googlecode.utterlyidle.handlers.RedirectHandler;
+import com.googlecode.utterlyidle.handlers.RendererHandler;
+import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
+import com.googlecode.utterlyidle.handlers.StreamingWriterHandler;
+import com.googlecode.utterlyidle.handlers.StringHandler;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.HttpMethod;
@@ -28,7 +34,14 @@ import static com.googlecode.utterlyidle.ResponseBody.ignoreContent;
 
 public class RestEngine implements Engine {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
-    private Map<Class<?>, Renderer<?>> renderers = new HashMap<Class<?>, Renderer<?>>();
+    private final Map<Class<?>, ResponseHandler<?>> handlers = new HashMap<Class<?>, ResponseHandler<?>>();
+    private final RendererHandler renderers = new RendererHandler();
+
+    public RestEngine() {
+        handlers.put(String.class, new StringHandler());
+        handlers.put(StreamingWriter.class, new StreamingWriterHandler());
+        handlers.put(StreamingOutput.class, new StreamingOutputHandler());
+    }
 
     public void add(Class resource) {
         for (final Method method : resource.getMethods()) {
@@ -49,10 +62,10 @@ public class RestEngine implements Engine {
     public void handle(Resolver container, Request request, Response response) {
         final Either<Status, HttpMethodActivator> either = findActivator(request);
         if (either.isLeft()) {
-            render(ignoreContent(), request, response.code(either.left()));
+            handle(ignoreContent(), request, response.code(either.left()));
         } else {
             final ResponseBody responseBody = either.right().activate(container, request);
-            render(responseBody, request, response);
+            handle(responseBody, request, response);
         }
     }
 
@@ -65,7 +78,7 @@ public class RestEngine implements Engine {
                 pair(argumentsMatches(request), Status.BAD_REQUEST)
         );
 
-        if(result.isLeft()){
+        if (result.isLeft()) {
             return left(result.left());
         }
 
@@ -124,33 +137,36 @@ public class RestEngine implements Engine {
     }
 
     public <T> void addRenderer(Class<T> customClass, Renderer<T> renderer) {
-        renderers.put(customClass, renderer);
+        renderers.add(customClass, renderer);
     }
 
-    private void render(ResponseBody responseBody, Request request, Response response) {
+    private void handle(ResponseBody responseBody, Request request, Response response) {
         try {
             response.header(HttpHeaders.CONTENT_TYPE, responseBody.mimeType());
 
             Object result = responseBody.value();
-            if (result == null) {
-                response.code(Status.NO_CONTENT);
-            } else if (result instanceof Redirect) {
-                ((Redirect) result).applyTo(request.base(), response);
-            } else if (result instanceof String) {
-                response.write((String) result);
-            } else if (result instanceof StreamingOutput) {
-                ((StreamingOutput) result).write(response.output());
-            } else if (result instanceof StreamingWriter) {
-                ((StreamingWriter) result).write(response.writer());
-            } else if (renderers.containsKey(result.getClass())) {
-                final Renderer renderer = renderers.get(result.getClass());
-                response.write(renderer.render(result));
-            }
+            getHandlerFor(result, request).handle(result, response);
+
             response.flush();
         } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
 
+    }
+
+    private ResponseHandler getHandlerFor(Object instance, Request request) {
+        if(instance == null){
+            return new NullHandler();
+        }
+        if(instance instanceof Redirect){
+            return new RedirectHandler(request);
+        }
+
+        if (handlers.containsKey(instance.getClass())) {
+            return handlers.get(instance.getClass());
+        }
+
+        return renderers;
     }
 
 }
