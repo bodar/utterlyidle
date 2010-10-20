@@ -2,7 +2,9 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
+import org.hamcrest.TypeSafeMatcher;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.StreamingOutput;
@@ -14,30 +16,25 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ResponseBody.responseBody;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 
-public class HttpMethodActivator implements Predicate<Request> {
+public class HttpMethodActivator implements Activator {
     private final Method method;
     private final ArgumentsExtractor argumentsExtractor;
     private final ProducesMimeMatcher producesMatcher;
     private final Sequence<Predicate<Request>> matchers;
+    private final PathMatcher pathMatcher;
+    private MethodMatcher methodMatcher;
+    private ConsumesMimeMatcher consumesMatcher;
 
     public HttpMethodActivator(String httpMethod, Method method) {
         this.method = method;
         UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
         argumentsExtractor = new ArgumentsExtractor(uriTemplate, method);
         producesMatcher = new ProducesMimeMatcher(method);
-        matchers = sequence(new MethodMatcher(httpMethod), new PathMatcher(uriTemplate), producesMatcher,
-                new ConsumesMimeMatcher(method), argumentsExtractor);
-    }
-
-    public boolean matches(final Request request) {
-        return matchers.forAll(new Predicate<Predicate<Request>>() {
-            public boolean matches(Predicate<Request> predicate) {
-                System.out.println("predicate = " + predicate);
-                boolean result = predicate.matches(request);
-                System.out.println("result = " + result);
-                return result;
-            }
-        });
+        pathMatcher = new PathMatcher(uriTemplate);
+        methodMatcher = new MethodMatcher(httpMethod);
+        consumesMatcher = new ConsumesMimeMatcher(method);
+        matchers = sequence(methodMatcher, pathMatcher, producesMatcher,
+                consumesMatcher, argumentsExtractor);
     }
 
     public float matchQuality(Request request) {
@@ -57,5 +54,30 @@ public class HttpMethodActivator implements Predicate<Request> {
         } catch (IllegalAccessException e1) {
             throw new RuntimeException(e1);
         }
+    }
+
+    public PathMatcher pathMatcher() {
+        return pathMatcher;
+    }
+
+    public MethodMatcher methodMatcher() {
+        return methodMatcher;
+    }
+
+    public ConsumesMimeMatcher consumesMatcher() {
+        return consumesMatcher;
+    }
+
+    @Override
+    public String toString() {
+        return method.getDeclaringClass().getSimpleName() + "." + method.getName() + Sequences.sequence(method.getGenericParameterTypes()).toString("(", ", ", ")");
+    }
+
+    public ProducesMimeMatcher producesMatcher() {
+        return producesMatcher;
+    }
+
+    public ArgumentsExtractor argumentMatcher() {
+        return argumentsExtractor;
     }
 }

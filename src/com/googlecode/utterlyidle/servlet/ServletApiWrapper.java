@@ -12,6 +12,7 @@ import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.ResourcePath;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.WebRoot;
 import com.googlecode.utterlyidle.io.Url;
 
@@ -115,8 +116,8 @@ public class ServletApiWrapper {
                 }
 
                 @Override
-                public Response code(javax.ws.rs.core.Response.Status value) {
-                    response.setStatus(value.getStatusCode());
+                public Response code(Status value) {
+                    response.setStatus(value.code());
                     super.code(value);
                     return this;
                 }
