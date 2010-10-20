@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
