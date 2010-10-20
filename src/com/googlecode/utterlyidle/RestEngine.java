@@ -1,11 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.handlers.NullHandler;
 import com.googlecode.utterlyidle.handlers.RedirectHandler;
 import com.googlecode.utterlyidle.handlers.RendererHandler;
@@ -13,6 +8,7 @@ import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
 import com.googlecode.utterlyidle.handlers.StreamingWriterHandler;
 import com.googlecode.utterlyidle.handlers.StringHandler;
 import com.googlecode.yadic.Resolver;
+import com.googlecode.yadic.SimpleContainer;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
@@ -21,12 +17,11 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Predicates.*;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
@@ -34,13 +29,19 @@ import static com.googlecode.utterlyidle.ResponseBody.ignoreContent;
 
 public class RestEngine implements Engine {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
-    private final Map<Class<?>, ResponseHandler<?>> handlers = new HashMap<Class<?>, ResponseHandler<?>>();
+    private final List<Pair<Predicate, Class>> handlers = new ArrayList<Pair<Predicate, Class>>();
     private final RendererHandler renderers = new RendererHandler();
 
     public RestEngine() {
-        handlers.put(String.class, new StringHandler());
-        handlers.put(StreamingWriter.class, new StreamingWriterHandler());
-        handlers.put(StreamingOutput.class, new StreamingOutputHandler());
+        addResponseHandler(aNull(Object.class), NullHandler.class);
+        addResponseHandler(instanceOf(String.class), StringHandler.class);
+        addResponseHandler(assignableTo(Redirect.class), RedirectHandler.class);
+        addResponseHandler(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
+        addResponseHandler(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
+    }
+
+    private void addResponseHandler(Predicate predicate, Class handler) {
+        handlers.add(pair(predicate, handler));
     }
 
     public void add(Class resource) {
@@ -59,13 +60,13 @@ public class RestEngine implements Engine {
         });
     }
 
-    public void handle(Resolver container, Request request, Response response) {
+    public void handle(Resolver resolver, Request request, Response response) {
         final Either<Status, HttpMethodActivator> either = findActivator(request);
         if (either.isLeft()) {
-            handle(ignoreContent(), request, response.code(either.left()));
+            handle(ignoreContent(), resolver, response.code(either.left()));
         } else {
-            final ResponseBody responseBody = either.right().activate(container, request);
-            handle(responseBody, request, response);
+            final ResponseBody responseBody = either.right().activate(resolver, request);
+            handle(responseBody, resolver, response);
         }
     }
 
@@ -140,12 +141,11 @@ public class RestEngine implements Engine {
         renderers.add(customClass, renderer);
     }
 
-    private void handle(ResponseBody responseBody, Request request, Response response) {
+    private void handle(ResponseBody responseBody, Resolver resolver, Response response) {
         try {
             response.header(HttpHeaders.CONTENT_TYPE, responseBody.mimeType());
-
             Object result = responseBody.value();
-            getHandlerFor(result, request).handle(result, response);
+            getHandlerFor(result, resolver).handle(result, response);
 
             response.flush();
         } catch (IOException e) {
@@ -154,19 +154,14 @@ public class RestEngine implements Engine {
 
     }
 
-    private ResponseHandler getHandlerFor(Object instance, Request request) {
-        if(instance == null){
-            return new NullHandler();
-        }
-        if(instance instanceof Redirect){
-            return new RedirectHandler(request);
-        }
-
-        if (handlers.containsKey(instance.getClass())) {
-            return handlers.get(instance.getClass());
-        }
-
-        return renderers;
+    private ResponseHandler getHandlerFor(Object instance, final Resolver resolver) {
+        final Option<Class> handler = sequence(handlers).filter(by(Callables.<Predicate>first(), (Predicate) matches(instance))).map(Callables.<Class>second()).headOption();
+        return handler.map(new Callable1<Class, ResponseHandler>() {
+            public ResponseHandler call(Class aClass) throws Exception {
+               return (ResponseHandler) new SimpleContainer(resolver).add(aClass).resolve(aClass);
+            }
+        }).getOrElse(renderers);
     }
+
 
 }

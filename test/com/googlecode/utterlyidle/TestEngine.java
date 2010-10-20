@@ -34,6 +34,10 @@ public class TestEngine {
     }
 
     public void handle(Request request, Response response) {
+        if(container.contains(Request.class)){
+            container.remove(Request.class);
+        }
+        container.addInstance(Request.class, request);
         engine.handle(container, request, response);
     }
 
