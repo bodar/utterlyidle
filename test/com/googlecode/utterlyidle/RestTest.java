@@ -1,8 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Option;
-import com.googlecode.yadic.Container;
-import com.googlecode.yadic.SimpleContainer;
 import org.junit.Test;
 
 import javax.ws.rs.Consumes;
@@ -18,7 +16,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,7 +29,6 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.io.Converter.asString;
-import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -76,7 +72,7 @@ public class RestTest {
     @Test
     public void canDetermineMethodWhenThereIsAChoice() throws Exception {
         TestEngine engine = new TestEngine();
-        engine.add(MutlilpleGets.class);
+        engine.add(MultipleGets.class);
         assertThat(engine.handle(get("foo")), is("no parameters"));
         assertThat(engine.handle(get("foo").withQuery("arg", "match")), is("match"));
     }
@@ -132,7 +128,7 @@ public class RestTest {
         engine.add(NoContent.class);
         Response response = new Response();
         engine.handle(post("foo"), response);
-        assertThat(response.code, is(NO_CONTENT));
+        assertThat(response.code, is(Status.NO_CONTENT));
     }
 
     @Test
@@ -148,7 +144,7 @@ public class RestTest {
         engine.add(DeleteContent.class);
         Response response = new Response();
         engine.handle(delete("path/bar"), response);
-        assertThat(response.code, is(NO_CONTENT));
+        assertThat(response.code, is(Status.NO_CONTENT));
     }
 
     @Test
@@ -212,42 +208,6 @@ public class RestTest {
     }
 
 
-    public static class TestEngine {
-        RestEngine engine = new RestEngine();
-        Container container = new SimpleContainer();
-
-        public TestEngine add(Class<?> resource) {
-            engine.add(resource);
-            container.add(resource);
-            return this;
-        }
-
-        public String handle(RequestBuilder request) throws IOException {
-            return handle(request.build());
-        }
-
-        public String handle(Request request) throws IOException {
-            OutputStream output = new ByteArrayOutputStream();
-            Response response = Response.response(output);
-            handle(request, response);
-            response.flush();
-            return output.toString();
-        }
-
-        public void handle(RequestBuilder request, Response response) {
-            handle(request.build(), response);
-        }
-
-        public void handle(Request request, Response response) {
-            engine.handle(container, request, response);
-        }
-
-        public <T> void addRenderer(Class<T> customClass, Renderer<T> renderer) {
-            engine.addRenderer(customClass, renderer);
-        }
-    }
-
-
     @Path("foo")
     public static class Gettable {
         @GET
@@ -282,7 +242,7 @@ public class RestTest {
     }
 
     @Path("foo")
-    public static class MutlilpleGets {
+    public static class MultipleGets {
         @GET
         public String get() {
             return "no parameters";
