@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.yadic.Container;
+import com.googlecode.yadic.OptionActivator;
 import com.googlecode.yadic.SimpleContainer;
 
 import javax.ws.rs.FormParam;
@@ -91,7 +92,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         ParameterizedType parameterizedType = (ParameterizedType) type;
         final Class<?> typeClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
         addActualType(typeClass, container);
-        container.addActivator(Option.class, new OptionActivator(container, typeClass));
+        container.addActivator(Option.class, new OptionActivator(typeClass, container));
     }
 
     private <T> void addActualType(Class<T> aClass, Container container) {
