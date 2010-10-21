@@ -1,22 +1,20 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Predicates;
 import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseHandler;
+import com.googlecode.yadic.Resolver;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-public class RendererHandler implements ResponseHandler<Object> {
-    private final Map<Class<?>, Renderer<?>> renderers = new HashMap<Class<?>, Renderer<?>>();
-
-    public void handle(Object value, Response response) throws IOException {
-        final Renderer renderer = renderers.get(value.getClass());
-        response.write(renderer.render(value));
+public class RendererHandler extends CompositeHandler<Renderer> {
+    public RendererHandler() {
+        super();
+        addCatchAll(Predicates.assignableTo(Object.class), new ObjectRenderer());
     }
 
-    public <T> void add(Class<T> customClass, Renderer<T> renderer) {
-        renderers.put(customClass, renderer);
+    @Override
+    public void process(Renderer handler, Object result, Resolver resolver, Response response) throws IOException {
+        response.write(handler.render(result));
     }
 }

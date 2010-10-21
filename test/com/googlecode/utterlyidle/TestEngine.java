@@ -1,19 +1,16 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.yadic.Container;
-import com.googlecode.yadic.SimpleContainer;
+import com.googlecode.totallylazy.Predicates;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class TestEngine {
-    RestEngine engine = new RestEngine();
-    Container container = new SimpleContainer();
+    RestApplication application = new RestApplication();
 
-    public TestEngine add(Class<?> resource) {
-        engine.add(resource);
-        container.add(resource);
+    public TestEngine add(final Class<?> resource) {
+        application.add(new TestModule(resource));
         return this;
     }
 
@@ -34,14 +31,11 @@ public class TestEngine {
     }
 
     public void handle(Request request, Response response) {
-        if(container.contains(Request.class)){
-            container.remove(Request.class);
-        }
-        container.addInstance(Request.class, request);
-        engine.handle(container, request, response);
+        application.handle(request, response);
     }
 
     public <T> void addRenderer(Class<T> customClass, Renderer<T> renderer) {
-        engine.addRenderer(customClass, renderer);
+        application.engine().renderers().add(Predicates.assignableTo(customClass), renderer);
     }
+
 }

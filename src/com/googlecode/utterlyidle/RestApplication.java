@@ -25,7 +25,7 @@ public class RestApplication implements Application {
 
     public Application add(Module module) {
         module.addPerApplicationObjects(applicationScope);
-        module.addResources(applicationScope.get(RestEngine.class));
+        module.addResources(engine());
         modules.add(module);
         return this;
     }
@@ -35,6 +35,10 @@ public class RestApplication implements Application {
     }
 
     public void handle(Request request, Response response) {
-        applicationScope.get(RestEngine.class).handle(createRequestScope(request), request, response);
+        engine().handle(createRequestScope(request), request, response);
+    }
+
+    public Engine engine() {
+        return applicationScope.get(Engine.class);
     }
 }
