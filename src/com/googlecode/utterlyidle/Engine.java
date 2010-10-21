@@ -10,4 +10,6 @@ public interface Engine {
     <T> void addRenderer(Class<T> customClass, Renderer<T> renderer);
 
     void addResponseHandler(Predicate predicate, Class handler);
+
+    void addResponseHandler(Predicate predicate, ResponseHandler handler);
 }
