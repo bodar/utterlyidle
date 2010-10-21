@@ -49,7 +49,7 @@ public class HttpMethodActivator implements Activator {
         } catch (InvocationTargetException e) {
             return responseBody(producesMatcher.mimeType(), e.getCause());
         } catch (IllegalAccessException e) {
-            return responseBody(producesMatcher.mimeType(), e.getCause());
+            return responseBody(producesMatcher.mimeType(), e);
         }
     }
 
