@@ -14,7 +14,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ClientErrorTests {
+public class ClientErrorTest {
     @Test
     public void shouldReturn404WhenPathNotFound() throws Exception {
         TestEngine engine = new TestEngine();
