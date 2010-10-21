@@ -9,7 +9,6 @@ import java.io.IOException;
 
 public class RendererHandler extends CompositeHandler<Renderer> {
     public RendererHandler() {
-        super();
         addCatchAll(Predicates.assignableTo(Object.class), new ObjectRenderer());
     }
 
