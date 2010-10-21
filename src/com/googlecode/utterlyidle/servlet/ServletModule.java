@@ -1,20 +1,11 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.utterlyidle.ApplicationPath;
-import com.googlecode.utterlyidle.AttributeMap;
-import com.googlecode.utterlyidle.Engine;
-import com.googlecode.utterlyidle.Module;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.ResourcePath;
-import com.googlecode.utterlyidle.WebRoot;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.yadic.Container;
 
 import javax.servlet.ServletContext;
 
-import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.applicationPath;
-import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.attributeMap;
-import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.resourcePath;
-import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.webRoot;
+import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.*;
 
 public class ServletModule implements Module {
     private final ServletContext context;
@@ -33,7 +24,7 @@ public class ServletModule implements Module {
 
     public Module addPerApplicationObjects(Container container) {
         container.addActivator(WebRoot.class, webRoot(context)).
-        addActivator(AttributeMap.class, attributeMap(context));
+                addActivator(AttributeMap.class, attributeMap(context));
         return this;
     }
 

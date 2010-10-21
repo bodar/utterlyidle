@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.yadic.Resolver;
@@ -18,7 +17,6 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Predicates.matches;
 import static com.googlecode.totallylazy.Sequences.join;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.yadic.CreateCallable.create;
 
 public abstract class CompositeHandler<T> implements ResponseHandler<Object> {

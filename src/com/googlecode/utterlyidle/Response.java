@@ -1,10 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 

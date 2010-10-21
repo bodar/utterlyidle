@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle;
 public class Status {
     public static Status OK = status(200, "OK");
     public static Status NO_CONTENT = status(204, "No Content");
-    
+
     public static Status SEE_OTHER = status(303, "See Other");
 
     public static Status BAD_REQUEST = status(400, "Bad Request");

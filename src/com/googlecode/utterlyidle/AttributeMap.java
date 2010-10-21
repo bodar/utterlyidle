@@ -11,7 +11,7 @@ public class AttributeMap {
         return this;
     }
 
-    public static AttributeMap attributeMap(){
+    public static AttributeMap attributeMap() {
         return new AttributeMap();
     }
 

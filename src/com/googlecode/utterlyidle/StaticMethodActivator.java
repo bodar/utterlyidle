@@ -11,9 +11,7 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
-import static com.googlecode.totallylazy.Predicates.and;
-import static com.googlecode.totallylazy.Predicates.arguments;
-import static com.googlecode.totallylazy.Predicates.modifier;
+import static com.googlecode.totallylazy.Predicates.*;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;

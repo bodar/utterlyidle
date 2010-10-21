@@ -1,42 +1,24 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.handlers.ExceptionHandler;
-import com.googlecode.utterlyidle.handlers.NullHandler;
-import com.googlecode.utterlyidle.handlers.RedirectHandler;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.handlers.RendererHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
-import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
-import com.googlecode.utterlyidle.handlers.StreamingWriterHandler;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Predicates.aNull;
-import static com.googlecode.totallylazy.Predicates.assignableTo;
-import static com.googlecode.totallylazy.Predicates.by;
-import static com.googlecode.totallylazy.Predicates.matches;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
 import static com.googlecode.utterlyidle.ResponseBody.ignoreContent;
-import static com.googlecode.yadic.CreateCallable.create;
 
 public class RestEngine implements Engine {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();

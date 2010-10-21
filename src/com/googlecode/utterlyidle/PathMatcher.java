@@ -9,9 +9,9 @@ public class PathMatcher implements Predicate<Request> {
         this.uriTemplate = uriTemplate;
     }
 
-    private String removeLeadingSlash(String path){
+    private String removeLeadingSlash(String path) {
         return path.replaceFirst("^/", "");
-  }
+    }
 
     public boolean matches(Request request) {
         return uriTemplate.matches(removeLeadingSlash(request.path()));

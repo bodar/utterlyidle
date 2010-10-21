@@ -1,20 +1,12 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
-import org.hamcrest.TypeSafeMatcher;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ResponseBody.responseBody;
-import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 
 public class HttpMethodActivator implements Activator {
     private final Method method;

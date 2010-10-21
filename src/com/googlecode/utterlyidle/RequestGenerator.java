@@ -49,7 +49,7 @@ public class RequestGenerator {
             }
         });
 
-        return request(null,uriTemplate.generate(paths),headers,queries,forms, new ByteArrayInputStream(new byte[0]));
+        return request(null, uriTemplate.generate(paths), headers, queries, forms, new ByteArrayInputStream(new byte[0]));
     }
 
     public static Callable2<Parameters, Param, Parameters> add(final Object value) {

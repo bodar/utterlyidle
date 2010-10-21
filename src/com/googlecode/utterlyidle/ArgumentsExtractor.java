@@ -1,10 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.OptionActivator;
 import com.googlecode.yadic.SimpleContainer;
@@ -80,10 +76,9 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     private void addActivator(Type type, final Container container) {
         Class<?> aClass = getClassFrom(type);
 
-        if(aClass.equals(Option.class)){
+        if (aClass.equals(Option.class)) {
             addOptionType(type, container);
-        }
-        else {
+        } else {
             addActualType(aClass, container);
         }
     }
@@ -104,10 +99,10 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     }
 
     private Class<?> getClassFrom(Type type) {
-        if(type instanceof Class){
+        if (type instanceof Class) {
             return (Class) type;
         }
-        if(type instanceof ParameterizedType){
+        if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             return (Class<?>) parameterizedType.getRawType();
         }

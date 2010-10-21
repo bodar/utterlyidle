@@ -2,18 +2,7 @@ package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.utterlyidle.ApplicationPath;
-import com.googlecode.utterlyidle.AttributeMap;
-import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.FormParameters;
-import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.Parameters;
-import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.ResourcePath;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.WebRoot;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.servlet.ServletContext;
@@ -36,7 +25,7 @@ public class ServletApiWrapper {
         }
     }
 
-    public static BasePath basePath(HttpServletRequest request){
+    public static BasePath basePath(HttpServletRequest request) {
         return BasePath.basePath(request.getContextPath() + request.getServletPath());
     }
 
@@ -86,7 +75,7 @@ public class ServletApiWrapper {
         };
     }
 
-    public static Callable<AttributeMap> attributeMap(final ServletContext context){
+    public static Callable<AttributeMap> attributeMap(final ServletContext context) {
         return new Callable<AttributeMap>() {
             public AttributeMap call() throws Exception {
                 return new AttributeMap() {
