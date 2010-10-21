@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.handlers.RendererHandler;
 import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
 import com.googlecode.utterlyidle.handlers.StreamingWriterHandler;
 import com.googlecode.utterlyidle.handlers.StringHandler;
+import com.googlecode.yadic.CreateCallable;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
 
@@ -26,6 +27,7 @@ import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
 import static com.googlecode.utterlyidle.ResponseBody.ignoreContent;
+import static com.googlecode.yadic.CreateCallable.create;
 
 public class RestEngine implements Engine {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
@@ -40,7 +42,7 @@ public class RestEngine implements Engine {
         addResponseHandler(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
     }
 
-    private void addResponseHandler(Predicate predicate, Class handler) {
+    public void addResponseHandler(Predicate predicate, Class handler) {
         handlers.add(pair(predicate, handler));
     }
 
@@ -158,7 +160,7 @@ public class RestEngine implements Engine {
         final Option<Class> handler = sequence(handlers).filter(by(Callables.<Predicate>first(), (Predicate) matches(instance))).map(Callables.<Class>second()).headOption();
         return handler.map(new Callable1<Class, ResponseHandler>() {
             public ResponseHandler call(Class aClass) throws Exception {
-               return (ResponseHandler) new SimpleContainer(resolver).add(aClass).resolve(aClass);
+               return (ResponseHandler) create(aClass, resolver).call();
             }
         }).getOrElse(renderers);
     }
