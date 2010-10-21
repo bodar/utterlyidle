@@ -12,6 +12,8 @@ public class Status {
     public static Status NOT_ACCEPTABLE = status(406, "Not Acceptable");
     public static Status UNSUPPORTED_MEDIA_TYPE = status(415, "Unsupported Media Type");
 
+    public static Status INTERNAL_SERVER_ERROR = status(500, "Internal Server Error");
+    public static Status NOT_IMPLEMENTED = status(501, "Not Implemented");
 
 
     private final int code;

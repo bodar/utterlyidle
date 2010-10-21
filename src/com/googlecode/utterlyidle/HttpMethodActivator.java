@@ -46,10 +46,10 @@ public class HttpMethodActivator implements Activator {
         try {
             Object instance = container.resolve(method.getDeclaringClass());
             return responseBody(producesMatcher.mimeType(), method.invoke(instance, argumentsExtractor.extract(request)));
-        } catch (InvocationTargetException e1) {
-            throw new RuntimeException(e1.getCause());
-        } catch (IllegalAccessException e1) {
-            throw new RuntimeException(e1);
+        } catch (InvocationTargetException e) {
+            return responseBody(producesMatcher.mimeType(), e.getCause());
+        } catch (IllegalAccessException e) {
+            return responseBody(producesMatcher.mimeType(), e.getCause());
         }
     }
 

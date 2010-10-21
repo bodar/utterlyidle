@@ -1,15 +1,20 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.NullHandler;
 import com.googlecode.utterlyidle.handlers.RedirectHandler;
 import com.googlecode.utterlyidle.handlers.RendererHandler;
 import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
 import com.googlecode.utterlyidle.handlers.StreamingWriterHandler;
 import com.googlecode.utterlyidle.handlers.StringHandler;
-import com.googlecode.yadic.CreateCallable;
 import com.googlecode.yadic.Resolver;
-import com.googlecode.yadic.SimpleContainer;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
@@ -22,7 +27,11 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Predicates.*;
+import static com.googlecode.totallylazy.Predicates.aNull;
+import static com.googlecode.totallylazy.Predicates.assignableTo;
+import static com.googlecode.totallylazy.Predicates.by;
+import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Predicates.matches;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
@@ -31,7 +40,7 @@ import static com.googlecode.yadic.CreateCallable.create;
 
 public class RestEngine implements Engine {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
-    private final List<Pair<Predicate, Class>> handlers = new ArrayList<Pair<Predicate, Class>>();
+    private final List<Pair<Predicate, Object>> handlers = new ArrayList<Pair<Predicate, Object>>();
     private final RendererHandler renderers = new RendererHandler();
 
     public RestEngine() {
@@ -40,10 +49,16 @@ public class RestEngine implements Engine {
         addResponseHandler(assignableTo(Redirect.class), RedirectHandler.class);
         addResponseHandler(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
         addResponseHandler(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
+        addResponseHandler(assignableTo(UnsupportedOperationException.class), new ExceptionHandler(Status.NOT_IMPLEMENTED));
+        addResponseHandler(assignableTo(Exception.class), new ExceptionHandler(Status.INTERNAL_SERVER_ERROR));
     }
 
     public void addResponseHandler(Predicate predicate, Class handler) {
-        handlers.add(pair(predicate, handler));
+        handlers.add(pair(predicate, (Object) handler));
+    }
+
+    public void addResponseHandler(Predicate predicate, ResponseHandler handler) {
+        handlers.add(pair(predicate, (Object) handler));
     }
 
     public void add(Class resource) {
@@ -157,10 +172,13 @@ public class RestEngine implements Engine {
     }
 
     private ResponseHandler getHandlerFor(Object instance, final Resolver resolver) {
-        final Option<Class> handler = sequence(handlers).filter(by(Callables.<Predicate>first(), (Predicate) matches(instance))).map(Callables.<Class>second()).headOption();
-        return handler.map(new Callable1<Class, ResponseHandler>() {
-            public ResponseHandler call(Class aClass) throws Exception {
-               return (ResponseHandler) create(aClass, resolver).call();
+        final Option<Object> handler = sequence(handlers).filter(by(Callables.<Predicate>first(), (Predicate) matches(instance))).map(Callables.<Object>second()).headOption();
+        return handler.map(new Callable1<Object, ResponseHandler>() {
+            public ResponseHandler call(Object aClassOrInstance) throws Exception {
+                if (aClassOrInstance.getClass().equals(Class.class)) {
+                    return (ResponseHandler) create((Class) aClassOrInstance, resolver).call();
+                }
+                return (ResponseHandler) aClassOrInstance;
             }
         }).getOrElse(renderers);
     }
