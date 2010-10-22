@@ -1,6 +1,11 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.handlers.RendererHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Resolver;
@@ -17,8 +22,8 @@ import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
-import static com.googlecode.utterlyidle.ResponseBody.ignoreContent;
 
 public class RestEngine implements Engine {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
@@ -50,17 +55,17 @@ public class RestEngine implements Engine {
     }
 
     public void handle(Resolver resolver, Request request, Response response) {
-        final Either<Status, HttpMethodActivator> either = findActivator(request);
+        final Either<MatchFailure, HttpMethodActivator> either = findActivator(request);
         if (either.isLeft()) {
-            handle(ignoreContent(), resolver, response.code(either.left()));
+            handle(ResponseBody.responseBody("text/plain", either.left()), resolver, response);
         } else {
             final ResponseBody responseBody = either.right().activate(resolver, request);
             handle(responseBody, resolver, response);
         }
     }
 
-    public Either<Status, HttpMethodActivator> findActivator(final Request request) {
-        final Either<Status, Sequence<HttpMethodActivator>> result = filter(
+    public Either<MatchFailure, HttpMethodActivator> findActivator(final Request request) {
+        final Either<MatchFailure, Sequence<HttpMethodActivator>> result = filter(
                 pair(pathMatches(request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
@@ -75,12 +80,13 @@ public class RestEngine implements Engine {
         return right(result.right().sortBy(matchQuality(request)).head());
     }
 
-    private Either<Status, Sequence<HttpMethodActivator>> filter(Pair<Predicate<HttpMethodActivator>, Status>... filterAndResult) {
+    private Either<MatchFailure, Sequence<HttpMethodActivator>> filter(Pair<Predicate<HttpMethodActivator>, Status>... filterAndResult) {
         Sequence<HttpMethodActivator> sequence = sequence(activators);
         for (Pair<Predicate<HttpMethodActivator>, Status> pair : filterAndResult) {
+            Sequence<HttpMethodActivator> matchesSoFar = sequence;
             sequence = sequence.filter(pair.first());
             if (sequence.isEmpty()) {
-                return left(pair.second());
+                return left(matchFailure(pair.second(), matchesSoFar));
             }
         }
         return right(sequence);

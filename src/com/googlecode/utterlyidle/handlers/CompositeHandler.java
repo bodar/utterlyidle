@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -11,7 +12,10 @@ import com.googlecode.yadic.Resolver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import static com.googlecode.totallylazy.Callables.first;
+import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.by;
@@ -59,9 +63,10 @@ public abstract class CompositeHandler<T> implements ResponseHandler<Object> {
         catchAll.add(pair(predicate, (Object) handler));
     }
 
+    @SuppressWarnings("unchecked")
     private T getHandlerFor(Object instance, final Resolver resolver) {
         final Sequence<Pair<Predicate, Object>> pairSequence = handlers();
-        final Object handler = pairSequence.filter(by(Callables.<Predicate>first(), (Predicate) matches(instance))).map(Callables.<Object>second()).head();
+        final Object handler = pairSequence.filter(by((Callable1) first(), matches(instance))).map(second()).head();
         if (handler instanceof Class) {
             return (T) call(create((Class) handler, resolver));
         }
