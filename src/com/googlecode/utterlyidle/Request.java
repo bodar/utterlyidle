@@ -2,11 +2,8 @@ package com.googlecode.utterlyidle;
 
 import java.io.InputStream;
 
-import static com.googlecode.utterlyidle.BasePath.basePath;
-
 public class Request {
     private final String method;
-    private final BasePath base;
     private final String path;
     private final HeaderParameters headers;
     private final QueryParameters query;
@@ -14,21 +11,16 @@ public class Request {
     private final InputStream input;
 
     public static Request request(String method, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
-        return new Request(method, basePath(""), path, headers, query, form, input);
+        return new Request(method, path, headers, query, form, input);
     }
 
-    public Request(String method, BasePath base, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
+    public Request(String method, String path, HeaderParameters headers, QueryParameters query, FormParameters form, InputStream input) {
         this.method = method;
-        this.base = base;
         this.path = path;
         this.headers = headers;
         this.query = query;
         this.form = form;
         this.input = input;
-    }
-
-    public BasePath base() {
-        return base;
     }
 
     public FormParameters form() {
@@ -53,5 +45,10 @@ public class Request {
 
     public QueryParameters query() {
         return query;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s%s HTTP/1.1", method, path, query);
     }
 }

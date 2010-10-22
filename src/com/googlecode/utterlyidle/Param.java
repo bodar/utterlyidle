@@ -6,7 +6,6 @@ import com.googlecode.totallylazy.Predicate;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
-@SuppressWarnings({"NullArgumentToVariableArgMethod"})
 public class Param {
     private final Annotation annotation;
     private static final String METHOD_NAME = "value";
@@ -25,7 +24,7 @@ public class Param {
 
     public static boolean isParam(Annotation annotation) {
         try {
-            return annotation.getClass().getMethod(METHOD_NAME, null) != null;
+            return annotation.getClass().getMethod(METHOD_NAME) != null;
         } catch (NoSuchMethodException e) {
             return false;
         }
@@ -48,7 +47,7 @@ public class Param {
 
     public String value() {
         try {
-            return (String) annotation.getClass().getMethod(METHOD_NAME, null).invoke(annotation, null);
+            return (String) annotation.getClass().getMethod(METHOD_NAME).invoke(annotation);
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException(e);
         } catch (InvocationTargetException e) {

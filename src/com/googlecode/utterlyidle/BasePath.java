@@ -8,11 +8,7 @@ public class BasePath extends HierarchicalPath {
         return new BasePath(path);
     }
 
-    public BasePath(ApplicationPath applicationPath, ResourcePath resourcePath) {
-        this(applicationPath.subDirectory(resourcePath).toString());
-    }
-
-    protected BasePath(String v) {
+    public BasePath(String v) {
         super(v);
     }
 }

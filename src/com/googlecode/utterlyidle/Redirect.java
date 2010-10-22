@@ -57,8 +57,7 @@ public class Redirect {
     }
 
     public static String getPath(Method method, Object[] arguments) {
-        UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
-        RequestGenerator requestGenerator = new RequestGenerator(uriTemplate, method);
+        RequestGenerator requestGenerator = new RequestGenerator(method);
         return requestGenerator.generate(arguments).path();
     }
 

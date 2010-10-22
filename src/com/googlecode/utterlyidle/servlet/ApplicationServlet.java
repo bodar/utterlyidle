@@ -12,11 +12,11 @@ import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.request;
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.response;
 
 public class ApplicationServlet extends HttpServlet {
-    RequestHandler application = null;
+    Application application = null;
 
     @Override
     public void init(ServletConfig config) {
-        application = (RequestHandler) config.getServletContext().getAttribute(Application.class.getCanonicalName());
+        application = (Application) config.getServletContext().getAttribute(Application.class.getCanonicalName());
     }
 
     @Override

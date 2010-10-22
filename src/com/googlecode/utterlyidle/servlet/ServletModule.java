@@ -17,7 +17,7 @@ public class ServletModule implements Module {
     public Module addPerRequestObjects(Container container) {
         final RequestWithServletStuff request = (RequestWithServletStuff) container.get(Request.class);
         container.
-                addInstance(ApplicationPath.class, applicationPath(request.getRequest())).
+                addInstance(BasePath.class, basePath(request.getRequest())).
                 addInstance(ResourcePath.class, resourcePath(request.getRequest()));
         return this;
     }

@@ -9,7 +9,7 @@ class RequestWithServletStuff extends Request {
     private final HttpServletRequest request;
 
     public RequestWithServletStuff(HttpServletRequest request) throws IOException {
-        super(request.getMethod(), ServletApiWrapper.basePath(request), request.getPathInfo(), ServletApiWrapper.headerParameters(request), ServletApiWrapper.queryParameters(request), ServletApiWrapper.formParameters(request), request.getInputStream());
+        super(request.getMethod(), request.getPathInfo(), ServletApiWrapper.headerParameters(request), ServletApiWrapper.queryParameters(request), ServletApiWrapper.formParameters(request), request.getInputStream());
         this.request = request;
     }
 

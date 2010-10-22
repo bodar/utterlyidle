@@ -65,12 +65,10 @@ public abstract class CompositeHandler<T> implements ResponseHandler<Object> {
 
     @SuppressWarnings("unchecked")
     private T getHandlerFor(Object instance, final Resolver resolver) {
-        final Sequence<Pair<Predicate, Object>> pairSequence = handlers();
-        final Object handler = pairSequence.filter(by((Callable1) first(), matches(instance))).map(second()).head();
+        final Object handler = handlers().filter(by((Callable1) first(), matches(instance))).map(second()).head();
         if (handler instanceof Class) {
             return (T) call(create((Class) handler, resolver));
         }
         return (T) handler;
     }
-
 }
