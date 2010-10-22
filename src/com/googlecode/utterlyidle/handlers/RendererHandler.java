@@ -8,12 +8,8 @@ import com.googlecode.yadic.Resolver;
 import java.io.IOException;
 
 public class RendererHandler extends CompositeHandler<Renderer> {
-    public RendererHandler() {
-        addCatchAll(Predicates.assignableTo(Object.class), new ObjectRenderer());
-    }
-
     @Override
-    public void process(Renderer handler, Object result, Resolver resolver, Response response) throws IOException {
-        response.write(handler.render(result));
+    public void process(Renderer renderer, Object result, Resolver resolver, Response response) throws IOException {
+        response.write(renderer.render(result));
     }
 }
