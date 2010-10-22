@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Predicates;
+import com.googlecode.yadic.Container;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,6 +9,23 @@ import java.io.OutputStream;
 
 public class TestEngine {
     RestApplication application = new RestApplication();
+
+    public TestEngine() {
+        application.add(new Module() {
+            public Module addPerRequestObjects(Container container) {
+                container.addInstance(BasePath.class, new BasePath("/"));
+                return this;
+            }
+
+            public Module addPerApplicationObjects(Container container) {
+                return this;
+            }
+
+            public Module addResources(Engine engine) {
+                return this;
+            }
+        });
+    }
 
     public TestEngine add(final Class<?> resource) {
         application.add(new TestModule(resource));
@@ -37,5 +55,4 @@ public class TestEngine {
     public <T> void addRenderer(Class<T> customClass, Renderer<T> renderer) {
         application.engine().renderers().add(Predicates.assignableTo(customClass), renderer);
     }
-
 }

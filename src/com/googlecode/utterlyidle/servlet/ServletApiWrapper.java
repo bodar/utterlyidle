@@ -26,11 +26,11 @@ public class ServletApiWrapper {
     }
 
     public static BasePath basePath(HttpServletRequest request) {
-        return BasePath.basePath(request.getContextPath() + request.getServletPath());
+        return BasePath.basePath(request.getContextPath());
     }
 
     public static ResourcePath resourcePath(HttpServletRequest request) {
-        return ResourcePath.resourcePath(request.getPathInfo());
+        return ResourcePath.resourcePath(request.getServletPath() + request.getPathInfo());
     }
 
     public static HeaderParameters headerParameters(final HttpServletRequest request) {
@@ -55,10 +55,6 @@ public class ServletApiWrapper {
                 return sequence(request.getParameterValues(name)).foldLeft(result, Parameters.<T>addParameter(name));
             }
         };
-    }
-
-    public static ApplicationPath applicationPath(HttpServletRequest request) {
-        return ApplicationPath.applicationPath(request.getContextPath() + request.getServletPath());
     }
 
     public static Callable<WebRoot> webRoot(final ServletContext context) {

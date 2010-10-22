@@ -13,8 +13,8 @@ public class HttpMethodActivator implements Activator {
     private final ArgumentsExtractor argumentsExtractor;
     private final ProducesMimeMatcher producesMatcher;
     private final PathMatcher pathMatcher;
-    private MethodMatcher methodMatcher;
-    private ConsumesMimeMatcher consumesMatcher;
+    private final MethodMatcher methodMatcher;
+    private final ConsumesMimeMatcher consumesMatcher;
 
     public HttpMethodActivator(String httpMethod, Method method) {
         this.method = method;
@@ -68,5 +68,9 @@ public class HttpMethodActivator implements Activator {
 
     public ArgumentsExtractor argumentMatcher() {
         return argumentsExtractor;
+    }
+
+    public Method method() {
+        return method;
     }
 }
