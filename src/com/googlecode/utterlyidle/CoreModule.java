@@ -20,7 +20,6 @@ import static com.googlecode.totallylazy.Predicates.assignableTo;
 
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {
-        container.add(BasePath.class);
         return this;
     }
 

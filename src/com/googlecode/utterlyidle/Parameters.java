@@ -9,7 +9,7 @@ import java.util.*;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Parameters implements Iterable<Pair<String, List<String>>> {
-    private final Map<String, List<String>> values = new HashMap<String, List<String>>();
+    private final Map<String, List<String>> values = new LinkedHashMap<String, List<String>>();
 
     public Parameters add(String name, String value) {
         if (!values.containsKey(name)) {

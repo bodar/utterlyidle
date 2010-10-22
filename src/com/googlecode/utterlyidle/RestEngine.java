@@ -40,18 +40,10 @@ public class RestEngine implements Engine {
 
     public void add(Class resource) {
         for (final Method method : resource.getMethods()) {
-            for (final HttpMethod httpMethod : getHttpMethod(method)) {
+            for (final HttpMethod httpMethod : new HttpMethodExtractor().extract(method)) {
                 activators.add(new HttpMethodActivator(httpMethod.value(), method));
             }
         }
-    }
-
-    public Option<HttpMethod> getHttpMethod(Method method) {
-        return sequence(method.getAnnotations()).tryPick(new Callable1<Annotation, Option<HttpMethod>>() {
-            public Option<HttpMethod> call(Annotation annotation) throws Exception {
-                return sequence(annotation.annotationType().getDeclaredAnnotations()).safeCast(HttpMethod.class).headOption();
-            }
-        });
     }
 
     public void handle(Resolver resolver, Request request, Response response) {
@@ -64,7 +56,20 @@ public class RestEngine implements Engine {
         }
     }
 
-    public Either<MatchFailure, HttpMethodActivator> findActivator(final Request request) {
+    private void handle(ResponseBody responseBody, Resolver resolver, Response response) {
+        try {
+            response.header(HttpHeaders.CONTENT_TYPE, responseBody.mimeType());
+            Object result = responseBody.value();
+            handlers.handle(result, resolver, response);
+
+            response.flush();
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
+
+    }
+
+    private Either<MatchFailure, HttpMethodActivator> findActivator(final Request request) {
         final Either<MatchFailure, Sequence<HttpMethodActivator>> result = filter(
                 pair(pathMatches(request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
@@ -130,19 +135,5 @@ public class RestEngine implements Engine {
                 return httpMethodActivator.pathMatcher().matches(request);
             }
         };
-    }
-
-
-    private void handle(ResponseBody responseBody, Resolver resolver, Response response) {
-        try {
-            response.header(HttpHeaders.CONTENT_TYPE, responseBody.mimeType());
-            Object result = responseBody.value();
-            handlers.handle(result, resolver, response);
-
-            response.flush();
-        } catch (IOException e) {
-            throw new UnsupportedOperationException(e);
-        }
-
     }
 }
