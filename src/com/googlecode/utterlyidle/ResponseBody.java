@@ -20,8 +20,4 @@ public class ResponseBody {
     public static ResponseBody responseBody(String mimeType, Object value) {
         return new ResponseBody(mimeType, value);
     }
-    
-    public static ResponseBody ignoreContent() {
-        return new ResponseBody("", "");
-    }
 }
