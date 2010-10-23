@@ -13,7 +13,7 @@ public class TestEngine {
     public TestEngine() {
         application.add(new Module() {
             public Module addPerRequestObjects(Container container) {
-                container.addInstance(BasePath.class, new BasePath("/"));
+                container.addInstance(BasePath.class, new BasePath(""));
                 return this;
             }
 

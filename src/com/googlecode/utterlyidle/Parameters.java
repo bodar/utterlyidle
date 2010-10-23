@@ -1,21 +1,21 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.*;
 
 import java.util.*;
 
+import static com.googlecode.totallylazy.Callables.first;
+import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Predicates.by;
+import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class Parameters implements Iterable<Pair<String, List<String>>> {
-    private final Map<String, List<String>> values = new LinkedHashMap<String, List<String>>();
+public class Parameters implements Iterable<Pair<String, String>> {
+    private final List<Pair<String, String>> values = new ArrayList<Pair<String, String>>();
 
     public Parameters add(String name, String value) {
-        if (!values.containsKey(name)) {
-            values.put(name, new ArrayList<String>());
-        }
-        values.get(name).add(value);
+        values.add(pair(name, value));
         return this;
     }
 
@@ -23,16 +23,22 @@ public class Parameters implements Iterable<Pair<String, List<String>>> {
         return values.size();
     }
 
+    @SuppressWarnings("unchecked")
     public String getValue(String name) {
-        return values.containsKey(name) ? values.get(name).get(0) : null;
+        return findPair(name).map(second(String.class)).getOrNull();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Option<Pair<String, String>> findPair(String name) {
+        return sequence(values).find(by(first(String.class), is(name)));
     }
 
     public boolean contains(String name) {
-        return values.containsKey(name);
+        return !findPair(name).isEmpty();
     }
 
-    public Iterator<Pair<String, List<String>>> iterator() {
-        return sequence(values.entrySet()).map(Callables.<String, List<String>>entryToPair()).iterator();
+    public Iterator<Pair<String, String>> iterator() {
+        return values.iterator();
     }
 
     public static <T extends Parameters> Callable2<T, String, T> addParameter(final String name) {
