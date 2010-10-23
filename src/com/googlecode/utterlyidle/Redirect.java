@@ -24,7 +24,7 @@ public class Redirect {
     }
 
     public void applyTo(BasePath base, Response response) {
-        response.header(HttpHeaders.LOCATION, base + "/" + location);
+        response.header(HttpHeaders.LOCATION, base.file(location).toString());
         response.code(Status.SEE_OTHER);
     }
 

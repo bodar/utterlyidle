@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.HttpHeaders;
@@ -54,14 +55,17 @@ public class RedirectTest {
 
     @Path("path/{id}")
     static class SomeResource {
+        @GET
         public String getHtml(@PathParam("id") String id) {
             return "bob";
         }
 
+        @GET
         public StreamingOutput getStreamingHtml(@PathParam("id") String id) {
             return null;
         }
 
+        @GET
         public StreamingWriter getStreamingWriter(@PathParam("id") String id) {
             return null;
         }
@@ -72,10 +76,12 @@ public class RedirectTest {
         NoDefaultConstructor(SomeResource someResource) {
         }
 
+        @GET
         public String getHtml(@PathParam("id") String id) {
             return "bob";
         }
 
+        @GET
         public StreamingOutput getStreamingHtml(@PathParam("id") String id) {
             return null;
         }
@@ -83,6 +89,7 @@ public class RedirectTest {
 
     @Path("path/{id}")
     static class CustomType {
+        @GET
         public String getHtml(@PathParam("id") Id id) {
             return "bob";
         }

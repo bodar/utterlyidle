@@ -1,14 +1,16 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import static com.googlecode.totallylazy.Sequences.iterate;
+import java.net.URL;
+
 import static com.googlecode.totallylazy.numbers.Numbers.increment;
+import static com.googlecode.utterlyidle.io.Url.url;
 
 public class MatchFailureRenderer implements Renderer<MatchFailure> {
     private final BasePath basePath;
@@ -18,14 +20,15 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     }
 
     public String render(MatchFailure value) {
-        StringTemplateGroup group = new StringTemplateGroup("");
-        StringTemplate template = group.getInstanceOf(getResourceRelativeTo(getClass(), "matchFailure"));
+        Url baseUrl = url(getClass().getResource("matchFailure.st")).parent();
+        StringTemplateGroup group = new UrlStringTemplateGroup(baseUrl);
+        StringTemplate template = group.getInstanceOf("matchFailure");
         template.setAttribute("base", basePath);
         template.setAttribute("status", value.status());
 
         for (HttpMethodActivator httpMethodActivator : value.matchesSoFar()) {
             Request request = new RequestGenerator(httpMethodActivator.method()).generate(arguments());
-            template.setAttribute("request.{path, query}", request.path(), request.query());
+            template.setAttribute("requests.{method, path, query}", request.method(), request.path(), request.query());
         }
 
         return template.toString();
@@ -34,9 +37,4 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     private Sequence<Object> arguments() {
         return Sequences.repeat("AN_ARGUMENT").safeCast(Object.class);
     }
-
-    public static String getResourceRelativeTo(Class aClass, String resource) {
-        return aClass.getPackage().getName().replace('.', '/') + "/" + resource;
-    }
-
 }
