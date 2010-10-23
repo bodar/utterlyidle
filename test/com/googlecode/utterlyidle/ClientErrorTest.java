@@ -33,7 +33,6 @@ public class ClientErrorTest {
         engine.handle(post("path"), response);
 
         assertThat(response.code(), is(Status.METHOD_NOT_ALLOWED));
-        //assertThat(output.toString(), is(""));
     }
 
     @Test

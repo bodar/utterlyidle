@@ -1,0 +1,1 @@
+<a href="$base$$request.path$$request.query$"></a>

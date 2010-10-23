@@ -47,21 +47,17 @@ public class Url {
         return replacePath(path().parent());
     }
 
-    public Reader reader() {
+    public Reader reader() throws IOException {
         return new InputStreamReader(inputStream());
     }
 
-    public InputStream inputStream() {
-        try {
-            return openConnection().getInputStream();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public InputStream inputStream() throws IOException {
+        return openConnection().getInputStream();
     }
 
-    public HttpURLConnection openConnection() {
+    public URLConnection openConnection() {
         try {
-            final HttpURLConnection urlConnection = (HttpURLConnection) new URL(value).openConnection();
+            final URLConnection urlConnection = new URL(value).openConnection();
             urlConnection.setUseCaches(true);
             return urlConnection;
         } catch (IOException e) {
@@ -71,7 +67,7 @@ public class Url {
 
     public Pair<Integer, String> get(String mimeType, Runnable1<InputStream> handler) {
         try {
-            HttpURLConnection urlConnection = openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestProperty("Accept", mimeType);
             InputStream inputStream = urlConnection.getInputStream();
             handler.run(inputStream);
@@ -84,7 +80,7 @@ public class Url {
 
     public Pair<Integer, String> put(String mimeType, Runnable1<OutputStream> handler) {
         try {
-            HttpURLConnection urlConnection = openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestMethod("PUT");
             urlConnection.setRequestProperty("Content-Type", mimeType);
             OutputStream outputStream = urlConnection.getOutputStream();
@@ -100,7 +96,7 @@ public class Url {
 
     public Pair<Integer, String> delete() {
         try {
-            HttpURLConnection urlConnection = openConnection();
+            HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestMethod("DELETE");
             return pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
         } catch (ProtocolException e) {
@@ -126,6 +122,14 @@ public class Url {
     @Override
     public String toString() {
         return value;
+    }
+
+    public URL toURL() {
+        try {
+            return new URL(value);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Url url(String value) {
