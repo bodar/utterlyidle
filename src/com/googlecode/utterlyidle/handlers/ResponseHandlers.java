@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class ResponseHandlers extends CompositeHandler<ResponseHandler> {
     @Override
-    public void process(ResponseHandler handler, Object result, Resolver resolver, Response response) throws IOException {
+    public void process(ResponseHandler handler, Object result, Resolver resolver, Response response) throws Exception {
         handler.handle(result, resolver, response);
     }
 }

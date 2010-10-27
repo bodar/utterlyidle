@@ -28,7 +28,7 @@ public abstract class CompositeHandler<T> implements ResponseHandler<Object> {
     private final List<Pair<Predicate, Object>> custom = new ArrayList<Pair<Predicate, Object>>();
     private final List<Pair<Predicate, Object>> catchAll = new ArrayList<Pair<Predicate, Object>>();
 
-    public void handle(Object result, Resolver resolver, Response response) throws IOException {
+    public void handle(Object result, Resolver resolver, Response response) throws Exception {
         final T handler = getHandlerFor(result, resolver);
         process(handler, result, resolver, response);
     }
@@ -37,7 +37,7 @@ public abstract class CompositeHandler<T> implements ResponseHandler<Object> {
         return join(guards, custom, catchAll);
     }
 
-    public abstract void process(T handler, Object result, Resolver resolver, Response response) throws IOException;
+    public abstract void process(T handler, Object result, Resolver resolver, Response response) throws Exception;
 
     public void addGuard(Predicate predicate, Class handler) {
         guards.add(pair(predicate, (Object) handler));
