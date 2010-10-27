@@ -15,7 +15,7 @@ public class MatchFailureHandler implements ResponseHandler<MatchFailure> {
         this.renderers = renderers;
     }
 
-    public void handle(MatchFailure value, Resolver resolver, Response response) throws IOException {
+    public void handle(MatchFailure value, Resolver resolver, Response response) throws Exception {
         response.code(value.status());
         renderers.handle(value, resolver, response);
     }

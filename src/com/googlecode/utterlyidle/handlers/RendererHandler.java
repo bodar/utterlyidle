@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class RendererHandler extends CompositeHandler<Renderer> {
     @Override
-    public void process(Renderer renderer, Object result, Resolver resolver, Response response) throws IOException {
+    public void process(Renderer renderer, Object result, Resolver resolver, Response response) throws Exception {
         response.write(renderer.render(result));
     }
 }

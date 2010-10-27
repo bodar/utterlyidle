@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
 public interface Renderer<T> {
-    String render(T value);
+    String render(T value) throws Exception;
 }
 

@@ -7,9 +7,11 @@ import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
+import java.io.IOException;
 import java.net.URL;
 
 import static com.googlecode.totallylazy.numbers.Numbers.increment;
+import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class MatchFailureRenderer implements Renderer<MatchFailure> {
@@ -19,7 +21,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         this.basePath = basePath;
     }
 
-    public String render(MatchFailure value) {
+    public String render(MatchFailure value) throws IOException {
         Url baseUrl = url(getClass().getResource("matchFailure.st")).parent();
         StringTemplateGroup group = new UrlStringTemplateGroup(baseUrl);
         StringTemplate template = group.getInstanceOf("matchFailure");
