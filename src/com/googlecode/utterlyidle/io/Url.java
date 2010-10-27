@@ -13,7 +13,7 @@ public class Url {
     private static Regex JarUrl = Regex.regex("jar:([^!]*)!(.*)");
     private final String value;
 
-    public Url(String value) {
+    private Url(String value) {
         this.value = value;
     }
 

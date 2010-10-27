@@ -16,7 +16,7 @@ public class ExceptionHandler implements ResponseHandler<Exception> {
         this.renderers = renderers;
     }
 
-    public void handle(Exception value, Resolver resolver, Response response) throws IOException {
+    public void handle(Exception value, Resolver resolver, Response response) throws Exception {
         response.code(status);
         renderers.handle(value, resolver, response);
     }

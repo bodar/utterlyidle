@@ -61,9 +61,8 @@ public class RestEngine implements Engine {
             response.header(HttpHeaders.CONTENT_TYPE, responseBody.mimeType());
             Object result = responseBody.value();
             handlers.handle(result, resolver, response);
-
             response.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new UnsupportedOperationException(e);
         }
 
