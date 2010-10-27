@@ -49,7 +49,7 @@ public class RestEngine implements Engine {
     public void handle(Resolver resolver, Request request, Response response) {
         final Either<MatchFailure, HttpMethodActivator> either = findActivator(request);
         if (either.isLeft()) {
-            handle(ResponseBody.responseBody("text/plain", either.left()), resolver, response);
+            handle(ResponseBody.responseBody("text/html", either.left()), resolver, response);
         } else {
             final ResponseBody responseBody = either.right().activate(resolver, request);
             handle(responseBody, resolver, response);
