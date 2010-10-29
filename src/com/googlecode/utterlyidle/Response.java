@@ -5,18 +5,13 @@ import java.io.*;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 
 public class Response {
-    private final Writer writer;
     private final OutputStream output;
     protected final HeaderParameters headers = headerParameters();
     protected Status code = Status.OK;
-
-    public Response(Writer writer, OutputStream output) {
-        this.writer = writer;
-        this.output = output;
-    }
+    private OutputStreamWriter writer;
 
     public Response(OutputStream output) {
-        this(new OutputStreamWriter(output), output);
+        this.output = output;
     }
 
     public Response() {
@@ -46,17 +41,21 @@ public class Response {
     }
 
     public Writer writer() {
+        if(writer== null){
+            writer = new OutputStreamWriter(output());
+        }
         return writer;
     }
 
     public Response write(String value) throws IOException {
-        writer.write(value);
+        writer().write(value);
         return this;
     }
 
     public Response flush() throws IOException {
-        writer.flush();
-        output.flush();
+        writer().flush();
+        output().flush();
+        output().close();
         return this;
     }
 
