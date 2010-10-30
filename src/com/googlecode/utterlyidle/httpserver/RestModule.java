@@ -13,6 +13,7 @@ public class RestModule implements Module {
     }
 
     public Module addPerRequestObjects(Container container) {
+        container.add(HelloWorld.class);
         return this;
     }
 
@@ -22,6 +23,7 @@ public class RestModule implements Module {
     }
 
     public Module addResources(Engine engine) {
+        engine.add(HelloWorld.class);
         return this;
     }
 }
