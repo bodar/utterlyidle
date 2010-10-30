@@ -14,6 +14,6 @@ public class PathMatcher implements Predicate<Request> {
     }
 
     public boolean matches(Request request) {
-        return uriTemplate.matches(removeLeadingSlash(request.path()));
+        return uriTemplate.matches(removeLeadingSlash(request.requestUri().path().toString()));
     }
 }

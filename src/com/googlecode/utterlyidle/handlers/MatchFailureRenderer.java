@@ -30,7 +30,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
 
         for (HttpMethodActivator httpMethodActivator : value.matchesSoFar()) {
             Request request = new RequestGenerator(httpMethodActivator.method()).generate(arguments());
-            template.setAttribute("requests.{method, path, query}", request.method(), request.path(), request.query());
+            template.setAttribute("requests.{method, uri}", request.method(), request.requestUri());
         }
 
         return template.toString();

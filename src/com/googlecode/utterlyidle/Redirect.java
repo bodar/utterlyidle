@@ -58,7 +58,7 @@ public class Redirect {
 
     public static String getPath(Method method, Object[] arguments) {
         RequestGenerator requestGenerator = new RequestGenerator(method);
-        return requestGenerator.generate(arguments).path();
+        return requestGenerator.generate(arguments).requestUri().path().toString();
     }
 
     static class ResourcePath implements MethodInterceptor {

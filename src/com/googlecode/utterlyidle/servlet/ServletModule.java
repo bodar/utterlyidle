@@ -15,16 +15,15 @@ public class ServletModule implements Module {
     }
 
     public Module addPerRequestObjects(Container container) {
-        final RequestWithServletStuff request = (RequestWithServletStuff) container.get(Request.class);
-        container.
-                addInstance(BasePath.class, basePath(request.getRequest())).
-                addInstance(ResourcePath.class, resourcePath(request.getRequest()));
+        final ServletRequest request = (ServletRequest) container.get(Request.class);
+        container.addInstance(BasePath.class, request.basePath());
+        container.addInstance(ResourcePath.class, request.resourcePath());
         return this;
     }
 
     public Module addPerApplicationObjects(Container container) {
-        container.addActivator(WebRoot.class, webRoot(context)).
-                addActivator(AttributeMap.class, attributeMap(context));
+        container.addActivator(WebRoot.class, webRoot(context));
+        container.addActivator(AttributeMap.class, attributeMap(context));
         return this;
     }
 
