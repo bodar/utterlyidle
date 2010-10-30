@@ -59,7 +59,6 @@ public class RestTest {
         TestEngine engine = new TestEngine();
         engine.add(Postable.class);
         assertThat(engine.handle(post("foo").withForm("name", "value")), is("value"));
-        assertThat(engine.handle(post("foo").withHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded").withForm("name", "value")), is("value"));
     }
 
     @Test

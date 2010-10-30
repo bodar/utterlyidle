@@ -23,11 +23,19 @@ public class Url {
         }
 
         try {
-            URI o = new URI(value);
+            URI o = toURI();
             URI n = new URI(o.getScheme(), o.getUserInfo(), o.getHost(), o.getPort(), path.toString(), o.getQuery(), o.getFragment());
             return new Url(n.toString());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public URI toURI()  {
+        try {
+            return new URI(value);
+        } catch (URISyntaxException e) {
+            throw new UnsupportedOperationException(e);
         }
     }
 
@@ -36,11 +44,7 @@ public class Url {
             return new HierarchicalPath(JarUrl.findMatches(value).head().group(2));
         }
 
-        try {
-            return new HierarchicalPath(new URI(value).getRawPath());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        return new HierarchicalPath(toURI().getRawPath());
     }
 
     public Url parent() {
@@ -139,5 +143,9 @@ public class Url {
 
     public static Url url(URL value) {
         return url(value.toString());
+    }
+
+    public String getQuery() {
+        return toURI().getQuery();
     }
 }

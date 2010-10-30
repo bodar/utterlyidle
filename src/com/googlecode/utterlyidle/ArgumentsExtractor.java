@@ -125,7 +125,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         Container container = new SimpleContainer();
         container.addInstance(Request.class, request);
         container.addInstance(UriTemplate.class, uriTemplate);
-        container.addInstance(PathParameters.class, uriTemplate.extract(request.path()));
+        container.addInstance(PathParameters.class, uriTemplate.extract(request.requestUri().path().toString()));
         container.addInstance(HeaderParameters.class, request.headers());
         container.addInstance(QueryParameters.class, request.query());
         container.addInstance(FormParameters.class, request.form());

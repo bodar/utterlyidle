@@ -33,7 +33,9 @@ public class TestEngine {
     }
 
     public String handle(RequestBuilder request) throws IOException {
-        return handle(request.build());
+        Request request1 = request.build();
+        System.out.println("request1 = " + request1);
+        return handle(request1);
     }
 
     public String handle(Request request) throws IOException {
