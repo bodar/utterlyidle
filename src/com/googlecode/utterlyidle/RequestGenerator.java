@@ -4,11 +4,13 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.io.Url;
 
 import javax.ws.rs.*;
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
@@ -18,6 +20,7 @@ import static com.googlecode.utterlyidle.Param.toParam;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Request.request;
+import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RequestGenerator {
     private final Method method;
@@ -51,7 +54,7 @@ public class RequestGenerator {
             }
         });
 
-        return request(httpMethod.value(), uriTemplate.generate(paths), headers, queries, forms, new ByteArrayInputStream(new byte[0]));
+        return request(httpMethod.value(), url(uriTemplate.generate(paths) + queries.toString()), headers,RequestBuilder.input(forms, null));
     }
 
     public static Callable2<Parameters, Param, Parameters> add(final Object value) {
@@ -61,5 +64,4 @@ public class RequestGenerator {
             }
         };
     }
-
 }

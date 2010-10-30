@@ -1,20 +1,25 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.io.Url;
+
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Request.request;
+import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RequestBuilder {
     private final HeaderParameters headers = headerParameters();
     private final QueryParameters query = queryParameters();
     private final FormParameters form = formParameters();
-    private InputStream input = new ByteArrayInputStream(new byte[0]);
+    private InputStream input;
     private final String method;
     private final String path;
 
@@ -38,6 +43,7 @@ public class RequestBuilder {
     }
 
     public RequestBuilder withForm(String name, String value) {
+        withHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
         form.add(name, value);
         return this;
     }
@@ -48,7 +54,17 @@ public class RequestBuilder {
     }
 
     public Request build() {
-        return request(method, path, headers, query, form, input);
+        return request(method, url(path + query.toString()), headers, input(form, input));
+    }
+
+    public static InputStream input(FormParameters form, InputStream input) {
+        if(form.size() > 0){
+            return new ByteArrayInputStream(form.toString().getBytes());
+        }
+        if(input == null){
+            new ByteArrayInputStream(new byte[0]);
+        }
+        return input;
     }
 
     public static RequestBuilder get(String path) {

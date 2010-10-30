@@ -19,42 +19,10 @@ import static com.googlecode.utterlyidle.io.Url.url;
 public class ServletApiWrapper {
     public static Request request(HttpServletRequest request) {
         try {
-            return new RequestWithServletStuff(request);
+            return new ServletRequest(request);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static BasePath basePath(HttpServletRequest request) {
-        return BasePath.basePath(request.getContextPath());
-    }
-
-    public static ResourcePath resourcePath(HttpServletRequest request) {
-        return ResourcePath.resourcePath(request.getServletPath() + request.getPathInfo());
-    }
-
-    public static HeaderParameters headerParameters(final HttpServletRequest request) {
-        return (HeaderParameters) Sequences.<String>sequence(request.getHeaderNames()).foldLeft(new HeaderParameters(), new Callable2<HeaderParameters, String, HeaderParameters>() {
-            public HeaderParameters call(HeaderParameters result, final String name) throws Exception {
-                return (HeaderParameters) Sequences.<String>sequence(request.getHeaders(name)).foldLeft(result, Parameters.<HeaderParameters>addParameter(name));
-            }
-        });
-    }
-
-    public static QueryParameters queryParameters(final HttpServletRequest request) {
-        return (QueryParameters) Sequences.<String>sequence(request.getParameterNames()).foldLeft(new QueryParameters(), ServletApiWrapper.<QueryParameters>addParameters(request));
-    }
-
-    public static FormParameters formParameters(final HttpServletRequest request) {
-        return (FormParameters) Sequences.<String>sequence(request.getParameterNames()).foldLeft(new FormParameters(), ServletApiWrapper.<FormParameters>addParameters(request));
-    }
-
-    public static <T extends Parameters> Callable2<T, String, T> addParameters(final HttpServletRequest request) {
-        return new Callable2<T, String, T>() {
-            public T call(T result, final String name) throws Exception {
-                return sequence(request.getParameterValues(name)).foldLeft(result, Parameters.<T>addParameter(name));
-            }
-        };
     }
 
     public static Callable<WebRoot> webRoot(final ServletContext context) {
@@ -111,6 +79,4 @@ public class ServletApiWrapper {
             throw new RuntimeException(e);
         }
     }
-
-
 }
