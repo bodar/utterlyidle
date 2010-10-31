@@ -9,7 +9,12 @@ import net.sf.cglib.proxy.MethodProxy;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 
 public class Redirect {
@@ -58,7 +63,7 @@ public class Redirect {
 
     public static String getPath(Method method, Object[] arguments) {
         RequestGenerator requestGenerator = new RequestGenerator(method);
-        return requestGenerator.generate(arguments).requestUri().path().toString();
+        return requestGenerator.generate(arguments).url().path().toString();
     }
 
     static class ResourcePath implements MethodInterceptor {

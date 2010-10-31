@@ -1,8 +1,12 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.second;

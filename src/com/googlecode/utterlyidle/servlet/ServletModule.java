@@ -1,11 +1,18 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.AttributeMap;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.Engine;
+import com.googlecode.utterlyidle.Module;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.ResourcePath;
+import com.googlecode.utterlyidle.WebRoot;
 import com.googlecode.yadic.Container;
 
 import javax.servlet.ServletContext;
 
-import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.*;
+import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.attributeMap;
+import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.webRoot;
 
 public class ServletModule implements Module {
     private final ServletContext context;
