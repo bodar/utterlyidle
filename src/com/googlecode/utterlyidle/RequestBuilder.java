@@ -1,13 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.io.Url;
-
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;

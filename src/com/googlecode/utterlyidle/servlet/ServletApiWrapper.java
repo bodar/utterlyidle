@@ -1,8 +1,10 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Sequences;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.AttributeMap;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.WebRoot;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.servlet.ServletContext;
@@ -13,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class ServletApiWrapper {

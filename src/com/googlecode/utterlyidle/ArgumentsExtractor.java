@@ -1,6 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.OptionActivator;
 import com.googlecode.yadic.SimpleContainer;
@@ -125,7 +129,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         Container container = new SimpleContainer();
         container.addInstance(Request.class, request);
         container.addInstance(UriTemplate.class, uriTemplate);
-        container.addInstance(PathParameters.class, uriTemplate.extract(request.requestUri().path().toString()));
+        container.addInstance(PathParameters.class, uriTemplate.extract(request.url().path().toString()));
         container.addInstance(HeaderParameters.class, request.headers());
         container.addInstance(QueryParameters.class, request.query());
         container.addInstance(FormParameters.class, request.form());

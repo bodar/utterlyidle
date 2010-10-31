@@ -2,9 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class QueryParameters extends Parameters {

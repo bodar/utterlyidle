@@ -5,8 +5,6 @@ import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.yadic.Resolver;
 
-import java.io.IOException;
-
 public class ExceptionHandler implements ResponseHandler<Exception> {
     private final Status status;
     private final RendererHandler renderers;

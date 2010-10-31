@@ -20,6 +20,9 @@ public class UriTemplateTest {
 
     @Test
     public void canCaptureEnd() {
+        UriTemplate template1 = new UriTemplate("path");
+        assertThat(template1.matches("path/123"), is(true));
+        assertThat(template1.extract("path/123").getValue("$"), is("/123"));
         UriTemplate template = new UriTemplate("path/{id}");
         assertThat(template.matches("path/123/someotherpath"), is(true));
         assertThat(template.extract("path/123/someotherpath").getValue("$"), is("/someotherpath"));
