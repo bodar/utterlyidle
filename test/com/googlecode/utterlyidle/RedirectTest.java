@@ -9,10 +9,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.Redirect.redirect;
 import static com.googlecode.utterlyidle.Redirect.resource;
 import static com.googlecode.utterlyidle.Response.response;
-import static com.googlecode.utterlyidle.BasePath.basePath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

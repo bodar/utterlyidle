@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.yadic.Resolver;
 
 public class MatchFailure {
     private final Status status;

@@ -4,13 +4,14 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.io.Url;
 
-import javax.ws.rs.*;
-import java.io.ByteArrayInputStream;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.net.URI;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;

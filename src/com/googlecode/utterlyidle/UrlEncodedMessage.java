@@ -1,8 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -11,13 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class UrlEncodedMessage {
     private static final String charSet = "UTF-8";
 
     public static List<Pair<String, String>> parse(String value) {
         List<Pair<String, String>> result = new ArrayList<Pair<String, String>>();
+        if(value == null){
+            return result;
+        }
+
         for (String pair : value.split("&")) {
             String[] nameValue = pair.split("=");
             if(nameValue.length == 2){

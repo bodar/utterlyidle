@@ -7,6 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static com.googlecode.utterlyidle.Response.response;
+
 public class TestEngine {
     RestApplication application = new RestApplication();
 
@@ -33,16 +35,12 @@ public class TestEngine {
     }
 
     public String handle(RequestBuilder request) throws IOException {
-        Request request1 = request.build();
-        System.out.println("request1 = " + request1);
-        return handle(request1);
+        return handle(request.build());
     }
 
     public String handle(Request request) throws IOException {
         OutputStream output = new ByteArrayOutputStream();
-        Response response = Response.response(output);
-        handle(request, response);
-        response.flush();
+        handle(request, response(output));
         return output.toString();
     }
 

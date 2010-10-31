@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Pair;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-class PathParameters extends Parameters {
+public class PathParameters extends Parameters {
     public static PathParameters pathParameters(Pair<String, String>... pairs) {
         return (PathParameters) sequence(pairs).foldLeft(new PathParameters(), pairIntoParameters());
     }

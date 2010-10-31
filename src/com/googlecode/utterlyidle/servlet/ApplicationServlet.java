@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.RequestHandler;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;

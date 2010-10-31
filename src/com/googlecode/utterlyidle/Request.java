@@ -1,17 +1,15 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.io.Converter;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.InputStream;
-import java.net.URI;
 
 import static com.googlecode.utterlyidle.io.Converter.asString;
 
 public class Request {
     private final String method;
-    private final Url requestUri;
+    private final Url url;
     private final InputStream input;
     private final HeaderParameters headers;
     private QueryParameters query;
@@ -25,9 +23,9 @@ public class Request {
         return new Request(method, Url.url(path + query.toString()), headers, input);
     }
 
-    protected Request(String method, Url requestUri, HeaderParameters headers, InputStream input) {
+    protected Request(String method, Url url, HeaderParameters headers, InputStream input) {
         this.method = method;
-        this.requestUri = requestUri;
+        this.url = url;
         this.headers = headers;
         this.input = input;
     }
@@ -36,8 +34,8 @@ public class Request {
         return method;
     }
 
-    public Url requestUri() {
-        return requestUri;
+    public Url url() {
+        return url;
     }
 
     public InputStream input() {
@@ -50,7 +48,7 @@ public class Request {
 
     public QueryParameters query() {
         if (query == null) {
-            query = QueryParameters.parse(requestUri().getQuery());
+            query = QueryParameters.parse(url().getQuery());
         }
         return query;
     }
@@ -68,6 +66,6 @@ public class Request {
 
     @Override
     public String toString() {
-        return String.format("%s %s HTTP/1.1", method, requestUri);
+        return String.format("%s %s HTTP/1.1", method, url);
     }
 }

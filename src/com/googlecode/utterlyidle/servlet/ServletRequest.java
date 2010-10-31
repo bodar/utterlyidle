@@ -1,10 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.ResourcePath;
 import com.googlecode.utterlyidle.io.Url;
@@ -13,13 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.io.Url.url;
 
 class ServletRequest extends Request {
     private final HttpServletRequest request;
 
     public ServletRequest(HttpServletRequest request) throws IOException {
-        super(request.getMethod(), url(request.getRequestURI()), convertToHeaderParameters(request), request.getInputStream());
+        super(request.getMethod(), Url.url(request.getRequestURI()), convertToHeaderParameters(request), request.getInputStream());
         this.request = request;
     }
 
