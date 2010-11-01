@@ -20,8 +20,7 @@ public class RestServer {
     public RestServer(int port, Application application) throws IOException {
         long start = nanoTime();
         server = HttpServer.create(new InetSocketAddress(port), 0);
-        BasePath basePath = basePath("/foo/");
-        application.add(new RestModule());
+        BasePath basePath = basePath("/");
         server.createContext(basePath.toString(), new RestHandler(application, basePath));
         server.setExecutor(newFixedThreadPool(50));
         server.start();
@@ -29,6 +28,6 @@ public class RestServer {
     }
 
     public static void main(String[] args) throws IOException {
-        new RestServer(8000, new RestApplication());
+        new RestServer(8000, new RestApplication().add(new SampleModule()));
     }
 }

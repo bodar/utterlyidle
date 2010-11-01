@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.rendering;
+package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.Hidden;
 import com.googlecode.utterlyidle.RestEngine;
