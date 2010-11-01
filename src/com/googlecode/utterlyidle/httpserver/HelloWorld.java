@@ -3,7 +3,9 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.utterlyidle.Hidden;
 import com.googlecode.utterlyidle.RestEngine;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,10 +20,15 @@ public class HelloWorld {
         return "Hello " + name;
     }
 
+    @POST
+    @Path("echo")
+    public String post(@FormParam("value") String value){
+        return value;
+    }
+
     @GET
     @Path("utterlyidle/{filename:.+\\.js}")
     @Produces("text/javascript")
-    @Hidden
     public String getJavascript(@PathParam("filename") String filename){
         return asString(RestEngine.class.getResourceAsStream(filename));
     }

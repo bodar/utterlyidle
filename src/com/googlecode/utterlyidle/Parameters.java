@@ -45,14 +45,6 @@ public class Parameters implements Iterable<Pair<String, String>> {
         return values.iterator();
     }
 
-    public static <T extends Parameters> Callable2<T, String, T> addParameter(final String name) {
-        return new Callable2<T, String, T>() {
-            public T call(T result, String value) throws Exception {
-                return (T) result.add(name, value);
-            }
-        };
-    }
-
     public static Callable2<Parameters, Pair<String, String>, Parameters> pairIntoParameters() {
         return new Callable2<Parameters, Pair<String, String>, Parameters>() {
             public Parameters call(Parameters result, Pair<String, String> pair) throws Exception {

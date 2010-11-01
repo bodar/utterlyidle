@@ -8,7 +8,9 @@
     <p>Did you mean one of these?</p>
 
     <ul class="resources">
-        $requests:{ request | <li class="resource">$GET()$</li> }$
+        $requests:{ request | <li class="resource">
+            <a href="$request.uriTemplate$$request.query$">$request.uriTemplate$$request.query$</a>
+        </li> }$
     </ul>
 
 
