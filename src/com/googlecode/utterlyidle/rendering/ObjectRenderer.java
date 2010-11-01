@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.rendering;
 
 import com.googlecode.utterlyidle.Renderer;
 

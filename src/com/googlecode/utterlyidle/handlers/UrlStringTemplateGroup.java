@@ -12,6 +12,7 @@ import static com.googlecode.utterlyidle.io.Url.url;
 public class UrlStringTemplateGroup extends StringTemplateGroup {
     public UrlStringTemplateGroup(Url baseUrl) {
         super(baseUrl.toString(), baseUrl.toString());
+        setRefreshInterval(0);
     }
 
     @Override

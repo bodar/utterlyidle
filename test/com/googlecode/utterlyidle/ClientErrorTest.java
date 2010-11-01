@@ -16,6 +16,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Response.response;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class ClientErrorTest {
     @Test
@@ -36,6 +37,28 @@ public class ClientErrorTest {
         engine.handle(post("path"), response);
 
         assertThat(response.code(), is(Status.METHOD_NOT_ALLOWED));
+    }
+
+    @Test
+    public void shouldReturn400WhenMethodMatchesButARequiredArgumentIsMissing() throws Exception {
+        TestEngine engine = new TestEngine();
+        OutputStream output = new ByteArrayOutputStream();
+        Response response = response(output);
+        engine.add(SomeOther.class);
+        engine.handle(get("path").withQuery("someOther", "value"), response);
+
+        assertThat(response.code(), is(Status.UNSATISFIABLE_PARAMETERS));
+    }
+
+    @Test
+    public void shouldNotMatchArgumentsThatAreOfTypeObject() throws Exception {
+        TestEngine engine = new TestEngine();
+        OutputStream output = new ByteArrayOutputStream();
+        Response response = response(output);
+        engine.add(SomeOther.class);
+        engine.handle(get("object"), response);
+
+        assertThat(response.code(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
     @Test
@@ -68,11 +91,26 @@ public class ClientErrorTest {
         assertThat(response.code(), is(Status.OK));
     }
 
+    public static class SomeOther{
+        @GET
+        @Path("path")
+        public void method(@QueryParam("directoryNumber") String o){
+            fail("Should never get here");
+        }
+
+        @GET
+        @Path("object")
+        public void method(@QueryParam("evil") Object o){
+            fail("Should never get here");
+        }
+
+    }
+
     public static class Foo{
         @GET
         @Path("path")
         @Consumes("text/text")
-        public void Bar(@QueryParam("directoryNumber") Object o){
+        public void Bar(@QueryParam("directoryNumber") String o){
 
         }
 

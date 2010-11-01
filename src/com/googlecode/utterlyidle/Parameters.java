@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,7 +35,15 @@ public class Parameters implements Iterable<Pair<String, String>> {
 
     @SuppressWarnings("unchecked")
     private Option<Pair<String, String>> findPair(String name) {
-        return sequence(values).find(by(first(String.class), is(name)));
+        return sequence(values).find(by(first(String.class), is(equalIgnoringCase(name))));
+    }
+
+    private Predicate<String> equalIgnoringCase(final String name) {
+        return new Predicate<String>() {
+            public boolean matches(String other) {
+                return name.equalsIgnoreCase(other);
+            }
+        };
     }
 
     public boolean contains(String name) {
