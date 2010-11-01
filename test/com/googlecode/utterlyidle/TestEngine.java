@@ -12,23 +12,6 @@ import static com.googlecode.utterlyidle.Response.response;
 public class TestEngine {
     RestApplication application = new RestApplication();
 
-    public TestEngine() {
-        application.add(new Module() {
-            public Module addPerRequestObjects(Container container) {
-                container.addInstance(BasePath.class, new BasePath(""));
-                return this;
-            }
-
-            public Module addPerApplicationObjects(Container container) {
-                return this;
-            }
-
-            public Module addResources(Engine engine) {
-                return this;
-            }
-        });
-    }
-
     public TestEngine add(final Class<?> resource) {
         application.add(new TestModule(resource));
         return this;

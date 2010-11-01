@@ -72,7 +72,16 @@ public class Request {
     }
 
     public ResourcePath resourcePath() {
-        return ResourcePath.resourcePath(url().path().toString().replaceFirst(basePath().toString(), ""));
+        return ResourcePath.resourcePath(removeBase());
+    }
+
+    private String removeBase() {
+        final String path = url().path().toString();
+        final String base = basePath().toString();
+        if(path.startsWith(base)) {
+            return path.substring(base.length() -1);
+        }
+        return path;
     }
 
     public BasePath basePath() {
