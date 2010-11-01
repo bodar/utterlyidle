@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.rendering;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;

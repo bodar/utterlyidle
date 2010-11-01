@@ -70,7 +70,7 @@ public class RestEngine implements Engine {
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
                 pair(producesMatches(request), Status.NOT_ACCEPTABLE),
-                pair(argumentsMatches(request), Status.BAD_REQUEST)
+                pair(argumentsMatches(request), Status.UNSATISFIABLE_PARAMETERS)
         );
 
         if (result.isLeft()) {
