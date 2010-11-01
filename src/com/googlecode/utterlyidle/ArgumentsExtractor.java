@@ -68,7 +68,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
                 annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
 
-                if (!container.contains(aClass)) {
+                if (!container.contains(aClass) && !aClass.equals(Object.class)) {
                     addActivator(type, container);
                 }
 

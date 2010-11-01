@@ -1,5 +1,6 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.rendering;
 
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
@@ -9,13 +10,14 @@ import com.googlecode.utterlyidle.Hidden;
 import com.googlecode.utterlyidle.HttpMethodActivator;
 import com.googlecode.utterlyidle.HttpMethodExtractor;
 import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.ParametersExtractor;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Renderer;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestGenerator;
 import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.UriTemplateExtractor;
+import com.googlecode.utterlyidle.rendering.Model;
+import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
@@ -29,7 +31,7 @@ import java.lang.reflect.Method;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
-import static com.googlecode.utterlyidle.handlers.Model.model;
+import static com.googlecode.utterlyidle.rendering.Model.model;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class MatchFailureRenderer implements Renderer<MatchFailure> {
@@ -55,14 +57,22 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
             final QueryParameters queries = parametersExtractor.extract(queryParameters(), QueryParam.class);
             final FormParameters forms = parametersExtractor.extract(formParameters(), FormParam.class);
             
-            model.add("requests", model().
+            model.add("resources", model().
                     add("method", httpMethod.value()).
                     add("uriTemplate", uriTemplate).
                     add("query", queries).
-                    add("form", forms));
+                    add("form", asModel(forms)));
         }
 
         return template.toString();
+    }
+
+    private Model asModel(Parameters parameters) {
+        Model result = model();
+        for (Pair<String, String> parameter : parameters) {
+            result.add(parameter.first(), parameter.second());
+        }
+        return result;
     }
 
     private Predicate<? super HttpMethodActivator> hidden() {

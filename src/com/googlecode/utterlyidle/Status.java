@@ -7,6 +7,7 @@ public class Status {
     public static Status SEE_OTHER = status(303, "See Other");
 
     public static Status BAD_REQUEST = status(400, "Bad Request");
+    public static Status UNSATISFIABLE_PARAMETERS = BAD_REQUEST.description("Unsatisfiable Parameters");
     public static Status NOT_FOUND = status(404, "Not Found");
     public static Status METHOD_NOT_ALLOWED = status(405, "Method Not Allowed");
     public static Status NOT_ACCEPTABLE = status(406, "Not Acceptable");
@@ -36,6 +37,10 @@ public class Status {
         return description;
     }
 
+    public Status description(String description){
+        return status(code, description);
+    }
+
     @Override
     public String toString() {
         return String.format("Status: %s %s", code, description);
@@ -43,11 +48,16 @@ public class Status {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof Status && code == ((Status) other).code;
+        if (other instanceof Status)
+        {
+            final Status status = (Status) other;
+            return code == status.code && description.equals(status.description);
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return code;
+        return 31 * code * description.hashCode();
     }
 }

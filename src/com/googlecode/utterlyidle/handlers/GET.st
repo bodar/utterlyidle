@@ -1,1 +1,0 @@
-<a href="$request.uriTemplate$$request.query$">$request.uriTemplate$$request.query$</a>
