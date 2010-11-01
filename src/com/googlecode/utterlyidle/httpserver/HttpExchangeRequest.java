@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.httpserver;
 
+import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.io.Url;
@@ -10,9 +11,9 @@ import java.util.Map;
 
 public class HttpExchangeRequest extends Request {
 
-    public HttpExchangeRequest(HttpExchange httpExchange) {
+    public HttpExchangeRequest(HttpExchange httpExchange, BasePath basePath) {
         super(httpExchange.getRequestMethod(), Url.url(httpExchange.getRequestURI().toString()),
-                convert(httpExchange.getRequestHeaders()), httpExchange.getRequestBody());
+                convert(httpExchange.getRequestHeaders()), httpExchange.getRequestBody(), basePath);
     }
 
     private static HeaderParameters convert(Map<String, List<String>> requestHeaders) {

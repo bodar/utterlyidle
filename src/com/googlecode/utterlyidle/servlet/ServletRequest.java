@@ -15,7 +15,7 @@ class ServletRequest extends Request {
     private final HttpServletRequest request;
 
     public ServletRequest(HttpServletRequest request) throws IOException {
-        super(request.getMethod(), Url.url(request.getRequestURI()), convertToHeaderParameters(request), request.getInputStream());
+        super(request.getMethod(), Url.url(request.getRequestURI()), convertToHeaderParameters(request), request.getInputStream(), extractBasePath(request));
         this.request = request;
     }
 
@@ -29,11 +29,7 @@ class ServletRequest extends Request {
         return result;
     }
 
-    public BasePath basePath() {
-        return BasePath.basePath(request.getContextPath());
-    }
-
-    public ResourcePath resourcePath() {
-        return ResourcePath.resourcePath(request.getServletPath() + request.getPathInfo());
+    public static BasePath extractBasePath(HttpServletRequest request) {
+        return BasePath.basePath(request.getContextPath() + request.getServletPath());
     }
 }

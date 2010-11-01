@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -11,13 +12,15 @@ import static java.lang.System.nanoTime;
 
 public class RestHandler implements HttpHandler {
     private final Application application;
+    private final BasePath basePath;
 
-    public RestHandler(Application application) {
+    public RestHandler(Application application, BasePath basePath) {
         this.application = application;
+        this.basePath = basePath;
     }
 
     public void handle(HttpExchange httpExchange) throws IOException {
-        HttpExchangeRequest request = new HttpExchangeRequest(httpExchange);
+        HttpExchangeRequest request = new HttpExchangeRequest(httpExchange, basePath);
         HttpExchangeResponse response = new HttpExchangeResponse(httpExchange);
         try {
             long start = nanoTime();

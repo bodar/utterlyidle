@@ -12,22 +12,24 @@ public class Request {
     private final Url url;
     private final InputStream input;
     private final HeaderParameters headers;
+    private BasePath basePath;
     private QueryParameters query;
     private FormParameters form;
 
     public static Request request(String method, Url requestUri, HeaderParameters headers, InputStream input) {
-        return new Request(method, requestUri, headers, input);
+        return new Request(method, requestUri, headers, input, BasePath.basePath("/"));
     }
 
     public static Request request(String method, String path, QueryParameters query, HeaderParameters headers, InputStream input) {
-        return new Request(method, Url.url(path + query.toString()), headers, input);
+        return request(method, Url.url(path + query.toString()), headers, input);
     }
 
-    protected Request(String method, Url url, HeaderParameters headers, InputStream input) {
+    protected Request(String method, Url url, HeaderParameters headers, InputStream input, BasePath basePath) {
         this.method = method;
         this.url = url;
         this.headers = headers;
         this.input = input;
+        this.basePath = basePath;
     }
 
     public String method() {
@@ -67,5 +69,13 @@ public class Request {
     @Override
     public String toString() {
         return String.format("%s %s HTTP/1.1", method, url);
+    }
+
+    public ResourcePath resourcePath() {
+        return ResourcePath.resourcePath(url().path().toString().replaceFirst(basePath().toString(), ""));
+    }
+
+    public BasePath basePath() {
+        return basePath;
     }
 }
