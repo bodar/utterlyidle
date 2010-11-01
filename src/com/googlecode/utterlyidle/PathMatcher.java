@@ -10,6 +10,13 @@ public class PathMatcher implements Predicate<Request> {
     }
 
     public boolean matches(Request request) {
-        return uriTemplate.matches(request.resourcePath().toString());
+        return uriTemplate.matches(removeLeadingSlash(request.resourcePath().toString()));
+    }
+
+    private String removeLeadingSlash(String path) {
+        if(path.startsWith("/")){
+            return path.substring(1);
+        }
+        return path;
     }
 }
