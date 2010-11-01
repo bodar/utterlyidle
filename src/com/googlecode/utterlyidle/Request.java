@@ -79,7 +79,7 @@ public class Request {
         final String path = url().path().toString();
         final String base = basePath().toString();
         if(path.startsWith(base)) {
-            return path.substring(base.length() -1);
+            return path.substring(base.length());
         }
         return path;
     }
