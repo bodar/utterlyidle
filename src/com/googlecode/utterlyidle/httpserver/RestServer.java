@@ -22,7 +22,7 @@ public class RestServer {
         server = HttpServer.create(new InetSocketAddress(port), 0);
         BasePath basePath = basePath("/");
         application.add(new RestModule(basePath));
-        server.createContext(basePath.toString(), new RestHandler(application));
+        server.createContext(basePath.toString(), new RestHandler(application, basePath));
         server.setExecutor(newFixedThreadPool(50));
         server.start();
         System.out.println(format("Listening on %s, started in %s msecs", port, calculateMilliseconds(start, nanoTime())));
