@@ -20,7 +20,7 @@ public class RestServer {
     public RestServer(int port, Application application) throws IOException {
         long start = nanoTime();
         server = HttpServer.create(new InetSocketAddress(port), 0);
-        BasePath basePath = basePath("/");
+        BasePath basePath = basePath("/foo/");
         application.add(new RestModule());
         server.createContext(basePath.toString(), new RestHandler(application, basePath));
         server.setExecutor(newFixedThreadPool(50));
