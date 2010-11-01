@@ -21,6 +21,9 @@ import static com.googlecode.totallylazy.Predicates.assignableTo;
 
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {
+        final Request request = container.get(Request.class);
+        container.addInstance(BasePath.class, request.basePath());
+        container.addInstance(ResourcePath.class, request.resourcePath());
         container.add(BuiltInResources.class);
         return this;
     }
