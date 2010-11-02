@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.servlet;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.ResourcePath;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ class ServletRequest extends Request {
     }
 
     private static String queryString(String value) {
-        return value.length() > 0 ? "?" + value : value;
+        return (value != null && value.length() > 0) ? "?" + value : "";
     }
 
     private static HeaderParameters convertToHeaderParameters(HttpServletRequest request) {
