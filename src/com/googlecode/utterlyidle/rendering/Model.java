@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.rendering;
 
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
 import java.util.AbstractMap;
@@ -29,8 +30,9 @@ public class Model extends AbstractMap<String, List<Object>> {
         return this;
     }
 
-    public Model add(String key, Iterable<Object> additionalValues) {
-        values.put(key, join(get(key), additionalValues).toList());
+    public Model add(String key, Iterable<?> additionalValues) {
+        final List<Object> iterables = get(key);
+        values.put(key, join(iterables, additionalValues).toList());
         return this;
     }
 
