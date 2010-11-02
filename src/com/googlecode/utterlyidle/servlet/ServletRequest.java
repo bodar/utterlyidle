@@ -20,7 +20,7 @@ class ServletRequest extends Request {
     }
 
     private static String queryString(String value) {
-        return value.length() > 0 ? "?" + value : value;
+        return (value != null && value.length() > 0) ? "?" + value : "";
     }
 
     private static HeaderParameters convertToHeaderParameters(HttpServletRequest request) {
