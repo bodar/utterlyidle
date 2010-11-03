@@ -1,8 +1,5 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
