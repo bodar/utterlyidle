@@ -38,7 +38,7 @@ public class CoreModule implements Module{
         final RendererHandler renderers = engine.renderers();
 
         handlers.addGuard(aNull(Object.class), NullHandler.class);
-        handlers.addGuard(assignableTo(Redirect.class), RedirectHandler.class);
+        handlers.addGuard(assignableTo(SeeOther.class), RedirectHandler.class);
         handlers.addGuard(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
         handlers.addGuard(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
         handlers.addGuard(assignableTo(MatchFailure.class), new MatchFailureHandler(renderers));
