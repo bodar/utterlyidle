@@ -22,13 +22,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import static com.googlecode.utterlyidle.Redirect.redirect;
-import static com.googlecode.utterlyidle.Redirect.resource;
+import static com.googlecode.utterlyidle.SeeOther.seeOther;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.io.Converter.asString;
+import static com.googlecode.utterlyidle.proxy.Resource.redirect;
+import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
