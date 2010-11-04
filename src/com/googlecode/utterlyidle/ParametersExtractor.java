@@ -1,9 +1,12 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Some;
 
+import javax.swing.text.html.Option;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
@@ -30,9 +33,19 @@ public class ParametersExtractor {
     public static Callable2<Parameters, Param, Parameters> add(final Object value) {
         return new Callable2<Parameters, Param, Parameters>() {
             public Parameters call(Parameters parameters, Param param) throws Exception {
-                return parameters.add(param.value(), value.toString());
+                return parameters.add(param.value(), convertToString(value));
             }
         };
+    }
+
+    private static String convertToString(Object value) {
+        if(value instanceof Some){
+            return ((Some) value).get().toString();
+        }
+        if(value instanceof None){
+            return "";
+        }
+        return value.toString();
     }
 
 }
