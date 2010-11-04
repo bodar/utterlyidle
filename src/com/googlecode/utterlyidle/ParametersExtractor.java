@@ -1,8 +1,10 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Left;
 import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Right;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Some;
 
@@ -39,8 +41,14 @@ public class ParametersExtractor {
     }
 
     private static String convertToString(Object value) {
+        if(value instanceof Left){
+            return convertToString(((Left) value).left());
+        }
+        if(value instanceof Right){
+            return convertToString(((Right) value).right());
+        }
         if(value instanceof Some){
-            return ((Some) value).get().toString();
+            return convertToString(((Some) value).get());
         }
         if(value instanceof None){
             return "";
