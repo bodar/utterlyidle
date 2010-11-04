@@ -11,6 +11,6 @@ public class ModelTest {
     @Test
     public void canAddSequences() throws Exception {
         final Model model = model().add("bob", Sequences.sequence("foo", "bar"));
-        assertThat(model.values("bob"), hasExactly("foo", "bar"));
+        assertThat(model.get("bob"), hasExactly("foo", "bar"));
     }
 }
