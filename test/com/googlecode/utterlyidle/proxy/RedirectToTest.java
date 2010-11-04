@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.proxy;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.CustomType;
 import com.googlecode.utterlyidle.Id;
 import com.googlecode.utterlyidle.NoDefaultConstructor;
@@ -17,6 +18,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RedirectToTest {
+    @Test
+    public void supportsOptions() throws Exception {
+        Redirect redirect = new RedirectTo<SomeResource>() {{ call.getHtml(Option.some("foo")); }};
+        assertThat(redirect.location(), is("path/foo"));
+    }
+
     @Test
     public void supportsAlternativeStyle() throws Exception {
         Redirect redirect = new RedirectTo<SomeResource>() {{ call.getHtml("foo"); }};

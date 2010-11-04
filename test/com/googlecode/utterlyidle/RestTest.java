@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import org.junit.Test;
 
@@ -21,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Formatter;
 
 import static com.googlecode.utterlyidle.SeeOther.seeOther;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
@@ -179,6 +181,44 @@ public class RestTest {
         TestEngine engine = new TestEngine();
         engine.add(GetWithStrongType.class);
         assertThat(engine.handle(get("path/4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+    }
+
+    @Test
+    public void canCoerceInvalidEithers() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        assertThat(engine.handle(get("path").withQuery("layout", "invalidValue")), is("left(invalidValue)"));
+    }
+
+    @Test
+    public void canCoerceValidEithers() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
+        assertThat(engine.handle(get("path").withQuery("layout", value)), is("right(" + value + ")"));
+    }
+
+    @Test
+    public void canCoerceEithersThatContainAValidOption() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
+        assertThat(engine.handle(get("path").withQuery("optionalLayout", value)), is("right(some(" + value + "))"));
+    }
+
+    @Test
+    public void canCoerceEithersThatContainAnInvalidOption() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        final String value = "rubbish";
+        assertThat(engine.handle(get("path").withQuery("optionalLayout", value)), is("left(" + value + ")"));
+    }
+
+    @Test
+    public void canCoerceEithersThatContainNone() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        assertThat(engine.handle(get("path")), is("right(none())"));
     }
 
     @Test
@@ -378,6 +418,19 @@ public class RestTest {
         @GET
         public String get(@QueryParam("id") Option<Id> id) {
             return id.getOrElse(Id.id("default")).toString();
+        }
+    }
+
+    @Path("path")
+    public static class GetWithEither {
+        @GET
+        public String get(@QueryParam("layout") Either<String, Formatter.BigDecimalLayoutForm> invalidOrEnum) {
+            return invalidOrEnum.toString();
+        }
+
+        @GET
+        public String getOptional(@QueryParam("optionalLayout") Either<String, Option<Formatter.BigDecimalLayoutForm>> invalidOrEnum) {
+            return invalidOrEnum.toString();
         }
     }
 
