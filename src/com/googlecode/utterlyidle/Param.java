@@ -46,8 +46,12 @@ public class Param {
     }
 
     public String value() {
+        return getValue(annotation);
+    }
+
+    public static <T> T getValue(Annotation annotation) {
         try {
-            return (String) annotation.getClass().getMethod(METHOD_NAME).invoke(annotation);
+            return (T) annotation.getClass().getMethod(METHOD_NAME).invoke(annotation);
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException(e);
         } catch (InvocationTargetException e) {
