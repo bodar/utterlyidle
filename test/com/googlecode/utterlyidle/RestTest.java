@@ -24,7 +24,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Formatter;
 
-import static com.googlecode.utterlyidle.SeeOther.seeOther;
+import static com.googlecode.utterlyidle.Priority.High;
+import static com.googlecode.utterlyidle.Priority.Low;
+import static com.googlecode.utterlyidle.Priority.Medium;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
@@ -77,6 +79,13 @@ public class RestTest {
         engine.add(MultipleGets.class);
         assertThat(engine.handle(get("foo")), is("no parameters"));
         assertThat(engine.handle(get("foo").withQuery("arg", "match")), is("match"));
+    }
+
+    @Test
+    public void whenThereIsAChoiceOfMatchingMethodsTakesPriorityIntoConsideration() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(PrioritisedGets.class);
+        assertThat(engine.handle(get("foo")), is("highPriority"));
     }
 
     @Test
@@ -292,6 +301,29 @@ public class RestTest {
         public String get(@QueryParam("arg") String arg) {
             return arg;
         }
+    }
+
+    @Path("foo")
+    public static class PrioritisedGets {
+        @GET
+        public String A() {
+            return "defaultPriority";
+        }
+
+        @GET
+        @Priority(Low)
+        public String B() {
+            return "lowPriority";
+        }
+
+        @GET
+        @Priority(High)
+        public String C() {
+            return "highPriority";
+        }
+
+
+
     }
 
     @Path("text")
