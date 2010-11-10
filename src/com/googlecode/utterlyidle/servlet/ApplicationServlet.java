@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.request;
-import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.response;
+import static com.googlecode.utterlyidle.servlet.ServletRequest.request;
+import static com.googlecode.utterlyidle.servlet.ServletResponse.response;
 
 public class ApplicationServlet extends HttpServlet {
     Application application = null;

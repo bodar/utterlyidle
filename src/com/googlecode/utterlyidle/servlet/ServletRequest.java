@@ -35,4 +35,12 @@ class ServletRequest extends Request {
     public static BasePath extractBasePath(HttpServletRequest request) {
         return BasePath.basePath(request.getContextPath() + request.getServletPath());
     }
+
+    public static Request request(HttpServletRequest request) {
+        try {
+            return new ServletRequest(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

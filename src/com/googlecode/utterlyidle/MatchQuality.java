@@ -12,8 +12,18 @@ class MatchQuality implements Comparator<Activator> {
     public int compare(Activator first, Activator second) {
         float firstQuality = first.matchQuality(request);
         float secondQuality = second.matchQuality(request);
-        if (firstQuality == secondQuality)
-            return second.numberOfArguments() - first.numberOfArguments();
+
+        if (firstQuality == secondQuality){
+            int firstPriority = first.priority();
+            int secondPriority = second.priority();
+
+            if(firstPriority == secondPriority){
+                return second.numberOfArguments() - first.numberOfArguments();
+            }
+
+            return firstPriority > secondPriority ? -1 : 1;
+        }
+
         return firstQuality > secondQuality ? -1 : 1;
     }
 

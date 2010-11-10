@@ -21,6 +21,9 @@ public class UrlEncodedMessage {
 
         for (String pair : value.split("&")) {
             String[] nameValue = pair.split("=");
+            if(nameValue.length == 1){
+                result.add(pair(decode(nameValue[0]), ""));
+            }
             if(nameValue.length == 2){
                 result.add(pair(decode(nameValue[0]), decode(nameValue[1])));
             }
