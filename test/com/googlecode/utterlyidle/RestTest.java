@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import org.junit.Test;
 
@@ -21,14 +22,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Formatter;
 
-import static com.googlecode.utterlyidle.Redirect.redirect;
-import static com.googlecode.utterlyidle.Redirect.resource;
+import static com.googlecode.utterlyidle.Priority.High;
+import static com.googlecode.utterlyidle.Priority.Low;
+import static com.googlecode.utterlyidle.Priority.Medium;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.io.Converter.asString;
+import static com.googlecode.utterlyidle.proxy.Resource.redirect;
+import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -74,6 +79,13 @@ public class RestTest {
         engine.add(MultipleGets.class);
         assertThat(engine.handle(get("foo")), is("no parameters"));
         assertThat(engine.handle(get("foo").withQuery("arg", "match")), is("match"));
+    }
+
+    @Test
+    public void whenThereIsAChoiceOfMatchingMethodsTakesPriorityIntoConsideration() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(PrioritisedGets.class);
+        assertThat(engine.handle(get("foo")), is("highPriority"));
     }
 
     @Test
@@ -181,6 +193,44 @@ public class RestTest {
     }
 
     @Test
+    public void canCoerceInvalidEithers() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        assertThat(engine.handle(get("path").withQuery("layout", "invalidValue")), is("left(invalidValue)"));
+    }
+
+    @Test
+    public void canCoerceValidEithers() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
+        assertThat(engine.handle(get("path").withQuery("layout", value)), is("right(" + value + ")"));
+    }
+
+    @Test
+    public void canCoerceEithersThatContainAValidOption() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
+        assertThat(engine.handle(get("path").withQuery("optionalLayout", value)), is("right(some(" + value + "))"));
+    }
+
+    @Test
+    public void canCoerceEithersThatContainAnInvalidOption() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        final String value = "rubbish";
+        assertThat(engine.handle(get("path").withQuery("optionalLayout", value)), is("left(" + value + ")"));
+    }
+
+    @Test
+    public void canCoerceEithersThatContainNone() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithEither.class);
+        assertThat(engine.handle(get("path")), is("right(none())"));
+    }
+
+    @Test
     public void canCoerceOptionalTypes() throws Exception {
         TestEngine engine = new TestEngine();
         engine.add(GetWithOptionalStrongType.class);
@@ -251,6 +301,29 @@ public class RestTest {
         public String get(@QueryParam("arg") String arg) {
             return arg;
         }
+    }
+
+    @Path("foo")
+    public static class PrioritisedGets {
+        @GET
+        public String A() {
+            return "defaultPriority";
+        }
+
+        @GET
+        @Priority(Low)
+        public String B() {
+            return "lowPriority";
+        }
+
+        @GET
+        @Priority(High)
+        public String C() {
+            return "highPriority";
+        }
+
+
+
     }
 
     @Path("text")
@@ -377,6 +450,19 @@ public class RestTest {
         @GET
         public String get(@QueryParam("id") Option<Id> id) {
             return id.getOrElse(Id.id("default")).toString();
+        }
+    }
+
+    @Path("path")
+    public static class GetWithEither {
+        @GET
+        public String get(@QueryParam("layout") Either<String, Formatter.BigDecimalLayoutForm> invalidOrEnum) {
+            return invalidOrEnum.toString();
+        }
+
+        @GET
+        public String getOptional(@QueryParam("optionalLayout") Either<String, Option<Formatter.BigDecimalLayoutForm>> invalidOrEnum) {
+            return invalidOrEnum.toString();
         }
     }
 

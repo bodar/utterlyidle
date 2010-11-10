@@ -15,6 +15,7 @@ public class HttpMethodActivator implements Activator {
     private final PathMatcher pathMatcher;
     private final MethodMatcher methodMatcher;
     private final ConsumesMimeMatcher consumesMatcher;
+    private final PriorityExtractor priorityExtractor;
 
     public HttpMethodActivator(String httpMethod, Method method) {
         this.method = method;
@@ -24,6 +25,7 @@ public class HttpMethodActivator implements Activator {
         pathMatcher = new PathMatcher(uriTemplate);
         methodMatcher = new MethodMatcher(httpMethod);
         consumesMatcher = new ConsumesMimeMatcher(method);
+        priorityExtractor = new PriorityExtractor(method);
     }
 
     public float matchQuality(Request request) {
@@ -43,6 +45,10 @@ public class HttpMethodActivator implements Activator {
         } catch (IllegalAccessException e) {
             return responseBody(producesMatcher.mimeType(), e);
         }
+    }
+
+    public int priority() {
+        return priorityExtractor.extract(method);
     }
 
     public PathMatcher pathMatcher() {

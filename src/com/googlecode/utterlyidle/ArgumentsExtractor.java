@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
@@ -82,6 +83,8 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
 
         if (aClass.equals(Option.class)) {
             addOptionType(type, container);
+        } else if (aClass.equals(Either.class)) {
+            addEitherType(type, container);
         } else {
             addActualType(aClass, container);
         }
@@ -92,6 +95,15 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         final Class<?> typeClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
         addActualType(typeClass, container);
         container.addActivator(Option.class, new OptionActivator(typeClass, container));
+    }
+
+    private void addEitherType(Type type, Container container) {
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+        final Class<?> leftClass = (Class<?>) actualTypeArguments[0];
+        final Type rightClass = actualTypeArguments[1];
+        addActivator(rightClass, container);
+        container.addActivator(Either.class, new EitherActivator(leftClass, getClassFrom(rightClass), container));
     }
 
     private <T> void addActualType(Class<T> aClass, Container container) {

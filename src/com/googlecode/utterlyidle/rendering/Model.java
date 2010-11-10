@@ -1,8 +1,5 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -44,12 +41,8 @@ public class Model extends AbstractMap<String, List<Object>> {
         return values.get(key.toString());
     }
 
-    public List<Object> values(String key) {
-        return values.get(key);
-    }
-
     public Object first(String key){
-        return sequence(values(key)).head();
+        return sequence(get(key)).head();
     }
 }
 

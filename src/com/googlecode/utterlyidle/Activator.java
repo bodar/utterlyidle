@@ -8,4 +8,6 @@ public interface Activator {
     int numberOfArguments();
 
     ResponseBody activate(Resolver container, Request request);
+
+    int priority();
 }
