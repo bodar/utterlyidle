@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.cookies;
 import com.googlecode.totallylazy.Sequence;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import com.googlecode.utterlyidle.Rfc2616;
 
 public class Cookie {
     private final CookieName name;
@@ -28,8 +29,9 @@ public class Cookie {
     }
 
     public String toHttpHeader() {
-        final String cookieValue = String.format("%s=\"%s\"; ", name, value.replace("\"", "\\\""));
+        final String cookieValue = String.format("%s=%s; ", name, Rfc2616.toQuotedString(value));
         final String attributes = sequence(Cookie.attributes).toString("; ");
         return cookieValue + attributes;
     }
+
 }
