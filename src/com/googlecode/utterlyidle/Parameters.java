@@ -62,4 +62,8 @@ public class Parameters implements Iterable<Pair<String, String>> {
         };
     }
 
+    @Override
+    public String toString() {
+        return sequence(values).toString();
+    }
 }
