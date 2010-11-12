@@ -10,7 +10,7 @@ import static org.junit.Assert.fail;
 public class CookieNameTest {
     @Test
     public void shouldValidateAgainstRfc2616TokenSpecification() throws Exception {
-        for (Character illegalCharacter : characters(Rfc2616.ASCII_CONTROL_CHARACTERS).join(characters(Rfc2616.ILLEGAL_CHARACTERS))) {
+        for (Character illegalCharacter : characters(Rfc2616.CTLs).join(characters(Rfc2616.SEPARATORS))) {
             try {
                 cookieName("xxx" + illegalCharacter + "xxx");
                 fail("Expected character \"" + illegalCharacter + "\" ASCII(" + (int) illegalCharacter + ") to produce an illegal cookie name");
