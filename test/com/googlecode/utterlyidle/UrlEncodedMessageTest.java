@@ -12,19 +12,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UrlEncodedMessageTest {
     @Test
-    public void canParseToPairsEvenWhenNoValueIsPresent() throws Exception {
-        List<Pair<String, String>> pairs = UrlEncodedMessage.parse("The+string=");
-        assertThat(pairs.size(), NumberMatcher.is(1));
-        assertThat(pairs.get(0).first(), Matchers.is("The string"));
-        assertThat(pairs.get(0).second(), Matchers.is(""));
-    }
-
-    @Test
     public void canParseToPairs() throws Exception {
         List<Pair<String, String>> pairs = UrlEncodedMessage.parse("The+string=%C3%BC%40foo-bar");
         assertThat(pairs.size(), NumberMatcher.is(1));
         assertThat(pairs.get(0).first(), Matchers.is("The string"));
         assertThat(pairs.get(0).second(), Matchers.is("ü@foo-bar"));
+    }
+
+    @Test
+    public void canParseToPairsEvenWhenNoValueIsPresent() throws Exception {
+        List<Pair<String, String>> pairs = UrlEncodedMessage.parse("The+string=");
+        assertThat(pairs.size(), NumberMatcher.is(1));
+        assertThat(pairs.get(0).first(), Matchers.is("The string"));
+        assertThat(pairs.get(0).second(), Matchers.is(""));
     }
 
     @Test
