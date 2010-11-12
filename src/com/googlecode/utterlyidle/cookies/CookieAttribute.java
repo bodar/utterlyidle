@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
+import com.googlecode.utterlyidle.Rfc2616;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -59,6 +61,6 @@ public class CookieAttribute {
 
     @Override
     public String toString() {
-        return String.format("%s=\"%s\"", name, value);
+        return String.format("%s=%s", name, Rfc2616.toQuotedString(value));
     }
 }
