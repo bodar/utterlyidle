@@ -31,4 +31,8 @@ public class Rfc2616 {
             }
         };
     }
+
+    public static String toQuotedString(String value) {
+        return String.format("\"%s\"", value.replace("\"", "\\\""));
+    }
 }
