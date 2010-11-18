@@ -2,10 +2,10 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.yadic.Container;
 
-class TestModule implements Module {
+class SingleResourceModule implements Module {
     private final Class<?> resource;
 
-    public TestModule(Class<?> resource) {
+    public SingleResourceModule(Class<?> resource) {
         this.resource = resource;
     }
 
