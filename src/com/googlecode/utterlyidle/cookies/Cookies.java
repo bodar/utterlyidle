@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
@@ -65,9 +66,8 @@ public class Cookies {
         return cookie == null ? null : cookie.getValue();
     }
 
-
     public void commit() {
-        sequence(newCookies.values()).fold(response, setCookiesAsHeaders());
+        sequence(newCookies.values()).fold(response.headers(), setCookiesAsHeaders());
     }
 
     public void rollback() {
@@ -127,11 +127,10 @@ public class Cookies {
         };
     }
 
-    private Callable2<Response, Cookie, Response> setCookiesAsHeaders() {
-        return new Callable2<Response, Cookie, Response>() {
-            public Response call(Response response, Cookie cookie) throws Exception {
-                response.headers().add(SET_COOKIE_HEADER, cookie.toHttpHeader());
-                return response;
+    private Callable2<HeaderParameters, Cookie, HeaderParameters> setCookiesAsHeaders() {
+        return new Callable2<HeaderParameters, Cookie, HeaderParameters>() {
+            public HeaderParameters call(HeaderParameters headers, Cookie cookie) throws Exception {
+                return (HeaderParameters) headers.add(SET_COOKIE_HEADER, cookie.toHttpHeader());
             }
         };
     }
