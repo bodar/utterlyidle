@@ -67,7 +67,7 @@ public class Cookies {
     }
 
     public void commit() {
-        sequence(newCookies.values()).fold(response.headers(), setCookiesAsHeaders());
+        sequence(newCookies.values()).fold(response, setCookiesAsHeaders());
     }
 
     public void rollback() {
@@ -127,10 +127,10 @@ public class Cookies {
         };
     }
 
-    private Callable2<HeaderParameters, Cookie, HeaderParameters> setCookiesAsHeaders() {
-        return new Callable2<HeaderParameters, Cookie, HeaderParameters>() {
-            public HeaderParameters call(HeaderParameters headers, Cookie cookie) throws Exception {
-                return (HeaderParameters) headers.add(SET_COOKIE_HEADER, cookie.toHttpHeader());
+    private Callable2<Response, Cookie, Response> setCookiesAsHeaders() {
+        return new Callable2<Response, Cookie, Response>() {
+            public Response call(Response response, Cookie cookie) throws Exception {
+                return response.header(SET_COOKIE_HEADER, cookie.toHttpHeader());
             }
         };
     }
