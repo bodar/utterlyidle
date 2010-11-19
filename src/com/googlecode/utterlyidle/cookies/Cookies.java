@@ -8,6 +8,7 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Rfc2616;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,9 +82,8 @@ public class Cookies {
     private static Callable2<? super HashMap<CookieName, Cookie>, ? super String, HashMap<CookieName, Cookie>> parseRequestCookie() {
         return new Callable2<HashMap<CookieName, Cookie>, String, HashMap<CookieName, Cookie>>() {
             public HashMap<CookieName, Cookie> call(HashMap<CookieName, Cookie> cookies, String header) throws Exception {
-                regex(";").
+                regex("\\s*;\\s*").
                         split(header).
-                        map(trimLeft()).
                         map(splitOnFirst("=")).
                         filter(not(anAttribute())).
                         foldLeft(cookies, pairToCookie());
@@ -101,19 +101,11 @@ public class Cookies {
         };
     }
 
-    private static Callable1<? super String, String> trimLeft() {
-        return new Callable1<String, String>() {
-            public String call(String s) throws Exception {
-                return s.replaceFirst("^\\s*", "");
-            }
-        };
-    }
-
     public static Callable2<Map<CookieName, Cookie>, Pair<String, String>, Map<CookieName, Cookie>> pairToCookie() {
         return new Callable2<Map<CookieName, Cookie>, Pair<String, String>, Map<CookieName, Cookie>>() {
             public Map<CookieName, Cookie> call(Map<CookieName, Cookie> map, Pair<String, String> nameValue) throws Exception {
                 final CookieName name = cookieName(nameValue.first());
-                map.put(name, cookie(name, nameValue.second()));
+                map.put(name, cookie(name, Rfc2616.toUnquotedString(nameValue.second())));
                 return map;
             }
         };
