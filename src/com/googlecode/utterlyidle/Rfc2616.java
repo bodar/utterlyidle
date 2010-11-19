@@ -28,4 +28,8 @@ public class Rfc2616 {
     public static String toQuotedString(String value) {
         return String.format("\"%s\"", value.replace("\"", "\\\""));
     }
+
+    public static String toUnquotedString(String value) {
+        return value.replaceFirst("^\"", "").replaceFirst("\"$", "");
+    }
 }
