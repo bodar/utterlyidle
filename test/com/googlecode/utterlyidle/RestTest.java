@@ -2,6 +2,8 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.utterlyidle.cookies.CookieName;
+import com.googlecode.utterlyidle.cookies.Cookies;
 import org.junit.Test;
 
 import javax.ws.rs.Consumes;
@@ -26,18 +28,32 @@ import java.util.Formatter;
 
 import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
-import static com.googlecode.utterlyidle.Priority.Medium;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
+import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
+import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 
 public class RestTest {
+
+    @Test
+    public void canHandleCookies() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GettableWithCookies.class);
+        Request request = get("foo").withHeader("Cookie", "name=value").build();
+        Response response = Response.response();
+        engine.handle(request, response);
+        assertThat(response.output().toString(), is("found"));
+        assertThat(response.headers().getValue("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
+    }
+    
     @Test
     public void canGet() throws Exception {
         TestEngine engine = new TestEngine();
@@ -270,6 +286,22 @@ public class RestTest {
         @GET
         public String get(@QueryParam("name") String name) {
             return name;
+        }
+    }
+
+    @Path("foo")
+    public static class GettableWithCookies {
+        private final Cookies cookies;
+
+        public GettableWithCookies(Cookies cookies) {
+            this.cookies = cookies;
+        }
+
+        @GET
+        public String get() {
+            cookies.set(cookie(cookieName("anotherName"), "anotherValue"));
+            cookies.commit();
+            return "found";
         }
     }
 

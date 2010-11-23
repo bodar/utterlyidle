@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.yadic.Container;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,7 +12,7 @@ public class TestEngine {
     RestApplication application = new RestApplication();
 
     public TestEngine add(final Class<?> resource) {
-        application.add(new TestModule(resource));
+        application.add(new SingleResourceModule(resource));
         return this;
     }
 

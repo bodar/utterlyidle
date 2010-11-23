@@ -14,9 +14,10 @@ public class RestApplication implements Application {
         add(new CoreModule());
     }
 
-    public Container createRequestScope(Request request) {
+    private Container createRequestScope(Request request, Response response) {
         Container requestScope = new SimpleContainer(applicationScope);
         requestScope.addInstance(Request.class, request);
+        requestScope.addInstance(Response.class, response);
         for (Module module : modules) {
             module.addPerRequestObjects(requestScope);
         }
@@ -35,7 +36,7 @@ public class RestApplication implements Application {
     }
 
     public void handle(Request request, Response response) {
-        engine().handle(createRequestScope(request), request, response);
+        engine().handle(createRequestScope(request, response), request, response);
     }
 
     public Engine engine() {
