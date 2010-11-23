@@ -1,6 +1,8 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.yadic.ContainerException;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;
@@ -40,6 +42,8 @@ public class HttpMethodActivator implements Activator {
         try {
             Object instance = container.resolve(method.getDeclaringClass());
             return responseBody(producesMatcher.mimeType(), method.invoke(instance, argumentsExtractor.extract(request)));
+        } catch (ContainerException e) {
+             return responseBody(producesMatcher.mimeType(), e.getCause());
         } catch (InvocationTargetException e) {
              return responseBody(producesMatcher.mimeType(), e.getCause());
         } catch (IllegalAccessException e) {
