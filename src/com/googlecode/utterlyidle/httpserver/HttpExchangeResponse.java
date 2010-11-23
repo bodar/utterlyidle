@@ -20,6 +20,13 @@ class HttpExchangeResponse extends Response {
         return httpExchange.getResponseBody();
     }
 
+    @Override
+    public Response flush() throws IOException {
+        super.flush();
+        httpExchange.close();
+        return this;
+    }
+
     private void sendCodeIfNeeded() {
         try {
             if(!codeSent){
