@@ -20,6 +20,7 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
 import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
+import static com.googlecode.utterlyidle.cookies.Cookies.REQUEST_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.cookies.Cookies.SET_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.cookies.Cookies.cookies;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,11 +31,10 @@ public class CookiesTest {
     private Response response = new Response();
 
     @Test
-    public void shouldParseMultipleRequestCookiesInSameHeader() throws Exception {
-        Cookies cookies = cookies(request(headerParameters(pair("Cookie", "a=1; b=2 "))), null);
+    public void shouldHandleTrailingSpaces() throws Exception {
+        Cookies cookies = cookies(request(headerParameters(pair("Cookie", "a=1; ; ;"))), null);
 
         assertThat(cookies.getValue(cookieName("a")), is("1"));
-        assertThat(cookies.getValue(cookieName("b")), is("2 "));
     }
 
     @Test
@@ -97,6 +97,20 @@ public class CookiesTest {
         assertThat(
                 response.headers().getValue(SET_COOKIE_HEADER),
                 is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Tue, 30-Aug-1977 09:32:59 GMT\""));
+    }
+
+    @Test
+    public void shouldCorrectlyReadAndWrite() throws Exception {
+        Cookies cookies = cookies(someRequest(), response);
+        final CookieName cookieName = cookieName("a");
+        cookies.set(cookie(cookieName, "1"));
+        cookies.commit();
+
+        final String value = response.headers().getValue(SET_COOKIE_HEADER);
+        System.out.println("value = " + value);
+        final HeaderParameters headers = (HeaderParameters) headerParameters().add(REQUEST_COOKIE_HEADER, value);
+        Cookies cookiesRead = cookies(request(headers), response);
+        assertThat(cookiesRead.getValue(cookieName), is("1"));
     }
 
     private Request someRequest() {

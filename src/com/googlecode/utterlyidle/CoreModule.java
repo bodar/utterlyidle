@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.MatchFailureHandler;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
@@ -22,6 +23,7 @@ import static com.googlecode.totallylazy.Predicates.assignableTo;
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {
         final Request request = container.get(Request.class);
+        container.add(Cookies.class);
         container.addInstance(BasePath.class, request.basePath());
         container.addInstance(ResourcePath.class, request.resourcePath());
         container.add(BuiltInResources.class);
