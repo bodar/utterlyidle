@@ -2,10 +2,14 @@ package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static java.lang.System.nanoTime;
@@ -27,7 +31,11 @@ public class RestHandler implements HttpHandler {
             application.handle(request, response);
             System.out.println(String.format("%s %s -> %s in %s msecs", request.method(), request.url(), response.code(), calculateMilliseconds(start, nanoTime())));
         } catch (RuntimeException e) {
-            System.err.println(String.format("%s %s -> %s", request.method(), request.url(), e.getCause()));
+            System.err.println(String.format("%s %s -> %s", request.method(), request.url(), e));
+
+            response.code(Status.INTERNAL_SERVER_ERROR);
+            e.printStackTrace(new PrintWriter(response.output()));
+            response.flush();
         }
     }
 }
