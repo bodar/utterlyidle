@@ -15,9 +15,11 @@ public class RestApplication implements Application {
     }
 
     private Container createRequestScope(Request request, Response response) {
-        Container requestScope = new SimpleContainer(applicationScope);
+        final Container requestScope = new SimpleContainer(applicationScope);
+        requestScope.addInstance(Container.class, requestScope);
         requestScope.addInstance(Request.class, request);
         requestScope.addInstance(Response.class, response);
+        requestScope.add(RequestHandler.class, RestRequestHandler.class);
         for (Module module : modules) {
             module.addPerRequestObjects(requestScope);
         }
@@ -36,10 +38,11 @@ public class RestApplication implements Application {
     }
 
     public void handle(Request request, Response response) {
-        engine().handle(createRequestScope(request, response), request, response);
+        createRequestScope(request, response).get(RequestHandler.class).handle(request, response);
     }
 
     public Engine engine() {
         return applicationScope.get(Engine.class);
     }
+
 }
