@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,18 +21,18 @@ public class Parameters implements Iterable<Pair<String, String>> {
         return this;
     }
 
+    public Parameters remove(String name) {
+        values.removeAll(filterByName(name).toList());
+        return this;
+    }
+
     public int size() {
         return values.size();
     }
 
     @SuppressWarnings("unchecked")
     public String getValue(String name) {
-        return findPair(name).map(second(String.class)).getOrNull();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Option<Pair<String, String>> findPair(String name) {
-        return sequence(values).find(by(first(String.class), is(equalIgnoringCase(name))));
+        return filterByName(name).headOption().map(second(String.class)).getOrNull();
     }
 
     private Predicate<String> equalIgnoringCase(final String name) {
@@ -47,11 +44,15 @@ public class Parameters implements Iterable<Pair<String, String>> {
     }
 
     public boolean contains(String name) {
-        return !findPair(name).isEmpty();
+        return !filterByName(name).headOption().isEmpty();
     }
 
     public Iterator<Pair<String, String>> iterator() {
         return values.iterator();
+    }
+
+    private Sequence<Pair<String, String>> filterByName(String name) {
+        return sequence(values).filter(by(first(String.class), is(equalIgnoringCase(name))));
     }
 
     public static Callable2<Parameters, Pair<String, String>, Parameters> pairIntoParameters() {
