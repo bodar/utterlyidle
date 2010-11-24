@@ -40,7 +40,6 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
             extract(request);
             return true;
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return false;
         }
     }
