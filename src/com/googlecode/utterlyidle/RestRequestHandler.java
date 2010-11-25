@@ -29,7 +29,6 @@ public class RestRequestHandler implements RequestHandler {
             response.header(HttpHeaders.CONTENT_TYPE, responseBody.mimeType());
             Object result = responseBody.value();
             restEngine.responseHandlers().handle(result, resolver, response);
-            response.flush();
         } catch (Exception e) {
             throw new UnsupportedOperationException(e);
         }
