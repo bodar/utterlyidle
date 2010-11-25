@@ -32,6 +32,10 @@ public class CoreModule implements Module{
 
     public Module addPerApplicationObjects(Container container) {
         container.add(Engine.class, RestEngine.class);
+        final Engine engine = container.get(Engine.class);
+
+        container.addInstance(ResponseHandlers.class, engine.responseHandlers());
+        container.addInstance(RendererHandler.class, engine.renderers());
         return this;
     }
 
@@ -44,8 +48,6 @@ public class CoreModule implements Module{
         handlers.addGuard(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
         handlers.addGuard(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
         handlers.addGuard(assignableTo(MatchFailure.class), new MatchFailureHandler(renderers));
-        handlers.addCatchAll(assignableTo(UnsupportedOperationException.class), new ExceptionHandler(Status.NOT_IMPLEMENTED, renderers));
-        handlers.addCatchAll(assignableTo(Exception.class), new ExceptionHandler(Status.INTERNAL_SERVER_ERROR, renderers));
         handlers.addCatchAll(assignableTo(Object.class), renderers);
 
         renderers.addCatchAll(assignableTo(MatchFailure.class), MatchFailureRenderer.class);
