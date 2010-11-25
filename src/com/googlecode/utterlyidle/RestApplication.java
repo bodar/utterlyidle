@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
+import com.googlecode.utterlyidle.handlers.FlushResponseHandler;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -26,6 +27,7 @@ public class RestApplication implements Application {
             module.addPerRequestObjects(requestScope);
         }
         requestScope.decorate(RequestHandler.class, ExceptionHandler.class);
+        requestScope.decorate(RequestHandler.class, FlushResponseHandler.class);
         return requestScope;
     }
 

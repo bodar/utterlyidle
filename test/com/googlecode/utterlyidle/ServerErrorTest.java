@@ -1,18 +1,17 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Predicates;
-import com.googlecode.yadic.Resolver;
+import com.googlecode.yadic.ContainerException;
 import org.junit.Test;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
 public class ServerErrorTest {
@@ -23,7 +22,7 @@ public class ServerErrorTest {
         Response response = Response.response();
         engine.handle(get("exception"), response);
 
-        assertThat(response.code(), is(Status.INTERNAL_SERVER_ERROR));
+        assertResponseContains(response, Exception.class);
     }
 
     @Test
@@ -33,7 +32,12 @@ public class ServerErrorTest {
         Response response = Response.response();
         engine.handle(get("lazy"), response);
 
+        assertResponseContains(response, ContainerException.class);
+    }
+
+    private void assertResponseContains(Response response, final Class<? extends Exception> exceptionClass) {
         assertThat(response.code(), is(Status.INTERNAL_SERVER_ERROR));
+        assertThat(response.output().toString(), is(containsString(exceptionClass.getName())));
     }
 
     public static class ThrowingResource {
