@@ -4,6 +4,7 @@ import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.MatchFailureHandler;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
+import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.rendering.MatchFailureRenderer;
 import com.googlecode.utterlyidle.handlers.NullHandler;
 import com.googlecode.utterlyidle.rendering.ObjectRenderer;
@@ -51,6 +52,7 @@ public class CoreModule implements Module{
         handlers.addCatchAll(assignableTo(Object.class), renderers);
 
         renderers.addCatchAll(assignableTo(MatchFailure.class), MatchFailureRenderer.class);
+        renderers.addCatchAll(assignableTo(Exception.class), ExceptionRenderer.class);
         renderers.addCatchAll(assignableTo(Object.class), ObjectRenderer.class);
 
         engine.add(BuiltInResources.class);
