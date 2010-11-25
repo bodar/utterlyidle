@@ -10,12 +10,12 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ExceptionHandler implements RequestHandler{
     private final RequestHandler requestHandler;
-    private final RendererHandler renderers;
+    private final ResponseHandlers responseHandlers;
     private final Resolver resolver;
 
-    public ExceptionHandler(RequestHandler requestHandler, RendererHandler renderers, Resolver resolver) {
+    public ExceptionHandler(RequestHandler requestHandler, ResponseHandlers responseHandlers, Resolver resolver) {
         this.requestHandler = requestHandler;
-        this.renderers = renderers;
+        this.responseHandlers = responseHandlers;
         this.resolver = resolver;
     }
 
@@ -31,6 +31,6 @@ public class ExceptionHandler implements RequestHandler{
 
     private void handle(Throwable value, Response response) throws Exception {
         response.code(Status.INTERNAL_SERVER_ERROR);
-        renderers.handle(value, resolver, response);
+        responseHandlers.handle(value, resolver, response);
     }
 }
