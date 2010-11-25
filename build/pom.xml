@@ -21,7 +21,7 @@
         <dependency>
     		<groupId>com.googlecode.yadic</groupId>
     		<artifactId>yadic</artifactId>
-    		<version>78</version>
+    		<version>80</version>
     	</dependency>
 
     	<dependency>
