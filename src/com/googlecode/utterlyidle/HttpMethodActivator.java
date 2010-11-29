@@ -38,17 +38,9 @@ public class HttpMethodActivator implements Activator {
         return method.getParameterTypes().length;
     }
 
-    public ResponseBody activate(Resolver container, Request request) {
-        try {
+    public ResponseBody activate(Resolver container, Request request) throws InvocationTargetException, IllegalAccessException {
             Object instance = container.resolve(method.getDeclaringClass());
             return responseBody(producesMatcher.mimeType(), method.invoke(instance, argumentsExtractor.extract(request)));
-        } catch (ContainerException e) {
-             return responseBody(producesMatcher.mimeType(), e);
-        } catch (InvocationTargetException e) {
-             return responseBody(producesMatcher.mimeType(), e.getCause());
-        } catch (IllegalAccessException e) {
-            return responseBody(producesMatcher.mimeType(), e);
-        }
     }
 
     public int priority() {
