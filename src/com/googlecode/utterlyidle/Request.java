@@ -9,7 +9,7 @@ import static com.googlecode.utterlyidle.io.Converter.asString;
 
 public class Request {
     private final String method;
-    private final Url url;
+    private Url url;
     private final InputStream input;
     private final HeaderParameters headers;
     private BasePath basePath;
@@ -38,6 +38,12 @@ public class Request {
 
     public Url url() {
         return url;
+    }
+
+    public Request url(Url url) {
+        this.url= url;
+        this.query = null;
+        return this;
     }
 
     public InputStream input() {
