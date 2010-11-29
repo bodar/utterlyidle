@@ -69,7 +69,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
 
     private Model asModel(Parameters parameters) {
         Model result = model();
-        for (Pair<String, String> parameter : parameters) {
+        for (Pair<String, String> parameter : (Iterable<Pair<String,String>>)parameters) {
             result.add(parameter.first(), parameter.second());
         }
         return result;

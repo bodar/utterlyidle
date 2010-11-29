@@ -68,7 +68,12 @@ public class Request {
 
     @Override
     public String toString() {
-        return String.format("%s %s HTTP/1.1", method, url);
+        return String.format("%s %s HTTP/1.1\n%s\n%s", method, url, headers(), inputAsRequestString());
+    }
+
+    private String inputAsRequestString() {
+        String input = asString(input());
+        return input.length() == 0 ? "" : String.format("Content-length: %s\n\n%s", input.length(), input);
     }
 
     public ResourcePath resourcePath() {
