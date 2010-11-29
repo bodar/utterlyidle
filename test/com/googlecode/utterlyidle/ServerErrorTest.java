@@ -1,9 +1,7 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Predicates;
-import com.googlecode.yadic.Resolver;
+import com.googlecode.utterlyidle.handlers.WriteMessageToResponseHandler;
+import com.googlecode.yadic.ContainerException;
 import org.junit.Test;
 
 import javax.ws.rs.GET;
@@ -13,9 +11,23 @@ import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
 public class ServerErrorTest {
+    @Test
+    public void supportsInterceptingException() throws Exception {
+        final String message = "Caught exception";
+        TestEngine engine = new TestEngine();
+        engine.add(ThrowingResource.class);
+        engine.responseHandlers().add(instanceOf(Exception.class), new WriteMessageToResponseHandler(message));
+        Response response = Response.response();
+        engine.handle(get("exception"), response);
+        assertThat(response.output().toString(), containsString(message));
+    }
+
     @Test
     public void returns500WhenAnExceptionIsThrown() throws Exception {
         TestEngine engine = new TestEngine();
@@ -23,7 +35,7 @@ public class ServerErrorTest {
         Response response = Response.response();
         engine.handle(get("exception"), response);
 
-        assertThat(response.code(), is(Status.INTERNAL_SERVER_ERROR));
+        assertResponseContains(response, Exception.class);
     }
 
     @Test
@@ -33,17 +45,12 @@ public class ServerErrorTest {
         Response response = Response.response();
         engine.handle(get("lazy"), response);
 
-        assertThat(response.code(), is(Status.INTERNAL_SERVER_ERROR));
+        assertResponseContains(response, ContainerException.class);
     }
 
-    @Test
-    public void returns501WhenAnUnsupportedOperationExceptionIsThrown() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(ThrowingResource.class);
-        Response response = Response.response();
-        engine.handle(get("not_implemented"), response);
-
-        assertThat(response.code(), is(Status.NOT_IMPLEMENTED));
+    private void assertResponseContains(Response response, final Class<? extends Exception> exceptionClass) {
+        assertThat(response.code(), is(Status.INTERNAL_SERVER_ERROR));
+        assertThat(response.output().toString(), containsString(exceptionClass.getName()));
     }
 
     public static class ThrowingResource {
@@ -51,12 +58,6 @@ public class ServerErrorTest {
         @Path("exception")
         public String get() throws Exception {
             throw new Exception();
-        }
-
-        @GET
-        @Path("not_implemented")
-        public String getError() {
-            throw new UnsupportedOperationException();
         }
     }
 
@@ -70,4 +71,5 @@ public class ServerErrorTest {
             fail("should never get here");
         }
     }
+
 }

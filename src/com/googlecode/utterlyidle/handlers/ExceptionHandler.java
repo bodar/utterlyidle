@@ -1,21 +1,36 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.RequestHandler;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.yadic.Resolver;
 
-public class ExceptionHandler implements ResponseHandler<Exception> {
-    private final Status status;
-    private final RendererHandler renderers;
+import java.lang.reflect.InvocationTargetException;
 
-    public ExceptionHandler(Status status, RendererHandler renderers) {
-        this.status = status;
-        this.renderers = renderers;
+public class ExceptionHandler implements RequestHandler{
+    private final RequestHandler requestHandler;
+    private final ResponseHandlers responseHandlers;
+    private final Resolver resolver;
+
+    public ExceptionHandler(RequestHandler requestHandler, ResponseHandlers responseHandlers, Resolver resolver) {
+        this.requestHandler = requestHandler;
+        this.responseHandlers = responseHandlers;
+        this.resolver = resolver;
     }
 
-    public void handle(Exception value, Resolver resolver, Response response) throws Exception {
-        response.code(status);
-        renderers.handle(value, resolver, response);
+    public void handle(Request request, Response response) throws Exception {
+        try {
+            requestHandler.handle(request, response);
+        } catch (InvocationTargetException e) {
+            handle(e.getCause(), response);
+        } catch (Exception e) {
+            handle(e, response);
+        }
+    }
+
+    private void handle(Throwable value, Response response) throws Exception {
+        response.code(Status.INTERNAL_SERVER_ERROR);
+        responseHandlers.handle(value, resolver, response);
     }
 }

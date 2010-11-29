@@ -30,14 +30,14 @@ public class RestHandler implements HttpHandler {
             long start = nanoTime();
             application.handle(request, response);
             System.out.println(String.format("%s %s -> %s in %s msecs", request.method(), request.url(), response.code(), calculateMilliseconds(start, nanoTime())));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             System.err.println(String.format("%s %s -> %s", request.method(), request.url(), e));
             e.printStackTrace();
             outputException(response, e);
         }
     }
 
-    private void outputException(HttpExchangeResponse response, RuntimeException e) throws IOException {
+    private void outputException(HttpExchangeResponse response, Exception e) throws IOException {
         response.code(Status.INTERNAL_SERVER_ERROR);
         PrintWriter writer = new PrintWriter(response.output());
         try {
