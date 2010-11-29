@@ -9,7 +9,6 @@ import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,29 +41,7 @@ public class RestEngine implements Engine {
         }
     }
 
-    public void handle(Resolver resolver, Request request, Response response) {
-        final Either<MatchFailure, HttpMethodActivator> either = findActivator(request);
-        if (either.isLeft()) {
-            handle(ResponseBody.responseBody("text/html", either.left()), resolver, response);
-        } else {
-            final ResponseBody responseBody = either.right().activate(resolver, request);
-            handle(responseBody, resolver, response);
-        }
-    }
-
-    private void handle(ResponseBody responseBody, Resolver resolver, Response response) {
-        try {
-            response.header(HttpHeaders.CONTENT_TYPE, responseBody.mimeType());
-            Object result = responseBody.value();
-            handlers.handle(result, resolver, response);
-            response.flush();
-        } catch (Exception e) {
-            throw new UnsupportedOperationException(e);
-        }
-
-    }
-
-    private Either<MatchFailure, HttpMethodActivator> findActivator(final Request request) {
+    public Either<MatchFailure, HttpMethodActivator> findActivator(final Request request) {
         final Either<MatchFailure, Sequence<HttpMethodActivator>> result = filter(
                 pair(pathMatches(request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
@@ -131,4 +108,5 @@ public class RestEngine implements Engine {
             }
         };
     }
+
 }

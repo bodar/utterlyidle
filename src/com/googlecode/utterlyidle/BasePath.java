@@ -9,6 +9,13 @@ public class BasePath extends HierarchicalPath {
     }
 
     public BasePath(String v) {
-        super(v);
+        super(ensureEndsInSlash(v));
+    }
+
+    private static String ensureEndsInSlash(String value) {
+        if(!value.endsWith("/")){
+            return value + "/";
+        }
+        return value;
     }
 }
