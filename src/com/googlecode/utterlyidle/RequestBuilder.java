@@ -98,10 +98,4 @@ public class RequestBuilder {
         return new RequestBuilder(HttpMethod.DELETE, path);
     }
 
-    public static RequestBuilder cloneOf(Request request){
-        RequestBuilder builder = new RequestBuilder(request.method(), request.url().toString());
-        builder.headers.addAll(sequence(request.headers()).toList());
-        builder.form.addAll(sequence(request.form()).toList());
-        return builder;
-    }
 }
