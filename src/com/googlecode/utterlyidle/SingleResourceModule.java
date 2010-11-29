@@ -10,7 +10,6 @@ class SingleResourceModule implements Module {
     }
 
     public Module addPerRequestObjects(Container container) {
-        container.add(resource);
         return this;
     }
 
