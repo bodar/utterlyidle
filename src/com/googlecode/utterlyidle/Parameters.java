@@ -35,6 +35,11 @@ public class Parameters implements Iterable<Pair<String, String>> {
         return filterByName(name).headOption().map(second(String.class)).getOrNull();
     }
 
+    @SuppressWarnings("unchecked")
+    public Iterable<String> getValues(String name) {
+        return filterByName(name).map(second(String.class));
+    }
+
     private Predicate<String> equalIgnoringCase(final String name) {
         return new Predicate<String>() {
             public boolean matches(String other) {
