@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class ConvertExtensionToAcceptHeader implements RequestHandler {
-    public static final Regex FILE_EXTENSION = regex("(\\.[^?/.]+)(?:\\?[^/]*)?$");
+    public static final Regex FILE_EXTENSION = regex("(\\.[^?/.]+?)(?:\\?.*)?$");
     private final Sequence<Pair<String, String>> replacements;
     private final RequestHandler decorated;
 
