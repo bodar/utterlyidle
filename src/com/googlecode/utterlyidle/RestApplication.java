@@ -24,7 +24,7 @@ public class RestApplication implements Application {
         return requestScope;
     }
 
-    public Container createRequestScope() {
+    private Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.addInstance(Resolver.class, requestScope);
         requestScope.add(RequestHandler.class, RestRequestHandler.class);
