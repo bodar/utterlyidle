@@ -20,14 +20,13 @@ import javax.ws.rs.core.StreamingOutput;
 import static com.googlecode.totallylazy.Predicates.aNull;
 import static com.googlecode.totallylazy.Predicates.assignableTo;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.yadic.CallMethodActivator.callMethod;
 
 
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {
         container.add(Cookies.class);
-        container.addActivator(BasePath.class, callMethod(on(Request.class).basePath()).from(container));
-        container.addActivator(ResourcePath.class, callMethod(on(Request.class).resourcePath()).from(container));
+        container.addActivator(BasePath.class, BasePathActivator.class);
+        container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
         return this;
     }
