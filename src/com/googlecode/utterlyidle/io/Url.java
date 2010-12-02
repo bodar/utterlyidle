@@ -155,6 +155,14 @@ public class Url {
         return url(value.toString());
     }
 
+    public static Url url(URI value) {
+        try {
+            return url(value.toURL());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getQuery() {
         return toURI().getQuery();
     }
