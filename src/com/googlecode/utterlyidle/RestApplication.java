@@ -18,10 +18,15 @@ public class RestApplication implements Application {
     }
 
     private Container createRequestScope(Request request, Response response) {
-        final Container requestScope = new SimpleContainer(applicationScope);
-        requestScope.addInstance(Resolver.class, requestScope);
+        final Container requestScope = createRequestScope();
         requestScope.addInstance(Request.class, request);
         requestScope.addInstance(Response.class, response);
+        return requestScope;
+    }
+
+    private Container createRequestScope() {
+        final Container requestScope = new SimpleContainer(applicationScope);
+        requestScope.addInstance(Resolver.class, requestScope);
         requestScope.add(RequestHandler.class, RestRequestHandler.class);
         for (Module module : modules) {
             module.addPerRequestObjects(requestScope);
