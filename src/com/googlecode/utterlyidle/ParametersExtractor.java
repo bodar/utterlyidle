@@ -35,12 +35,19 @@ public class ParametersExtractor {
     public static Callable2<Parameters, Param, Parameters> add(final Object value) {
         return new Callable2<Parameters, Param, Parameters>() {
             public Parameters call(Parameters parameters, Param param) throws Exception {
-                return parameters.add(param.value(), convertToString(value));
+                String stringValue = convertToString(value);
+                if(stringValue != null){
+                    return parameters.add(param.value(), stringValue);
+                }
+                return parameters;
             }
         };
     }
 
     private static String convertToString(Object value) {
+        if(value == null){
+            return null;
+        }
         if(value instanceof Left){
             return convertToString(((Left) value).left());
         }
@@ -51,9 +58,8 @@ public class ParametersExtractor {
             return convertToString(((Some) value).get());
         }
         if(value instanceof None){
-            return "";
+            return null;
         }
         return value.toString();
     }
-
 }

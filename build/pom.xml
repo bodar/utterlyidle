@@ -15,7 +15,7 @@
     	<dependency>
     		<groupId>com.googlecode.totallylazy</groupId>
     		<artifactId>totallylazy</artifactId>
-    		<version>149</version>
+    		<version>172</version>
     	</dependency>
 
         <dependency>
