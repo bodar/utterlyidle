@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.Sequences;
 import static com.googlecode.totallylazy.Sequences.empty;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class HierarchicalPath implements Path {
+public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
     private static final String DUPLICATE_SEPARATORS = "\\/+";
     private final String value;
 
@@ -76,5 +76,9 @@ public class HierarchicalPath implements Path {
         if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
+    }
+
+    public int compareTo(HierarchicalPath other) {
+        return value.compareTo(other.value);
     }
 }
