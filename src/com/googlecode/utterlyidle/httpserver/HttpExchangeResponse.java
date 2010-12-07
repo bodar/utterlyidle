@@ -27,10 +27,9 @@ class HttpExchangeResponse extends Response {
     }
 
     @Override
-    public Response flush() throws IOException {
-        super.flush();
+    public void close() throws IOException {
+        super.close();
         httpExchange.close();
-        return this;
     }
 
     private void sendCodeIfNeeded() {

@@ -1,18 +1,18 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestHandler;
 import com.googlecode.utterlyidle.Response;
 
-public class FlushResponseHandler implements RequestHandler{
+public class SiteMeshHandler implements RequestHandler {
     private final RequestHandler requestHandler;
 
-    public FlushResponseHandler(RequestHandler requestHandler) {
+    public SiteMeshHandler(RequestHandler requestHandler ) {
         this.requestHandler = requestHandler;
     }
 
     public void handle(Request request, Response response) throws Exception {
-        requestHandler.handle(request, response);
-        response.flush();
+        requestHandler.handle(request, response.output(new SiteMeshOutputStream(response.output())));
     }
+
 }
