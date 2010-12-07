@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
-import com.googlecode.utterlyidle.handlers.FlushResponseHandler;
+import com.googlecode.utterlyidle.handlers.CloseResponseHandler;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -14,6 +14,7 @@ public class RestApplication implements Application {
     private final List<Module> modules = new ArrayList<Module>();
 
     public RestApplication() {
+        applicationScope.addInstance(Application.class, this);
         add(new CoreModule());
     }
 
@@ -24,7 +25,7 @@ public class RestApplication implements Application {
         return requestScope;
     }
 
-    private Container createRequestScope() {
+    public Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.addInstance(Resolver.class, requestScope);
         requestScope.add(RequestHandler.class, RestRequestHandler.class);
@@ -32,7 +33,7 @@ public class RestApplication implements Application {
             module.addPerRequestObjects(requestScope);
         }
         requestScope.decorate(RequestHandler.class, ExceptionHandler.class);
-        requestScope.decorate(RequestHandler.class, FlushResponseHandler.class);
+        requestScope.decorate(RequestHandler.class, CloseResponseHandler.class);
         return requestScope;
     }
 
