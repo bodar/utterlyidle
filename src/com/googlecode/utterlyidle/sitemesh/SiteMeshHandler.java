@@ -61,15 +61,24 @@ public class SiteMeshHandler implements RequestHandler {
 
         @Override
         public void close() throws IOException {
-            Option<StringTemplateDecorator> stringTemplateDecorator = decoratorRules.getTemplateNameFor(request, response).map(asDecorator());
-            if(stringTemplateDecorator.isEmpty()){
-                OutputStreamWriter writer = new OutputStreamWriter(destination);
-                writer.write(out.toString());
-                writer.close();
-            } else {
-                stringTemplateDecorator.get().decorate(new PropertyMapParser().parse(out.toString())).writeTo(destination);
-            }
+            final Option<TemplateName> templateName = decoratorRules.getTemplateNameFor(request, response);
+            final Option<StringTemplateDecorator> decorator = templateName.map(asDecorator());
+            final OutputStreamWriter writer = new OutputStreamWriter(destination);
+            writer.write(decorator.fold(getOriginalContent(), decorate()));
+            writer.close();
             super.close();
+        }
+
+        private String getOriginalContent() {
+            return out.toString();
+        }
+
+        private Callable2<String, StringTemplateDecorator, String> decorate() {
+            return new Callable2<String, StringTemplateDecorator, String>() {
+                public String call(String value, StringTemplateDecorator stringTemplateDecorator) throws Exception {
+                    return stringTemplateDecorator.decorate(new PropertyMapParser().parse(value)).toString();
+                }
+            };
         }
 
         private Callable1<? super TemplateName, StringTemplateDecorator> asDecorator() {
