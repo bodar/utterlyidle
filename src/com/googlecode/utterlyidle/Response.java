@@ -12,7 +12,7 @@ import java.io.Writer;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 
-public class Response implements Closeable, Flushable {
+public class Response implements Closeable {
     private OutputStream output;
     protected final HeaderParameters headers = headerParameters();
     protected Status code = Status.OK;
@@ -74,15 +74,7 @@ public class Response implements Closeable, Flushable {
         return this;
     }
 
-    public void flush() throws IOException {
-        writer().flush();
-        output().flush();
-    }
-
     public void close() throws IOException {
-        flush();
         writer().close();
-        output().close();
     }
-
 }

@@ -5,5 +5,11 @@ public interface Property {
 
     Property getChild(String name);
 
+    String getName();
+
     String getValue();
+
+    Iterable<Property> getChildren();
+
+
 }

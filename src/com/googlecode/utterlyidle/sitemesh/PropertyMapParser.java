@@ -17,4 +17,9 @@ public class PropertyMapParser {
         ContentProperty extractedProperties = content.getExtractedProperties();
         return new PropertyMap(new ContentPropertyAdapter(extractedProperties));
     }
+
+    public PropertyMap parse(String value) throws IOException {
+        CharBuffer buffer = CharBuffer.wrap(value);
+        return parse(buffer);
+    }
 }
