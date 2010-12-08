@@ -15,6 +15,13 @@ import com.googlecode.utterlyidle.Response;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -25,35 +32,55 @@ public class SiteMeshHandler implements RequestHandler {
     private final RequestHandler requestHandler;
     private final BasePath base;
     private final Includer include;
-    private final Sequence<DecoratorRule> decorators;
+    private final DecoratorRules decoratorRules;
     private final StringTemplateGroup group;
 
-    public SiteMeshHandler(final RequestHandler requestHandler, final BasePath base, final Includer include, final Iterable<DecoratorRule> decorators, final StringTemplateGroup templateGroup) {
+    public SiteMeshHandler(final RequestHandler requestHandler, final BasePath base, final Includer include, final DecoratorRules decoratorRules, final StringTemplateGroup templateGroup) {
         this.requestHandler = requestHandler;
         this.base = base;
         this.include = include;
-        this.decorators = sequence(decorators);
+        this.decoratorRules = decoratorRules;
         group = templateGroup;
     }
 
     public void handle(final Request request, final Response response) throws Exception {
-        Option<TemplateName> templateName = getTemplateNameFor(request, response);
-        Response decoratedResponse = templateName.fold(response, decorateOutputStream(request));
-        requestHandler.handle(request, decoratedResponse);
+        requestHandler.handle(request, response.output(new SiteMeshOutputStream(request, response, response.output())));
     }
 
-    private Callable2<Response, TemplateName, Response> decorateOutputStream(final Request request) {
-        return new Callable2<Response, TemplateName, Response>() {
-            public Response call(Response response, TemplateName templateName) throws Exception {
-                StringTemplate template = group.getInstanceOf(templateName.name());
-                StringTemplateDecorator decorator = new StringTemplateDecorator(template, include, base, request.query());
-                return response.output(new SiteMeshOutputStream(response.output(), decorator));
+    class SiteMeshOutputStream extends FilterOutputStream {
+        private final Request request;
+        private final Response response;
+        private final OutputStream destination;
 
+        public SiteMeshOutputStream(Request request, Response response, OutputStream destination) {
+            super(new ByteArrayOutputStream()); // this is 'out'
+            this.request = request;
+            this.response = response;
+            this.destination = destination;
+        }
+
+        @Override
+        public void close() throws IOException {
+            Option<StringTemplateDecorator> stringTemplateDecorator = decoratorRules.getTemplateNameFor(request, response).map(asDecorator());
+            if(stringTemplateDecorator.isEmpty()){
+                OutputStreamWriter writer = new OutputStreamWriter(destination);
+                writer.write(out.toString());
+                writer.close();
+            } else {
+                stringTemplateDecorator.get().decorate(new PropertyMapParser().parse(out.toString())).writeTo(destination);
             }
-        };
+            super.close();
+        }
+
+        private Callable1<? super TemplateName, StringTemplateDecorator> asDecorator() {
+            return new Callable1<TemplateName, StringTemplateDecorator>() {
+                public StringTemplateDecorator call(TemplateName templateName) throws Exception {
+                    StringTemplate template = group.getInstanceOf(templateName.name());
+                    return new StringTemplateDecorator(template, include, base, request.query());
+                }
+            };
+        }
     }
 
-    private Option<TemplateName> getTemplateNameFor(final Request request, final Response response) {
-        return decorators.find(matchingRule(request, response)).map(asTemplateName());
-    }
+
 }

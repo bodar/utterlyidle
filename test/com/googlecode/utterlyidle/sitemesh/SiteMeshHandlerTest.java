@@ -1,87 +1,63 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.totallylazy.Second;
-import com.googlecode.totallylazy.predicates.WherePredicate;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestHandler;
 import com.googlecode.utterlyidle.Response;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.junit.Test;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.List;
 
-import static com.googlecode.totallylazy.Callables.second;
-import static com.googlecode.totallylazy.Predicates.is;
-import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentType;
 import static com.googlecode.utterlyidle.sitemesh.DecoratorRule.decoratorRule;
+import static com.googlecode.utterlyidle.sitemesh.DecoratorRules.decoratorRules;
 import static com.googlecode.utterlyidle.sitemesh.TemplateName.templateName;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_HTML;
+import static javax.ws.rs.core.MediaType.TEXT_XML;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.core.Is.is;
 
 public class SiteMeshHandlerTest {
+    private static final String ORIGINAL_CONTENT = "<body>Hello</body>";
+    private static final String DECORATED_CONTENT = "Hello World!";
+
     @Test
     public void shouldNotDecorateHtmlWhenNoDecorators() throws Exception{
-        OutputStream outputStream = new ByteArrayOutputStream();
-        Response response = Response.response(outputStream);
-        RequestHandler hello = write("<body>Hello</body>");
-        List<DecoratorRule> decorators = emptyList();
-        RequestHandler decorator = new SiteMeshHandler(hello, null, new Includer(), decorators, getWorldGroup());
-
-        decorator.handle(get(null).build(), response);
-
-        assertThat(outputStream.toString(), containsString("<body>Hello</body>"));
+        assertDecorationResultsInResponse(decoratorRules(), ORIGINAL_CONTENT);
     }
 
     @Test
-    public void blah() throws Exception {
-        DecoratorRule decoratorRules = decoratorRule(where(second(Response.class), is(mimeType(MediaType.TEXT_HTML))), templateName("default"));
-    }
-
-    private Predicate<Response> mimeType(final String value) {
-        return new Predicate<Response>() {
-            public boolean matches(Response response) {
-                return response.headers().getValue(HttpHeaders.CONTENT_TYPE).contains(value);
-            }
-        };
+    public void shouldOnlyDecorateHtml() throws Exception {
+        assertDecorationResultsInResponse(
+                decoratorRules(decoratorRule(contentType(TEXT_XML).and(Predicates.<Pair<Request, Response>>always()), templateName("world"))),
+                ORIGINAL_CONTENT);
     }
 
     @Test
     public void shouldDecorateHtml() throws Exception{
-        OutputStream outputStream = new ByteArrayOutputStream();
-        Response response = Response.response(outputStream);
-        RequestHandler hello = write("<body>Hello</body>");
-        List<DecoratorRule> decorators = asList(decoratorRule(Predicates.<Pair<Request, Response>>always(), templateName("world")));
-        RequestHandler decorator = new SiteMeshHandler(hello, null, new Includer(), decorators, getWorldGroup());
-
-        decorator.handle(get(null).build(), response);
-
-        assertThat(outputStream.toString(), containsString("Hello World!"));
+        assertDecorationResultsInResponse(
+                decoratorRules(decoratorRule(Predicates.<Pair<Request, Response>>always(), templateName("world"))),
+                DECORATED_CONTENT);
     }
 
     @Test
     public void shouldChooseFirstAppropriateDecorator() throws Exception {
+        assertDecorationResultsInResponse(decoratorRules(
+                decoratorRule(Predicates.<Pair<Request, Response>>never(), templateName("shouldNeverSeeMe!")), decoratorRule(Predicates.<Pair<Request, Response>>always(), templateName("world"))),
+                DECORATED_CONTENT);
+    }
+
+    private void assertDecorationResultsInResponse(final DecoratorRules decoratorRules, final String result) throws Exception {
         OutputStream outputStream = new ByteArrayOutputStream();
-        Response response = Response.response(outputStream);
-        RequestHandler hello = write("<body>Hello</body>");
-
-        List<DecoratorRule> decorators = asList(decoratorRule(Predicates.<Pair<Request, Response>>never(), templateName("shouldNeverSeeMe!")), decoratorRule(Predicates.<Pair<Request, Response>>always(), templateName("world")));
-
-        RequestHandler decorator = new SiteMeshHandler(hello, null, new Includer(), decorators, getWorldGroup());
-
-        decorator.handle(get(null).build(), response);
-
-        assertThat(outputStream.toString(), containsString("Hello World!"));
+        RequestHandler decorator = new SiteMeshHandler(write(ORIGINAL_CONTENT), null, new Includer(), decoratorRules, getWorldGroup());
+        decorator.handle(get(null).build(), Response.response(outputStream));
+        assertThat(outputStream.toString(), is(result));
     }
 
     private StringTemplateGroup getWorldGroup() {
@@ -94,6 +70,7 @@ public class SiteMeshHandlerTest {
     private RequestHandler write(final String value) {
         return new RequestHandler() {
             public void handle(Request request, Response response) throws Exception {
+                response.header(CONTENT_TYPE, TEXT_HTML);
                 response.write(value);
                 response.close();
             }
