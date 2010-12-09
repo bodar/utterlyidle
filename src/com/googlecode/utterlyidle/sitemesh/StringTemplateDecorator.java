@@ -4,21 +4,17 @@ import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class StringTemplateDecorator {
+public class StringTemplateDecorator implements Decorator {
     private final StringTemplate template;
     private final Includer includer;
     private final BasePath base;
@@ -31,15 +27,19 @@ public class StringTemplateDecorator {
         this.queryParameters = queryParameters;
     }
 
-    public StringTemplateDecorator decorate(PropertyMap properties) throws IOException {
+    public Decorator setContent(PropertyMap content) throws IOException {
         template.setAttribute("include", includer);
         template.setAttribute("base", base);
         template.setAttribute("query", sequence(queryParameters).fold(Maps.<String, List<String>>map(), Maps.<String, String>asMultiValuedMap()));
-        template.setAttribute("properties", properties);
-        template.setAttribute("head", properties.get("head"));
-        template.setAttribute("title", properties.get("title"));
-        template.setAttribute("body", properties.get("body"));
+        template.setAttribute("properties", content);
+        template.setAttribute("head", content.get("head"));
+        template.setAttribute("title", content.get("title"));
+        template.setAttribute("body", content.get("body"));
         return this;
+    }
+
+    public String decorate(String content) throws IOException {
+        return setContent(new PropertyMapParser().parse(content)).toString();
     }
 
     public void writeTo(Writer writer) {
@@ -50,13 +50,6 @@ public class StringTemplateDecorator {
         }
     }
 
-    public void writeTo(OutputStream outputStream) throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-        writeTo(writer);
-        writer.close();
-    }
-
-    @Override
     public String toString() {
         Writer writer = new StringWriter();
         writeTo(writer);

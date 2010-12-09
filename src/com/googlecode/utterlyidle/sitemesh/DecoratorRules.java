@@ -28,3 +28,4 @@ public class DecoratorRules {
         return decorators.find(matchingRule(request, response)).map(asTemplateName());
     }
 }
+
