@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.sitemesh;
 
 public class TemplateName {
     private String templateName;
+    public static final TemplateName NONE = templateName("none");
 
     private TemplateName(String templateName) {
         this.templateName = templateName;
