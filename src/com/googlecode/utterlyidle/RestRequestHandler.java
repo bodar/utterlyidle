@@ -8,22 +8,20 @@ import javax.ws.rs.core.HttpHeaders;
 
 public class RestRequestHandler implements RequestHandler {
     private final Engine restEngine;
-    private final Container container;
+    private final Resolver resolver;
 
-    public RestRequestHandler(Engine restEngine, Container container) {
+    public RestRequestHandler(Engine restEngine, Resolver resolver) {
         this.restEngine = restEngine;
-        this.container = container;
+        this.resolver = resolver;
     }
 
     public void handle(Request request, Response response) throws Exception {
-        container.addInstance(Request.class, request).addInstance(Response.class, response);
-        container.remove(Container.class);
         final Either<MatchFailure, HttpMethodActivator> either = restEngine.findActivator(request);
         if (either.isLeft()) {
-            handle(ResponseBody.responseBody("text/html", either.left()), container, response);
+            handle(ResponseBody.responseBody("text/html", either.left()), resolver, response);
         } else {
-            final ResponseBody responseBody = either.right().activate(container, request);
-            handle(responseBody, container, response);
+            final ResponseBody responseBody = either.right().activate(resolver, request);
+            handle(responseBody, resolver, response);
         }
     }
 
