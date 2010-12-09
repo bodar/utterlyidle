@@ -1,0 +1,21 @@
+package com.googlecode.utterlyidle;
+
+import com.googlecode.totallylazy.Pair;
+
+import static com.googlecode.totallylazy.Sequences.sequence;
+
+public class QueryParameters extends Parameters {
+    public static QueryParameters parse(String value){
+         return (QueryParameters) sequence(UrlEncodedMessage.parse(value)).foldLeft(new QueryParameters(), pairIntoParameters());
+    }
+
+    public static QueryParameters queryParameters(Pair<String, String>... pairs) {
+        return (QueryParameters) sequence(pairs).foldLeft(new QueryParameters(), pairIntoParameters());
+    }
+
+    @Override
+    public String toString() {
+        String value = UrlEncodedMessage.toString(this);
+        return value.equals("") ? "" : "?" + value;
+    }
+}
