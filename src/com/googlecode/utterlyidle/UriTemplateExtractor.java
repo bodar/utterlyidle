@@ -12,7 +12,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 public class UriTemplateExtractor implements Extractor<Method, UriTemplate> {
     public UriTemplate extract(Method method) {
         Sequence<Path> paths = sequence(method.getDeclaringClass().getAnnotation(Path.class), method.getAnnotation(Path.class));
-        return new UriTemplate(paths.filter(notNull(Path.class)).map(getValue()).toString("/"));
+        return UriTemplate.uriTemplate(paths.filter(notNull(Path.class)).map(getValue()).toString("/"));
     }
 
     public static Callable1<? super Path, String> getValue() {
