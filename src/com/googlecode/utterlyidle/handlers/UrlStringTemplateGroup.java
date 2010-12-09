@@ -19,7 +19,7 @@ public class UrlStringTemplateGroup extends StringTemplateGroup {
     protected StringTemplate loadTemplate(String name, String fileName) {
         try {
             return loadTemplate(name, new BufferedReader(url(fileName).reader()));
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }

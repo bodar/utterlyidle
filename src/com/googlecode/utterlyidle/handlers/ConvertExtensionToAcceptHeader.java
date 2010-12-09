@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
@@ -12,22 +11,19 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.ws.rs.core.HttpHeaders;
-
 import java.util.Iterator;
 import java.util.regex.MatchResult;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.io.Url.url;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class ConvertExtensionToAcceptHeader implements RequestHandler {
     public static final Regex FILE_EXTENSION = regex("(\\.[^?/.]+?)(?:\\?.*)?$");
     private final Sequence<Pair<String, String>> replacements;
     private final RequestHandler decorated;
 
-    public ConvertExtensionToAcceptHeader(Replacements replacements, RequestHandler decorated){
+    public ConvertExtensionToAcceptHeader(Replacements replacements, RequestHandler decorated) {
         this.replacements = sequence(replacements);
         this.decorated = decorated;
     }
@@ -42,7 +38,7 @@ public class ConvertExtensionToAcceptHeader implements RequestHandler {
     private Callable2<? super Request, ? super Pair<String, String>, Request> applyReplacement(final Matches fileExtension) {
         return new Callable2<Request, Pair<String, String>, Request>() {
             public Request call(Request request, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
-                if(hasExtension(fileExtension, extensionAndReplacementMimeType.first())){
+                if (hasExtension(fileExtension, extensionAndReplacementMimeType.first())) {
                     request.headers().remove(HttpHeaders.ACCEPT);
                     request.headers().add(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second());
                     request.url(removeExtension(request.url(), fileExtension));
@@ -59,7 +55,7 @@ public class ConvertExtensionToAcceptHeader implements RequestHandler {
     }
 
     private static boolean hasExtension(Matches actual, String expected) {
-        return !actual.isEmpty() && ("."+expected).equals(actual.head().group(1));
+        return !actual.isEmpty() && ("." + expected).equals(actual.head().group(1));
     }
 
     public static class Replacements implements Iterable<Pair<String, String>> {
@@ -69,7 +65,7 @@ public class ConvertExtensionToAcceptHeader implements RequestHandler {
             this.replacements = sequence(replacements);
         }
 
-        public static Replacements replacements(Pair<String, String>... replacements){
+        public static Replacements replacements(Pair<String, String>... replacements) {
             return new Replacements(replacements);
         }
 
