@@ -20,7 +20,8 @@ public class ContentTypePredicate implements Predicate<Response> {
     }
 
     public boolean matches(Response response) {
-        return response.headers().getValue(HttpHeaders.CONTENT_TYPE).contains(value);
+        String contentType = response.headers().getValue(HttpHeaders.CONTENT_TYPE);
+        return contentType != null && contentType.contains(value);
     }
 
 
