@@ -1,7 +1,5 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Request;
@@ -18,10 +16,8 @@ public class StringTemplateDecorators implements Decorators {
     private final StringTemplateGroup group;
     private final List<DecoratorRule> rules = new ArrayList<DecoratorRule>();
     private final Includer include = new Includer();
-    private final BasePath base;
 
-    public StringTemplateDecorators(Url url, BasePath base) {
-        this.base = base;
+    public StringTemplateDecorators(Url url) {
         group = new UrlStringTemplateGroup(url);
     }
 
@@ -44,6 +40,6 @@ public class StringTemplateDecorators implements Decorators {
             return new NoneDecorator();
         }
         StringTemplate template = group.getInstanceOf(templateName.name());
-        return new StringTemplateDecorator(template, include, base, request.query());
+        return new StringTemplateDecorator(template, include, request.basePath(), request.query());
     }
 }

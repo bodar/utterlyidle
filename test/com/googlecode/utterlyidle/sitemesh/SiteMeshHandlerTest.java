@@ -81,7 +81,7 @@ public class SiteMeshHandlerTest {
     }
 
     private Decorators decorators() {
-        return new StringTemplateDecorators(url(getClass().getResource("world.st")).parent(), null);
+        return new StringTemplateDecorators(url(getClass().getResource("world.st")).parent());
     }
 
 
