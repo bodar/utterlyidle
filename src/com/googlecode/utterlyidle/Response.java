@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.io.Converter.asString;
 
 public class Response implements Closeable {
     private OutputStream output;
@@ -76,5 +77,10 @@ public class Response implements Closeable {
 
     public void close() throws IOException {
         writer().close();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("HTTP/1.1 %s\n%s\n", code, headers); 
     }
 }
