@@ -21,7 +21,6 @@ public class RestApplication implements Application {
     public Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.addInstance(Resolver.class, requestScope);
-        requestScope.addInstance(Container.class, requestScope);
         requestScope.add(RequestHandler.class, RestRequestHandler.class);
         for (Module module : modules) {
             module.addPerRequestObjects(requestScope);
@@ -43,7 +42,14 @@ public class RestApplication implements Application {
     }
 
     public void handle(Request request, Response response) throws Exception {
-        createRequestScope().get(RequestHandler.class).handle(request, response);
+        createRequestScope(request, response).get(RequestHandler.class).handle(request, response);
+    }
+
+    private Container createRequestScope(Request request, Response response) {
+        Container requestScope = createRequestScope();
+        requestScope.addInstance(Request.class, request);
+        requestScope.addInstance(Response.class, response);
+        return requestScope;
     }
 
     public Engine engine() {
