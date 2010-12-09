@@ -15,7 +15,7 @@ public class PropertyMapParser {
         ContentProcessor contentProcessor = new TagBasedContentProcessor(new CoreHtmlTagRuleBundle(), new DivExtractingTagRuleBundle());
         Content content = contentProcessor.build(buffer, null);
         ContentProperty extractedProperties = content.getExtractedProperties();
-        return new PropertyMap(new ContentPropertyAdapter(extractedProperties));
+        return new PropertyMap(extractedProperties);
     }
 
     public PropertyMap parse(String value) throws IOException {

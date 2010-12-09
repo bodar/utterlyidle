@@ -6,50 +6,60 @@ import java.util.Set;
 
 public class UnsupportedMap<K,V> implements Map<K,V> {
     public int size() {
-        throw new UnsupportedOperationException();
+        throw blow();
+    }
+
+    private UnsupportedOperationException blow() {
+        return new UnsupportedOperationException(currentMethodName());
     }
 
     public boolean isEmpty() {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public boolean containsKey(Object key) {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public V get(Object key) {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public V put(K key, V value) {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public V remove(Object key) {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public void putAll(Map<? extends K, ? extends V> m) {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public void clear() {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public Collection<V> values() {
-        throw new UnsupportedOperationException();
+        throw blow();
     }
 
     public Set<Entry<K, V>> entrySet() {
-        throw new UnsupportedOperationException();
+        throw blow();
+    }
+
+    public String currentMethodName() {
+        String methodName = Thread.currentThread().getStackTrace()[3].getMethodName();
+        System.out.println(methodName);
+        return methodName;
     }
 }
