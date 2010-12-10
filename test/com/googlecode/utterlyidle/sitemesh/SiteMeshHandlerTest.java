@@ -29,6 +29,13 @@ public class SiteMeshHandlerTest {
     private static final String VALID_TEMPLATE_NAME = "world";
 
     @Test
+    public void shouldAllowAccessToMetaProperties() throws Exception{
+        assertDecorationResultsInResponse(
+                decorators().add(staticRule(Predicates.<Pair<Request, Response>>always(), templateName("metadecorator"))),
+                "Decorator is world");
+    }
+
+    @Test
     public void shouldSupportSelectingDecoratorByMetaTag() throws Exception{
         assertDecorationResultsInResponse(decorators().add(metaTagRule("decorator")), DECORATED_CONTENT);
     }
