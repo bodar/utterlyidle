@@ -32,6 +32,7 @@ public class StringTemplateDecorator implements Decorator {
         template.setAttribute("base", base);
         template.setAttribute("query", sequence(queryParameters).fold(Maps.<String, List<String>>map(), Maps.<String, String>asMultiValuedMap()));
         template.setAttribute("properties", content);
+        template.setAttribute("meta", content.getPropertyMap("meta"));
         template.setAttribute("head", content.get("head"));
         template.setAttribute("title", content.get("title"));
         template.setAttribute("body", content.get("body"));
