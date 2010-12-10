@@ -18,4 +18,12 @@ public class UrlTest {
 
         assertThat(url.replacePath(hierarchicalPath("/other/resource")).toString(), is("http://myserver/other/resource?query=" + queryString));
     }
+
+    @Test
+    public void shouldReturnRawQuery() throws UnsupportedEncodingException {
+        String queryString = URLEncoder.encode("some?&urlencoded:value", "UTF-8");
+        Url url = url("http://myserver/resource?query=" + queryString);
+
+        assertThat(url.getQuery(), is("query="+queryString));
+    }
 }
