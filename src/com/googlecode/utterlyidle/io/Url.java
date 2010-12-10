@@ -25,11 +25,12 @@ public class Url {
 
         try {
             URI o = toURI();
-            String spaceForQuery = UUID.randomUUID().toString(); // There is no way to stop URI from escaping the query from the path
+            String spaceForQuery = o.getRawQuery() == null ? null : UUID.randomUUID().toString();
+
             URI n = new URI(o.getScheme(), o.getUserInfo(), o.getHost(), o.getPort(), path.toString(), spaceForQuery, o.getRawFragment());
 
-            String string = n.toString().replace(spaceForQuery, o.getRawQuery());
-            return new Url(string);
+            String newUri = o.getRawQuery() == null ? n.toString() : n.toString().replace(spaceForQuery, o.getRawQuery());
+            return new Url(newUri);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
