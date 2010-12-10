@@ -155,6 +155,6 @@ public class Url {
     }
 
     public String getQuery() {
-        return toURI().getQuery();
+        return toURI().getRawQuery();
     }
 }
