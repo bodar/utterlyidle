@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.regex.Regex;
 
 import java.io.*;
 import java.net.*;
+import java.util.UUID;
 
 import static com.googlecode.totallylazy.Pair.pair;
 
@@ -24,8 +25,11 @@ public class Url {
 
         try {
             URI o = toURI();
-            URI n = new URI(o.getScheme(), o.getUserInfo(), o.getHost(), o.getPort(), path.toString(), o.getQuery(), o.getFragment());
-            return new Url(n.toString());
+            String spaceForQuery = UUID.randomUUID().toString(); // There is no way to stop URI from escaping the query from the path
+            URI n = new URI(o.getScheme(), o.getUserInfo(), o.getHost(), o.getPort(), path.toString(), spaceForQuery, o.getRawFragment());
+
+            String string = n.toString().replace(spaceForQuery, o.getRawQuery());
+            return new Url(string);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -137,8 +141,8 @@ public class Url {
     }
 
     public static Url url(String value) {
-        Url o = new Url(value);
-        return o.replacePath(o.path());
+        Url url = new Url(value);
+        return url.replacePath(url.path());
     }
 
     public static Url url(URL value) {
