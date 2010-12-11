@@ -11,6 +11,7 @@ class HttpExchangeResponse extends Response {
     private boolean codeSent = false;
 
     public HttpExchangeResponse(HttpExchange httpExchange) {
+        super(null);
         this.httpExchange = httpExchange;
     }
 
@@ -22,8 +23,11 @@ class HttpExchangeResponse extends Response {
 
     @Override
     public OutputStream output() {
-        sendCodeIfNeeded();
-        return httpExchange.getResponseBody();
+        if (super.output() == null) {
+            sendCodeIfNeeded();
+            super.output(httpExchange.getResponseBody());
+        }
+        return super.output();
     }
 
     @Override
@@ -34,7 +38,7 @@ class HttpExchangeResponse extends Response {
 
     private void sendCodeIfNeeded() {
         try {
-            if(!codeSent){
+            if (!codeSent) {
                 httpExchange.sendResponseHeaders(code().code(), 0);
                 codeSent = true;
             }
