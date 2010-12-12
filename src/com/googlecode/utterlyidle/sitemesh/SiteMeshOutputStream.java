@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-class SiteMeshOutputStream extends FilterOutputStream {
+public class SiteMeshOutputStream extends FilterOutputStream {
     private final Request request;
     private final Response response;
     private final OutputStream destination;
