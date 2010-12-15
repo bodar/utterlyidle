@@ -44,4 +44,29 @@ public class HierarchicalPathTest {
         
         assertThat(paths, hasExactly(a,b,c));
     }
+
+    @Test
+    public void shouldSupportContainedBy() throws Exception {
+        HierarchicalPath basePath = new HierarchicalPath("/twig/gui/");
+        HierarchicalPath resourcePath = new HierarchicalPath("/twig/gui");
+        HierarchicalPath anotherResourcePath = new HierarchicalPath("/twig/gui/directoryNumbers");
+        HierarchicalPath otherPath = new HierarchicalPath("/twig/funnyfarm");
+
+        assertThat(resourcePath.containedBy(basePath), is(true));
+        assertThat(anotherResourcePath.containedBy(basePath), is(true));
+        assertThat(otherPath.containedBy(basePath), is(false));
+    }
+
+    @Test
+    public void shouldSupportRemove() throws Exception {
+        HierarchicalPath path = new HierarchicalPath("/fred/sucks");
+        assertThat(path.remove(new HierarchicalPath("/fred/")), is(new HierarchicalPath("sucks")));
+        assertThat(path.remove(new HierarchicalPath("/fred")), is(new HierarchicalPath("sucks")));
+        assertThat(path.remove(new HierarchicalPath("/ooogabooga")), is(path));
+
+
+
+    }
+
+
 }

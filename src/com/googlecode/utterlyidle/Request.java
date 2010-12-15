@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -83,14 +84,14 @@ public class Request {
     }
 
     public ResourcePath resourcePath() {
-        return ResourcePath.resourcePath(removeBase());
+        return ResourcePath.resourcePath(removeBase().toString());
     }
 
-    private String removeBase() {
-        final String path = url().path().toString();
-        final String base = basePath().toString();
-        if(path.startsWith(base)) {
-            return path.substring(base.length());
+    private HierarchicalPath removeBase() {
+        final HierarchicalPath path = url().path();
+        final BasePath base = basePath();
+        if(path.containedBy(base)) {
+            return path.remove(base);
         }
         return path;
     }
