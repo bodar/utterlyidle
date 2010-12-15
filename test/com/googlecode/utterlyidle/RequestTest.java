@@ -1,9 +1,16 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.io.Url;
 import org.junit.Test;
 
+import javax.ws.rs.HttpMethod;
+
+import java.io.ByteArrayInputStream;
+
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -40,4 +47,21 @@ public class RequestTest {
         
         assertThat(request.query().getValue("q"), is("cheeses that look like jesus"));
     }
+
+    @Test
+    public void shouldSupportRetrievingResourcePath() throws Exception {
+        BasePath basePath = basePath("/foobar/");
+        Request request = createRequestWith(basePath, url("http://www.myserver.com/foobar/spaz"));
+
+        assertThat(request.resourcePath(), is(resourcePath("spaz")));
+
+        Request anotherRequest = createRequestWith(basePath, url("http://www.myserver.com/foobar"));
+        assertThat(anotherRequest.resourcePath(), is(resourcePath("")));
+
+    }
+
+    private Request createRequestWith(BasePath basePath, Url url) {
+        return new Request(HttpMethod.GET, url, HeaderParameters.headerParameters(), new ByteArrayInputStream("foo".getBytes()), basePath);
+    }
+
 }
