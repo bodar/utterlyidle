@@ -18,8 +18,6 @@ public class RestRequestHandler implements RequestHandler {
         final Either<MatchFailure, HttpMethodActivator> either = restEngine.findActivator(request);
         if (either.isLeft()) {
             handle(resolver, request, response.
-                    status(either.left().status()).
-                    header(CONTENT_TYPE, "text/html").
                     entity(either.left()));
         } else {
             handle(resolver, request, either.right().activate(resolver, request, response).
@@ -27,14 +25,7 @@ public class RestRequestHandler implements RequestHandler {
         }
     }
 
-    private void handle(Resolver resolver, Request request, Response response) {
-        try {
-            restEngine.responseHandlers().handle(response.entity(),resolver, response);
-        } catch (Exception e) {
-            throw new UnsupportedOperationException(e);
-        }
-
+    private void handle(Resolver resolver, Request request, Response response) throws Exception {
+        restEngine.responseHandlers().handle(response.entity(), resolver, response);
     }
-
-
 }
