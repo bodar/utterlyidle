@@ -19,9 +19,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RedirectToTest {
     @Test
-    public void supportsOptions() throws Exception {
+    public void supportsSome() throws Exception {
         Redirect redirect = new RedirectTo<SomeResource>() {{ call.getHtml(Option.some("foo")); }};
         assertThat(redirect.location(), is("path/foo"));
+    }
+
+    @Test
+    public void supportsNone() throws Exception {
+        Redirect redirect = new RedirectTo<SomeResource>() {{ call.getOptional("id", Option.none(String.class)); }};
+        assertThat(redirect.location(), is("path/id"));
     }
 
     @Test

@@ -107,7 +107,6 @@ public class CookiesTest {
         cookies.commit();
 
         final String value = response.headers().getValue(SET_COOKIE_HEADER);
-        System.out.println("value = " + value);
         final HeaderParameters headers = (HeaderParameters) headerParameters().add(REQUEST_COOKIE_HEADER, value);
         Cookies cookiesRead = cookies(request(headers), response);
         assertThat(cookiesRead.getValue(cookieName), is("1"));

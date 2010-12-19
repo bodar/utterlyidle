@@ -1,12 +1,20 @@
 package com.googlecode.utterlyidle.io;
 
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.First;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
+import com.googlecode.utterlyidle.BasePath;
 
+import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Sequences.empty;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.numbers.Numbers.equalTo;
+import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 
-public class HierarchicalPath implements Path {
+public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
     private static final String DUPLICATE_SEPARATORS = "\\/+";
     private final String value;
 
@@ -77,4 +85,39 @@ public class HierarchicalPath implements Path {
 
         return true;
     }
+
+    public int compareTo(HierarchicalPath other) {
+        return value.compareTo(other.value);
+    }
+
+    public boolean containedBy(HierarchicalPath basePath) {
+        if (greaterThan(basePath.segments().size(), segments().size())){
+            return false;
+        }
+
+        return equalTo(
+                firstConsecutiveCommonSegments(basePath).size(),
+                basePath.segments().size());
+    }
+
+    private Sequence<Pair<String, String>> firstConsecutiveCommonSegments(HierarchicalPath basePath) {
+        return basePath.segments().zip(segments()).takeWhile(segmentIsEqual());
+    }
+
+    private Predicate<Pair<String, String>> segmentIsEqual() {
+        return new Predicate<Pair<String, String>>() {
+            public boolean matches(Pair<String, String> pathSegment) {
+                return pathSegment.first().equals(pathSegment.second());
+            }
+        };
+    }
+
+    public HierarchicalPath remove(HierarchicalPath base) {
+        if (!containedBy(base)) {
+            return this;
+        }
+        Sequence<String> remainingSegments = segments().drop(firstConsecutiveCommonSegments(base).size().intValue());
+        return new HierarchicalPath(join(remainingSegments));
+    }
+
 }
