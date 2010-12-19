@@ -11,7 +11,8 @@ import static com.googlecode.totallylazy.callables.LazyCallable.lazy;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 
 public class ContractEnforcingResponse implements Response {
-    protected Status code;
+    protected Status status;
+    protected Object entity;
     protected Callable<? extends OutputStream> output;
     private final HeaderParameters headers = headerParameters();
 
@@ -24,11 +25,11 @@ public class ContractEnforcingResponse implements Response {
     }
 
     public Status status() {
-        return code;
+        return status;
     }
 
     public Response status(Status value) {
-        this.code = value;
+        this.status = value;
         return this;
     }
 
@@ -46,7 +47,7 @@ public class ContractEnforcingResponse implements Response {
     }
 
     public OutputStream output() {
-        if(code == null){
+        if(status == null){
             throw new IllegalStateException("You must set the HTTP status before you can write content to the output stream");
         }
         if(!headers.contains(HttpHeaders.CONTENT_TYPE)){
@@ -60,12 +61,21 @@ public class ContractEnforcingResponse implements Response {
         return this;
     }
 
+    public Object entity() {
+        return entity;
+    }
+
+    public Response entity(Object value) {
+        entity = value;
+        return this;
+    }
+
     public void close() throws IOException {
         call(output).close();
     }
 
     @Override
     public String toString() {
-        return String.format("HTTP/1.1 %s\n%s\n", code, headers); 
+        return String.format("HTTP/1.1 %s\n%s\n", status, headers);
     }
 }
