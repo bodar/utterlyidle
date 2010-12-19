@@ -6,10 +6,9 @@ import com.googlecode.utterlyidle.handlers.RendererHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 
-import static com.googlecode.utterlyidle.Response.response;
+import static com.googlecode.utterlyidle.MemoryResponse.response;
 
 public class TestEngine implements Engine {
     RestApplication application = new RestApplication();

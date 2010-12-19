@@ -2,14 +2,14 @@ package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestHandler;
-import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.*;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
+import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -29,19 +29,19 @@ public class SiteMeshHandlerTest {
     private static final String VALID_TEMPLATE_NAME = "world";
 
     @Test
-    public void shouldAllowAccessToMetaProperties() throws Exception{
+    public void shouldAllowAccessToMetaProperties() throws Exception {
         assertDecorationResultsInResponse(
                 decorators().add(staticRule(Predicates.<Pair<Request, Response>>always(), templateName("metadecorator"))),
                 "Decorator is world");
     }
 
     @Test
-    public void shouldSupportSelectingDecoratorByMetaTag() throws Exception{
+    public void shouldSupportSelectingDecoratorByMetaTag() throws Exception {
         assertDecorationResultsInResponse(decorators().add(metaTagRule("decorator")), DECORATED_CONTENT);
     }
 
     @Test
-    public void shouldNotDecorateHtmlWhenNoDecorators() throws Exception{
+    public void shouldNotDecorateHtmlWhenNoDecorators() throws Exception {
         assertDecorationResultsInResponse(decorators(), ORIGINAL_CONTENT);
     }
 
@@ -56,14 +56,14 @@ public class SiteMeshHandlerTest {
     public void shouldBeAbleToSelectBasedOnPath() throws Exception {
         assertDecorationResultsInResponse(
                 decorators().add(staticRule(path("foo"), templateName("neverGetsHere"))).
-                             add(staticRule(path("/bar"), templateName(VALID_TEMPLATE_NAME))),
+                        add(staticRule(path("/bar"), templateName(VALID_TEMPLATE_NAME))),
                 DECORATED_CONTENT,
                 "bar");
     }
 
 
     @Test
-    public void shouldDecorateHtml() throws Exception{
+    public void shouldDecorateHtml() throws Exception {
         assertDecorationResultsInResponse(
                 decorators().add(staticRule(Predicates.<Pair<Request, Response>>always(), templateName(VALID_TEMPLATE_NAME))),
                 DECORATED_CONTENT);
@@ -80,10 +80,11 @@ public class SiteMeshHandlerTest {
     private void assertDecorationResultsInResponse(final Decorators decorators, final String result) throws Exception {
         assertDecorationResultsInResponse(decorators, result, null);
     }
+
     private void assertDecorationResultsInResponse(final Decorators decorators, final String result, final String path) throws Exception {
         OutputStream outputStream = new ByteArrayOutputStream();
         RequestHandler decorator = new SiteMeshHandler(write(ORIGINAL_CONTENT), decorators);
-        decorator.handle(get(path).build(), Response.response(outputStream));
+        decorator.handle(get(path).build(), response(outputStream));
         assertThat(outputStream.toString(), is(result));
     }
 
@@ -95,8 +96,11 @@ public class SiteMeshHandlerTest {
     private RequestHandler write(final String value) {
         return new RequestHandler() {
             public void handle(Request request, Response response) throws Exception {
+                response.status(Status.OK);
                 response.header(CONTENT_TYPE, TEXT_HTML);
-                response.write(value);
+                OutputStreamWriter writer = new OutputStreamWriter(response.output());
+                writer.write(value);
+                writer.close();
                 response.close();
             }
         };

@@ -1,86 +1,23 @@
 package com.googlecode.utterlyidle;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.FilterOutputStream;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.util.List;
 
-import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.io.Converter.asString;
+public interface Response extends Closeable {
+    Status status();
 
-public class Response implements Closeable {
-    private OutputStream output;
-    protected final HeaderParameters headers = headerParameters();
-    protected Status code = Status.OK;
-    private PrintWriter writer;
+    Response status(Status value);
 
-    public Response(OutputStream output) {
-        this.output = output;
-    }
+    String header(String name);
 
-    public Response() {
-        this(new ByteArrayOutputStream());
-    }
+    Iterable<String> headers(String name);
 
-    public static Response response(OutputStream output) {
-        return new Response(output);
-    }
+    Response header(String name, String value);
 
-    public static Response response() {
-        return new Response();
-    }
 
-    public Status code() {
-        return code;
-    }
+    OutputStream output();
 
-    public Response code(Status value) {
-        this.code = value;
-        return this;
-    }
-
-    public Response header(String name, String value) {
-        headers.add(name, value);
-        return this;
-    }
-
-    public HeaderParameters headers() {
-        return headers;
-    }
-
-    public OutputStream output() {
-        return output;
-    }
-
-    public Response output(OutputStream outputStream) {
-        output = outputStream;
-        writer = null;
-        return this;
-    }
-
-    public PrintWriter writer() {
-        if(writer== null){
-            writer = new PrintWriter(output());
-        }
-        return writer;
-    }
-
-    public Response write(String value) throws IOException {
-        writer().write(value);
-        return this;
-    }
-
-    public void close() throws IOException {
-        writer().close();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("HTTP/1.1 %s\n%s\n", code, headers); 
-    }
+    Response output(OutputStream outputStream);
 }

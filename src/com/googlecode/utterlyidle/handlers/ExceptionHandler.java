@@ -1,12 +1,11 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestHandler;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;
+
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 public class ExceptionHandler implements RequestHandler{
     private final RequestHandler requestHandler;
@@ -30,7 +29,10 @@ public class ExceptionHandler implements RequestHandler{
     }
 
     private void handle(Throwable value, Response response) throws Exception {
-        response.code(Status.INTERNAL_SERVER_ERROR);
+        response.status(Status.INTERNAL_SERVER_ERROR);
+        if(response.header(CONTENT_TYPE) == null){
+            response.header(CONTENT_TYPE, "text/plain");
+        }
         responseHandlers.handle(value, resolver, response);
     }
 }

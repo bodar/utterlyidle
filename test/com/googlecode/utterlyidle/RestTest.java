@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.utterlyidle.cookies.CookieName;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import org.junit.Test;
 
@@ -26,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Formatter;
 
+import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
@@ -42,16 +42,15 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
 public class RestTest {
-
     @Test
     public void canHandleCookies() throws Exception {
         TestEngine engine = new TestEngine();
         engine.add(GettableWithCookies.class);
         Request request = get("foo").withHeader("Cookie", "name=value").build();
-        Response response = Response.response();
+        Response response = response();
         engine.handle(request, response);
         assertThat(response.output().toString(), is("found"));
-        assertThat(response.headers().getValue("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
+        assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
     
     @Test
@@ -117,9 +116,9 @@ public class RestTest {
         TestEngine engine = new TestEngine();
         engine.add(GetsWithMimeTypes.class);
 
-        Response response = new Response();
+        Response response = response();
         engine.handle(get("text").accepting("text/plain"), response);
-        assertThat(response.headers.getValue(HttpHeaders.CONTENT_TYPE), is("text/plain"));
+        assertThat(response.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
     }
 
     @Test
@@ -153,7 +152,7 @@ public class RestTest {
     public void supportsNoContent() throws Exception {
         TestEngine engine = new TestEngine();
         engine.add(NoContent.class);
-        Response response = new Response();
+        MemoryResponse response = new MemoryResponse();
         engine.handle(post("foo"), response);
         assertThat(response.code, is(Status.NO_CONTENT));
     }
@@ -169,7 +168,7 @@ public class RestTest {
     public void supportsDelete() throws Exception {
         TestEngine engine = new TestEngine();
         engine.add(DeleteContent.class);
-        Response response = new Response();
+        MemoryResponse response = new MemoryResponse();
         engine.handle(delete("path/bar"), response);
         assertThat(response.code, is(Status.NO_CONTENT));
     }
@@ -196,9 +195,9 @@ public class RestTest {
     public void canPostRedirectGet() throws Exception {
         TestEngine engine = new TestEngine();
         engine.add(PostRedirectGet.class);
-        Response response = new Response();
+        MemoryResponse response = new MemoryResponse();
         engine.handle(post("path/bob"), response);
-        assertThat(engine.handle(get(response.headers.getValue(HttpHeaders.LOCATION))), is("bob"));
+        assertThat(engine.handle(get(response.header(HttpHeaders.LOCATION))), is("bob"));
     }
 
     @Test

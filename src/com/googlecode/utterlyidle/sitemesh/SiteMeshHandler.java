@@ -16,6 +16,6 @@ public class SiteMeshHandler implements RequestHandler {
     }
 
     public void handle(final Request request, final Response response) throws Exception {
-        requestHandler.handle(request, response.output(new SiteMeshOutputStream(request, response, response.output(), decorators)));
+        requestHandler.handle(request, new SiteMeshResponse(request, response, decorators));
     }
 }

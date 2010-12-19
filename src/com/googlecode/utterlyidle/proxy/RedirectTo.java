@@ -29,9 +29,4 @@ public abstract class RedirectTo<T> implements Redirect, InvocationHandler{
     public String location() {
         return location;
     }
-
-    public void applyTo(BasePath base, Response response) {
-        response.header(HttpHeaders.LOCATION, base.file(location).toString());
-        response.code(Status.SEE_OTHER);
-    }
 }
