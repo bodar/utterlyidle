@@ -13,7 +13,7 @@ public class MatchFailureHandler implements ResponseHandler<MatchFailure> {
     }
 
     public void handle(MatchFailure value, Resolver resolver, Response response) throws Exception {
-        response.code(value.status());
+        response.status(value.status());
         renderers.handle(value, resolver, response);
     }
 }

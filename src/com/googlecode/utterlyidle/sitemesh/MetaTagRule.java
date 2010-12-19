@@ -4,9 +4,6 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 public class MetaTagRule implements DecoratorRule {
     private final String name;
     private String templateName;
@@ -28,9 +25,9 @@ public class MetaTagRule implements DecoratorRule {
 
     public boolean matches(Pair<Request, Response> pair) {
         try {
-            SiteMeshOutputStream output = (SiteMeshOutputStream) pair.second().output();
+            SiteMeshResponse response = (SiteMeshResponse) pair.second();
 
-            PropertyMap propertyMap = new PropertyMapParser().parse(output.getOriginalContent());
+            PropertyMap propertyMap = new PropertyMapParser().parse(response.originalContent());
             templateName = propertyMap.getPropertyMap("meta").getPropertyMap(this.name).toString();
             if (templateName != null && templateName.length() != 0) {
                 return true;

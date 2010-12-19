@@ -9,6 +9,6 @@ import java.io.IOException;
 
 public class NullHandler implements ResponseHandler<Object> {
     public void handle(Object value, Resolver resolver, Response response) throws IOException {
-        response.code(Status.NO_CONTENT);
+        response.status(Status.NO_CONTENT);
     }
 }

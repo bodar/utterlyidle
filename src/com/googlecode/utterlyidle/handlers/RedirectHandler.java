@@ -1,10 +1,9 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.Redirect;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseHandler;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.yadic.Resolver;
+
+import javax.ws.rs.core.HttpHeaders;
 
 public class RedirectHandler implements ResponseHandler<Redirect> {
     private final BasePath basePath;
@@ -14,6 +13,7 @@ public class RedirectHandler implements ResponseHandler<Redirect> {
     }
 
     public void handle(Redirect redirect, Resolver resolver, Response response) {
-        redirect.applyTo(basePath, response);
+        response.status(Status.SEE_OTHER);
+        response.header(HttpHeaders.LOCATION, basePath.file(redirect.location()).toString());
     }
 }
