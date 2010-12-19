@@ -5,6 +5,8 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.yadic.Resolver;
 
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+
 public class MatchFailureHandler implements ResponseHandler<MatchFailure> {
     private final RendererHandler renderers;
 
@@ -14,6 +16,7 @@ public class MatchFailureHandler implements ResponseHandler<MatchFailure> {
 
     public void handle(MatchFailure value, Resolver resolver, Response response) throws Exception {
         response.status(value.status());
+        response.header(CONTENT_TYPE, "text/html");
         renderers.handle(value, resolver, response);
     }
 }
