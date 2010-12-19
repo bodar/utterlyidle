@@ -1,11 +1,8 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.utterlyidle.AttributeMap;
-import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Engine;
 import com.googlecode.utterlyidle.Module;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.ResourcePath;
 import com.googlecode.utterlyidle.WebRoot;
 import com.googlecode.yadic.Container;
 
