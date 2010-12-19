@@ -19,14 +19,14 @@ import javax.ws.rs.core.StreamingOutput;
 
 import static com.googlecode.totallylazy.Predicates.aNull;
 import static com.googlecode.totallylazy.Predicates.assignableTo;
+import static com.googlecode.totallylazy.proxy.Call.on;
 
 
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {
-        final Request request = container.get(Request.class);
         container.add(Cookies.class);
-        container.addInstance(BasePath.class, request.basePath());
-        container.addInstance(ResourcePath.class, request.resourcePath());
+        container.addActivator(BasePath.class, BasePathActivator.class);
+        container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
         return this;
     }

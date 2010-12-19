@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Option;
 
 import javax.ws.rs.GET;
@@ -33,5 +34,9 @@ public class SomeResource {
     @GET
     public StreamingWriter getStreamingWriter(@PathParam("id") String id) {
         return null;
+    }
+
+    @GET
+    public void getOptional(@PathParam("id") String id, @QueryParam("foo") Option<String> value) {
     }
 }

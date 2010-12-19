@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
-import com.googlecode.utterlyidle.handlers.FlushResponseHandler;
+import com.googlecode.utterlyidle.handlers.CloseResponseHandler;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -14,20 +14,19 @@ public class RestApplication implements Application {
     private final List<Module> modules = new ArrayList<Module>();
 
     public RestApplication() {
+        applicationScope.addInstance(Application.class, this);
         add(new CoreModule());
     }
 
-    private Container createRequestScope(Request request, Response response) {
+    public Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.addInstance(Resolver.class, requestScope);
-        requestScope.addInstance(Request.class, request);
-        requestScope.addInstance(Response.class, response);
         requestScope.add(RequestHandler.class, RestRequestHandler.class);
         for (Module module : modules) {
             module.addPerRequestObjects(requestScope);
         }
         requestScope.decorate(RequestHandler.class, ExceptionHandler.class);
-        requestScope.decorate(RequestHandler.class, FlushResponseHandler.class);
+        requestScope.decorate(RequestHandler.class, CloseResponseHandler.class);
         return requestScope;
     }
 
@@ -44,6 +43,13 @@ public class RestApplication implements Application {
 
     public void handle(Request request, Response response) throws Exception {
         createRequestScope(request, response).get(RequestHandler.class).handle(request, response);
+    }
+
+    private Container createRequestScope(Request request, Response response) {
+        Container requestScope = createRequestScope();
+        requestScope.addInstance(Request.class, request);
+        requestScope.addInstance(Response.class, response);
+        return requestScope;
     }
 
     public Engine engine() {

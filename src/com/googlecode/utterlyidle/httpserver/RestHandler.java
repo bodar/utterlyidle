@@ -2,6 +2,8 @@ package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -31,21 +33,18 @@ public class RestHandler implements HttpHandler {
             application.handle(request, response);
             System.out.println(String.format("%s %s -> %s in %s msecs", request.method(), request.url(), response.code(), calculateMilliseconds(start, nanoTime())));
         } catch (Exception e) {
-            System.err.println(String.format("%s %s -> %s", request.method(), request.url(), e));
-            e.printStackTrace();
-            outputException(response, e);
+            outputException(request, response, e);
         }
     }
 
-    private void outputException(HttpExchangeResponse response, Exception e) throws IOException {
+    private void outputException(Request request, Response response, Exception e) throws IOException {
+        System.err.println(String.format("%s %s -> %s", request.method(), request.url(), e));
+        e.printStackTrace(System.err);
         response.code(Status.INTERNAL_SERVER_ERROR);
-        PrintWriter writer = new PrintWriter(response.output());
         try {
-            e.printStackTrace(writer);
+            e.printStackTrace(response.writer());
         } finally {
-            writer.flush();
-            writer.close();
-            response.flush();
+            response.close();
         }
     }
 }

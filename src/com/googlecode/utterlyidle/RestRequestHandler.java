@@ -1,13 +1,14 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
+import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.core.HttpHeaders;
 
 public class RestRequestHandler implements RequestHandler {
-    private final Resolver resolver;
     private final Engine restEngine;
+    private final Resolver resolver;
 
     public RestRequestHandler(Engine restEngine, Resolver resolver) {
         this.restEngine = restEngine;

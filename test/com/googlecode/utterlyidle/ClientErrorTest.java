@@ -24,7 +24,6 @@ public class ClientErrorTest {
         TestEngine engine = new TestEngine();
         Response response = response();
         engine.handle(get("invalidPath"), response);
-
         assertThat(response.code(), is(Status.NOT_FOUND));
     }
 
