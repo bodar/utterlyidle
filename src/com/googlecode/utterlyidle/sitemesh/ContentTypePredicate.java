@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
-import com.googlecode.totallylazy.predicates.WherePredicate;
+import com.googlecode.utterlyidle.MemoryResponse;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
@@ -20,7 +20,7 @@ public class ContentTypePredicate implements Predicate<Response> {
     }
 
     public boolean matches(Response response) {
-        String contentType = response.headers().getValue(HttpHeaders.CONTENT_TYPE);
+        String contentType = response.header(HttpHeaders.CONTENT_TYPE);
         return contentType != null && contentType.contains(value);
     }
 

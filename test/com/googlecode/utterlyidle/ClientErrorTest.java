@@ -13,7 +13,7 @@ import java.io.OutputStream;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
-import static com.googlecode.utterlyidle.Response.response;
+import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -24,7 +24,7 @@ public class ClientErrorTest {
         TestEngine engine = new TestEngine();
         Response response = response();
         engine.handle(get("invalidPath"), response);
-        assertThat(response.code(), is(Status.NOT_FOUND));
+        assertThat(response.status(), is(Status.NOT_FOUND));
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ClientErrorTest {
         engine.add(Foo.class);
         engine.handle(post("path"), response);
 
-        assertThat(response.code(), is(Status.METHOD_NOT_ALLOWED));
+        assertThat(response.status(), is(Status.METHOD_NOT_ALLOWED));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class ClientErrorTest {
         engine.add(SomeOther.class);
         engine.handle(get("path").withQuery("someOther", "value"), response);
 
-        assertThat(response.code(), is(Status.UNSATISFIABLE_PARAMETERS));
+        assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ClientErrorTest {
         engine.add(SomeOther.class);
         engine.handle(get("object"), response);
 
-        assertThat(response.code(), is(Status.UNSATISFIABLE_PARAMETERS));
+        assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ClientErrorTest {
         engine.add(Foo.class);
         engine.handle(get("path").withHeader(HttpHeaders.CONTENT_TYPE, "application/rubbish"), response);
 
-        assertThat(response.code(), is(Status.UNSUPPORTED_MEDIA_TYPE));
+        assertThat(response.status(), is(Status.UNSUPPORTED_MEDIA_TYPE));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class ClientErrorTest {
         engine.add(Foo.class);
         engine.handle(get("bob").accepting("application/gibberish"), response);
 
-        assertThat(response.code(), is(Status.NOT_ACCEPTABLE));
+        assertThat(response.status(), is(Status.NOT_ACCEPTABLE));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ClientErrorTest {
         engine.add(Foo.class);
         engine.handle(get("bob"), response);
 
-        assertThat(response.code(), is(Status.OK));
+        assertThat(response.status(), is(Status.OK));
     }
 
     public static class SomeOther{

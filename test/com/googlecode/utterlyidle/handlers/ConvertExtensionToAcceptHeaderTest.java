@@ -1,10 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.regex.Matches;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.RequestHandler;
-import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.*;
 import org.junit.Test;
 
 import javax.ws.rs.core.HttpHeaders;

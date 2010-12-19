@@ -6,9 +6,13 @@ import com.googlecode.utterlyidle.StreamingWriter;
 import com.googlecode.yadic.Resolver;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 public class StreamingWriterHandler implements ResponseHandler<StreamingWriter> {
     public void handle(StreamingWriter value, Resolver resolver, Response response) throws IOException {
-        value.write(response.writer());
+        OutputStreamWriter writer = new OutputStreamWriter(response.output());
+        value.write(writer);
+        writer.close();
     }
 }

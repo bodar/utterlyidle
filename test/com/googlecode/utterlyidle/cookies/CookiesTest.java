@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.MemoryResponse;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import java.util.Date;
@@ -24,11 +24,12 @@ import static com.googlecode.utterlyidle.cookies.Cookies.REQUEST_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.cookies.Cookies.SET_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.cookies.Cookies.cookies;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 public class CookiesTest {
-    private Response response = new Response();
+    private MemoryResponse response = new MemoryResponse();
 
     @Test
     public void shouldHandleTrailingSpaces() throws Exception {
@@ -63,15 +64,11 @@ public class CookiesTest {
         cookies.set(cookieName("a"), "1");
         cookies.set(cookieName("b"), "2");
 
-        assertThat(response.headers().getValue(SET_COOKIE_HEADER), is(nullValue()));
+        assertThat(response.header(SET_COOKIE_HEADER), is(nullValue()));
 
         cookies.commit();
 
-        assertThat(
-                sequence(response.headers()).sortBy(second(String.class)),
-                hasExactly(
-                        pair(SET_COOKIE_HEADER, "a=\"1\"; "),
-                        pair(SET_COOKIE_HEADER, "b=\"2\"; ")));
+        assertThat(response.headers(SET_COOKIE_HEADER), containsInAnyOrder("a=\"1\"; ", "b=\"2\"; "));
     }
 
     @Test
@@ -82,7 +79,7 @@ public class CookiesTest {
         cookies.rollback();
         cookies.commit();
 
-        assertThat(response.headers().getValue(SET_COOKIE_HEADER), is(nullValue()));
+        assertThat(response.header(SET_COOKIE_HEADER), is(nullValue()));
     }
 
     @Test
@@ -90,12 +87,12 @@ public class CookiesTest {
         Cookies cookies = cookies(someRequest(), response);
         cookies.set(cookie(cookieName("a"), "1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(new Date(77, 7, 30, 9, 32, 59))));
 
-        assertThat(response.headers().getValue(SET_COOKIE_HEADER), is(nullValue()));
+        assertThat(response.header(SET_COOKIE_HEADER), is(nullValue()));
 
         cookies.commit();
 
         assertThat(
-                response.headers().getValue(SET_COOKIE_HEADER),
+                response.header(SET_COOKIE_HEADER),
                 is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Tue, 30-Aug-1977 09:32:59 GMT\""));
     }
 
@@ -106,7 +103,7 @@ public class CookiesTest {
         cookies.set(cookie(cookieName, "1"));
         cookies.commit();
 
-        final String value = response.headers().getValue(SET_COOKIE_HEADER);
+        final String value = response.header(SET_COOKIE_HEADER);
         final HeaderParameters headers = (HeaderParameters) headerParameters().add(REQUEST_COOKIE_HEADER, value);
         Cookies cookiesRead = cookies(request(headers), response);
         assertThat(cookiesRead.getValue(cookieName), is("1"));
