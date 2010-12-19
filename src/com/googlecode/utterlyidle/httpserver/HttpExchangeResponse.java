@@ -15,9 +15,22 @@ class HttpExchangeResponse extends Response {
     }
 
     @Override
+    public Response header(String name, String value) {
+        httpExchange.getResponseHeaders().add(name, value);
+        return super.header(name, value);
+    }
+
+    @Override
     public OutputStream output() {
         sendCodeIfNeeded();
         return httpExchange.getResponseBody();
+    }
+
+    @Override
+    public Response flush() throws IOException {
+        super.flush();
+        httpExchange.close();
+        return this;
     }
 
     private void sendCodeIfNeeded() {
@@ -26,7 +39,7 @@ class HttpExchangeResponse extends Response {
                 httpExchange.sendResponseHeaders(code().code(), 0);
                 codeSent = true;
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
             throw new UnsupportedOperationException(e);
         }
 

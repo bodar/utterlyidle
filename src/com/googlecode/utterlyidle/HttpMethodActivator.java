@@ -1,12 +1,15 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.utterlyidle.ResponseBody.responseBody;
+import static com.googlecode.yadic.CreateCallable.create;
 
 public class HttpMethodActivator implements Activator {
     private final Method method;
@@ -36,15 +39,9 @@ public class HttpMethodActivator implements Activator {
         return method.getParameterTypes().length;
     }
 
-    public ResponseBody activate(Resolver container, Request request) {
-        try {
-            Object instance = container.resolve(method.getDeclaringClass());
-            return responseBody(producesMatcher.mimeType(), method.invoke(instance, argumentsExtractor.extract(request)));
-        } catch (InvocationTargetException e) {
-             return responseBody(producesMatcher.mimeType(), e.getCause());
-        } catch (IllegalAccessException e) {
-            return responseBody(producesMatcher.mimeType(), e);
-        }
+    public ResponseBody activate(Resolver resolver, Request request) throws InvocationTargetException, IllegalAccessException {
+        Object instance = call(create(method.getDeclaringClass(), resolver));
+        return responseBody(producesMatcher.mimeType(), method.invoke(instance, argumentsExtractor.extract(request)));
     }
 
     public int priority() {

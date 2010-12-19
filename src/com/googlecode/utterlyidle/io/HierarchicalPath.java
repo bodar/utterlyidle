@@ -1,7 +1,9 @@
 package com.googlecode.utterlyidle.io;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 
+import static com.googlecode.totallylazy.Sequences.empty;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class HierarchicalPath implements Path {
@@ -16,7 +18,13 @@ public class HierarchicalPath implements Path {
         this.value = value.replaceAll(DUPLICATE_SEPARATORS, "/");
     }
 
-    private Sequence<String> segments() {
+    public Sequence<String> segments() {
+        if(value.equals("")){
+            return empty();
+        }
+        if(value.equals("/")){
+            return sequence("");
+        }
         return sequence(value.split("/"));
     }
 

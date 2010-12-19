@@ -14,7 +14,12 @@ class ServletRequest extends Request {
     private final HttpServletRequest request;
 
     public ServletRequest(HttpServletRequest request) throws IOException {
-        super(request.getMethod(), Url.url(request.getRequestURI() + queryString(request.getQueryString())), convertToHeaderParameters(request), request.getInputStream(), extractBasePath(request));
+        super(
+                request.getMethod(),
+                Url.url(request.getRequestURI() + queryString(request.getQueryString())),
+                convertToHeaderParameters(request),
+                request.getInputStream(), 
+                extractBasePath(request));
         this.request = request;
     }
 

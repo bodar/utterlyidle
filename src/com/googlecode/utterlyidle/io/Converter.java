@@ -7,6 +7,7 @@ import java.io.Reader;
 
 public class Converter {
     public static String asString(InputStream stream) {
+        if(stream==null) return "";
         return asString(new InputStreamReader(stream));
     }
 
