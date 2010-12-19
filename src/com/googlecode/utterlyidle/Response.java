@@ -16,8 +16,9 @@ public interface Response extends Closeable {
 
     Response header(String name, String value);
 
-
     OutputStream output();
 
-    Response output(OutputStream outputStream);
+    Object entity();
+
+    Response entity(Object value);
 }

@@ -154,7 +154,7 @@ public class RestTest {
         engine.add(NoContent.class);
         MemoryResponse response = new MemoryResponse();
         engine.handle(post("foo"), response);
-        assertThat(response.code, is(Status.NO_CONTENT));
+        assertThat(response.status, is(Status.NO_CONTENT));
     }
 
     @Test
@@ -170,7 +170,7 @@ public class RestTest {
         engine.add(DeleteContent.class);
         MemoryResponse response = new MemoryResponse();
         engine.handle(delete("path/bar"), response);
-        assertThat(response.code, is(Status.NO_CONTENT));
+        assertThat(response.status, is(Status.NO_CONTENT));
     }
 
     @Test

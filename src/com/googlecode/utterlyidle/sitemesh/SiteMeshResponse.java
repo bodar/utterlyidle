@@ -5,7 +5,6 @@ import com.googlecode.utterlyidle.Response;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.io.*;
-import java.nio.CharBuffer;
 
 public class SiteMeshResponse extends DelegatingResponse {
     private final Request request;

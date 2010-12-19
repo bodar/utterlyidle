@@ -8,6 +8,7 @@ import java.io.OutputStream;
 
 public class DelegatingResponse implements Response {
     protected final Response response;
+    private Object entity;
 
     public DelegatingResponse(final Response response) {
         this.response = response;
@@ -37,8 +38,13 @@ public class DelegatingResponse implements Response {
         return response.output();
     }
 
-    public Response output(OutputStream outputStream) {
-        return response.output(outputStream);
+    public Object entity() {
+        return entity;
+    }
+
+    public Response entity(Object value) {
+        entity = value;
+        return this;
     }
 
     public void close() throws IOException {
