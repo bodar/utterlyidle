@@ -9,7 +9,7 @@ import static com.googlecode.utterlyidle.io.Converter.asString;
 
 public class Request {
     private final String method;
-    private final Url url;
+    private Url url;
     private final InputStream input;
     private final HeaderParameters headers;
     private BasePath basePath;
@@ -40,6 +40,12 @@ public class Request {
         return url;
     }
 
+    public Request url(Url url) {
+        this.url= url;
+        this.query = null;
+        return this;
+    }
+
     public InputStream input() {
         return input;
     }
@@ -68,7 +74,12 @@ public class Request {
 
     @Override
     public String toString() {
-        return String.format("%s %s HTTP/1.1", method, url);
+        return String.format("%s %s HTTP/1.1\n%s\n%s", method, url, headers(), inputAsRequestString());
+    }
+
+    private String inputAsRequestString() {
+        String input = asString(input());
+        return input.length() == 0 ? "" : String.format("Content-length: %s\n\n%s", input.length(), input);
     }
 
     public ResourcePath resourcePath() {

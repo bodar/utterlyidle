@@ -5,12 +5,16 @@ import com.googlecode.totallylazy.Pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class FormParameters extends Parameters {
-    public static FormParameters parse(String value) {
-        return (FormParameters) sequence(UrlEncodedMessage.parse(value)).foldLeft(new FormParameters(), pairIntoParameters());
+    public static FormParameters formParameters(Pair<String, String>... pairs) {
+        return formParameters(sequence(pairs));
     }
 
-    public static FormParameters formParameters(Pair<String, String>... pairs) {
+    public static FormParameters formParameters(Iterable<Pair<String, String>> pairs) {
         return (FormParameters) sequence(pairs).foldLeft(new FormParameters(), Parameters.pairIntoParameters());
+    }
+
+    public static FormParameters parse(String value) {
+        return (FormParameters) sequence(UrlEncodedMessage.parse(value)).foldLeft(new FormParameters(), pairIntoParameters());
     }
 
     @Override

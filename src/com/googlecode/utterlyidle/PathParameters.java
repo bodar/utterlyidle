@@ -6,6 +6,10 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class PathParameters extends Parameters {
     public static PathParameters pathParameters(Pair<String, String>... pairs) {
+        return pathParameters(sequence(pairs));
+    }
+
+    public static PathParameters pathParameters(Iterable<Pair<String, String>> pairs) {
         return (PathParameters) sequence(pairs).foldLeft(new PathParameters(), pairIntoParameters());
     }
 }
