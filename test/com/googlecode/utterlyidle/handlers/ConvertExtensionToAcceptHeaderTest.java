@@ -14,6 +14,7 @@ import static com.googlecode.utterlyidle.handlers.ConvertExtensionToAcceptHeader
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class ConvertExtensionToAcceptHeaderTest {
     private RequestHandler stubRequestHandler = new RequestHandler() {
@@ -23,11 +24,13 @@ public class ConvertExtensionToAcceptHeaderTest {
 
     @Test
     public void shouldFindExtensionsInRequestUrl() {
+        assertThat(extensionOf("/spong"), is(nullValue()));
         assertThat(extensionOf("/spong/groupof.stuff/actual.html?moose=still+not+monkey"), is(".html"));
         assertThat(extensionOf("/spong/groupof.stuff/actual.html"), is(".html"));
         assertThat(extensionOf("actual.html"), is(".html"));
         assertThat(extensionOf("something/.html"), is(".html"));
         assertThat(extensionOf("something/.html?spong=moomintroll"), is(".html"));
+        assertThat(extensionOf("/something.html?url=/something_else.xml"), is(".html"));
     }
 
     @Test
@@ -38,7 +41,11 @@ public class ConvertExtensionToAcceptHeaderTest {
 
         assertUrlConversion(converter, "resource.properties?twigs=berries", "resource?twigs=berries");
         assertUrlConversion(converter, "resource.html?twigs=berries",       "resource?twigs=berries");
-        assertUrlConversion(converter, ".html?twigs=berries",       "?twigs=berries");
+        assertUrlConversion(converter, ".html?twigs=berries",               "?twigs=berries");
+
+        assertUrlConversion(converter,
+                            "/something.html?url=/something_else.xml",
+                            "/something?url=/something_else.xml");
 
         assertUrlConversion(converter, "resource.notmapped?twigs=berries",  "resource.notmapped?twigs=berries");
     }
@@ -66,6 +73,7 @@ public class ConvertExtensionToAcceptHeaderTest {
 
         assertThat(request.url(), is(url(expectedAfterConversion)));
     }
+
 
     private String extensionOf(String url) {
         Matches matches = ConvertExtensionToAcceptHeader.FILE_EXTENSION.findMatches(url);

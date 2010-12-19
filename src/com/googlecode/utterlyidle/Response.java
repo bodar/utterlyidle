@@ -1,18 +1,23 @@
 package com.googlecode.utterlyidle;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.FilterOutputStream;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.io.Converter.asString;
 
-public class Response {
-    private final OutputStream output;
+public class Response implements Closeable {
+    private OutputStream output;
     protected final HeaderParameters headers = headerParameters();
     protected Status code = Status.OK;
-    private OutputStreamWriter writer;
+    private PrintWriter writer;
 
     public Response(OutputStream output) {
         this.output = output;
@@ -20,6 +25,14 @@ public class Response {
 
     public Response() {
         this(new ByteArrayOutputStream());
+    }
+
+    public static Response response(OutputStream output) {
+        return new Response(output);
+    }
+
+    public static Response response() {
+        return new Response();
     }
 
     public Status code() {
@@ -44,9 +57,15 @@ public class Response {
         return output;
     }
 
-    public Writer writer() {
+    public Response output(OutputStream outputStream) {
+        output = outputStream;
+        writer = null;
+        return this;
+    }
+
+    public PrintWriter writer() {
         if(writer== null){
-            writer = new OutputStreamWriter(output());
+            writer = new PrintWriter(output());
         }
         return writer;
     }
@@ -56,18 +75,12 @@ public class Response {
         return this;
     }
 
-    public Response flush() throws IOException {
-        writer().flush();
-        output().flush();
-        output().close();
-        return this;
+    public void close() throws IOException {
+        writer().close();
     }
 
-    public static Response response(OutputStream output) {
-        return new Response(output);
-    }
-
-    public static Response response() {
-        return new Response();
+    @Override
+    public String toString() {
+        return String.format("HTTP/1.1 %s\n%s\n", code, headers); 
     }
 }

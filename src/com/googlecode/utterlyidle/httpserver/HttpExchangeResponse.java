@@ -3,14 +3,14 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.utterlyidle.Response;
 import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 class HttpExchangeResponse extends Response {
     private final HttpExchange httpExchange;
-    private boolean codeSent = false;
 
     public HttpExchangeResponse(HttpExchange httpExchange) {
+        super();
+        output(new SendResponseHeadersOutputStream(this));
         this.httpExchange = httpExchange;
     }
 
@@ -21,27 +21,26 @@ class HttpExchangeResponse extends Response {
     }
 
     @Override
-    public OutputStream output() {
-        sendCodeIfNeeded();
-        return httpExchange.getResponseBody();
-    }
-
-    @Override
-    public Response flush() throws IOException {
-        super.flush();
+    public void close() throws IOException {
+        super.close();
         httpExchange.close();
-        return this;
     }
 
-    private void sendCodeIfNeeded() {
-        try {
-            if(!codeSent){
-                httpExchange.sendResponseHeaders(code().code(), 0);
-                codeSent = true;
-            }
-        } catch (Throwable e) {
-            throw new UnsupportedOperationException(e);
+    private static class SendResponseHeadersOutputStream extends ByteArrayOutputStream {
+        private final HttpExchangeResponse response;
+
+        public SendResponseHeadersOutputStream(HttpExchangeResponse response) {
+            this.response = response;
         }
 
+        @Override
+        public void close() throws IOException {
+            response.httpExchange.sendResponseHeaders(response.code().code(), 0);
+            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(response.httpExchange.getResponseBody()));
+            writer.write(this.toString());
+            writer.close();
+
+            super.close();
+        }
     }
 }

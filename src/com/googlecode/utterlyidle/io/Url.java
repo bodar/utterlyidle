@@ -4,18 +4,9 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.totallylazy.regex.Regex;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.*;
+import java.net.*;
+import java.util.UUID;
 
 import static com.googlecode.totallylazy.Pair.pair;
 
@@ -34,14 +25,18 @@ public class Url {
 
         try {
             URI o = toURI();
-            URI n = new URI(o.getScheme(), o.getUserInfo(), o.getHost(), o.getPort(), path.toString(), o.getQuery(), o.getFragment());
-            return new Url(n.toString());
+            String spaceForQuery = o.getRawQuery() == null ? null : UUID.randomUUID().toString();
+
+            URI n = new URI(o.getScheme(), o.getUserInfo(), o.getHost(), o.getPort(), path.toString(), spaceForQuery, o.getRawFragment());
+
+            String newUri = o.getRawQuery() == null ? n.toString() : n.toString().replace(spaceForQuery, o.getRawQuery());
+            return new Url(newUri);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public URI toURI()  {
+    public URI toURI() {
         try {
             return new URI(value);
         } catch (URISyntaxException e) {
@@ -147,15 +142,19 @@ public class Url {
     }
 
     public static Url url(String value) {
-        Url o = new Url(value);
-        return o.replacePath(o.path());
+        Url url = new Url(value);
+        return url.replacePath(url.path());
     }
 
     public static Url url(URL value) {
         return url(value.toString());
     }
 
+    public static Url url(URI value) {
+        return url(value.toString());
+    }
+
     public String getQuery() {
-        return toURI().getQuery();
+        return toURI().getRawQuery();
     }
 }
