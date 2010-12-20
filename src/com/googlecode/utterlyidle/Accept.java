@@ -29,10 +29,10 @@ public class Accept {
     private Predicate<MediaRange> sameValue(final String value) {
         return new Predicate<MediaRange>() {
             public boolean matches(MediaRange mediaRange) {
-                if (mediaRange.value.equals(MediaType.WILDCARD)) {
+                if (mediaRange.value().equals(MediaType.WILDCARD)) {
                     return true;
                 }
-                return mediaRange.value.equals(value);
+                return mediaRange.value().equals(value);
             }
         };
     }
