@@ -21,7 +21,6 @@ import static com.googlecode.totallylazy.Predicates.aNull;
 import static com.googlecode.totallylazy.Predicates.assignableTo;
 import static com.googlecode.totallylazy.proxy.Call.on;
 
-
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {
         container.add(Cookies.class);

@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.RestApplication;
+import com.googlecode.utterlyidle.SingleResourceModule;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -27,6 +28,6 @@ public class RestServer {
     }
 
     public static void main(String[] args) throws IOException {
-        new RestServer(8000, basePath("/"), new RestApplication().add(new SampleModule()));
+        new RestServer(8000, basePath("/"), new RestApplication().add(new SingleResourceModule(HelloWorld.class)));
     }
 }

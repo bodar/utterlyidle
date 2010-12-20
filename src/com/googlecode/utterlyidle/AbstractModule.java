@@ -1,12 +1,9 @@
-package com.googlecode.utterlyidle.httpserver;
+package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.Engine;
-import com.googlecode.utterlyidle.Module;
 import com.googlecode.yadic.Container;
 
-public class SampleModule implements Module {
+public class AbstractModule implements Module {
     public Module addPerRequestObjects(Container container) {
-        container.add(HelloWorld.class);
         return this;
     }
 
@@ -15,7 +12,6 @@ public class SampleModule implements Module {
     }
 
     public Module addResources(Engine engine) {
-        engine.add(HelloWorld.class);
         return this;
     }
 }
