@@ -248,15 +248,22 @@ public class RestTest {
     @Test
     public void canCoerceOptionalTypes() throws Exception {
         TestEngine engine = new TestEngine();
-        engine.add(GetWithOptionalStrongType.class);
+        engine.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
         assertThat(engine.handle(get("path").withQuery("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
     @Test
     public void canCoerceOptionalTypesEvenWhenNoValueIsPresent() throws Exception {
         TestEngine engine = new TestEngine();
-        engine.add(GetWithOptionalStrongType.class);
+        engine.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
         assertThat(engine.handle(get("path/")), is("default"));
+    }
+
+   @Test
+    public void canCoerceOptionalTypesEvenWhenNoValueIsPresentForATypeWithConstructor() throws Exception {
+        TestEngine engine = new TestEngine();
+        engine.add(GetWithOptionalStrongTypeWithConstructor.class);
+        assertThat(engine.handle(get("path").build()), is("default"));
     }
 
     @Test
@@ -476,11 +483,33 @@ public class RestTest {
         }
     }
 
-    @Path("path")
-    public static class GetWithOptionalStrongType {
+    public static class ClassWithPublicConstructor {
+
+        private final String value;
+
+        public ClassWithPublicConstructor(String value){
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+  @Path("path")
+    public static class GetWithOptionalStrongTypeWithFactoryMethod {
         @GET
         public String get(@QueryParam("id") Option<Id> id) {
             return id.getOrElse(Id.id("default")).toString();
+        }
+    }
+
+    @Path("path")
+    public static class GetWithOptionalStrongTypeWithConstructor {
+        @GET
+        public String get(@QueryParam("name") Option<ClassWithPublicConstructor> id) {
+            return id.getOrElse(new ClassWithPublicConstructor("default")).toString();
         }
     }
 
