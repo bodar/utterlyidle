@@ -5,13 +5,10 @@ import com.googlecode.utterlyidle.handlers.RendererHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Resolver;
 
-public interface Engine {
+public interface Engine extends ActivatorFinder {
     void add(Class resource);
 
     RendererHandler renderers();
 
     ResponseHandlers responseHandlers();
-
-
-    Either<MatchFailure, HttpMethodActivator> findActivator(Request request);
 }
