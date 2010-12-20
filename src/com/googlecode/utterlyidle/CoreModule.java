@@ -35,6 +35,7 @@ public class CoreModule implements Module{
         container.add(Engine.class, RestEngine.class);
         final Engine engine = container.get(Engine.class);
 
+        container.addInstance(ActivatorFinder.class, engine);
         container.addInstance(ResponseHandlers.class, engine.responseHandlers());
         container.addInstance(RendererHandler.class, engine.renderers());
         return this;
