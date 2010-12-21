@@ -21,30 +21,30 @@ public class ServerErrorTest {
     @Test
     public void supportsInterceptingException() throws Exception {
         final String message = "Caught exception";
-        TestEngine engine = new TestEngine();
-        engine.add(ThrowingResource.class);
-        engine.responseHandlers().add(instanceOf(Exception.class), new WriteMessageToResponseHandler(message));
+        TestApplication application = new TestApplication();
+        application.add(ThrowingResource.class);
+        application.addResponseHandler(instanceOf(Exception.class), new WriteMessageToResponseHandler(message));
         Response response = response();
-        engine.handle(get("exception"), response);
+        application.handle(get("exception"), response);
         assertThat(response.output().toString(), containsString(message));
     }
 
     @Test
     public void returns500WhenAnExceptionIsThrown() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(ThrowingResource.class);
+        TestApplication application = new TestApplication();
+        application.add(ThrowingResource.class);
         Response response = response();
-        engine.handle(get("exception"), response);
+        application.handle(get("exception"), response);
 
         assertResponseContains(response, Exception.class);
     }
 
     @Test
     public void returns500WhenARespurceCanNotBeCreatedByYadic() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(ResourceWithMissingDependency.class);
+        TestApplication application = new TestApplication();
+        application.add(ResourceWithMissingDependency.class);
         Response response = response();
-        engine.handle(get("lazy"), response);
+        application.handle(get("lazy"), response);
 
         assertResponseContains(response, ContainerException.class);
     }
