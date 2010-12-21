@@ -1,12 +1,8 @@
 package com.googlecode.utterlyidle.proxy;
 
-import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Redirect;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
 import net.sf.cglib.proxy.InvocationHandler;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.proxy.Generics.getGenericSuperclassType;

@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
 public class CloseHandler implements HttpHandler {

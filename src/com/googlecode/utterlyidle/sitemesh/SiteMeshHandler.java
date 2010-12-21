@@ -4,8 +4,6 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import static com.googlecode.totallylazy.Sequences.sequence;
-
 public class SiteMeshHandler implements HttpHandler {
     private final HttpHandler httpHandler;
     private final Decorators decorators;

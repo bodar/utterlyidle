@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.MemoryResponse;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.yadic.Resolver;

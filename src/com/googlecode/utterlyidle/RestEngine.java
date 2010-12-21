@@ -6,7 +6,6 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.handlers.RendererHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
-import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.HttpMethod;
 import java.lang.reflect.Method;

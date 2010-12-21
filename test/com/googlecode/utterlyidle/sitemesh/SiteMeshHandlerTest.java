@@ -2,7 +2,10 @@ package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

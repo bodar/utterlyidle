@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 
 import static com.googlecode.totallylazy.Sequences.characters;

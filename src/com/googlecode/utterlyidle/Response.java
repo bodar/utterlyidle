@@ -1,9 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 public interface Response extends Closeable {
     Status status();
