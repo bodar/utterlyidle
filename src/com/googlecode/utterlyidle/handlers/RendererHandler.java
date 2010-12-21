@@ -2,15 +2,14 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.yadic.Resolver;
 
 import java.io.OutputStreamWriter;
 
-public class RendererHandler extends CompositeHandler<Renderer> {
+public class RendererHandler extends HandlerRules<Renderer> {
     @Override
-    public void process(Renderer renderer, Object result, Resolver resolver, Response response) throws Exception {
+    public void process(Renderer renderer, Response response) throws Exception {
         OutputStreamWriter writer = new OutputStreamWriter(response.output());
-        writer.write(renderer.render(result));
+        writer.write(renderer.render(response.entity()));
         writer.close();
     }
 }

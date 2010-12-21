@@ -9,14 +9,17 @@ import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 public class MatchFailureHandler implements ResponseHandler<MatchFailure> {
     private final RendererHandler renderers;
+    private final Resolver resolver;
 
-    public MatchFailureHandler(RendererHandler renderers) {
+    public MatchFailureHandler(RendererHandler renderers, Resolver resolver) {
         this.renderers = renderers;
+        this.resolver = resolver;
     }
 
-    public void handle(MatchFailure value, Resolver resolver, Response response) throws Exception {
-        response.status(value.status());
+    public void handle(Response response) throws Exception {
+        MatchFailure matchFailure = (MatchFailure) response.entity();
+        response.status(matchFailure.status());
         response.header(CONTENT_TYPE, "text/html");
-        renderers.handle(value, resolver, response);
+        renderers.with(resolver).handle(response);
     }
 }

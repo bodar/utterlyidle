@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.*;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
@@ -40,8 +42,8 @@ public class CoreModule extends AbstractModule {
         handlers.addGuard(assignableTo(SeeOther.class), RedirectHandler.class);
         handlers.addGuard(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
         handlers.addGuard(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
-        handlers.addGuard(assignableTo(MatchFailure.class), new MatchFailureHandler(renderers));
-        handlers.addCatchAll(assignableTo(Object.class), renderers);
+        handlers.addGuard(assignableTo(MatchFailure.class), MatchFailureHandler.class);
+        handlers.addCatchAll(assignableTo(Object.class), RenderHandlerActivator.class);
 
         renderers.addCatchAll(assignableTo(MatchFailure.class), MatchFailureRenderer.class);
         renderers.addCatchAll(assignableTo(Exception.class), ExceptionRenderer.class);
