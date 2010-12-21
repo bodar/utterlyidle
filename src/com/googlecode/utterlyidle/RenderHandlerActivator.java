@@ -1,18 +1,18 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.handlers.RendererHandler;
+import com.googlecode.utterlyidle.handlers.Renderers;
 import com.googlecode.yadic.Resolver;
 
 public class RenderHandlerActivator implements ResponseHandler<Object>{
     private final Resolver resolver;
-    private final RendererHandler rendererHandler;
+    private final Renderers renderers;
 
-    public RenderHandlerActivator(Resolver resolver, RendererHandler rendererHandler) {
+    public RenderHandlerActivator(Resolver resolver, Renderers renderers) {
         this.resolver = resolver;
-        this.rendererHandler = rendererHandler;
+        this.renderers = renderers;
     }
 
     public void handle(Response response) throws Exception {
-        rendererHandler.with(resolver).handle(response);
+        renderers.with(resolver).handle(response);
     }
 }

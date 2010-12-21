@@ -8,10 +8,10 @@ import com.googlecode.yadic.Resolver;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 public class MatchFailureHandler implements ResponseHandler<MatchFailure> {
-    private final RendererHandler renderers;
+    private final Renderers renderers;
     private final Resolver resolver;
 
-    public MatchFailureHandler(RendererHandler renderers, Resolver resolver) {
+    public MatchFailureHandler(Renderers renderers, Resolver resolver) {
         this.renderers = renderers;
         this.resolver = resolver;
     }
