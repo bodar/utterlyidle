@@ -27,6 +27,6 @@ public class BaseHandler implements HttpHandler {
     }
 
     private void handle(Resolver resolver, Request request, Response response) throws Exception {
-        responseHandlers.handle(response.entity(), resolver, response);
+        responseHandlers.with(resolver).handle(response);
     }
 }
