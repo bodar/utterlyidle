@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.utterlyidle.handlers.CloseHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.yadic.Container;
@@ -8,6 +9,8 @@ import com.googlecode.yadic.SimpleContainer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
@@ -22,17 +25,15 @@ public class RestApplication implements Application {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.addInstance(Resolver.class, requestScope);
         requestScope.add(HttpHandler.class, BaseHandler.class);
-        for (Module module : modules) {
-            module.addPerRequestObjects(requestScope);
-        }
+        sequence(modules).safeCast(RequestScopedModule.class).forEach(addPerRequestObjects(requestScope));
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, CloseHandler.class);
         return requestScope;
     }
 
     public Application add(Module module) {
-        module.addPerApplicationObjects(applicationScope);
-        module.addResources(engine());
+        sequence(module).safeCast(ApplicationScopedModule.class).forEach(addPerApplicationObjects(applicationScope));
+        sequence(module).safeCast(RestModule.class).forEach(addResources(engine()));
         modules.add(module);
         return this;
     }
@@ -55,5 +56,30 @@ public class RestApplication implements Application {
     public Engine engine() {
         return applicationScope.get(Engine.class);
     }
+
+    private Runnable1<RequestScopedModule> addPerRequestObjects(final Container requestScope) {
+        return new Runnable1<RequestScopedModule>() {
+            public void run(RequestScopedModule requestScopedModule) {
+                requestScopedModule.addPerRequestObjects(requestScope);
+            }
+        };
+    }
+
+    private Runnable1<RestModule> addResources(final Engine engine) {
+        return new Runnable1<RestModule>() {
+            public void run(RestModule restModule) {
+                restModule.addResources(engine);
+            }
+        };
+    }
+
+    private Runnable1<ApplicationScopedModule> addPerApplicationObjects(final Container applicationScope) {
+        return new Runnable1<ApplicationScopedModule>() {
+            public void run(ApplicationScopedModule applicationScopedModule) {
+                applicationScopedModule.addPerApplicationObjects(applicationScope);
+            }
+        };
+    }
+
 
 }

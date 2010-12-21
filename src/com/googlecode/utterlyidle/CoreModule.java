@@ -13,7 +13,7 @@ import javax.ws.rs.core.StreamingOutput;
 import static com.googlecode.totallylazy.Predicates.aNull;
 import static com.googlecode.totallylazy.Predicates.assignableTo;
 
-public class CoreModule implements Module{
+public class CoreModule extends AbstractModule {
     public Module addPerRequestObjects(Container container) {
         container.add(Cookies.class);
         container.addActivator(BasePath.class, BasePathActivator.class);

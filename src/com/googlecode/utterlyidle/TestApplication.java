@@ -10,7 +10,7 @@ public class TestApplication extends RestApplication {
 
     public String handle(RequestBuilder request) throws Exception {
         Response response = MemoryResponse.response();
-        handle(request.build(), response);
+        handle(request, response);
         return response.output().toString();
     }
 

@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.yadic.Container;
 
-public class AbstractModule implements Module {
+public class AbstractModule implements ApplicationScopedModule, RequestScopedModule, RestModule {
     public Module addPerRequestObjects(Container container) {
         return this;
     }

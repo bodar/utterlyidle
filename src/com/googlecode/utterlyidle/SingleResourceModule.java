@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-public class SingleResourceModule extends AbstractModule {
+public class SingleResourceModule implements RestModule {
     private final Class<?> resource;
 
     public SingleResourceModule(Class<?> resource) {
