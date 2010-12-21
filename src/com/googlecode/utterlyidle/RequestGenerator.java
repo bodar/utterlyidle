@@ -2,11 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Sequence;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Sequences.sequence;

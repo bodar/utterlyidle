@@ -5,33 +5,16 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import org.junit.Test;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.Formatter;
 
 import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
-import static com.googlecode.utterlyidle.RequestBuilder.delete;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
-import static com.googlecode.utterlyidle.RequestBuilder.put;
+import static com.googlecode.utterlyidle.RequestBuilder.*;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
 import static com.googlecode.utterlyidle.io.Converter.asString;
@@ -39,7 +22,6 @@ import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
 
 public class RestTest {
     @Test

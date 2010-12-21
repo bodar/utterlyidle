@@ -4,7 +4,6 @@ import com.googlecode.utterlyidle.io.Url;
 import org.junit.Test;
 
 import javax.ws.rs.HttpMethod;
-
 import java.io.ByteArrayInputStream;
 
 import static com.googlecode.utterlyidle.BasePath.basePath;

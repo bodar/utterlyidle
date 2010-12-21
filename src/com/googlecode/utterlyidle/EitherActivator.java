@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 
 import java.util.concurrent.Callable;

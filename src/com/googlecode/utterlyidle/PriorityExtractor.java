@@ -1,18 +1,11 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.proxy.Call;
-import com.googlecode.totallylazy.proxy.CallOn;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Predicates.notNull;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.proxy.Call.method;
-import static com.googlecode.totallylazy.proxy.Call.on;
 
 public class PriorityExtractor implements Extractor<Method, Integer>{
     private final Method method;

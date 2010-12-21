@@ -1,25 +1,17 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.cookies.Cookies;
-import com.googlecode.utterlyidle.handlers.ExceptionHandler;
-import com.googlecode.utterlyidle.handlers.MatchFailureHandler;
+import com.googlecode.utterlyidle.handlers.*;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.rendering.MatchFailureRenderer;
-import com.googlecode.utterlyidle.handlers.NullHandler;
 import com.googlecode.utterlyidle.rendering.ObjectRenderer;
-import com.googlecode.utterlyidle.handlers.RedirectHandler;
-import com.googlecode.utterlyidle.handlers.RendererHandler;
-import com.googlecode.utterlyidle.handlers.ResponseHandlers;
-import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
-import com.googlecode.utterlyidle.handlers.StreamingWriterHandler;
 import com.googlecode.yadic.Container;
 
 import javax.ws.rs.core.StreamingOutput;
 
 import static com.googlecode.totallylazy.Predicates.aNull;
 import static com.googlecode.totallylazy.Predicates.assignableTo;
-import static com.googlecode.totallylazy.proxy.Call.on;
 
 public class CoreModule implements Module{
     public Module addPerRequestObjects(Container container) {

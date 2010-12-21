@@ -1,17 +1,6 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.utterlyidle.Hidden;
-import com.googlecode.utterlyidle.RestEngine;
-
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
-import static com.googlecode.utterlyidle.io.Converter.asString;
+import javax.ws.rs.*;
 
 public class HelloWorld {
     @GET

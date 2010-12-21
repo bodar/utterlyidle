@@ -1,6 +1,9 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;

@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Option;
 
 import javax.ws.rs.GET;

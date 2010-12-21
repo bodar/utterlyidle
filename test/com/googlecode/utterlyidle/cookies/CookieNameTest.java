@@ -4,7 +4,7 @@ import com.googlecode.utterlyidle.Rfc2616;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.characters;
-import static com.googlecode.utterlyidle.cookies.CookieName.*;
+import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
 import static org.junit.Assert.fail;
 
 public class CookieNameTest {

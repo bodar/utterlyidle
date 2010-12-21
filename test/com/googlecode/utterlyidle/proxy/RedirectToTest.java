@@ -1,19 +1,13 @@
 package com.googlecode.utterlyidle.proxy;
 
 import com.googlecode.totallylazy.Option;
-import com.googlecode.utterlyidle.CustomType;
-import com.googlecode.utterlyidle.Id;
-import com.googlecode.utterlyidle.NoDefaultConstructor;
-import com.googlecode.utterlyidle.Redirect;
-import com.googlecode.utterlyidle.SomeResource;
+import com.googlecode.utterlyidle.*;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.googlecode.utterlyidle.proxy.Resource.redirect;
-import static com.googlecode.utterlyidle.proxy.Resource.resource;
-import static com.googlecode.utterlyidle.proxy.Resource.urlOf;
+import static com.googlecode.utterlyidle.proxy.Resource.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

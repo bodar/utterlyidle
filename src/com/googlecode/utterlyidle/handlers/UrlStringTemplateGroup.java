@@ -5,7 +5,6 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 
 import static com.googlecode.utterlyidle.io.Url.url;
 

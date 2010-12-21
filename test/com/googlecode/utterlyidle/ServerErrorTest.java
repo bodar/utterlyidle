@@ -13,8 +13,6 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 
 public class ServerErrorTest {

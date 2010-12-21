@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import com.googlecode.utterlyidle.Rfc2616;
 
 public class Cookie {
     private final CookieName name;

@@ -5,8 +5,8 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.regex.Matches;
 import com.googlecode.totallylazy.regex.Regex;
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.io.Url;
 
