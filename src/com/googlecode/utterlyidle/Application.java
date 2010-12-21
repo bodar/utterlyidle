@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.yadic.Container;
 
-public interface Application extends RequestHandler {
+public interface Application extends HttpHandler {
     Container applicationScope();
 
     Container createRequestScope();

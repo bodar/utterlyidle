@@ -7,20 +7,20 @@ import java.lang.reflect.InvocationTargetException;
 
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
-public class ExceptionHandler implements RequestHandler{
-    private final RequestHandler requestHandler;
+public class ExceptionHandler implements HttpHandler {
+    private final HttpHandler httpHandler;
     private final ResponseHandlers responseHandlers;
     private final Resolver resolver;
 
-    public ExceptionHandler(RequestHandler requestHandler, ResponseHandlers responseHandlers, Resolver resolver) {
-        this.requestHandler = requestHandler;
+    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlers responseHandlers, Resolver resolver) {
+        this.httpHandler = httpHandler;
         this.responseHandlers = responseHandlers;
         this.resolver = resolver;
     }
 
     public void handle(Request request, Response response) throws Exception {
         try {
-            requestHandler.handle(request, response);
+            httpHandler.handle(request, response);
         } catch (InvocationTargetException e) {
             handle(e.getCause(), response);
         } catch (Exception e) {
