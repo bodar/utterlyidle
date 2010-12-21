@@ -4,14 +4,12 @@ import com.googlecode.totallylazy.Either;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Resolver;
 
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-
-public class RestRequestHandler implements RequestHandler {
+public class BaseHandler implements HttpHandler {
     private final ActivatorFinder activatorFinder;
     private final ResponseHandlers responseHandlers;
     private final Resolver resolver;
 
-    public RestRequestHandler(ActivatorFinder activatorFinder, ResponseHandlers responseHandlers, Resolver resolver) {
+    public BaseHandler(ActivatorFinder activatorFinder, ResponseHandlers responseHandlers, Resolver resolver) {
         this.activatorFinder = activatorFinder;
         this.responseHandlers = responseHandlers;
         this.resolver = resolver;

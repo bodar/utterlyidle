@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 public class ConvertExtensionToAcceptHeaderTest {
-    private RequestHandler stubRequestHandler = new RequestHandler() {
+    private HttpHandler httpHandler = new HttpHandler() {
         public void handle(Request request, Response response) throws Exception {
         }
     };
@@ -34,7 +34,7 @@ public class ConvertExtensionToAcceptHeaderTest {
     public void shouldRemoveExtensionFromRequestUrl() throws Exception {
         ConvertExtensionToAcceptHeader converter = new ConvertExtensionToAcceptHeader(
                 replacements(pair("properties", "text/plain"), pair("html", "text/html")),
-                stubRequestHandler);
+                httpHandler);
 
         assertUrlConversion(converter, "resource.properties?twigs=berries", "resource?twigs=berries");
         assertUrlConversion(converter, "resource.html?twigs=berries",       "resource?twigs=berries");
@@ -51,7 +51,7 @@ public class ConvertExtensionToAcceptHeaderTest {
     public void shouldReplaceAcceptHeader() throws Exception {
         ConvertExtensionToAcceptHeader converter = new ConvertExtensionToAcceptHeader(
                 replacements(pair("properties", "text/plain"), pair("html", "text/html")),
-                stubRequestHandler);
+                httpHandler);
 
         assertHeaderConversion(converter, "resource.properties?twigs=berries",  "text/plain");
         assertHeaderConversion(converter, "resource.html?twigs=berries",        "text/html");

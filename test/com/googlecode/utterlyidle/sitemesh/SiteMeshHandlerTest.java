@@ -83,7 +83,7 @@ public class SiteMeshHandlerTest {
 
     private void assertDecorationResultsInResponse(final Decorators decorators, final String result, final String path) throws Exception {
         OutputStream outputStream = new ByteArrayOutputStream();
-        RequestHandler decorator = new SiteMeshHandler(write(ORIGINAL_CONTENT), decorators);
+        HttpHandler decorator = new SiteMeshHandler(write(ORIGINAL_CONTENT), decorators);
         decorator.handle(get(path).build(), response(outputStream));
         assertThat(outputStream.toString(), is(result));
     }
@@ -93,8 +93,8 @@ public class SiteMeshHandlerTest {
     }
 
 
-    private RequestHandler write(final String value) {
-        return new RequestHandler() {
+    private HttpHandler write(final String value) {
+        return new HttpHandler() {
             public void handle(Request request, Response response) throws Exception {
                 response.status(Status.OK);
                 response.header(CONTENT_TYPE, TEXT_HTML);
