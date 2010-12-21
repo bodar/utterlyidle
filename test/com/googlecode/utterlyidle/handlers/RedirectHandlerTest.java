@@ -20,7 +20,7 @@ public class RedirectHandlerTest {
     public void canApplyToResponse() {
         Response response = response();
         BasePath base = basePath("");
-        new RedirectHandler(base).handle(seeOther("foo"), null, response);
+        new RedirectHandler(base).handle(response.entity(seeOther("foo")));
         assertThat(response.header(HttpHeaders.LOCATION), is("/foo"));
         MatcherAssert.assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }

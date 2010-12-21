@@ -25,17 +25,17 @@ public class ExceptionHandler implements HttpHandler {
         try {
             httpHandler.handle(request, response);
         } catch (InvocationTargetException e) {
-            handle(e.getCause(), response);
+            handle(response.entity(e.getCause()));
         } catch (Exception e) {
-            handle(e, response);
+            handle(response.entity(e));
         }
     }
 
-    private void handle(Throwable value, Response response) throws Exception {
+    private void handle(Response response) throws Exception {
         response.status(Status.INTERNAL_SERVER_ERROR);
         if(response.header(CONTENT_TYPE) == null){
             response.header(CONTENT_TYPE, "text/plain");
         }
-        responseHandlers.handle(value, resolver, response);
+        responseHandlers.with(resolver).handle(response);
     }
 }
