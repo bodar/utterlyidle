@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.regex.Matches;
 import com.googlecode.totallylazy.regex.Regex;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestHandler;
+import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.io.Url;
 
@@ -18,12 +18,12 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.io.Url.url;
 
-public class ConvertExtensionToAcceptHeader implements RequestHandler {
+public class ConvertExtensionToAcceptHeader implements HttpHandler {
     public static final Regex FILE_EXTENSION = regex("(\\.[^?/.]+?)(?:\\?.*)?$");
     private final Sequence<Pair<String, String>> replacements;
-    private final RequestHandler decorated;
+    private final HttpHandler decorated;
 
-    public ConvertExtensionToAcceptHeader(Replacements replacements, RequestHandler decorated) {
+    public ConvertExtensionToAcceptHeader(Replacements replacements, HttpHandler decorated) {
         this.replacements = sequence(replacements);
         this.decorated = decorated;
     }
