@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,30 +9,26 @@ import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 public class ExceptionHandler implements HttpHandler {
     private final HttpHandler httpHandler;
-    private final ResponseHandlers responseHandlers;
-    private final Resolver resolver;
+    private final ResponseHandlerFinder handlers;
 
-    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlers responseHandlers, Resolver resolver) {
+    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlerFinder handlers) {
         this.httpHandler = httpHandler;
-        this.responseHandlers = responseHandlers;
-        this.resolver = resolver;
+        this.handlers = handlers;
     }
 
     public void handle(Request request, Response response) throws Exception {
         try {
             httpHandler.handle(request, response);
         } catch (InvocationTargetException e) {
-            handle(response.entity(e.getCause()));
+            findAndHandle(request, response.entity(e.getCause()));
         } catch (Exception e) {
-            handle(response.entity(e));
+            findAndHandle(request, response.entity(e));
         }
     }
 
-    private void handle(Response response) throws Exception {
+    private void findAndHandle(Request request, Response response) throws Exception {
         response.status(Status.INTERNAL_SERVER_ERROR);
-        if(response.header(CONTENT_TYPE) == null){
-            response.header(CONTENT_TYPE, "text/plain");
-        }
-        responseHandlers.with(resolver).handle(response);
+        response.header(CONTENT_TYPE, "text/plain");
+        handlers.findHandler(request, response).handle(response);
     }
 }
