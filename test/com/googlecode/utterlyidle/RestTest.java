@@ -44,238 +44,238 @@ import static org.junit.Assert.assertTrue;
 public class RestTest {
     @Test
     public void canHandleCookies() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GettableWithCookies.class);
+        TestApplication application = new TestApplication();
+        application.add(GettableWithCookies.class);
         Request request = get("foo").withHeader("Cookie", "name=value").build();
         Response response = response();
-        engine.handle(request, response);
+        application.handle(request, response);
         assertThat(response.output().toString(), is("found"));
         assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
     
     @Test
     public void canGet() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(Gettable.class);
-        assertThat(engine.handle(get("foo")), is("bar"));
+        TestApplication application = new TestApplication();
+        application.add(Gettable.class);
+        assertThat(application.handle(get("foo")), is("bar"));
     }
 
     @Test
     public void leadingSlashInPathShouldNotChangeMatch() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(Gettable.class);
-        assertThat(engine.handle(get("/foo")), is("bar"));
+        TestApplication application = new TestApplication();
+        application.add(Gettable.class);
+        assertThat(application.handle(get("/foo")), is("bar"));
     }
 
     @Test
     public void canGetWithQueryParameter() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GettableWithQuery.class);
-        assertThat(engine.handle(get("foo").withQuery("name", "value")), is("value"));
+        TestApplication application = new TestApplication();
+        application.add(GettableWithQuery.class);
+        assertThat(application.handle(get("foo").withQuery("name", "value")), is("value"));
     }
 
     @Test
     public void canPostWithFormParameter() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(Postable.class);
-        assertThat(engine.handle(post("foo").withForm("name", "value")), is("value"));
+        TestApplication application = new TestApplication();
+        application.add(Postable.class);
+        assertThat(application.handle(post("foo").withForm("name", "value")), is("value"));
     }
 
     @Test
     public void canHandlePathsOnMethodAsWellAsClass() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(MutlilplePaths.class);
-        assertThat(engine.handle(get("foo/bar")), is("found"));
+        TestApplication application = new TestApplication();
+        application.add(MutlilplePaths.class);
+        assertThat(application.handle(get("foo/bar")), is("found"));
     }
 
     @Test
     public void canDetermineMethodWhenThereIsAChoice() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(MultipleGets.class);
-        assertThat(engine.handle(get("foo")), is("no parameters"));
-        assertThat(engine.handle(get("foo").withQuery("arg", "match")), is("match"));
+        TestApplication application = new TestApplication();
+        application.add(MultipleGets.class);
+        assertThat(application.handle(get("foo")), is("no parameters"));
+        assertThat(application.handle(get("foo").withQuery("arg", "match")), is("match"));
     }
 
     @Test
     public void whenThereIsAChoiceOfMatchingMethodsTakesPriorityIntoConsideration() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(PrioritisedGets.class);
-        assertThat(engine.handle(get("foo")), is("highPriority"));
+        TestApplication application = new TestApplication();
+        application.add(PrioritisedGets.class);
+        assertThat(application.handle(get("foo")), is("highPriority"));
     }
 
     @Test
     public void canDetermineGetMethodBasedOnMimeType() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetsWithMimeTypes.class);
-        assertThat(engine.handle(get("text").accepting("text/plain")), is("plain"));
-        assertThat(engine.handle(get("text").accepting("text/html")), is("html"));
+        TestApplication application = new TestApplication();
+        application.add(GetsWithMimeTypes.class);
+        assertThat(application.handle(get("text").accepting("text/plain")), is("plain"));
+        assertThat(application.handle(get("text").accepting("text/html")), is("html"));
     }
 
     @Test
     public void setsResponseMimeType() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetsWithMimeTypes.class);
+        TestApplication application = new TestApplication();
+        application.add(GetsWithMimeTypes.class);
 
         Response response = response();
-        engine.handle(get("text").accepting("text/plain"), response);
+        application.handle(get("text").accepting("text/plain"), response);
         assertThat(response.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
     }
 
     @Test
     public void canHandleRealWorldAcceptsHeader() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetsWithMimeTypes.class);
+        TestApplication application = new TestApplication();
+        application.add(GetsWithMimeTypes.class);
         String mimeTypes = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
-        assertThat(engine.handle(get("text").accepting(mimeTypes)), is("xml"));
+        assertThat(application.handle(get("text").accepting(mimeTypes)), is("xml"));
 
-        engine.add(PutContent.class);
+        application.add(PutContent.class);
         InputStream input = new ByteArrayInputStream("input".getBytes());
         mimeTypes = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
-        assertThat(engine.handle(put("path/foo").accepting(mimeTypes).withInput(input)), is("input"));
+        assertThat(application.handle(put("path/foo").accepting(mimeTypes).withInput(input)), is("input"));
     }
 
     @Test
     public void canStreamOutput() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(StreamOutput.class);
-        assertThat(engine.handle(get("foo")), is("stream"));
+        TestApplication application = new TestApplication();
+        application.add(StreamOutput.class);
+        assertThat(application.handle(get("foo")), is("stream"));
     }
 
     @Test
     public void canHandleStreamingWriter() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(StreamWriter.class);
-        assertThat(engine.handle(get("foo")), is("writer"));
+        TestApplication application = new TestApplication();
+        application.add(StreamWriter.class);
+        assertThat(application.handle(get("foo")), is("writer"));
     }
 
     @Test
     public void supportsNoContent() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(NoContent.class);
+        TestApplication application = new TestApplication();
+        application.add(NoContent.class);
         MemoryResponse response = new MemoryResponse();
-        engine.handle(post("foo"), response);
+        application.handle(post("foo"), response);
         assertThat(response.status, is(Status.NO_CONTENT));
     }
 
     @Test
     public void supportsPathParameter() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(PathParameter.class);
-        assertThat(engine.handle(get("path/bar")), is("bar"));
+        TestApplication application = new TestApplication();
+        application.add(PathParameter.class);
+        assertThat(application.handle(get("path/bar")), is("bar"));
     }
 
     @Test
     public void supportsDelete() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(DeleteContent.class);
+        TestApplication application = new TestApplication();
+        application.add(DeleteContent.class);
         MemoryResponse response = new MemoryResponse();
-        engine.handle(delete("path/bar"), response);
+        application.handle(delete("path/bar"), response);
         assertThat(response.status, is(Status.NO_CONTENT));
     }
 
     @Test
     public void supportsPut() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(PutContent.class);
+        TestApplication application = new TestApplication();
+        application.add(PutContent.class);
 
         InputStream input = new ByteArrayInputStream("input".getBytes());
-        assertThat(engine.handle(put("path/bar").withInput(input)), is("input"));
+        assertThat(application.handle(put("path/bar").withInput(input)), is("input"));
     }
 
     @Test
     public void canDetermineInputHandlerByMimeType() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(MultiplePutContent.class);
+        TestApplication application = new TestApplication();
+        application.add(MultiplePutContent.class);
 
-        assertThat(engine.handle(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/plain")), is("plain"));
-        assertThat(engine.handle(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/html")), is("html"));
+        assertThat(application.handle(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/plain")), is("plain"));
+        assertThat(application.handle(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/html")), is("html"));
     }
 
     @Test
     public void canPostRedirectGet() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(PostRedirectGet.class);
+        TestApplication application = new TestApplication();
+        application.add(PostRedirectGet.class);
         MemoryResponse response = new MemoryResponse();
-        engine.handle(post("path/bob"), response);
-        assertThat(engine.handle(get(response.header(HttpHeaders.LOCATION))), is("bob"));
+        application.handle(post("path/bob"), response);
+        assertThat(application.handle(get(response.header(HttpHeaders.LOCATION))), is("bob"));
     }
 
     @Test
     public void canCoerceTypes() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithStrongType.class);
-        assertThat(engine.handle(get("path/4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+        TestApplication application = new TestApplication();
+        application.add(GetWithStrongType.class);
+        assertThat(application.handle(get("path/4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
     @Test
     public void canCoerceInvalidEithers() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithEither.class);
-        assertThat(engine.handle(get("path").withQuery("layout", "invalidValue")), is("left(invalidValue)"));
+        TestApplication application = new TestApplication();
+        application.add(GetWithEither.class);
+        assertThat(application.handle(get("path").withQuery("layout", "invalidValue")), is("left(invalidValue)"));
     }
 
     @Test
     public void canCoerceValidEithers() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithEither.class);
+        TestApplication application = new TestApplication();
+        application.add(GetWithEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(engine.handle(get("path").withQuery("layout", value)), is("right(" + value + ")"));
+        assertThat(application.handle(get("path").withQuery("layout", value)), is("right(" + value + ")"));
     }
 
     @Test
     public void canCoerceEithersThatContainAValidOption() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithEither.class);
+        TestApplication application = new TestApplication();
+        application.add(GetWithEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(engine.handle(get("path").withQuery("optionalLayout", value)), is("right(some(" + value + "))"));
+        assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("right(some(" + value + "))"));
     }
 
     @Test
     public void canCoerceEithersThatContainAnInvalidOption() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithEither.class);
+        TestApplication application = new TestApplication();
+        application.add(GetWithEither.class);
         final String value = "rubbish";
-        assertThat(engine.handle(get("path").withQuery("optionalLayout", value)), is("left(" + value + ")"));
+        assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("left(" + value + ")"));
     }
 
     @Test
     public void canCoerceEithersThatContainNone() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithEither.class);
-        assertThat(engine.handle(get("path")), is("right(none())"));
+        TestApplication application = new TestApplication();
+        application.add(GetWithEither.class);
+        assertThat(application.handle(get("path")), is("right(none())"));
     }
 
     @Test
     public void canCoerceOptionalTypes() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
-        assertThat(engine.handle(get("path").withQuery("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+        TestApplication application = new TestApplication();
+        application.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
+        assertThat(application.handle(get("path").withQuery("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
     @Test
     public void canCoerceOptionalTypesEvenWhenNoValueIsPresent() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
-        assertThat(engine.handle(get("path/")), is("default"));
+        TestApplication application = new TestApplication();
+        application.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
+        assertThat(application.handle(get("path/")), is("default"));
     }
 
    @Test
     public void canCoerceOptionalTypesEvenWhenNoValueIsPresentForATypeWithConstructor() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.add(GetWithOptionalStrongTypeWithConstructor.class);
-        assertThat(engine.handle(get("path").build()), is("default"));
+        TestApplication application = new TestApplication();
+        application.add(GetWithOptionalStrongTypeWithConstructor.class);
+        assertThat(application.handle(get("path")), is("default"));
     }
 
     @Test
     public void supportsCustomRenderer() throws Exception {
-        TestEngine engine = new TestEngine();
-        engine.addRenderer(MyCustomClass.class, new Renderer<MyCustomClass>() {
+        TestApplication application = new TestApplication();
+        application.addRenderer(MyCustomClass.class, new Renderer<MyCustomClass>() {
             public String render(MyCustomClass value) {
                 return "foo";
             }
         });
-        engine.add(GetReturningMyCustomClass.class);
-        assertThat(engine.handle(get("path")), is("foo"));
+        application.add(GetReturningMyCustomClass.class);
+        assertThat(application.handle(get("path")), is("foo"));
     }
 
 

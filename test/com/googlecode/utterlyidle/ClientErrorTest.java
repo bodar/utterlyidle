@@ -21,71 +21,71 @@ import static org.junit.Assert.fail;
 public class ClientErrorTest {
     @Test
     public void shouldReturn404WhenPathNotFound() throws Exception {
-        TestEngine engine = new TestEngine();
+        TestApplication application = new TestApplication();
         Response response = response();
-        engine.handle(get("invalidPath"), response);
+        application.handle(get("invalidPath"), response);
         assertThat(response.status(), is(Status.NOT_FOUND));
     }
 
     @Test
     public void shouldReturn405WhenMethodDoesNotMatch() throws Exception {
-        TestEngine engine = new TestEngine();
+        TestApplication application = new TestApplication();
         OutputStream output = new ByteArrayOutputStream();
         Response response = response(output);
-        engine.add(Foo.class);
-        engine.handle(post("path"), response);
+        application.add(Foo.class);
+        application.handle(post("path"), response);
 
         assertThat(response.status(), is(Status.METHOD_NOT_ALLOWED));
     }
 
     @Test
     public void shouldReturn400WhenMethodMatchesButARequiredArgumentIsMissing() throws Exception {
-        TestEngine engine = new TestEngine();
+        TestApplication application = new TestApplication();
         OutputStream output = new ByteArrayOutputStream();
         Response response = response(output);
-        engine.add(SomeOther.class);
-        engine.handle(get("path").withQuery("someOther", "value"), response);
+        application.add(SomeOther.class);
+        application.handle(get("path").withQuery("someOther", "value"), response);
 
         assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
     @Test
     public void shouldNotMatchArgumentsThatAreOfTypeObject() throws Exception {
-        TestEngine engine = new TestEngine();
+        TestApplication application = new TestApplication();
         OutputStream output = new ByteArrayOutputStream();
         Response response = response(output);
-        engine.add(SomeOther.class);
-        engine.handle(get("object"), response);
+        application.add(SomeOther.class);
+        application.handle(get("object"), response);
 
         assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
     @Test
     public void shouldReturn415WhenResourceCanNotConsumeType() throws Exception {
-        TestEngine engine = new TestEngine();
+        TestApplication application = new TestApplication();
         Response response = response();
-        engine.add(Foo.class);
-        engine.handle(get("path").withHeader(HttpHeaders.CONTENT_TYPE, "application/rubbish"), response);
+        application.add(Foo.class);
+        application.handle(get("path").withHeader(HttpHeaders.CONTENT_TYPE, "application/rubbish"), response);
 
         assertThat(response.status(), is(Status.UNSUPPORTED_MEDIA_TYPE));
     }
 
     @Test
     public void shouldReturn406WhenAcceptHeaderDoesNotMatch() throws Exception {
-        TestEngine engine = new TestEngine();
+        TestApplication application = new TestApplication();
         Response response = response();
-        engine.add(Foo.class);
-        engine.handle(get("bob").accepting("application/gibberish"), response);
+        application.add(Foo.class);
+        application.handle(get("bob").accepting("application/gibberish"), response);
 
         assertThat(response.status(), is(Status.NOT_ACCEPTABLE));
     }
 
     @Test
     public void shouldReturn200WhenAcceptHeaderNotSpecified() throws Exception {
-        TestEngine engine = new TestEngine();
+        TestApplication application = new TestApplication();
         Response response = response();
-        engine.add(Foo.class);
-        engine.handle(get("bob"), response);
+        application.add(Foo.class);
+        application.handle(get("bob"), response);
 
         assertThat(response.status(), is(Status.OK));
     }

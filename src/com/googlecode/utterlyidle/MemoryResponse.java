@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import java.io.ByteArrayOutputStream;
 
 import static com.googlecode.totallylazy.Callables.returns;
+import static com.googlecode.totallylazy.Callers.call;
 
 public class MemoryResponse extends ContractEnforcingResponse {
     public MemoryResponse() {
@@ -15,6 +16,6 @@ public class MemoryResponse extends ContractEnforcingResponse {
 
     @Override
     public String toString() {
-        return super.toString() + "\n" + output.toString();
+        return super.toString() + "\n" + call(output).toString();
     }
 }
