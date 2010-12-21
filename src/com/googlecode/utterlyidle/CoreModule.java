@@ -19,6 +19,8 @@ public class CoreModule extends AbstractModule {
         container.addActivator(BasePath.class, BasePathActivator.class);
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
+        container.add(ResponseHandlerFinder.class);
+        container.add(RendererFinder.class);
         return this;
     }
 
@@ -40,8 +42,7 @@ public class CoreModule extends AbstractModule {
         handlers.addGuard(assignableTo(SeeOther.class), RedirectHandler.class);
         handlers.addGuard(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
         handlers.addGuard(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
-        handlers.addGuard(assignableTo(MatchFailure.class), MatchFailureHandler.class);
-        handlers.addCatchAll(assignableTo(Object.class), RenderHandlerActivator.class);
+        handlers.addCatchAll(assignableTo(Object.class), RenderingResponseHandler.class);
 
         renderers.addCatchAll(assignableTo(MatchFailure.class), MatchFailureRenderer.class);
         renderers.addCatchAll(assignableTo(Exception.class), ExceptionRenderer.class);

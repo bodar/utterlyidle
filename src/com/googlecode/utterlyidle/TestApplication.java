@@ -4,14 +4,19 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 
 public class TestApplication extends RestApplication {
-    public void add(final Class resource) {
+    public TestApplication add(final Class resource) {
         add(new SingleResourceModule(resource));
+        return this;
     }
 
     public String handle(RequestBuilder request) throws Exception {
+        return responseFor(request).output().toString();
+    }
+
+    public Response responseFor(RequestBuilder request) throws Exception {
         Response response = MemoryResponse.response();
         handle(request, response);
-        return response.output().toString();
+        return response;
     }
 
     public void handle(RequestBuilder request, Response response) throws Exception {

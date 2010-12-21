@@ -1,32 +1,39 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Resolver;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static javax.ws.rs.core.MediaType.TEXT_HTML;
+
 public class BaseHandler implements HttpHandler {
-    private final ActivatorFinder activatorFinder;
-    private final ResponseHandlers responseHandlers;
+    private final ActivatorFinder activators;
+    private final ResponseHandlerFinder handlers;
     private final Resolver resolver;
 
-    public BaseHandler(ActivatorFinder activatorFinder, ResponseHandlers responseHandlers, Resolver resolver) {
-        this.activatorFinder = activatorFinder;
-        this.responseHandlers = responseHandlers;
+    public BaseHandler(ActivatorFinder activators, ResponseHandlerFinder handlers, Resolver resolver) {
+        this.activators = activators;
+        this.handlers = handlers;
         this.resolver = resolver;
     }
 
     public void handle(Request request, Response response) throws Exception {
-        final Either<MatchFailure, HttpMethodActivator> either = activatorFinder.findActivator(request);
+        final Either<MatchFailure, HttpMethodActivator> either = activators.findActivator(request);
         if (either.isLeft()) {
-            handle(resolver, request, response.
+            findAndHandle(request, response.
+                    status(either.left().status()).
+                    header(CONTENT_TYPE, TEXT_HTML).
                     entity(either.left()));
         } else {
-            handle(resolver, request, either.right().activate(resolver, request, response).
+            findAndHandle(request, either.right().activate(resolver, request, response).
                     status(Status.OK));
         }
     }
 
-    private void handle(Resolver resolver, Request request, Response response) throws Exception {
-        responseHandlers.with(resolver).handle(response);
+    private void findAndHandle(Request request, Response response) throws Exception {
+        handlers.findHandler(request, response).handle(response);
     }
 }
