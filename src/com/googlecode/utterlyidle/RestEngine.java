@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.handlers.RendererHandler;
+import com.googlecode.utterlyidle.handlers.Renderers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 
 import javax.ws.rs.HttpMethod;
@@ -22,9 +22,9 @@ import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
 public class RestEngine implements Engine {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
     private final ResponseHandlers handlers = new ResponseHandlers();
-    private final RendererHandler renderers = new RendererHandler();
+    private final Renderers renderers = new Renderers();
 
-    public RendererHandler renderers() {
+    public Renderers renderers() {
         return renderers;
     }
 
