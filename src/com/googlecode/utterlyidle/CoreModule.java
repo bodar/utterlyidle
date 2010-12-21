@@ -1,7 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.*;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
@@ -30,13 +28,13 @@ public class CoreModule extends AbstractModule {
 
         container.addInstance(ActivatorFinder.class, engine);
         container.addInstance(ResponseHandlers.class, engine.responseHandlers());
-        container.addInstance(RendererHandler.class, engine.renderers());
+        container.addInstance(Renderers.class, engine.renderers());
         return this;
     }
 
     public Module addResources(Engine engine) {
         final ResponseHandlers handlers = engine.responseHandlers();
-        final RendererHandler renderers = engine.renderers();
+        final Renderers renderers = engine.renderers();
 
         handlers.addGuard(aNull(Object.class), NullHandler.class);
         handlers.addGuard(assignableTo(SeeOther.class), RedirectHandler.class);
