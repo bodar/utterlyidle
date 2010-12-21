@@ -1,12 +1,7 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.utterlyidle.handlers.ResponseHandlers;
-import com.googlecode.utterlyidle.handlers.WriteMessageToResponseHandler;
-
-import static com.googlecode.utterlyidle.MemoryResponse.response;
 
 public class TestApplication extends RestApplication {
     public void add(final Class resource) {

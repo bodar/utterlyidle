@@ -5,7 +5,8 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.concurrent.Callable;
 
 class HttpExchangeResponse extends ContractEnforcingResponse {

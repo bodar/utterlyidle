@@ -1,6 +1,9 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.AbstractModule;
+import com.googlecode.utterlyidle.AttributeMap;
+import com.googlecode.utterlyidle.Module;
+import com.googlecode.utterlyidle.WebRoot;
 import com.googlecode.yadic.Container;
 
 import javax.servlet.ServletContext;

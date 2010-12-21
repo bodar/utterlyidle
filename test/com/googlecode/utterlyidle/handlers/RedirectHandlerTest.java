@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.SeeOther;
 import com.googlecode.utterlyidle.Status;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

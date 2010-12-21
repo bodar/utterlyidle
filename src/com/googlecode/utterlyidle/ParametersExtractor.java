@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.BitSet;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Sequences.sequence;

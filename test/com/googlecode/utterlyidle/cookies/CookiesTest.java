@@ -7,26 +7,14 @@ import org.junit.Test;
 
 import java.util.Date;
 
-import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.domain;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.*;
 import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
-import static com.googlecode.utterlyidle.cookies.Cookies.REQUEST_COOKIE_HEADER;
-import static com.googlecode.utterlyidle.cookies.Cookies.SET_COOKIE_HEADER;
-import static com.googlecode.utterlyidle.cookies.Cookies.cookies;
+import static com.googlecode.utterlyidle.cookies.Cookies.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class CookiesTest {
     private MemoryResponse response = new MemoryResponse();

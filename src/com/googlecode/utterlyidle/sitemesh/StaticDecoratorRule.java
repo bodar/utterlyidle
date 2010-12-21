@@ -1,12 +1,9 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-
-import static com.googlecode.totallylazy.Pair.pair;
 
 public class StaticDecoratorRule implements DecoratorRule {
     private final Predicate<? super Pair<Request, Response>> predicate;
