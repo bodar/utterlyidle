@@ -8,8 +8,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -21,7 +23,7 @@ public class ServerErrorTest {
         final String message = "Caught exception";
         TestApplication application = new TestApplication();
         application.add(ThrowingResource.class);
-        application.addResponseHandler(instanceOf(Exception.class), new WriteMessageToResponseHandler(message));
+        application.addResponseHandler(where(entity(), instanceOf(Exception.class)), new WriteMessageToResponseHandler(message));
         Response response = response();
         application.handle(get("exception"), response);
         assertThat(response.output().toString(), containsString(message));

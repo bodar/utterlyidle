@@ -1,5 +1,8 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicates;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.*;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
@@ -10,8 +13,8 @@ import com.googlecode.yadic.Container;
 
 import javax.ws.rs.core.StreamingOutput;
 
-import static com.googlecode.totallylazy.Predicates.aNull;
-import static com.googlecode.totallylazy.Predicates.assignableTo;
+import static com.googlecode.totallylazy.Predicates.*;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 
 public class CoreModule extends AbstractModule {
     public Module addPerRequestObjects(Container container) {
@@ -37,17 +40,20 @@ public class CoreModule extends AbstractModule {
         final ResponseHandlerRegistry responseHandlerRegistry = engine.responseHandlers();
         final Renderers renderers = engine.renderers();
 
-        responseHandlerRegistry.addGuard(aNull(Object.class), NullHandler.class);
-        responseHandlerRegistry.addGuard(assignableTo(SeeOther.class), RedirectHandler.class);
-        responseHandlerRegistry.addGuard(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
-        responseHandlerRegistry.addGuard(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
-        responseHandlerRegistry.addCatchAll(assignableTo(Object.class), RenderingResponseHandler.class);
+        responseHandlerRegistry.addGuard(where(entity(), is(aNull(Object.class))), NullHandler.class);
+        responseHandlerRegistry.addGuard(where(entity(), is(instanceOf(SeeOther.class))), RedirectHandler.class);
+        responseHandlerRegistry.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
+        responseHandlerRegistry.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
+        responseHandlerRegistry.addCatchAll(where(entity(), is(instanceOf(Object.class))), RenderingResponseHandler.class);
 
-        renderers.addCatchAll(assignableTo(MatchFailure.class), MatchFailureRenderer.class);
-        renderers.addCatchAll(assignableTo(Exception.class), ExceptionRenderer.class);
-        renderers.addCatchAll(assignableTo(Object.class), ObjectRenderer.class);
+        renderers.addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), MatchFailureRenderer.class);
+        renderers.addCatchAll(where(entity(), is(instanceOf(Exception.class))), ExceptionRenderer.class);
+        renderers.addCatchAll(where(entity(), is(instanceOf(Object.class))), ObjectRenderer.class);
 
         engine.add(BuiltInResources.class);
         return this;
     }
+
+
+
 }

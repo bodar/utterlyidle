@@ -10,8 +10,8 @@ import java.io.Writer;
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Callers.call;
-import static com.googlecode.totallylazy.Predicates.by;
-import static com.googlecode.totallylazy.Predicates.matches;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.handler;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;
 import static com.googlecode.yadic.CreateCallable.create;
 
 public class RenderingResponseHandler implements ResponseHandler {
@@ -31,7 +31,7 @@ public class RenderingResponseHandler implements ResponseHandler {
 
     @SuppressWarnings("unchecked")
     private Renderer findRenderer(Request request, Response response){
-        final Object handler = renderers.handlers().filter(by((Callable1) first(), matches(response.entity()))).map(second()).head();
+        final Object handler = renderers.handlers().filter(matches(request, response)).map(handler()).head();
         if (handler instanceof Class) {
             return (Renderer) call(create((Class) handler, resolver));
         }
