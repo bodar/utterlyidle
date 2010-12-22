@@ -8,9 +8,9 @@ import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 public class ExceptionHandler implements HttpHandler {
     private final HttpHandler httpHandler;
-    private final ResponseHandlers handlers;
+    private final ResponseHandlersHandler handlers;
 
-    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlers handlers) {
+    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlersHandler handlers) {
         this.httpHandler = httpHandler;
         this.handlers = handlers;
     }
