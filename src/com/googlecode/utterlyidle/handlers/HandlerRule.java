@@ -38,9 +38,13 @@ public class HandlerRule {
     }
 
     public static Callable1<? super Pair<Request, Response>, Object> entity() {
-        return new Callable1<Pair<Request, Response>, Object>() {
-            public Object call(Pair<Request, Response> pair) throws Exception {
-                return pair.second().entity();
+        return entity(Object.class);
+    }
+
+    public static <T> Callable1<? super Pair<Request, Response>, T> entity(final Class<T> aClass) {
+        return new Callable1<Pair<Request, Response>, T>() {
+            public T call(Pair<Request, Response> pair) throws Exception {
+                return aClass.cast(pair.second().entity());
             }
         };
     }
