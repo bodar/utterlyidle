@@ -13,6 +13,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import static com.googlecode.totallylazy.Predicates.*;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
+import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 
 public class CoreModule extends AbstractModule {
     @Override
@@ -21,7 +22,7 @@ public class CoreModule extends AbstractModule {
         container.addActivator(BasePath.class, BasePathActivator.class);
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
-        container.add(ResponseHandlersHandler.class);
+        container.add(ResponseHandlersFinder.class);
         return this;
     }
 
@@ -30,7 +31,6 @@ public class CoreModule extends AbstractModule {
         container.add(Resources.class, RestEngine.class);
         container.addActivator(ActivatorFinder.class, container.getActivator(Resources.class));
         container.add(ResponseHandlers.class);
-        container.add(Renderers.class);
         return this;
     }
 
@@ -46,15 +46,9 @@ public class CoreModule extends AbstractModule {
         handlers.addGuard(where(entity(), is(instanceOf(SeeOther.class))), RedirectHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
-        handlers.addCatchAll(where(entity(), is(instanceOf(Object.class))), RenderingResponseHandler.class);
-        return this;
-    }
-
-    @Override
-    public Module addRenderers(Renderers renderers){
-        renderers.addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), MatchFailureRenderer.class);
-        renderers.addCatchAll(where(entity(), is(instanceOf(Exception.class))), ExceptionRenderer.class);
-        renderers.addCatchAll(where(entity(), is(instanceOf(Object.class))), ObjectRenderer.class);
+        handlers.addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class));
+        handlers.addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class));
+        handlers.addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
         return this;
     }
 }

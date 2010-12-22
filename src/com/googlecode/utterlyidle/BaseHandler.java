@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.utterlyidle.handlers.ResponseHandlersHandler;
+import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Resolver;
 
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
@@ -9,10 +9,10 @@ import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
 public class BaseHandler implements HttpHandler {
     private final ActivatorFinder activators;
-    private final ResponseHandlersHandler handlers;
+    private final ResponseHandlersFinder handlers;
     private final Resolver resolver;
 
-    public BaseHandler(ActivatorFinder activators, ResponseHandlersHandler handlers, Resolver resolver) {
+    public BaseHandler(ActivatorFinder activators, ResponseHandlersFinder handlers, Resolver resolver) {
         this.activators = activators;
         this.handlers = handlers;
         this.resolver = resolver;

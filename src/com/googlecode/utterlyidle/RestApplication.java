@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.utterlyidle.handlers.CloseHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
-import com.googlecode.utterlyidle.handlers.Renderers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
 import com.googlecode.yadic.Container;
@@ -38,7 +37,6 @@ public class RestApplication implements Application {
         sequence(module).safeCast(ApplicationScopedModule.class).forEach(addPerApplicationObjects(applicationScope));
         sequence(module).safeCast(ResourcesModule.class).forEach(addResources(resources()));
         sequence(module).safeCast(ResponseHandlersModule.class).forEach(addResponseHandlers(responseHandlers()));
-        sequence(module).safeCast(RenderersModule.class).forEach(addRenderers(renderers()));
         modules.add(module);
         return this;
     }
@@ -64,18 +62,6 @@ public class RestApplication implements Application {
 
     public ResponseHandlers responseHandlers() {
         return applicationScope.get(ResponseHandlers.class);
-    }
-
-    public Renderers renderers() {
-        return applicationScope.get(Renderers.class);
-    }
-
-    private Runnable1<RenderersModule> addRenderers(final Renderers renderers) {
-        return new Runnable1<RenderersModule>() {
-            public void run(RenderersModule renderersModule) {
-                renderersModule.addRenderers(renderers);
-            }
-        };
     }
 
     private Runnable1<ResponseHandlersModule> addResponseHandlers(final ResponseHandlers registry) {

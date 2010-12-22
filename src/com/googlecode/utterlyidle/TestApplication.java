@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
@@ -27,10 +28,6 @@ public class TestApplication extends RestApplication {
 
     public void handle(RequestBuilder request, Response response) throws Exception {
         handle(request.build(), response);
-    }
-
-    public <T> void addRenderer(Class<T> customClass, Renderer<T> renderer) {
-        renderers().add(where(entity(), is(instanceOf(customClass))), renderer);
     }
 
     public <T> void addResponseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
