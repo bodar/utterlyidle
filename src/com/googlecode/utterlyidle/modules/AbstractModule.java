@@ -5,7 +5,8 @@ import com.googlecode.utterlyidle.handlers.Renderers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Container;
 
-public abstract class AbstractModule implements ApplicationScopedModule, RequestScopedModule, ResourcesModule, ResponseHandlersModule, RenderersModule {
+public abstract class AbstractModule implements
+        ApplicationScopedModule, RequestScopedModule, ResourcesModule, ResponseHandlersModule, RenderersModule {
     public Module addPerRequestObjects(Container container) {
         return this;
     }

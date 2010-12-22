@@ -24,8 +24,9 @@ public class ServerErrorTest {
         TestApplication application = new TestApplication();
         application.add(ThrowingResource.class);
         application.addResponseHandler(where(entity(), instanceOf(Exception.class)), new WriteMessageToResponseHandler(message));
-        Response response = response();
-        application.handle(get("exception"), response);
+
+        Response response = application.responseFor(get("exception"));
+
         assertThat(response.output().toString(), containsString(message));
     }
 
@@ -33,8 +34,8 @@ public class ServerErrorTest {
     public void returns500WhenAnExceptionIsThrown() throws Exception {
         TestApplication application = new TestApplication();
         application.add(ThrowingResource.class);
-        Response response = response();
-        application.handle(get("exception"), response);
+
+        Response response = application.responseFor(get("exception"));
 
         assertResponseContains(response, Exception.class);
     }
@@ -43,8 +44,8 @@ public class ServerErrorTest {
     public void returns500WhenARespurceCanNotBeCreatedByYadic() throws Exception {
         TestApplication application = new TestApplication();
         application.add(ResourceWithMissingDependency.class);
-        Response response = response();
-        application.handle(get("lazy"), response);
+
+        Response response = application.responseFor(get("lazy"));
 
         assertResponseContains(response, ContainerException.class);
     }
