@@ -11,7 +11,7 @@ import static com.googlecode.utterlyidle.handlers.HandlerRule.handler;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;
 import static com.googlecode.yadic.CreateCallable.create;
 
-public class ResponseHandlersFinder implements ResponseHandler {
+public class ResponseHandlersFinder {
     private final ResponseHandlers registry;
     private final Resolver resolver;
 
@@ -20,7 +20,7 @@ public class ResponseHandlersFinder implements ResponseHandler {
         this.resolver = resolver;
     }
 
-    private ResponseHandler findHandler(final Request request, final Response response){
+    private ResponseHandler lookup(final Request request, final Response response){
         final Object handler = registry.handlers().filter(matches(request, response)).map(handler()).head();
         if (handler instanceof Class) {
             return (ResponseHandler) call(create((Class) handler, resolver));
@@ -28,12 +28,12 @@ public class ResponseHandlersFinder implements ResponseHandler {
         return (ResponseHandler) handler;
     }
 
-    public void handle(Request request, Response response) throws Exception {
-        ResponseHandler handler = findHandler(request, response);
+    public ResponseHandler findHandler(final Request request, final Response response) {
+        ResponseHandler handler = lookup(request, response);
         if(handler instanceof DependsOnResolver){
             ((DependsOnResolver) handler).setResolver(resolver);
         }
-        handler.handle(request, response);
+        return handler;
     }
 
 }
