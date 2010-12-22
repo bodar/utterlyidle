@@ -13,25 +13,51 @@ import java.io.Writer;
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.yadic.CreateCallable.create;
 
-public class RenderingResponseHandler<T> implements ResponseHandler, DependsOnResolver {
-    private final Class<? extends Renderer<T>> renderer;
-    private Resolver resolver;
-
-    private RenderingResponseHandler(Class<? extends Renderer<T>> renderer) {
-        this.renderer = renderer;
+public abstract class RenderingResponseHandler<T> implements ResponseHandler {
+    public static <T> RenderingResponseHandler<T> renderer(Class<? extends Renderer<T>> renderer) {
+        return new ClassRenderingResponseHandler<T>(renderer);
     }
 
-    public static <T> RenderingResponseHandler<T> renderer(Class<? extends Renderer<T>> renderer) {
-        return new RenderingResponseHandler<T>(renderer);
+    public static <T> RenderingResponseHandler<T> renderer(Renderer<T> renderer) {
+        return new InstanceRenderingResponseHandler<T>(renderer);
     }
 
     public void handle(Request request, Response response) throws Exception {
         Writer writer = new OutputStreamWriter(response.output());
-        writer.write(call(create(renderer, resolver)).render((T) response.entity()));
+        writer.write(getRenderer().render((T) response.entity()));
         writer.flush();
     }
 
-    public void setResolver(Resolver resolver) {
-        this.resolver = resolver;
+    protected abstract Renderer<T> getRenderer();
+
+    private static class ClassRenderingResponseHandler<T> extends RenderingResponseHandler<T> implements DependsOnResolver{
+        private final Class<? extends Renderer<T>> renderer;
+        private Resolver resolver;
+
+        public ClassRenderingResponseHandler(Class<? extends Renderer<T>> renderer) {
+            this.renderer = renderer;
+        }
+
+        protected Renderer<T> getRenderer() {
+            return call(create(renderer, resolver));
+        }
+
+        public void setResolver(Resolver resolver) {
+            this.resolver = resolver;
+        }
+
+    }
+
+    private static class InstanceRenderingResponseHandler<T> extends RenderingResponseHandler<T> {
+        private final Renderer<T> renderer;
+
+        public InstanceRenderingResponseHandler(Renderer<T> renderer) {
+            this.renderer = renderer;
+        }
+
+        @Override
+        protected Renderer<T> getRenderer() {
+            return renderer;
+        }
     }
 }
