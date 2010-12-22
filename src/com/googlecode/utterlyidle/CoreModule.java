@@ -19,8 +19,7 @@ public class CoreModule extends AbstractModule {
         container.addActivator(BasePath.class, BasePathActivator.class);
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
-        container.add(ResponseHandlerFinder.class);
-        container.add(RendererFinder.class);
+        container.add(ResponseHandlers.class);
         return this;
     }
 
@@ -29,20 +28,20 @@ public class CoreModule extends AbstractModule {
         final Engine engine = container.get(Engine.class);
 
         container.addInstance(ActivatorFinder.class, engine);
-        container.addInstance(ResponseHandlers.class, engine.responseHandlers());
+        container.addInstance(ResponseHandlerRegistry.class, engine.responseHandlers());
         container.addInstance(Renderers.class, engine.renderers());
         return this;
     }
 
     public Module addResources(Engine engine) {
-        final ResponseHandlers handlers = engine.responseHandlers();
+        final ResponseHandlerRegistry responseHandlerRegistry = engine.responseHandlers();
         final Renderers renderers = engine.renderers();
 
-        handlers.addGuard(aNull(Object.class), NullHandler.class);
-        handlers.addGuard(assignableTo(SeeOther.class), RedirectHandler.class);
-        handlers.addGuard(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
-        handlers.addGuard(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
-        handlers.addCatchAll(assignableTo(Object.class), RenderingResponseHandler.class);
+        responseHandlerRegistry.addGuard(aNull(Object.class), NullHandler.class);
+        responseHandlerRegistry.addGuard(assignableTo(SeeOther.class), RedirectHandler.class);
+        responseHandlerRegistry.addGuard(assignableTo(StreamingWriter.class), StreamingWriterHandler.class);
+        responseHandlerRegistry.addGuard(assignableTo(StreamingOutput.class), StreamingOutputHandler.class);
+        responseHandlerRegistry.addCatchAll(assignableTo(Object.class), RenderingResponseHandler.class);
 
         renderers.addCatchAll(assignableTo(MatchFailure.class), MatchFailureRenderer.class);
         renderers.addCatchAll(assignableTo(Exception.class), ExceptionRenderer.class);

@@ -19,13 +19,5 @@ public class RendererFinder {
         this.resolver = resolver;
         this.renderers = renderers;
     }
-    @SuppressWarnings("unchecked")
-    public Renderer findRenderer(Request request, Response response){
-        final Object handler = renderers.handlers().filter(by((Callable1) first(), matches(response.entity()))).map(second()).head();
-        if (handler instanceof Class) {
-            return (Renderer) call(create((Class) handler, resolver));
-        }
-        return (Renderer) handler;
-    }
 
 }

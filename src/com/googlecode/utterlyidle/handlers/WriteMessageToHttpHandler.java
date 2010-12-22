@@ -3,16 +3,19 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
-import com.googlecode.utterlyidle.StreamingWriter;
 
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class StreamingWriterHandler implements ResponseHandler {
-    public void handle(Request request, Response response) throws IOException {
+public class WriteMessageToHttpHandler implements ResponseHandler {
+    private final String message;
+
+    public WriteMessageToHttpHandler(String message) {
+        this.message = message;
+    }
+
+    public void handle(Request request, Response response) throws Exception {
         OutputStreamWriter writer = new OutputStreamWriter(response.output());
-        StreamingWriter value = (StreamingWriter) response.entity();
-        value.write(writer);
+        writer.write(message);
         writer.close();
     }
 }

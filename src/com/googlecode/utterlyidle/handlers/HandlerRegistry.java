@@ -20,7 +20,7 @@ import static com.googlecode.totallylazy.Predicates.matches;
 import static com.googlecode.totallylazy.Sequences.join;
 import static com.googlecode.yadic.CreateCallable.create;
 
-public abstract class HandlerRules<T> {
+public abstract class HandlerRegistry<T> {
     private final List<Pair<Predicate, Object>> guards = new ArrayList<Pair<Predicate, Object>>();
     private final List<Pair<Predicate, Object>> custom = new ArrayList<Pair<Predicate, Object>>();
     private final List<Pair<Predicate, Object>> catchAll = new ArrayList<Pair<Predicate, Object>>();
