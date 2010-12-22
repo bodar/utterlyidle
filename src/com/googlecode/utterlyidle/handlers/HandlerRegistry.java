@@ -21,7 +21,7 @@ public abstract class HandlerRegistry<T> {
         return join(guards, custom, catchAll);
     }
 
-    public void addGuard(Predicate<? super Pair<Request, Response>> predicate, Class handler) {
+    public void addGuard(Predicate<? super Pair<Request, Response>> predicate, Class<? extends T> handler) {
         guards.add(rule(predicate, handler));
     }
 
@@ -29,7 +29,7 @@ public abstract class HandlerRegistry<T> {
         guards.add(rule(predicate, handler));
     }
 
-    public void add(Predicate<? super Pair<Request, Response>> predicate, Class handler) {
+    public void add(Predicate<? super Pair<Request, Response>> predicate, Class<? extends T> handler) {
         custom.add(rule(predicate, handler));
     }
 
@@ -37,7 +37,7 @@ public abstract class HandlerRegistry<T> {
         custom.add(rule(predicate, handler));
     }
 
-    public void addCatchAll(Predicate<? super Pair<Request, Response>> predicate, Class handler) {
+    public void addCatchAll(Predicate<? super Pair<Request, Response>> predicate, Class<? extends T> handler) {
         catchAll.add(rule(predicate, handler));
     }
 
