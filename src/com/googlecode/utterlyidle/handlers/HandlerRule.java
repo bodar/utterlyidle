@@ -44,7 +44,7 @@ public class HandlerRule {
     public static <T> Callable1<? super Pair<Request, Response>, T> entity(final Class<T> aClass) {
         return new Callable1<Pair<Request, Response>, T>() {
             public T call(Pair<Request, Response> pair) throws Exception {
-                if (!aClass.isAssignableFrom(pair.second().entity().getClass())) {
+                if (pair.second().entity() != null && !aClass.isAssignableFrom(pair.second().entity().getClass())) {
                     return null;
                 }
                 return aClass.cast(pair.second().entity());
