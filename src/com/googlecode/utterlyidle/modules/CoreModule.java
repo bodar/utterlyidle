@@ -28,9 +28,7 @@ public class CoreModule extends AbstractModule {
     @Override
     public Module addPerApplicationObjects(Container container) {
         container.add(Resources.class, RestEngine.class);
-        final Resources resources = container.get(Resources.class);
-
-        container.addInstance(ActivatorFinder.class, resources);
+        container.addActivator(ActivatorFinder.class, container.getActivator(Resources.class));
         container.add(ResponseHandlers.class);
         container.add(Renderers.class);
         return this;
