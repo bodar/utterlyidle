@@ -1,8 +1,10 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.handlers.Renderers;
+import com.googlecode.utterlyidle.handlers.ResponseHandlerRegistry;
 import com.googlecode.yadic.Container;
 
-public class AbstractModule implements ApplicationScopedModule, RequestScopedModule, RestModule {
+public abstract class AbstractModule implements ApplicationScopedModule, RequestScopedModule, ResourcesModule, ResponseHandlersModule, RenderersModule {
     public Module addPerRequestObjects(Container container) {
         return this;
     }
@@ -11,7 +13,15 @@ public class AbstractModule implements ApplicationScopedModule, RequestScopedMod
         return this;
     }
 
-    public Module addResources(Engine engine) {
+    public Module addResources(Resources resources) {
+        return this;
+    }
+
+    public Module addResponseHandlers(ResponseHandlerRegistry registry) {
+        return this;
+    }
+
+    public Module addRenderers(Renderers renderers) {
         return this;
     }
 }

@@ -9,6 +9,6 @@ public interface Application extends HttpHandler {
 
     Application add(Module module);
 
-    Engine engine();
+    Resources resources();
 
 }

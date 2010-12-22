@@ -4,8 +4,6 @@ import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.handlers.ResponseHandlerRegistry;
-import com.googlecode.utterlyidle.handlers.Renderers;
 
 import javax.ws.rs.HttpMethod;
 import java.lang.reflect.Method;
@@ -19,18 +17,8 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
 
-public class RestEngine implements Engine {
+public class RestEngine implements Resources {
     private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
-    private final ResponseHandlerRegistry registry = new ResponseHandlerRegistry();
-    private final Renderers renderers = new Renderers();
-
-    public Renderers renderers() {
-        return renderers;
-    }
-
-    public ResponseHandlerRegistry responseHandlers() {
-        return registry;
-    }
 
     public void add(Class resource) {
         for (final Method method : resource.getMethods()) {
