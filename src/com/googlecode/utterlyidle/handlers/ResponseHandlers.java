@@ -1,5 +1,8 @@
-package com.googlecode.utterlyidle;
+package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlerRegistry;
 import com.googlecode.yadic.Resolver;
 
@@ -8,7 +11,7 @@ import static com.googlecode.utterlyidle.handlers.HandlerRule.handler;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;
 import static com.googlecode.yadic.CreateCallable.create;
 
-public class ResponseHandlers implements ResponseHandler{
+public class ResponseHandlers implements ResponseHandler {
     private final ResponseHandlerRegistry registry;
     private final Resolver resolver;
 
