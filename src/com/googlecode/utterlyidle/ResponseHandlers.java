@@ -1,14 +1,11 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.utterlyidle.handlers.ResponseHandlerRegistry;
 import com.googlecode.yadic.Resolver;
 
-import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Callers.call;
-import static com.googlecode.totallylazy.Predicates.by;
-import static com.googlecode.totallylazy.Predicates.matches;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.handler;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;
 import static com.googlecode.yadic.CreateCallable.create;
 
 public class ResponseHandlers implements ResponseHandler{
@@ -20,9 +17,8 @@ public class ResponseHandlers implements ResponseHandler{
         this.resolver = resolver;
     }
 
-    @SuppressWarnings("unchecked")
-    private ResponseHandler findHandler(Request request, Response response){
-        final Object handler = registry.handlers().filter(by((Callable1) first(), matches(response.entity()))).map(second()).head();
+    private ResponseHandler findHandler(final Request request, final Response response){
+        final Object handler = registry.handlers().filter(matches(request, response)).map(handler()).head();
         if (handler instanceof Class) {
             return (ResponseHandler) call(create((Class) handler, resolver));
         }
