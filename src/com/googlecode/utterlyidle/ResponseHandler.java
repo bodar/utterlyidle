@@ -1,8 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.yadic.Resolver;
-
-public interface ResponseHandler<T> {
-    void handle(Response response) throws Exception;
+public interface ResponseHandler {
+    void handle(Request request, Response response) throws Exception;
 }
 

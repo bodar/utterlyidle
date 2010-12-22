@@ -3,18 +3,15 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.yadic.Resolver;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
 public class BaseHandler implements HttpHandler {
     private final ActivatorFinder activators;
-    private final ResponseHandlerFinder handlers;
+    private final ResponseHandlers handlers;
     private final Resolver resolver;
 
-    public BaseHandler(ActivatorFinder activators, ResponseHandlerFinder handlers, Resolver resolver) {
+    public BaseHandler(ActivatorFinder activators, ResponseHandlers handlers, Resolver resolver) {
         this.activators = activators;
         this.handlers = handlers;
         this.resolver = resolver;
@@ -34,6 +31,6 @@ public class BaseHandler implements HttpHandler {
     }
 
     private void findAndHandle(Request request, Response response) throws Exception {
-        handlers.findHandler(request, response).handle(response);
+        handlers.handle(request, response);
     }
 }

@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.*;
-import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -9,9 +8,9 @@ import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
 public class ExceptionHandler implements HttpHandler {
     private final HttpHandler httpHandler;
-    private final ResponseHandlerFinder handlers;
+    private final ResponseHandlers handlers;
 
-    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlerFinder handlers) {
+    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlers handlers) {
         this.httpHandler = httpHandler;
         this.handlers = handlers;
     }
@@ -29,6 +28,6 @@ public class ExceptionHandler implements HttpHandler {
     private void findAndHandle(Request request, Response response) throws Exception {
         response.status(Status.INTERNAL_SERVER_ERROR);
         response.header(CONTENT_TYPE, "text/plain");
-        handlers.findHandler(request, response).handle(response);
+        handlers.handle(request, response);
     }
 }
