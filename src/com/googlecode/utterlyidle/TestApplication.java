@@ -2,8 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Predicates;
-import com.googlecode.totallylazy.predicates.WherePredicate;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.is;
@@ -31,10 +29,10 @@ public class TestApplication extends RestApplication {
     }
 
     public <T> void addRenderer(Class<T> customClass, Renderer<T> renderer) {
-        engine().renderers().add(where(entity(), is(instanceOf(customClass))), renderer);
+        renderers().add(where(entity(), is(instanceOf(customClass))), renderer);
     }
 
     public <T> void addResponseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
-        engine().responseHandlers().add(predicate, responseHandler);
+        responseHandlers().add(predicate, responseHandler);
     }
 }

@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Resolver;
 
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
