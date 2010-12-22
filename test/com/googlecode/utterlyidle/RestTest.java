@@ -2,7 +2,9 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Predicates;
 import com.googlecode.utterlyidle.cookies.Cookies;
+import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
 import org.junit.Test;
 
 import javax.ws.rs.*;
@@ -11,12 +13,15 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.util.Formatter;
 
+import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
 import static com.googlecode.utterlyidle.RequestBuilder.*;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
@@ -251,11 +256,7 @@ public class RestTest {
     @Test
     public void supportsCustomRenderer() throws Exception {
         TestApplication application = new TestApplication();
-        application.addRenderer(MyCustomClass.class, new Renderer<MyCustomClass>() {
-            public String render(MyCustomClass value) {
-                return "foo";
-            }
-        });
+        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), RenderingResponseHandler.renderer(MyCustomClassRenderer.class));
         application.add(GetReturningMyCustomClass.class);
         assertThat(application.handle(get("path")), is("foo"));
     }
@@ -516,6 +517,12 @@ public class RestTest {
         @GET
         public MyCustomClass get() {
             return new MyCustomClass();
+        }
+    }
+
+    public static class MyCustomClassRenderer implements Renderer<MyCustomClass> {
+        public String render(MyCustomClass value) {
+            return "foo";
         }
     }
 }
