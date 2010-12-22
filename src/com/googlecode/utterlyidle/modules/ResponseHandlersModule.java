@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.utterlyidle.handlers.ResponseHandlerRegistry;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 
 public interface ResponseHandlersModule extends Module{
-    Module addResponseHandlers(ResponseHandlerRegistry registry);
+    Module addResponseHandlers(ResponseHandlers registry);
 }

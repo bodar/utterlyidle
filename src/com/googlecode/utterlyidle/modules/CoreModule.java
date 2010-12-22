@@ -21,7 +21,7 @@ public class CoreModule extends AbstractModule {
         container.addActivator(BasePath.class, BasePathActivator.class);
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
-        container.add(ResponseHandlers.class);
+        container.add(ResponseHandlersHandler.class);
         return this;
     }
 
@@ -31,7 +31,7 @@ public class CoreModule extends AbstractModule {
         final Resources resources = container.get(Resources.class);
 
         container.addInstance(ActivatorFinder.class, resources);
-        container.add(ResponseHandlerRegistry.class);
+        container.add(ResponseHandlers.class);
         container.add(Renderers.class);
         return this;
     }
@@ -43,12 +43,12 @@ public class CoreModule extends AbstractModule {
     }
 
     @Override
-    public Module addResponseHandlers(ResponseHandlerRegistry registry){
-        registry.addGuard(where(entity(), is(aNull(Object.class))), NullHandler.class);
-        registry.addGuard(where(entity(), is(instanceOf(SeeOther.class))), RedirectHandler.class);
-        registry.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
-        registry.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
-        registry.addCatchAll(where(entity(), is(instanceOf(Object.class))), RenderingResponseHandler.class);
+    public Module addResponseHandlers(ResponseHandlers handlers){
+        handlers.addGuard(where(entity(), is(aNull(Object.class))), NullHandler.class);
+        handlers.addGuard(where(entity(), is(instanceOf(SeeOther.class))), RedirectHandler.class);
+        handlers.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
+        handlers.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
+        handlers.addCatchAll(where(entity(), is(instanceOf(Object.class))), RenderingResponseHandler.class);
         return this;
     }
 

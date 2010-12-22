@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.utterlyidle.handlers.CloseHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.Renderers;
-import com.googlecode.utterlyidle.handlers.ResponseHandlerRegistry;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
@@ -62,8 +62,8 @@ public class RestApplication implements Application {
         return applicationScope.get(Resources.class);
     }
 
-    public ResponseHandlerRegistry responseHandlers() {
-        return applicationScope.get(ResponseHandlerRegistry.class);
+    public ResponseHandlers responseHandlers() {
+        return applicationScope.get(ResponseHandlers.class);
     }
 
     public Renderers renderers() {
@@ -78,7 +78,7 @@ public class RestApplication implements Application {
         };
     }
 
-    private Runnable1<ResponseHandlersModule> addResponseHandlers(final ResponseHandlerRegistry registry) {
+    private Runnable1<ResponseHandlersModule> addResponseHandlers(final ResponseHandlers registry) {
         return new Runnable1<ResponseHandlersModule>() {
             public void run(ResponseHandlersModule responseHandlersModule) {
                 responseHandlersModule.addResponseHandlers(registry);
