@@ -4,38 +4,34 @@ import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
+import com.googlecode.utterlyidle.modules.DependsOnResolver;
 import com.googlecode.yadic.Resolver;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import static com.googlecode.totallylazy.Callers.call;
-import static com.googlecode.utterlyidle.handlers.HandlerRule.handler;
-import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;
 import static com.googlecode.yadic.CreateCallable.create;
 
-public class RenderingResponseHandler implements ResponseHandler {
-    private final Renderers renderers;
-    private final Resolver resolver;
+public class RenderingResponseHandler<T> implements ResponseHandler, DependsOnResolver {
+    private final Class<? extends Renderer<T>> renderer;
+    private Resolver resolver;
 
-    public RenderingResponseHandler(Renderers renderers, Resolver resolver) {
-        this.renderers = renderers;
-        this.resolver = resolver;
+    private RenderingResponseHandler(Class<? extends Renderer<T>> renderer) {
+        this.renderer = renderer;
+    }
+
+    public static <T> RenderingResponseHandler<T> renderer(Class<? extends Renderer<T>> renderer) {
+        return new RenderingResponseHandler<T>(renderer);
     }
 
     public void handle(Request request, Response response) throws Exception {
         Writer writer = new OutputStreamWriter(response.output());
-        writer.write(findRenderer(request, response).render(response.entity()));
+        writer.write(call(create(renderer, resolver)).render((T) response.entity()));
         writer.flush();
     }
 
-    @SuppressWarnings("unchecked")
-    private Renderer findRenderer(Request request, Response response){
-        final Object handler = renderers.handlers().filter(matches(request, response)).map(handler()).head();
-        if (handler instanceof Class) {
-            return (Renderer) call(create((Class) handler, resolver));
-        }
-        return (Renderer) handler;
+    public void setResolver(Resolver resolver) {
+        this.resolver = resolver;
     }
-
 }
