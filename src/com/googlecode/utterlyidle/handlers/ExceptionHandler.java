@@ -28,6 +28,6 @@ public class ExceptionHandler implements HttpHandler {
     private void findAndHandle(Request request, Response response) throws Exception {
         response.status(Status.INTERNAL_SERVER_ERROR);
         response.header(CONTENT_TYPE, "text/plain");
-        handlers.handle(request, response);
+        handlers.findHandler(request, response).handle(response);
     }
 }

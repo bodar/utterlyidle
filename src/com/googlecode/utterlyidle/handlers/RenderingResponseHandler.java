@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.Renderer;
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.modules.DependsOnResolver;
@@ -22,7 +21,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
         return new InstanceRenderingResponseHandler<T>(renderer);
     }
 
-    public void handle(Request request, Response response) throws Exception {
+    public void handle(Response response) throws Exception {
         Writer writer = new OutputStreamWriter(response.output());
         writer.write(getRenderer().render((T) response.entity()));
         writer.flush();

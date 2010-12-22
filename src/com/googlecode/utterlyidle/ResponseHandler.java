@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
 public interface ResponseHandler {
-    void handle(Request request, Response response) throws Exception;
+    void handle(Response response) throws Exception;
 }
 

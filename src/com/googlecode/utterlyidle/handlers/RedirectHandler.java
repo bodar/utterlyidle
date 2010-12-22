@@ -11,7 +11,7 @@ public class RedirectHandler implements ResponseHandler {
         this.basePath = basePath;
     }
 
-    public void handle(Request request, Response response) {
+    public void handle(Response response) {
         Redirect redirect = (Redirect) response.entity();
         response.status(Status.SEE_OTHER);
         response.header(HttpHeaders.LOCATION, basePath.file(redirect.location()).toString());

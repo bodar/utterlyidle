@@ -21,13 +21,17 @@ public class BaseHandler implements HttpHandler {
     public void handle(Request request, Response response) throws Exception {
         final Either<MatchFailure, HttpMethodActivator> either = activators.findActivator(request);
         if (either.isLeft()) {
-            handlers.handle(request, response.
-                        status(either.left().status()).
-                        header(CONTENT_TYPE, TEXT_HTML).
-                        entity(either.left()));
+            findAndHandle(request, response.
+                    status(either.left().status()).
+                    header(CONTENT_TYPE, TEXT_HTML).
+                    entity(either.left()));
         } else {
-            handlers.handle(request, either.right().activate(resolver, request, response).
-                        status(Status.OK));
+            findAndHandle(request, either.right().activate(resolver, request, response).
+                    status(Status.OK));
         }
+    }
+
+    private void findAndHandle(Request request, Response response) throws Exception {
+        handlers.findHandler(request, response).handle(response);
     }
 }
