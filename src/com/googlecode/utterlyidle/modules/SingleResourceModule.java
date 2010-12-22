@@ -1,4 +1,6 @@
-package com.googlecode.utterlyidle;
+package com.googlecode.utterlyidle.modules;
+
+import com.googlecode.utterlyidle.Resources;
 
 public class SingleResourceModule implements ResourcesModule {
     private final Class<?> resource;

@@ -5,6 +5,7 @@ import com.googlecode.utterlyidle.handlers.CloseHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.Renderers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlerRegistry;
+import com.googlecode.utterlyidle.modules.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;

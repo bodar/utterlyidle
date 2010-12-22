@@ -1,14 +1,14 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Renderer;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.yadic.Resolver;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.handler;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;

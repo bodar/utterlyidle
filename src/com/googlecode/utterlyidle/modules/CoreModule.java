@@ -1,5 +1,6 @@
-package com.googlecode.utterlyidle;
+package com.googlecode.utterlyidle.modules;
 
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.*;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
