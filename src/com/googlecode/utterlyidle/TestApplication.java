@@ -27,7 +27,7 @@ public class TestApplication extends RestApplication {
         engine().renderers().add(Predicates.assignableTo(customClass), renderer);
     }
 
-    public <T> void addResponseHandler(Predicate<T> predicate, ResponseHandler<T> responseHandler) {
+    public <T> void addResponseHandler(Predicate<T> predicate, ResponseHandler responseHandler) {
         engine().responseHandlers().add(predicate, responseHandler);
     }
 }
