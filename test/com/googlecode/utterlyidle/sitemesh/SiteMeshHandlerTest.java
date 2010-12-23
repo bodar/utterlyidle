@@ -99,14 +99,18 @@ public class SiteMeshHandlerTest {
     private HttpHandler write(final String value) {
         return new HttpHandler() {
             public void handle(Request request, Response response) throws Exception {
-                response.status(Status.OK);
-                response.header(CONTENT_TYPE, TEXT_HTML);
-                OutputStreamWriter writer = new OutputStreamWriter(response.output());
+                OutputStreamWriter writer = new OutputStreamWriter(getOutputUsingChainingToTestSiteMeshIsAlwayInTheLoop(response));
                 writer.write(value);
                 writer.close();
                 response.close();
             }
         };
+    }
+
+    private OutputStream getOutputUsingChainingToTestSiteMeshIsAlwayInTheLoop(Response response) {
+        return response.
+                status(Status.OK).
+                header(CONTENT_TYPE, TEXT_HTML).output();
     }
 
 }
