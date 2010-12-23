@@ -13,6 +13,10 @@ public class RedirectHandler implements ResponseHandler {
 
     public void handle(Response response) {
         Redirect redirect = (Redirect) response.entity();
+        applyTo(response, redirect, basePath);
+    }
+
+    public static void applyTo(final Response response, final Redirect redirect, final BasePath basePath) {
         response.status(Status.SEE_OTHER);
         response.header(HttpHeaders.LOCATION, basePath.file(redirect.location()).toString());
     }
