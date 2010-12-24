@@ -4,13 +4,21 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.TestApplication;
+import com.googlecode.utterlyidle.modules.Module;
+import com.googlecode.utterlyidle.modules.RequestScopedModule;
+import com.googlecode.utterlyidle.modules.ResourcesModule;
+import com.googlecode.yadic.Container;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static com.googlecode.utterlyidle.PathMatcher.path;
@@ -81,36 +89,47 @@ public class SiteMeshHandlerTest {
     }
 
     private void assertDecorationResultsInResponse(final Decorators decorators, final String result) throws Exception {
-        assertDecorationResultsInResponse(decorators, result, null);
+        assertDecorationResultsInResponse(decorators, result, "bar");
     }
 
     private void assertDecorationResultsInResponse(final Decorators decorators, final String result, final String path) throws Exception {
-        OutputStream outputStream = new ByteArrayOutputStream();
-        HttpHandler decorator = new SiteMeshHandler(write(ORIGINAL_CONTENT), decorators);
-        decorator.handle(get(path).build(), response(outputStream));
-        assertThat(outputStream.toString(), is(result));
+        TestApplication application = new TestApplication();
+        application.add(new SiteMeshTestModule(decorators, SomeResource.class));
+        String html = application.handle(get(path));
+        assertThat(html, is(result));
     }
 
     private Decorators decorators() {
         return new StringTemplateDecorators(url(getClass().getResource("world.st")).parent());
     }
 
-
-    private HttpHandler write(final String value) {
-        return new HttpHandler() {
-            public void handle(Request request, Response response) throws Exception {
-                OutputStreamWriter writer = new OutputStreamWriter(getOutputUsingChainingToTestSiteMeshIsAlwayInTheLoop(response));
-                writer.write(value);
-                writer.close();
-                response.close();
-            }
-        };
+    @Path("bar")
+    @Produces(MediaType.TEXT_HTML)
+    public static class SomeResource{
+        @GET
+        public String html(){
+            return ORIGINAL_CONTENT;
+        }
     }
 
-    private OutputStream getOutputUsingChainingToTestSiteMeshIsAlwayInTheLoop(Response response) {
-        return response.
-                status(Status.OK).
-                header(CONTENT_TYPE, TEXT_HTML).output();
-    }
+    public static class SiteMeshTestModule implements RequestScopedModule, ResourcesModule {
+        private final Decorators decorators;
+        private final Class resourceClass;
 
+        public SiteMeshTestModule(Decorators decorators, Class resourceClass) {
+            this.decorators = decorators;
+            this.resourceClass = resourceClass;
+        }
+
+        public Module addPerRequestObjects(Container container) {
+            container.addInstance(Decorators.class, decorators);
+            container.decorate(HttpHandler.class, SiteMeshHandler.class);
+            return this;
+        }
+
+        public Module addResources(Resources resources) {
+            resources.add(resourceClass);
+            return this;
+        }
+    }
 }
