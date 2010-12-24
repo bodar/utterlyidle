@@ -6,6 +6,7 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.SeeOther;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.TestApplication;
 import com.googlecode.utterlyidle.modules.Module;
@@ -17,8 +18,8 @@ import org.junit.Test;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import java.io.OutputStream;
 
 import static com.googlecode.utterlyidle.MemoryResponse.response;
 import static com.googlecode.utterlyidle.PathMatcher.path;
@@ -28,8 +29,6 @@ import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentTy
 import static com.googlecode.utterlyidle.sitemesh.MetaTagRule.metaTagRule;
 import static com.googlecode.utterlyidle.sitemesh.StaticDecoratorRule.staticRule;
 import static com.googlecode.utterlyidle.sitemesh.TemplateName.templateName;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
 import static javax.ws.rs.core.MediaType.TEXT_XML;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -93,22 +92,32 @@ public class SiteMeshHandlerTest {
     }
 
     private void assertDecorationResultsInResponse(final Decorators decorators, final String result, final String path) throws Exception {
+        String html = createApplication(decorators).handle(get(path));
+        assertThat(html, is(result));
+    }
+
+    private TestApplication createApplication(Decorators decorators) {
         TestApplication application = new TestApplication();
         application.add(new SiteMeshTestModule(decorators, SomeResource.class));
-        String html = application.handle(get(path));
-        assertThat(html, is(result));
+        return application;
     }
 
     private Decorators decorators() {
         return new StringTemplateDecorators(url(getClass().getResource("world.st")).parent());
     }
 
-    @Path("bar")
-    @Produces(MediaType.TEXT_HTML)
     public static class SomeResource{
         @GET
+        @Path("bar")
+        @Produces(MediaType.TEXT_HTML)
         public String html(){
             return ORIGINAL_CONTENT;
+        }
+
+        @GET
+        @Path("redirect")
+        public SeeOther redirect(){
+            return SeeOther.seeOther("foo");
         }
     }
 
