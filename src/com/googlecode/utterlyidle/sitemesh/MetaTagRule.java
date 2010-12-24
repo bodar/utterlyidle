@@ -27,7 +27,7 @@ public class MetaTagRule implements DecoratorRule {
         try {
             SiteMeshResponse response = (SiteMeshResponse) pair.second();
 
-            PropertyMap propertyMap = new PropertyMapParser().parse(response.originalContent());
+            PropertyMap propertyMap = new PropertyMapParser().parse(response.capturedContent());
             templateName = propertyMap.getPropertyMap("meta").getPropertyMap(this.name).toString();
             if (templateName != null && templateName.length() != 0) {
                 return true;
