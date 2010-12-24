@@ -11,14 +11,14 @@ import java.io.*;
 public class SiteMeshResponse extends DelegatingResponse implements Flushable{
     private final Request request;
     private final Decorators decorators;
-    private final OutputStream originalContent;
+    private final OutputStream capturedContent;
 
     public SiteMeshResponse(Request request, final Response response, Decorators decorators) {
         super(response);
         this.request = request;
         this.response = response;
         this.decorators = decorators;
-        this.originalContent = new ByteArrayOutputStream();
+        this.capturedContent = new ByteArrayOutputStream();
     }
 
     public Response status(Status value) {
@@ -38,7 +38,7 @@ public class SiteMeshResponse extends DelegatingResponse implements Flushable{
 
     public OutputStream output() {
         if(shouldDecorate()){
-            return originalContent;
+            return capturedContent;
         }
         return super.output();
     }
@@ -46,18 +46,19 @@ public class SiteMeshResponse extends DelegatingResponse implements Flushable{
     public void flush() throws IOException {
         if(shouldDecorate()){
             Decorator decorator = decorators.getDecoratorFor(request, this);
-            String result = decorator.decorate(originalContent());
+            String result = decorator.decorate(capturedContent());
             Writer writer = new OutputStreamWriter(response.output());
             writer.write(result);
             writer.flush();
         }
     }
 
-    private boolean shouldDecorate() {
-        return header(HttpHeaders.CONTENT_TYPE).contains(MediaType.TEXT_HTML);
+    public boolean shouldDecorate() {
+        String header = header(HttpHeaders.CONTENT_TYPE);
+        return header != null && header.contains(MediaType.TEXT_HTML);
     }
 
-    public String originalContent() {
-        return originalContent.toString();
+    public String capturedContent() {
+        return capturedContent.toString();
     }
 }
