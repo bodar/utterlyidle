@@ -6,9 +6,8 @@ import com.googlecode.utterlyidle.Status;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class DelegatingResponse implements Response {
-    protected final Response response;
-    private Object entity;
+public abstract class DelegatingResponse implements Response {
+    protected Response response;
 
     public DelegatingResponse(final Response response) {
         this.response = response;
@@ -16,10 +15,6 @@ public class DelegatingResponse implements Response {
 
     public Status status() {
         return response.status();
-    }
-
-    public Response status(Status value) {
-        return response.status(value);
     }
 
     public String header(String name) {
@@ -30,21 +25,12 @@ public class DelegatingResponse implements Response {
         return response.headers(name);
     }
 
-    public Response header(String name, String value) {
-        return response.header(name, value);
-    }
-
     public OutputStream output() {
         return response.output();
     }
 
     public Object entity() {
-        return entity;
-    }
-
-    public Response entity(Object value) {
-        entity = value;
-        return this;
+        return response.entity();
     }
 
     public void close() throws IOException {

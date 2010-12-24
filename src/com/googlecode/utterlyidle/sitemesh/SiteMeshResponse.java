@@ -5,69 +5,59 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import java.io.*;
 
-public class SiteMeshResponse extends DelegatingResponse {
+public class SiteMeshResponse extends DelegatingResponse implements Flushable{
     private final Request request;
     private final Decorators decorators;
-    private final OutputStream outputStream;
+    private final OutputStream originalContent;
 
     public SiteMeshResponse(Request request, final Response response, Decorators decorators) {
-        this(request, response, decorators,  new ByteArrayOutputStream());
-    }
-
-    public SiteMeshResponse(Request request, final Response response, Decorators decorators, OutputStream outputStream) {
         super(response);
         this.request = request;
+        this.response = response;
         this.decorators = decorators;
-        this.outputStream = outputStream;
+        this.originalContent = new ByteArrayOutputStream();
     }
 
-    @Override
     public Response status(Status value) {
-        return ensureSiteMeshIsStillWrappingResponse(super.status(value));
+        response = response.status(value);
+        return this;
     }
 
-    @Override
     public Response header(String name, String value) {
-        return ensureSiteMeshIsStillWrappingResponse(super.header(name, value));
+        response = response.header(name, value);
+        return this;
     }
 
-    @Override
     public Response entity(Object value) {
-        return ensureSiteMeshIsStillWrappingResponse(super.entity(value));
+        response = response.entity(value);
+        return this;
     }
 
-    private SiteMeshResponse ensureSiteMeshIsStillWrappingResponse(final Response response) {
-        return new SiteMeshResponse(request, response, decorators, outputStream);
-    }
-
-    @Override
     public OutputStream output() {
         if(shouldDecorate()){
-            return outputStream;
+            return originalContent;
         }
-        return response.output();
+        return super.output();
     }
 
-    @Override
-    public void close() throws IOException {
+    public void flush() throws IOException {
         if(shouldDecorate()){
             Decorator decorator = decorators.getDecoratorFor(request, this);
             String result = decorator.decorate(originalContent());
             Writer writer = new OutputStreamWriter(response.output());
             writer.write(result);
-            writer.close();
-        } else {
-            super.close();
+            writer.flush();
         }
     }
 
     private boolean shouldDecorate() {
-        return header(HttpHeaders.CONTENT_TYPE).contains("text/html");
+        return header(HttpHeaders.CONTENT_TYPE).contains(MediaType.TEXT_HTML);
     }
 
     public String originalContent() {
-        return outputStream.toString();
+        return originalContent.toString();
     }
 }
