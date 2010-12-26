@@ -5,8 +5,7 @@ import com.googlecode.utterlyidle.MemoryResponse;
 import com.googlecode.utterlyidle.Request;
 import org.junit.Test;
 
-import java.util.Date;
-
+import static com.googlecode.totallylazy.Dates.date;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -73,7 +72,7 @@ public class CookiesTest {
     @Test
     public void shouldSupportSettingCookieAttributes() throws Exception {
         Cookies cookies = cookies(someRequest(), response);
-        cookies.set(cookie(cookieName("a"), "1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(new Date(77, 7, 30, 9, 32, 59))));
+        cookies.set(cookie(cookieName("a"), "1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(date(2010, 12, 26, 13, 16, 59))));
 
         assertThat(response.header(SET_COOKIE_HEADER), is(nullValue()));
 
@@ -81,7 +80,7 @@ public class CookiesTest {
 
         assertThat(
                 response.header(SET_COOKIE_HEADER),
-                is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Tue, 30-Aug-1977 09:32:59 GMT\""));
+                is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Sun, 26-Dec-2010 13:16:59 GMT\""));
     }
 
     @Test
