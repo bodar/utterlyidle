@@ -9,7 +9,7 @@
 
         <sequential>
             <mkdir dir="@{classes}"/>
-            <javac nowarn="true" srcdir="@{src}" destdir="@{classes}" classpathref="@{classpathref}" target="1.5" debug="true"/>
+            <javac nowarn="true" srcdir="@{src}" destdir="@{classes}" classpathref="@{classpathref}" target="1.5" debug="true" includeAntRuntime="false"/>
 
             <copy todir="@{classes}">
                 <fileset dir="@{src}">
