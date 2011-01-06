@@ -2,8 +2,9 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.*;
 import com.googlecode.yadic.Container;
-import com.googlecode.yadic.OptionActivator;
 import com.googlecode.yadic.SimpleContainer;
+import com.googlecode.yadic.generics.TypeFor;
+import com.googlecode.yadic.resolvers.OptionResolver;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
@@ -67,7 +68,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                     addActivator(type, container);
                 }
 
-                return container.resolve(aClass);
+                return container.resolve(type);
             }
         }).toArray(Object.class);
     }
@@ -88,16 +89,12 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         ParameterizedType parameterizedType = (ParameterizedType) type;
         final Class<?> typeClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
         addActualType(typeClass, container);
-        container.addActivator(Option.class, new OptionActivator(typeClass, container));
     }
 
     private void addEitherType(Type type, Container container) {
         ParameterizedType parameterizedType = (ParameterizedType) type;
-        final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        final Class<?> leftClass = (Class<?>) actualTypeArguments[0];
-        final Type rightClass = actualTypeArguments[1];
-        addActivator(rightClass, container);
-        container.addActivator(Either.class, new EitherActivator(leftClass, getClassFrom(rightClass), container));
+        Type rightType = parameterizedType.getActualTypeArguments()[1];
+        addActivator(rightType, container);
     }
 
     private <T> void addActualType(Class<T> aClass, Container container) {
@@ -133,6 +130,8 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
 
     public Container createContainer(Request request) {
         Container container = new SimpleContainer();
+        container.add(new TypeFor<Option<?>>(){{}}.get(), new OptionResolver(container));
+        container.add(new TypeFor<Either<?, ?>>(){{}}.get(), new EitherActivator(container));
         container.addInstance(Request.class, request);
         container.addInstance(UriTemplate.class, uriTemplate);
         container.addInstance(PathParameters.class, uriTemplate.extract(request.url().path().toString()));

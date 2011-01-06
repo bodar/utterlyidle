@@ -4,7 +4,9 @@
       <root url="file://$PROJECT_DIR$/build/lib" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../yadic-java/build/artifacts/yadic-dev.build-sources.jar!/" />
+    </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/build/lib" recursive="false" />
   </library>
 </component>

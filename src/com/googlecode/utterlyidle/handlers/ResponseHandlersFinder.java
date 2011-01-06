@@ -6,10 +6,10 @@ import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.modules.DependsOnResolver;
 import com.googlecode.yadic.Resolver;
 
-import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.handler;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;
-import static com.googlecode.yadic.CreateCallable.create;
+import static com.googlecode.yadic.resolvers.Resolvers.create;
+import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 
 public class ResponseHandlersFinder {
     private final ResponseHandlers registry;
@@ -23,7 +23,8 @@ public class ResponseHandlersFinder {
     private ResponseHandler lookup(final Request request, final Response response){
         final Object handler = registry.handlers().filter(matches(request, response)).map(handler()).head();
         if (handler instanceof Class) {
-            return (ResponseHandler) call(create((Class) handler, resolver));
+            Class handlerClass = (Class) handler;
+            return (ResponseHandler) resolve(create(handlerClass, resolver), handlerClass);
         }
         return (ResponseHandler) handler;
     }
