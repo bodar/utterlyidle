@@ -5,24 +5,27 @@ import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.yadic.Resolver;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Right.right;
 
-public class EitherActivator implements Callable<Either> {
-    private final Class<?> leftClass;
-    private final Class<?> rightClass;
+public class EitherActivator implements Resolver<Either> {
     private final Resolver resolver;
 
-    public EitherActivator(Class<?> leftClass, Class<?> rightClass, Resolver resolver) {
-        this.leftClass = leftClass;
-        this.rightClass = rightClass;
+    public EitherActivator(Resolver resolver) {
         this.resolver = resolver;
     }
 
-    public Either call() throws Exception {
+    public Either resolve(Type type) throws Exception {
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        final Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+        final Type leftClass = actualTypeArguments[0];
+        final Type rightClass = actualTypeArguments[1];
+
         try {
             final Object leftValue = resolver.resolve(leftClass);
             try {
