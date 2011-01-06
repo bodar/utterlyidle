@@ -7,8 +7,8 @@ import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.googlecode.totallylazy.Callers.call;
-import static com.googlecode.yadic.CreateCallable.create;
+import static com.googlecode.yadic.resolvers.Resolvers.create;
+import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 
 public class HttpMethodActivator implements Activator {
     private final Method method;
@@ -39,7 +39,8 @@ public class HttpMethodActivator implements Activator {
     }
 
     public Response activate(Resolver resolver, Request request, Response response) throws InvocationTargetException, IllegalAccessException {
-        Object instance = call(create(method.getDeclaringClass(), resolver));
+        Class<?> declaringClass = method.getDeclaringClass();
+        Object instance = resolve(create(declaringClass, resolver), declaringClass);
         return response.
                 header(HttpHeaders.CONTENT_TYPE, producesMatcher.mimeType()).
                 entity(method.invoke(instance, argumentsExtractor.extract(request)));

@@ -7,6 +7,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import static com.googlecode.yadic.resolvers.Resolvers.resolve;
+
 public class ApplicationStarter implements ServletContextListener {
     private Application createApplication(ServletContext servletContext) {
         String className = servletContext.getInitParameter(getClass().getName());
@@ -15,7 +17,7 @@ public class ApplicationStarter implements ServletContextListener {
         }
         try {
             Class<?> aClass = Class.forName(className);
-            Object instance = new SimpleContainer().add(aClass).resolve(aClass);
+            Object instance = resolve(new SimpleContainer().add(aClass), aClass);
             if (!(instance instanceof Application)) {
                 throw new UnsupportedOperationException(className + " must implement " + Application.class.getName());
             }

@@ -14,7 +14,6 @@
             <copy todir="@{classes}">
                 <fileset dir="@{src}">
                     <exclude name="**/*.java"/>
-                    <exclude name="**/*.scala"/>
                 </fileset>
             </copy>
 

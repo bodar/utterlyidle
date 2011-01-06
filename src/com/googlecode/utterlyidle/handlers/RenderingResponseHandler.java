@@ -9,8 +9,9 @@ import com.googlecode.yadic.Resolver;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import static com.googlecode.totallylazy.Callers.call;
-import static com.googlecode.yadic.CreateCallable.create;
+import static com.googlecode.yadic.resolvers.Resolvers.create;
+import static com.googlecode.yadic.resolvers.Resolvers.resolve;
+
 
 public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     public static <T> RenderingResponseHandler<T> renderer(Class<? extends Renderer<T>> renderer) {
@@ -38,7 +39,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
         }
 
         protected Renderer<T> getRenderer() {
-            return call(create(renderer, resolver));
+            return (Renderer<T>) resolve(create(renderer, resolver), renderer);
         }
 
         public void setResolver(Resolver resolver) {
