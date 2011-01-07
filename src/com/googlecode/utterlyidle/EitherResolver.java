@@ -13,10 +13,10 @@ import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Right.right;
 
-public class EitherActivator implements Resolver<Either> {
+public class EitherResolver implements Resolver<Either> {
     private final Resolver resolver;
 
-    public EitherActivator(Resolver resolver) {
+    public EitherResolver(Resolver resolver) {
         this.resolver = resolver;
     }
 
@@ -27,21 +27,9 @@ public class EitherActivator implements Resolver<Either> {
         final Type rightClass = actualTypeArguments[1];
 
         try {
-            final Object leftValue = resolver.resolve(leftClass);
-            try {
-                final Object rightValue = resolver.resolve(rightClass);
-                if(rightValue instanceof None) {
-                    return left(leftValue);
-                }
-                return right(rightValue);
-            } catch (Exception e) {
-                return left(leftValue);
-            }
+            return right(resolver.resolve(rightClass));
         } catch (Exception e) {
-            if(rightClass.equals(Option.class)){
-                return right(none());
-            }
-            throw e;
+            return left(resolver.resolve(leftClass));
         }
     }
 }

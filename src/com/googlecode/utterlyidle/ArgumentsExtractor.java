@@ -2,9 +2,12 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.*;
 import com.googlecode.yadic.Container;
+import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
+import com.googlecode.yadic.resolvers.MissingResolver;
 import com.googlecode.yadic.resolvers.OptionResolver;
+import com.googlecode.yadic.resolvers.Resolvers;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
@@ -15,12 +18,17 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Param.isParam;
 import static com.googlecode.utterlyidle.Param.toParam;
+import static com.googlecode.yadic.generics.Types.classOf;
+import static com.googlecode.yadic.generics.Types.typeArgumentsOf;
+import static com.googlecode.yadic.resolvers.Resolvers.listOf;
 
 public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     private final UriTemplate uriTemplate;
@@ -58,62 +66,22 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
 
                 final Container container = createContainer(request);
-                Class<?> aClass = getClassFrom(type);
                 annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, with(QueryParameters.class));
                 annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, with(FormParameters.class));
                 annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
                 annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
 
-                if (!container.contains(aClass) && !aClass.equals(Object.class)) {
-                    addActivator(type, container);
+                List<Type> types = typeArgumentsOf(type);
+
+                for (Type t : types) {
+                    if(!container.contains(t)){
+                        container.add(t, listOf(Resolvers.create(t, container), new StaticMethodResolver(container, String.class)));
+                    }
                 }
 
                 return container.resolve(type);
             }
         }).toArray(Object.class);
-    }
-
-    private void addActivator(Type type, final Container container) {
-        Class<?> aClass = getClassFrom(type);
-
-        if (aClass.equals(Option.class)) {
-            addOptionType(type, container);
-        } else if (aClass.equals(Either.class)) {
-            addEitherType(type, container);
-        } else {
-            addActualType(aClass, container);
-        }
-    }
-
-    private void addOptionType(Type type, Container container) {
-        ParameterizedType parameterizedType = (ParameterizedType) type;
-        final Class<?> typeClass = (Class<?>) parameterizedType.getActualTypeArguments()[0];
-        addActualType(typeClass, container);
-    }
-
-    private void addEitherType(Type type, Container container) {
-        ParameterizedType parameterizedType = (ParameterizedType) type;
-        Type rightType = parameterizedType.getActualTypeArguments()[1];
-        addActivator(rightType, container);
-    }
-
-    private <T> void addActualType(Class<T> aClass, Container container) {
-        if (aClass.getConstructors().length == 0) {
-            container.addActivator(aClass, new StaticMethodActivator<T>(aClass, container, String.class));
-        } else {
-            container.add(aClass);
-        }
-    }
-
-    private Class<?> getClassFrom(Type type) {
-        if (type instanceof Class) {
-            return (Class) type;
-        }
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            return (Class<?>) parameterizedType.getRawType();
-        }
-        throw new UnsupportedOperationException(type.toString());
     }
 
     private Callable2<? super Container, ? super Param, Container> with(final Class<? extends Parameters> paramsClass) {
@@ -129,9 +97,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     }
 
     public Container createContainer(Request request) {
-        Container container = new SimpleContainer();
-        container.add(new TypeFor<Option<?>>(){{}}.get(), new OptionResolver(container));
-        container.add(new TypeFor<Either<?, ?>>(){{}}.get(), new EitherActivator(container));
+        final Container container = new SimpleContainer();
         container.addInstance(Request.class, request);
         container.addInstance(UriTemplate.class, uriTemplate);
         container.addInstance(PathParameters.class, uriTemplate.extract(request.url().path().toString()));
@@ -139,6 +105,8 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         container.addInstance(QueryParameters.class, request.query());
         container.addInstance(FormParameters.class, request.form());
         container.addInstance(InputStream.class, request.input());
+        container.add(new TypeFor<Option<?>>() {{}}.get(), new OptionResolver(container));
+        container.add(new TypeFor<Either<?, ?>>() {{}}.get(), new EitherResolver(container));
         return container;
     }
 

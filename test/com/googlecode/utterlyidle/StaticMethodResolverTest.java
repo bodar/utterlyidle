@@ -10,23 +10,23 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class StaticMethodActivatorTest {
+public class StaticMethodResolverTest {
     @Test
     public void supportsCreatingObjectsViaStaticValueOfMethod() throws Exception {
-        StaticMethodActivator activator = new StaticMethodActivator(Integer.class, containerWith("1"), String.class);
-        assertThat((Integer)activator.call(), is(1));
+        StaticMethodResolver resolver = new StaticMethodResolver(containerWith("1"), String.class);
+        assertThat((Integer) resolver.resolve(Integer.class), is(1));
     }
 
     @Test
     public void supportsCreatingObjectsViaStaticFromStringEnum() throws Exception {
-        StaticMethodActivator activator = new StaticMethodActivator(TimeUnit.class, containerWith("NANOSECONDS"), String.class);
-        assertThat((TimeUnit)activator.call(), is(TimeUnit.NANOSECONDS));
+        StaticMethodResolver resolver = new StaticMethodResolver(containerWith("NANOSECONDS"), String.class);
+        assertThat((TimeUnit) resolver.resolve(TimeUnit.class), is(TimeUnit.NANOSECONDS));
     }
 
     @Test
     public void supportsStaticFactoryMethodWithSameName() throws Exception {
-        StaticMethodActivator activator = new StaticMethodActivator(MyStaticMethodClass.class, containerWith("foobar"), String.class);
-        assertThat(activator.call(), is(notNullValue()));
+        StaticMethodResolver resolver = new StaticMethodResolver(containerWith("foobar"), String.class);
+        assertThat(resolver.resolve(MyStaticMethodClass.class), is(notNullValue()));
     }
 
     private Container containerWith(String value) {

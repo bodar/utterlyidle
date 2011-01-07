@@ -229,7 +229,7 @@ public class RestTest {
     public void canCoerceEithersThatContainNone() throws Exception {
         TestApplication application = new TestApplication();
         application.add(GetWithEither.class);
-        assertThat(application.handle(get("path")), is("right(none())"));
+        assertThat(application.handle(get("path")), is("optionalLayout:right(none())"));
     }
 
     @Test
@@ -500,12 +500,12 @@ public class RestTest {
     public static class GetWithEither {
         @GET
         public String get(@QueryParam("layout") Either<String, Formatter.BigDecimalLayoutForm> invalidOrEnum) {
-            return invalidOrEnum.toString();
+            return "layout:" + invalidOrEnum.toString();
         }
 
         @GET
         public String getOptional(@QueryParam("optionalLayout") Either<String, Option<Formatter.BigDecimalLayoutForm>> invalidOrEnum) {
-            return invalidOrEnum.toString();
+            return "optionalLayout:" + invalidOrEnum.toString();
         }
     }
 
