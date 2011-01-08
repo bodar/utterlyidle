@@ -198,7 +198,7 @@ public class RestTest {
     public void canCoerceInvalidEithers() throws Exception {
         TestApplication application = new TestApplication();
         application.add(GetWithEither.class);
-        assertThat(application.handle(get("path").withQuery("layout", "invalidValue")), is("left(invalidValue)"));
+        assertThat(application.handle(get("path").withQuery("layout", "invalidValue")), is("layout:left(invalidValue)"));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class RestTest {
         TestApplication application = new TestApplication();
         application.add(GetWithEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(application.handle(get("path").withQuery("layout", value)), is("right(" + value + ")"));
+        assertThat(application.handle(get("path").withQuery("layout", value)), is("layout:right(" + value + ")"));
     }
 
     @Test
@@ -214,7 +214,7 @@ public class RestTest {
         TestApplication application = new TestApplication();
         application.add(GetWithEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("right(some(" + value + "))"));
+        assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("optionalLayout:right(some(" + value + "))"));
     }
 
     @Test
@@ -222,7 +222,7 @@ public class RestTest {
         TestApplication application = new TestApplication();
         application.add(GetWithEither.class);
         final String value = "rubbish";
-        assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("left(" + value + ")"));
+        assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("optionalLayout:left(" + value + ")"));
     }
 
     @Test
@@ -251,6 +251,13 @@ public class RestTest {
         TestApplication application = new TestApplication();
         application.add(GetWithOptionalStrongTypeWithConstructor.class);
         assertThat(application.handle(get("path")), is("default"));
+    }
+
+    @Test
+    public void canCoerceOptionalStringEvenWhenNoValueIsPresent() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(GetWithOptionalString.class);
+        assertThat(application.handle(get("path")), is("some default"));
     }
 
     @Test
@@ -493,6 +500,14 @@ public class RestTest {
         @GET
         public String get(@QueryParam("name") Option<ClassWithPublicConstructor> id) {
             return id.getOrElse(new ClassWithPublicConstructor("default")).toString();
+        }
+    }
+
+    @Path("path")
+    public static class GetWithOptionalString {
+        @GET
+        public String get(@QueryParam("name") Option<String> id) {
+            return id.getOrElse("some default");
         }
     }
 
