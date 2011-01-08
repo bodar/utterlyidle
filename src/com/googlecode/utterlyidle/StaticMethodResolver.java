@@ -1,8 +1,10 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.yadic.ContainerException;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +32,7 @@ public class StaticMethodResolver<T> implements Resolver<T> {
     public T resolve(Type type) throws Exception {
         final Class returnType = classOf(type);
         final Sequence<Method> methods = sequence(returnType.getMethods()).filter(modifier(PUBLIC).and(modifier(STATIC)).and(arguments(argumentType)));
-        return methods.pick(new Callable1<Method, Option<T>>() {
+        return methods.tryPick(new Callable1<Method, Option<T>>() {
             public Option<T> call(Method method) throws Exception {
                 try {
                     return (Option<T>) some(returnType.cast(method.invoke(null, resolver.resolve(argumentType))));
@@ -38,6 +40,6 @@ public class StaticMethodResolver<T> implements Resolver<T> {
                     return none();
                 }
             }
-        });
+        }).getOrElse(Callables.<T>callThrows(new ContainerException(returnType.getName() + " does not have any satisfiable static factory methods")));
     }
 }
