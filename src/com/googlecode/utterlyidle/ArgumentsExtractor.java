@@ -5,7 +5,6 @@ import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
-import com.googlecode.yadic.resolvers.MissingResolver;
 import com.googlecode.yadic.resolvers.OptionResolver;
 import com.googlecode.yadic.resolvers.Resolvers;
 
@@ -16,19 +15,16 @@ import javax.ws.rs.QueryParam;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 
+import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Param.isParam;
 import static com.googlecode.utterlyidle.Param.toParam;
 import static com.googlecode.yadic.generics.Types.classOf;
 import static com.googlecode.yadic.generics.Types.typeArgumentsOf;
-import static com.googlecode.yadic.resolvers.Resolvers.listOf;
 
 public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     private final UriTemplate uriTemplate;
@@ -51,7 +47,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     public <T extends Parameters> String extractParam(Container container, Param param, Class<T> aClass) {
         T params = container.get(aClass);
         if (!params.contains(param.value())) {
-            throw new NoSuchElementException();
+            throw new IllegalArgumentException();
         }
         return params.getValue(param.value());
     }
@@ -75,13 +71,20 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
 
                 for (Type t : types) {
                     if(!container.contains(t)){
-                        container.add(t, listOf(Resolvers.create(t, container), new StaticMethodResolver(container, String.class)));
+                        container.add(t, constructorOrStaticMethod(container, t));
                     }
                 }
 
                 return container.resolve(type);
             }
         }).toArray(Object.class);
+    }
+
+    private Resolver<Object> constructorOrStaticMethod(Container container, final Type t) {
+        if(classOf(t).getConstructors().length > 0){
+            return Resolvers.create(t, container);
+        }
+        return new StaticMethodResolver<Object>(container, String.class);
     }
 
     private Callable2<? super Container, ? super Param, Container> with(final Class<? extends Parameters> paramsClass) {
@@ -105,7 +108,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         container.addInstance(QueryParameters.class, request.query());
         container.addInstance(FormParameters.class, request.form());
         container.addInstance(InputStream.class, request.input());
-        container.add(new TypeFor<Option<?>>() {{}}.get(), new OptionResolver(container));
+        container.add(new TypeFor<Option<?>>() {{}}.get(), new OptionResolver(container, instanceOf(IllegalArgumentException.class)));
         container.add(new TypeFor<Either<?, ?>>() {{}}.get(), new EitherResolver(container));
         return container;
     }
