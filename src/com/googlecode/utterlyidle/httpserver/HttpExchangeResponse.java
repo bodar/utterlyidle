@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 
 class HttpExchangeResponse extends ContractEnforcingResponse {
     private final HttpExchange httpExchange;
+    private boolean headersHaveBeenSent = false;
 
     public HttpExchangeResponse(final HttpExchange httpExchange) {
         super(responseBody(httpExchange));
@@ -41,13 +42,15 @@ class HttpExchangeResponse extends ContractEnforcingResponse {
     @Override
     public OutputStream output() {
         OutputStream outputStream = super.output();
-        sendHeaders();
+        ensureHeadersHaveBeenSent();
         return outputStream;
     }
 
-    private void sendHeaders() {
+    private void ensureHeadersHaveBeenSent() {
+        if(headersHaveBeenSent) return;
         try {
             httpExchange.sendResponseHeaders(status().code(), 0);
+            headersHaveBeenSent=true;
         } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }
@@ -55,6 +58,7 @@ class HttpExchangeResponse extends ContractEnforcingResponse {
 
     @Override
     public void close() throws IOException {
+        ensureHeadersHaveBeenSent();
         httpExchange.close();
         super.close();
     }
