@@ -2,11 +2,9 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.*;
 import com.googlecode.yadic.Container;
-import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;
-import com.googlecode.yadic.resolvers.Resolvers;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
@@ -23,8 +21,8 @@ import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Param.isParam;
 import static com.googlecode.utterlyidle.Param.toParam;
-import static com.googlecode.yadic.generics.Types.classOf;
 import static com.googlecode.yadic.generics.Types.typeArgumentsOf;
+import static com.googlecode.yadic.resolvers.Resolvers.create;
 
 public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     private final UriTemplate uriTemplate;
@@ -71,7 +69,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
 
                 for (Type t : types) {
                     if(!container.contains(t)){
-                        container.add(t, constructorOrStaticMethod(container, t));
+                        container.add(t, create(t, container));
                     }
                 }
 
@@ -80,12 +78,6 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }).toArray(Object.class);
     }
 
-    private Resolver<Object> constructorOrStaticMethod(Container container, final Type t) {
-        if(classOf(t).getConstructors().length > 0){
-            return Resolvers.create(t, container);
-        }
-        return new StaticMethodResolver<Object>(container, String.class);
-    }
 
     private Callable2<? super Container, ? super Param, Container> with(final Class<? extends Parameters> paramsClass) {
         return new Callable2<Container, Param, Container>() {
