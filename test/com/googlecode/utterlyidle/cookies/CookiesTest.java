@@ -26,6 +26,15 @@ public class CookiesTest {
     }
 
     @Test
+    public void shouldBeCaseInsensitive() throws Exception {
+        Cookies lowercaseCookies = cookies(request(headerParameters(pair("cookie", "a=1"))), null);
+        Cookies uppercaseCookies = cookies(request(headerParameters(pair("COOKIE", "b=2"))), null);
+
+        assertThat(lowercaseCookies.getValue(cookieName("a")), is("1"));
+        assertThat(uppercaseCookies.getValue(cookieName("b")), is("2"));
+    }
+
+    @Test
     public void shouldCopeWithRequestCookiesInMultipleHeaders() throws Exception {
         Cookies cookies = cookies(request(headerParameters(pair("Cookie", "a=1"), pair("Cookie", "b=2"))), null);
 
@@ -99,6 +108,7 @@ public class CookiesTest {
     private Request someRequest() {
         return request(headerParameters());
     }
+
     private Request request(HeaderParameters headers) {
         return Request.request(null, null, headers, null);
     }

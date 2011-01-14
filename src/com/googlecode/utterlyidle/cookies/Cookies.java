@@ -28,16 +28,8 @@ public class Cookies {
     }
 
     public Cookies(Request request, Response response) {
-        this.requestCookies = parseRequestCookies(sequence(request.headers()).filter(requestCookieHeaders()).map(second(String.class)));
+        this.requestCookies = parseRequestCookies(sequence(request.headers().getValues(REQUEST_COOKIE_HEADER)));
         this.response = response;
-    }
-
-    private Predicate<? super Pair<String, String>> requestCookieHeaders() {
-        return new Predicate<Pair<String, String>>() {
-            public boolean matches(Pair<String, String> header) {
-                return REQUEST_COOKIE_HEADER.equals(header.first());
-            }
-        };
     }
 
     public Cookies set(CookieName name, String value) {

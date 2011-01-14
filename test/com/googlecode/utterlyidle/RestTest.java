@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
+import com.googlecode.utterlyidle.cookies.CookieName;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
 import org.junit.Test;
@@ -33,13 +34,13 @@ public class RestTest {
     public void canHandleCookies() throws Exception {
         TestApplication application = new TestApplication();
         application.add(GettableWithCookies.class);
-        Request request = get("foo").withHeader("Cookie", "name=value").build();
+        Request request = get("foo").withHeader("cookie", "name=value").build();
         Response response = response();
         application.handle(request, response);
-        assertThat(response.output().toString(), is("found"));
+        assertThat(response.output().toString(), is("value"));
         assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
-    
+
     @Test
     public void canGet() throws Exception {
         TestApplication application = new TestApplication();
@@ -246,7 +247,7 @@ public class RestTest {
         assertThat(application.handle(get("path/")), is("default"));
     }
 
-   @Test
+    @Test
     public void canCoerceOptionalTypesEvenWhenNoValueIsPresentForATypeWithConstructor() throws Exception {
         TestApplication application = new TestApplication();
         application.add(GetWithOptionalStrongTypeWithConstructor.class);
@@ -297,7 +298,7 @@ public class RestTest {
         public String get() {
             cookies.set(cookie(cookieName("anotherName"), "anotherValue"));
             cookies.commit();
-            return "found";
+            return cookies.getValue(cookieName("name"));
         }
     }
 
@@ -349,7 +350,6 @@ public class RestTest {
         public String C() {
             return "highPriority";
         }
-
 
 
     }
@@ -477,7 +477,7 @@ public class RestTest {
 
         private final String value;
 
-        public ClassWithPublicConstructor(String value){
+        public ClassWithPublicConstructor(String value) {
             this.value = value;
         }
 
@@ -487,7 +487,7 @@ public class RestTest {
         }
     }
 
-  @Path("path")
+    @Path("path")
     public static class GetWithOptionalStrongTypeWithFactoryMethod {
         @GET
         public String get(@QueryParam("id") Option<Id> id) {
