@@ -227,6 +227,13 @@ public class RestTest {
     }
 
     @Test
+    public void canCoerceEithersThatContainAnNone() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(GetWithEither.class);
+        assertThat(application.handle(get("path")), is("optionalLayout:right(none())"));
+    }
+
+    @Test
     public void canCoerceEithersThatContainNone() throws Exception {
         TestApplication application = new TestApplication();
         application.add(GetWithEither.class);
@@ -480,6 +487,12 @@ public class RestTest {
         public ClassWithPublicConstructor(String value) {
             this.value = value;
         }
+
+        public ClassWithPublicConstructor(Integer value) {
+            this.value = value.toString();
+        }
+
+
 
         @Override
         public String toString() {
