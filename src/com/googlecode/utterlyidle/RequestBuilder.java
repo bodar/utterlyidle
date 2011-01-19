@@ -1,6 +1,8 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.cookies.Cookie;
+import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.ws.rs.HttpMethod;
@@ -19,6 +21,7 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Request.request;
+import static com.googlecode.utterlyidle.cookies.Cookies.REQUEST_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RequestBuilder {
@@ -42,6 +45,12 @@ public class RequestBuilder {
         headers.add(pair(name, value));
         return this;
     }
+
+    public RequestBuilder withCookie(Cookie cookie) {
+        headers.add(pair(REQUEST_COOKIE_HEADER, cookie.toHttpHeader()));
+        return this;
+    }
+
 
     public RequestBuilder withQuery(String name, String value) {
         query.add(pair(name, value));
