@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.utterlyidle.cookies.CookieName;
 import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
 import org.junit.Test;
@@ -213,7 +212,7 @@ public class RestTest {
     @Test
     public void canCoerceEithersThatContainAValidOption() throws Exception {
         TestApplication application = new TestApplication();
-        application.add(GetWithEither.class);
+        application.add(GetWithOptionalEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
         assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("optionalLayout:right(some(" + value + "))"));
     }
@@ -221,7 +220,7 @@ public class RestTest {
     @Test
     public void canCoerceEithersThatContainAnInvalidOption() throws Exception {
         TestApplication application = new TestApplication();
-        application.add(GetWithEither.class);
+        application.add(GetWithOptionalEither.class);
         final String value = "rubbish";
         assertThat(application.handle(get("path").withQuery("optionalLayout", value)), is("optionalLayout:left(" + value + ")"));
     }
@@ -229,14 +228,14 @@ public class RestTest {
     @Test
     public void canCoerceEithersThatContainAnNone() throws Exception {
         TestApplication application = new TestApplication();
-        application.add(GetWithEither.class);
+        application.add(GetWithOptionalEither.class);
         assertThat(application.handle(get("path")), is("optionalLayout:right(none())"));
     }
 
     @Test
     public void canCoerceEithersThatContainNone() throws Exception {
         TestApplication application = new TestApplication();
-        application.add(GetWithEither.class);
+        application.add(GetWithOptionalEither.class);
         assertThat(application.handle(get("path")), is("optionalLayout:right(none())"));
     }
 
@@ -530,7 +529,10 @@ public class RestTest {
         public String get(@QueryParam("layout") Either<String, Formatter.BigDecimalLayoutForm> invalidOrEnum) {
             return "layout:" + invalidOrEnum.toString();
         }
+    }
 
+    @Path("path")
+    public static class GetWithOptionalEither {
         @GET
         public String getOptional(@QueryParam("optionalLayout") Either<String, Option<Formatter.BigDecimalLayoutForm>> invalidOrEnum) {
             return "optionalLayout:" + invalidOrEnum.toString();
