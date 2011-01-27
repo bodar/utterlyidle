@@ -5,6 +5,7 @@ import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;
+import com.googlecode.yadic.resolvers.ProgrammerErrorResolver;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Sequences.contains;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Param.isParam;
 import static com.googlecode.utterlyidle.Param.toParam;
@@ -42,7 +44,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }
     }
 
-    public <T extends Parameters> String extractParam(Container container, Param param, Class<T> aClass) {
+    public static <T extends Parameters> String extractParam(Container container, Param param, Class<T> aClass) {
         T params = container.get(aClass);
         if (!params.contains(param.value())) {
             throw new IllegalArgumentException();
@@ -65,6 +67,10 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
                 annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
 
+                if (!container.contains(String.class)) {
+                    container.add(String.class, new ProgrammerErrorResolver(String.class));
+                }
+
                 List<Type> types = typeArgumentsOf(type);
 
                 for (Type t : types) {
@@ -79,7 +85,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
     }
 
 
-    private Callable2<? super Container, ? super Param, Container> with(final Class<? extends Parameters> paramsClass) {
+    private static Callable2<? super Container, ? super Param, Container> with(final Class<? extends Parameters> paramsClass) {
         return new Callable2<Container, Param, Container>() {
             public Container call(final Container container, final Param param) throws Exception {
                 return container.addActivator(String.class, new Callable<String>() {
