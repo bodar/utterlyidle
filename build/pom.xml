@@ -15,13 +15,13 @@
     	<dependency>
     		<groupId>com.googlecode.totallylazy</groupId>
     		<artifactId>totallylazy</artifactId>
-    		<version>202</version>
+    		<version>213</version>
     	</dependency>
 
         <dependency>
     		<groupId>com.googlecode.yadic</groupId>
     		<artifactId>yadic</artifactId>
-    		<version>113</version>
+    		<version>116</version>
     	</dependency>
 
     	<dependency>
