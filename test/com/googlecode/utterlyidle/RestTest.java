@@ -25,10 +25,12 @@ import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
+import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class RestTest {
+
     @Test
     public void canHandleCookies() throws Exception {
         TestApplication application = new TestApplication();
@@ -209,6 +211,7 @@ public class RestTest {
         assertThat(application.handle(get("path").withQuery("layout", value)), is("layout:right(" + value + ")"));
     }
 
+
     @Test
     public void canCoerceEithersThatContainAValidOption() throws Exception {
         TestApplication application = new TestApplication();
@@ -273,6 +276,13 @@ public class RestTest {
         application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), RenderingResponseHandler.renderer(MyCustomClassRenderer.class));
         application.add(GetReturningMyCustomClass.class);
         assertThat(application.handle(get("path")), is("foo"));
+    }
+
+    @Test
+    public void shouldHandleResourceWithAParameterMissingAnAnnotation() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(GetWithParameterButNoAnnotation.class);
+        assertThat(application.responseFor(get("path")).status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
 
@@ -491,8 +501,6 @@ public class RestTest {
             this.value = value.toString();
         }
 
-
-
         @Override
         public String toString() {
             return value;
@@ -529,6 +537,15 @@ public class RestTest {
         public String get(@QueryParam("layout") Either<String, Formatter.BigDecimalLayoutForm> invalidOrEnum) {
             return "layout:" + invalidOrEnum.toString();
         }
+    }
+
+    @Path("path")
+    public static class GetWithParameterButNoAnnotation {
+        @GET
+        public void get(String test) {
+            System.out.println(test);
+        }
+
     }
 
     @Path("path")
