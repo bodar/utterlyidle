@@ -1,13 +1,19 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.io.Url;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.utterlyidle.Requests.getBytes;
+import static com.googlecode.utterlyidle.Requests.request;
+import static com.googlecode.utterlyidle.io.Url.url;
 import static java.lang.System.nanoTime;
 
 public class RestHandler implements HttpHandler {
@@ -20,7 +26,12 @@ public class RestHandler implements HttpHandler {
     }
 
     public void handle(HttpExchange httpExchange) throws IOException {
-        HttpExchangeRequest request = new HttpExchangeRequest(httpExchange, basePath);
+        Request request = request(
+                httpExchange.getRequestMethod(),
+                url(httpExchange.getRequestURI().toString()),
+                convert(httpExchange.getRequestHeaders()),
+                getBytes(httpExchange.getRequestBody()),
+                basePath);
         HttpExchangeResponse response = new HttpExchangeResponse(httpExchange);
         try {
             long start = nanoTime();
@@ -42,5 +53,14 @@ public class RestHandler implements HttpHandler {
         } finally {
             response.close();
         }
+    }
+    public static HeaderParameters convert(Map<String, List<String>> requestHeaders) {
+        HeaderParameters result = HeaderParameters.headerParameters();
+        for (Map.Entry<String, List<String>> entry : requestHeaders.entrySet()) {
+            for (String value : entry.getValue()) {
+                result.add(entry.getKey(), value);
+            }
+        }
+        return result;
     }
 }
