@@ -1,20 +1,19 @@
 package com.googlecode.utterlyidle.servlet;
 
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.io.Url;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Requests.getBytes;
 import static com.googlecode.utterlyidle.io.Url.url;
-import static com.googlecode.utterlyidle.servlet.ServletResponse.response;
 
 public class ApplicationServlet extends HttpServlet {
     Application application = null;
@@ -27,10 +26,24 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         try {
-            application.handle(request(req), response(resp));
+            Response response = new MemoryResponse();
+            application.handle(request(req), response);
+            mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
         }
+    }
+
+    @SuppressWarnings({"deprecation"})
+    private void mapTo(Response response, HttpServletResponse resp) throws IOException {
+        Status status = response.status();
+        resp.setStatus(status.code(), status.description());
+        for (Pair<String, String> pair : response.headers()) {
+            resp.setHeader(pair.first(), pair.second());
+        }
+        byte[] bytes = response.bytes();
+        resp.setIntHeader(HttpHeaders.CONTENT_LENGTH, bytes.length);
+        resp.getOutputStream().write(bytes);
     }
 
     private Request request(HttpServletRequest request) {

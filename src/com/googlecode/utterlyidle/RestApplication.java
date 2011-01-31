@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Runnable1;
-import com.googlecode.utterlyidle.handlers.CloseHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
@@ -29,7 +28,6 @@ public class RestApplication implements Application {
         requestScope.add(HttpHandler.class, BaseHandler.class);
         sequence(modules).safeCast(RequestScopedModule.class).forEach(addPerRequestObjects(requestScope));
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
-        requestScope.decorate(HttpHandler.class, CloseHandler.class);
         return requestScope;
     }
 
