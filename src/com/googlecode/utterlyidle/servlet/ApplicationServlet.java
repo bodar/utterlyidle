@@ -26,8 +26,7 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         try {
-            Response response = new MemoryResponse();
-            application.handle(request(req), response);
+            Response response = application.handle(request(req));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);

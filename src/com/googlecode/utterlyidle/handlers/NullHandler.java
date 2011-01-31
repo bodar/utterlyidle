@@ -7,7 +7,7 @@ import com.googlecode.utterlyidle.Status;
 import java.io.IOException;
 
 public class NullHandler implements ResponseHandler {
-    public void handle(Response response) throws IOException {
-        response.status(Status.NO_CONTENT);
+    public Response handle(Response response) throws IOException {
+        return response.status(Status.NO_CONTENT);
     }
 }

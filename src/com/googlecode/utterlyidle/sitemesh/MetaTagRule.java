@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
@@ -25,9 +26,9 @@ public class MetaTagRule implements DecoratorRule {
 
     public boolean matches(Pair<Request, Response> pair) {
         try {
-            SiteMeshResponse response = (SiteMeshResponse) pair.second();
+            Response response = pair.second();
 
-            PropertyMap propertyMap = new PropertyMapParser().parse(response.capturedContent());
+            PropertyMap propertyMap = new PropertyMapParser().parse(Strings.toString(response.bytes()));
             templateName = propertyMap.getPropertyMap("meta").getPropertyMap(this.name).toString();
             if (templateName != null && templateName.length() != 0) {
                 return true;

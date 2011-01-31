@@ -1,8 +1,14 @@
 package com.googlecode.utterlyidle.sitemesh;
 
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class SiteMeshHandler implements HttpHandler {
     private final HttpHandler httpHandler;
@@ -13,25 +19,24 @@ public class SiteMeshHandler implements HttpHandler {
         this.decorators = decorators;
     }
 
-    public void handle(final Request request, final Response response) throws Exception {
-        SiteMeshResponse siteMeshResponse = new SiteMeshResponse(request, response, decorators);
-        httpHandler.handle(request, siteMeshResponse);
-        siteMeshResponse.flush();
+    public Response handle(final Request request) throws Exception {
+        Response response = httpHandler.handle(request);
+        if (shouldDecorate(response)) {
+            return decorate(request, response);
+        } else {
+            return response;
+        }
     }
 
-//    public Response handle(Request request){
-//        Response response = httpHandler.handle(request);
-//        if(shouldDecorate(request, resposne)){
-//            return decorate(response);
-//        }else{
-//            return response;
-//        }
-//    }
-//
-//    private Response decorate(Request request, Response response) {
-//        Decorator decorator = decorators.getDecoratorFor(request, response);
-//        byte[] output = response.output(.);
-//        String result = decorator.decorate(output);
-//
-//    }
+    private boolean shouldDecorate(Response response) {
+        String header = response.header(HttpHeaders.CONTENT_TYPE);
+        return header != null && header.contains(MediaType.TEXT_HTML);
+
+    }
+
+    private Response decorate(Request request, Response response) throws IOException {
+        Decorator decorator = decorators.getDecoratorFor(request, response);
+        String result = decorator.decorate(Strings.toString(new ByteArrayInputStream(response.bytes())));
+        return response.bytes(result.getBytes());
+    }
 }

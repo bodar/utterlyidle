@@ -8,12 +8,17 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 
 public class MemoryResponse implements Response {
     private Status status;
-    private final HeaderParameters headers = headerParameters();
+    private HeaderParameters headers = headerParameters();
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
     private Object entity;
 
-    public static Response response() {
-        return new MemoryResponse();
+    public MemoryResponse() {
+    }
+
+    public MemoryResponse(Status status, HeaderParameters headers, Object entity) {
+        this.status = status;
+        this.headers = headers;
+        this.entity = entity;
     }
 
     public Status status() {
@@ -48,6 +53,16 @@ public class MemoryResponse implements Response {
 
     public byte[] bytes() {
         return output.toByteArray();
+    }
+
+    public Response bytes(byte[] value) {
+        output = new ByteArrayOutputStream();
+        try {
+            output.write(value);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
     }
 
     public Response output(OutputStream outputStream) {

@@ -22,6 +22,8 @@ public interface Response {
 
     byte[] bytes();
 
+    Response bytes(byte[] value);
+
     Object entity();
 
     Response entity(Object value);

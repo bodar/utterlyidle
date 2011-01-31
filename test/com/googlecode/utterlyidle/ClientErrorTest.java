@@ -4,10 +4,8 @@ import org.junit.Test;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 
-import static com.googlecode.utterlyidle.MemoryResponse.response;
+import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static org.hamcrest.CoreMatchers.is;
@@ -18,7 +16,7 @@ public class ClientErrorTest {
     @Test
     public void shouldReturn404WhenPathNotFound() throws Exception {
         TestApplication application = new TestApplication();
-        Response response = application.responseFor(get("invalidPath"));
+        Response response = application.handle(get("invalidPath"));
 
         assertThat(response.status(), is(Status.NOT_FOUND));
     }
@@ -27,7 +25,7 @@ public class ClientErrorTest {
     public void shouldReturn405WhenMethodDoesNotMatch() throws Exception {
         TestApplication application = new TestApplication();
         application.add(Foo.class);
-        Response response = application.responseFor(post("path"));
+        Response response = application.handle(post("path"));
 
         assertThat(response.status(), is(Status.METHOD_NOT_ALLOWED));
     }
@@ -36,7 +34,7 @@ public class ClientErrorTest {
     public void shouldReturn400WhenMethodMatchesButARequiredArgumentIsMissing() throws Exception {
         TestApplication application = new TestApplication();
         application.add(SomeOther.class);
-        Response response = application.responseFor(get("path").withQuery("someOther", "value"));
+        Response response = application.handle(get("path").withQuery("someOther", "value"));
 
         assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
@@ -45,7 +43,7 @@ public class ClientErrorTest {
     public void shouldNotMatchArgumentsThatAreOfTypeObject() throws Exception {
         TestApplication application = new TestApplication();
         application.add(SomeOther.class);
-        Response response = application.responseFor(get("object"));
+        Response response = application.handle(get("object"));
 
         assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
@@ -54,7 +52,7 @@ public class ClientErrorTest {
     public void shouldReturn415WhenResourceCanNotConsumeType() throws Exception {
         TestApplication application = new TestApplication();
         application.add(Foo.class);
-        Response response = application.responseFor(get("path").withHeader(HttpHeaders.CONTENT_TYPE, "application/rubbish"));
+        Response response = application.handle(get("path").withHeader(HttpHeaders.CONTENT_TYPE, "application/rubbish"));
 
         assertThat(response.status(), is(Status.UNSUPPORTED_MEDIA_TYPE));
     }
@@ -63,7 +61,7 @@ public class ClientErrorTest {
     public void shouldReturn406WhenAcceptHeaderDoesNotMatch() throws Exception {
         TestApplication application = new TestApplication();
         application.add(Foo.class);
-        Response response = application.responseFor(get("bob").accepting("application/gibberish"));
+        Response response = application.handle(get("bob").accepting("application/gibberish"));
 
         assertThat(response.status(), is(Status.NOT_ACCEPTABLE));
     }
@@ -72,7 +70,7 @@ public class ClientErrorTest {
     public void shouldReturn200WhenAcceptHeaderNotSpecified() throws Exception {
         TestApplication application = new TestApplication();
         application.add(Foo.class);
-        Response response = application.responseFor(get("bob"));
+        Response response = application.handle(get("bob"));
 
         assertThat(response.status(), is(Status.OK));
     }
