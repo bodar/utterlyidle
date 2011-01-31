@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
-import static com.googlecode.utterlyidle.MemoryResponse.response;
+import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static org.hamcrest.CoreMatchers.is;
@@ -25,7 +25,7 @@ public class ServerErrorTest {
         application.add(ThrowingResource.class);
         application.addResponseHandler(where(entity(), instanceOf(Exception.class)), new WriteMessageToResponseHandler(message));
 
-        Response response = application.responseFor(get("exception"));
+        Response response = application.handle(get("exception"));
 
         assertThat(response.output().toString(), containsString(message));
     }
@@ -35,7 +35,7 @@ public class ServerErrorTest {
         TestApplication application = new TestApplication();
         application.add(ThrowingResource.class);
 
-        Response response = application.responseFor(get("exception"));
+        Response response = application.handle(get("exception"));
 
         assertResponseContains(response, Exception.class);
     }
@@ -45,7 +45,7 @@ public class ServerErrorTest {
         TestApplication application = new TestApplication();
         application.add(ResourceWithMissingDependency.class);
 
-        Response response = application.responseFor(get("lazy"));
+        Response response = application.handle(get("lazy"));
 
         assertResponseContains(response, ContainerException.class);
     }

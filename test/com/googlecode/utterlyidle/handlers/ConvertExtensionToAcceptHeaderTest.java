@@ -18,7 +18,8 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class ConvertExtensionToAcceptHeaderTest {
     private HttpHandler httpHandler = new HttpHandler() {
-        public void handle(Request request, Response response) throws Exception {
+        public Response handle(Request request) throws Exception {
+            return null;
         }
     };
 
@@ -62,14 +63,14 @@ public class ConvertExtensionToAcceptHeaderTest {
 
     private void assertHeaderConversion(ConvertExtensionToAcceptHeader converter, String url, String expectedMimeType) throws Exception {
         Request request = RequestBuilder.get(url).build();
-        converter.handle(request, null);
+        converter.handle(request);
 
         assertThat(request.headers().getValue(HttpHeaders.ACCEPT), is(expectedMimeType));
     }
 
     private void assertUrlConversion(ConvertExtensionToAcceptHeader converter, String original, String expectedAfterConversion) throws Exception {
         Request request = RequestBuilder.get(original).build();
-        converter.handle(request, null);
+        converter.handle(request);
 
         assertThat(request.url(), is(url(expectedAfterConversion)));
     }

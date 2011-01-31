@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 
@@ -16,21 +17,15 @@ public class TestApplication extends RestApplication {
         return this;
     }
 
-    public String handle(RequestBuilder request) throws Exception {
-        return responseFor(request).output().toString();
-    }
-
-    public Response responseFor(RequestBuilder request) throws Exception {
-        Response response = MemoryResponse.response();
-        handle(request, response);
-        return response;
-    }
-
-    public void handle(RequestBuilder request, Response response) throws Exception {
-        handle(request.build(), response);
+    public Response handle(RequestBuilder request) throws Exception {
+        return handle(request.build());
     }
 
     public <T> void addResponseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
         responseHandlers().add(predicate, responseHandler);
+    }
+
+    public String responseAsString(RequestBuilder request) throws Exception {
+        return Strings.toString(handle(request).bytes());
     }
 }

@@ -22,10 +22,11 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
         return new InstanceRenderingResponseHandler<T>(renderer);
     }
 
-    public void handle(Response response) throws Exception {
+    public Response handle(Response response) throws Exception {
         Writer writer = new OutputStreamWriter(response.output());
         writer.write(getRenderer().render((T) response.entity()));
         writer.flush();
+        return response;
     }
 
     protected abstract Renderer<T> getRenderer();

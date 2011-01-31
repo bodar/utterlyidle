@@ -19,17 +19,15 @@ import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
 public class Cookies {
     private final Map<CookieName, Cookie> requestCookies;
     private final Map<CookieName, Cookie> newCookies = new HashMap<CookieName, Cookie>();
-    private final Response response;
     public static final String REQUEST_COOKIE_HEADER = "Cookie";
     public static final String SET_COOKIE_HEADER = "Set-Cookie";
 
-    public static Cookies cookies(Request request, Response response) {
-        return new Cookies(request, response);
+    public static Cookies cookies(Request request) {
+        return new Cookies(request);
     }
 
-    public Cookies(Request request, Response response) {
+    public Cookies(Request request) {
         this.requestCookies = parseRequestCookies(sequence(request.headers().getValues(REQUEST_COOKIE_HEADER)));
-        this.response = response;
     }
 
     public Cookies set(CookieName name, String value) {
@@ -54,8 +52,8 @@ public class Cookies {
         return cookie == null ? null : cookie.getValue();
     }
 
-    public void commit() {
-        sequence(newCookies.values()).fold(response, setCookiesAsHeaders());
+    public Response commit(Response response) {
+        return sequence(newCookies.values()).fold(response, setCookiesAsHeaders());
     }
 
     public void rollback() {
