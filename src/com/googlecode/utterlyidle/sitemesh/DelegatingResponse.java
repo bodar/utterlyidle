@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
@@ -33,7 +35,11 @@ public abstract class DelegatingResponse implements Response {
         return response.entity();
     }
 
-    public void close() throws IOException {
-        response.close();
+    public byte[] bytes() {
+        return response.bytes();
+    }
+
+    public Iterable<Pair<String, String>> headers() {
+        return response.headers();
     }
 }
