@@ -12,7 +12,7 @@ import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.Requests.getBytes;
+import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class ApplicationServlet extends HttpServlet {
@@ -51,7 +51,7 @@ public class ApplicationServlet extends HttpServlet {
                     request.getMethod(),
                     url(request.getRequestURI() + queryString(request.getQueryString())),
                     convertToHeaderParameters(request),
-                    getBytes(request.getInputStream()),
+                    bytes(request.getInputStream()),
                     extractBasePath(request));
         } catch (IOException e) {
             throw new RuntimeException(e);

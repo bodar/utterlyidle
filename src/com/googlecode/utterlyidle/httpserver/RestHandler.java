@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.Requests.getBytes;
+import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static java.lang.System.nanoTime;
 
@@ -58,7 +58,7 @@ public class RestHandler implements HttpHandler {
                 httpExchange.getRequestMethod(),
                 url(httpExchange.getRequestURI().toString()),
                 convert(httpExchange.getRequestHeaders()),
-                getBytes(httpExchange.getRequestBody()),
+                bytes(httpExchange.getRequestBody()),
                 basePath);
     }
 
