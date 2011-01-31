@@ -20,7 +20,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.Request.request;
+import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.Cookies.REQUEST_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.io.Url.url;
 
