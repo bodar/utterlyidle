@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.DefaultRequest;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.io.Url;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-class ServletRequest extends Request {
+class ServletRequest extends DefaultRequest {
     private final HttpServletRequest request;
 
     public ServletRequest(HttpServletRequest request) throws IOException {

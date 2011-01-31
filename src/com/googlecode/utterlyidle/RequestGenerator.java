@@ -10,7 +10,7 @@ import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
-import static com.googlecode.utterlyidle.Request.request;
+import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RequestGenerator {
