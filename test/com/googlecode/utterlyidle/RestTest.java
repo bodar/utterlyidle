@@ -25,7 +25,6 @@ import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -142,7 +141,7 @@ public class RestTest {
         application.add(NoContent.class);
         MemoryResponse response = new MemoryResponse();
         application.handle(post("foo"), response);
-        assertThat(response.status, is(Status.NO_CONTENT));
+        assertThat(response.status(), is(Status.NO_CONTENT));
     }
 
     @Test
@@ -158,7 +157,7 @@ public class RestTest {
         application.add(DeleteContent.class);
         MemoryResponse response = new MemoryResponse();
         application.handle(delete("path/bar"), response);
-        assertThat(response.status, is(Status.NO_CONTENT));
+        assertThat(response.status(), is(Status.NO_CONTENT));
     }
 
     @Test

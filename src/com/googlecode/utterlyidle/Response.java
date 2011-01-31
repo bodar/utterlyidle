@@ -1,9 +1,11 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Pair;
+
 import java.io.Closeable;
 import java.io.OutputStream;
 
-public interface Response extends Closeable {
+public interface Response {
     Status status();
 
     Response status(Status value);
@@ -12,9 +14,13 @@ public interface Response extends Closeable {
 
     Iterable<String> headers(String name);
 
+    Iterable<Pair<String, String>> headers();
+
     Response header(String name, String value);
 
     OutputStream output();
+
+    byte[] bytes();
 
     Object entity();
 

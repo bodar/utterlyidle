@@ -18,4 +18,20 @@ public class SiteMeshHandler implements HttpHandler {
         httpHandler.handle(request, siteMeshResponse);
         siteMeshResponse.flush();
     }
+
+//    public Response handle(Request request){
+//        Response response = httpHandler.handle(request);
+//        if(shouldDecorate(request, resposne)){
+//            return decorate(response);
+//        }else{
+//            return response;
+//        }
+//    }
+//
+//    private Response decorate(Request request, Response response) {
+//        Decorator decorator = decorators.getDecoratorFor(request, response);
+//        byte[] output = response.output(.);
+//        String result = decorator.decorate(output);
+//
+//    }
 }
