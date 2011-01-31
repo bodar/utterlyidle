@@ -9,12 +9,14 @@ import java.io.ByteArrayInputStream;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
-public class RequestTest {
+public class MemoryRequestTest {
     @Test
     public void shouldBeReversibleToRawMessage() {
         assertThat(post("http://www.youtube.com/watch?v=606eK4abteQ")
@@ -34,6 +36,14 @@ public class RequestTest {
                                    "\n" +
                                    "chups=nah+bru&plinkton=nom"
                    ));
+    }
+
+    @Test
+    public void toStringCanBeCalledMultipleTimes() throws Exception {
+        MemoryRequest request = request("GET", url("smoosh"), HeaderParameters.headerParameters(), "some input".getBytes());
+
+        assertThat(request.toString(), containsString("some input"));
+        assertThat(request.toString(), containsString("some input"));
     }
 
     @Test
