@@ -4,20 +4,21 @@ import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.ws.rs.core.HttpHeaders;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static com.googlecode.utterlyidle.io.Converter.asString;
 
-public class DefaultRequest implements Request {
+public class MemoryRequest implements Request {
     private final String method;
     private Url url;
-    private final InputStream input;
+    private final byte[] input;
     private final HeaderParameters headers;
     private BasePath basePath;
     private QueryParameters query;
     private FormParameters form;
 
-    protected DefaultRequest(String method, Url url, HeaderParameters headers, InputStream input, BasePath basePath) {
+    protected MemoryRequest(String method, Url url, HeaderParameters headers, byte[] input, BasePath basePath) {
         this.method = method;
         this.url = url;
         this.headers = headers;
@@ -40,7 +41,7 @@ public class DefaultRequest implements Request {
     }
 
     public InputStream input() {
-        return input;
+        return new ByteArrayInputStream(input);
     }
 
     public HeaderParameters headers() {

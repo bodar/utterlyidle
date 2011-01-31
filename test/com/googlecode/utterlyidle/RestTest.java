@@ -118,9 +118,8 @@ public class RestTest {
         assertThat(application.handle(get("text").accepting(mimeTypes)), is("xml"));
 
         application.add(PutContent.class);
-        InputStream input = new ByteArrayInputStream("input".getBytes());
         mimeTypes = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
-        assertThat(application.handle(put("path/foo").accepting(mimeTypes).withInput(input)), is("input"));
+        assertThat(application.handle(put("path/foo").accepting(mimeTypes).withInput("input".getBytes())), is("input"));
     }
 
     @Test
@@ -167,8 +166,7 @@ public class RestTest {
         TestApplication application = new TestApplication();
         application.add(PutContent.class);
 
-        InputStream input = new ByteArrayInputStream("input".getBytes());
-        assertThat(application.handle(put("path/bar").withInput(input)), is("input"));
+        assertThat(application.handle(put("path/bar").withInput("input".getBytes())), is("input"));
     }
 
     @Test

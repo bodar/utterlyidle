@@ -1,20 +1,22 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.DefaultRequest;
+import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.io.Url;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.util.List;
 import java.util.Map;
 
-public class HttpExchangeRequest extends DefaultRequest {
+import static com.googlecode.utterlyidle.Requests.*;
+
+public class HttpExchangeRequest extends MemoryRequest {
 
     public HttpExchangeRequest(HttpExchange httpExchange, BasePath basePath) {
         super(httpExchange.getRequestMethod(), Url.url(httpExchange.getRequestURI().toString()),
-                convert(httpExchange.getRequestHeaders()), httpExchange.getRequestBody(), basePath);
+                convert(httpExchange.getRequestHeaders()), getBytes(httpExchange.getRequestBody()), basePath);
     }
 
     private static HeaderParameters convert(Map<String, List<String>> requestHeaders) {
