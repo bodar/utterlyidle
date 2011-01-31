@@ -20,6 +20,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.Requests.getBytes;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.Cookies.REQUEST_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -28,7 +29,7 @@ public class RequestBuilder {
     private final List<Pair<String,String>> headers = new ArrayList<Pair<String, String>>();
     private final List<Pair<String,String>> query = new ArrayList<Pair<String, String>>();
     private final List<Pair<String,String>> form = new ArrayList<Pair<String, String>>();
-    private InputStream input;
+    private byte[] input;
     private final String method;
     private final String path;
 
@@ -65,7 +66,7 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder withInput(InputStream input) {
+    public RequestBuilder withInput(byte[] input) {
         this.input = input;
         return this;
     }
@@ -79,12 +80,13 @@ public class RequestBuilder {
         return url(path + queryString);
     }
 
-    public static InputStream input(FormParameters form, InputStream input) {
+    public static byte[] input(FormParameters form, byte[] input) {
         if(form.size() > 0){
-            return new ByteArrayInputStream(form.toString().getBytes());
+            if(input != null) throw new IllegalStateException("Please specify either form parameters or an input stream- not both.");
+            return form.toString().getBytes();
         }
         if(input == null){
-            new ByteArrayInputStream(new byte[0]);
+            return new byte[0];
         }
         return input;
     }

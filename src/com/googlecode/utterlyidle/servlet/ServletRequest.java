@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.DefaultRequest;
+import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.io.Url;
@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.Requests.getBytes;
 
-class ServletRequest extends DefaultRequest {
+class ServletRequest extends MemoryRequest {
     private final HttpServletRequest request;
 
     public ServletRequest(HttpServletRequest request) throws IOException {
@@ -19,8 +20,8 @@ class ServletRequest extends DefaultRequest {
                 request.getMethod(),
                 Url.url(request.getRequestURI() + queryString(request.getQueryString())),
                 convertToHeaderParameters(request),
-                request.getInputStream(), 
-                extractBasePath(request));
+                getBytes(request.getInputStream()),
+                        extractBasePath(request));
         this.request = request;
     }
 

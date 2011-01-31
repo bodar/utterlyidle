@@ -60,7 +60,7 @@ public class RequestTest {
     }
 
     private Request createRequestWith(BasePath basePath, Url url) {
-        return new DefaultRequest(HttpMethod.GET, url, HeaderParameters.headerParameters(), new ByteArrayInputStream("foo".getBytes()), basePath);
+        return new MemoryRequest(HttpMethod.GET, url, HeaderParameters.headerParameters(), "foo".getBytes(), basePath);
     }
 
 }
