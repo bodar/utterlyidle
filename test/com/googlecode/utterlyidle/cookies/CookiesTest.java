@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.cookies;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.MemoryResponse;
 import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Dates.date;
@@ -110,6 +111,6 @@ public class CookiesTest {
     }
 
     private Request request(HeaderParameters headers) {
-        return Request.request(null, null, headers, null);
+        return Requests.request(null, null, headers, null);
     }
 }
