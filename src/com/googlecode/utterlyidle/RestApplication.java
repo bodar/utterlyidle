@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Runnable1;
+import com.googlecode.utterlyidle.handlers.CookiesHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
@@ -27,6 +28,7 @@ public class RestApplication implements Application {
         requestScope.addInstance(Resolver.class, requestScope);
         requestScope.add(HttpHandler.class, BaseHandler.class);
         sequence(modules).safeCast(RequestScopedModule.class).forEach(addPerRequestObjects(requestScope));
+        requestScope.decorate(HttpHandler.class, CookiesHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         return requestScope;
     }
@@ -43,14 +45,13 @@ public class RestApplication implements Application {
         return applicationScope;
     }
 
-    public void handle(Request request, Response response) throws Exception {
-        createRequestScope(request, response).get(HttpHandler.class).handle(request, response);
+    public Response handle(Request request) throws Exception {
+        return createRequestScope(request).get(HttpHandler.class).handle(request);
     }
 
-    private Container createRequestScope(Request request, Response response) {
+    private Container createRequestScope(Request request) {
         Container requestScope = createRequestScope();
         requestScope.addInstance(Request.class, request);
-        requestScope.addInstance(Response.class, response);
         return requestScope;
     }
 

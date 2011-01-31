@@ -12,9 +12,10 @@ public class WriteMessageToResponseHandler  implements ResponseHandler {
         this.message = message;
     }
 
-    public void handle(Response response) throws Exception {
+    public Response handle(Response response) throws Exception {
         OutputStreamWriter writer = new OutputStreamWriter(response.output());
         writer.write(message);
         writer.close();
+        return response;
     }
 }

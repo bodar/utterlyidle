@@ -28,11 +28,9 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
         this.decorated = decorated;
     }
 
-    public void handle(Request request, Response response) throws Exception {
+    public Response handle(Request request) throws Exception {
         Matches fileExtension = FILE_EXTENSION.findMatches(request.url().toString());
-        decorated.handle(
-                replacements.fold(request, applyReplacement(fileExtension)),
-                response);
+        return decorated.handle(replacements.fold(request, applyReplacement(fileExtension)));
     }
 
     private Callable2<? super Request, ? super Pair<String, String>, Request> applyReplacement(final Matches fileExtension) {
