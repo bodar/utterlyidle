@@ -29,8 +29,7 @@ public class BaseHandler implements HttpHandler {
                     headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
                     either.left()));
         } else {
-            return findAndHandle(request, either.right().activate(resolver, request, response()).
-                    status(Status.OK));
+            return findAndHandle(request, either.right().activate(resolver, request, response()));
         }
     }
 

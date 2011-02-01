@@ -41,9 +41,15 @@ public class HttpMethodActivator implements Activator {
     public Response activate(Resolver resolver, Request request, Response response) throws InvocationTargetException, IllegalAccessException {
         Class<?> declaringClass = method.getDeclaringClass();
         Object instance = resolve(create(declaringClass, resolver), declaringClass);
-        return response.
-                header(HttpHeaders.CONTENT_TYPE, producesMatcher.mimeType()).
-                entity(method.invoke(instance, argumentsExtractor.extract(request)));
+        Object result = method.invoke(instance, argumentsExtractor.extract(request));
+        if (result instanceof Response) {
+            return (Response) result;
+        } else {
+            return response.
+                    header(HttpHeaders.CONTENT_TYPE, producesMatcher.mimeType()).
+                    entity(result).
+                    status(Status.OK);
+        }
     }
 
     public int priority() {
