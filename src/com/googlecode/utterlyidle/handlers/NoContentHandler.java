@@ -6,8 +6,11 @@ import com.googlecode.utterlyidle.Status;
 
 import java.io.IOException;
 
-public class NullHandler implements ResponseHandler {
+public class NoContentHandler implements ResponseHandler {
     public Response handle(Response response) throws IOException {
-        return response.status(Status.NO_CONTENT);
+        if(Status.OK.equals(response.status())) {
+            return response.status(Status.NO_CONTENT);
+        }
+        return response;
     }
 }

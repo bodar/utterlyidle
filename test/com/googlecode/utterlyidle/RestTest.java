@@ -19,6 +19,8 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
 import static com.googlecode.utterlyidle.RequestBuilder.*;
+import static com.googlecode.utterlyidle.Status.NOT_FOUND;
+import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
@@ -29,6 +31,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class RestTest {
+    @Test
+    public void supportReturningResponse() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(ReturnsResponse.class);
+        assertThat(application.handle(get("path")).status(), is(SEE_OTHER));
+    }
 
     @Test
     public void canHandleCookies() throws Exception {
@@ -560,6 +568,14 @@ public class RestTest {
     public static class MyCustomClassRenderer implements Renderer<MyCustomClass> {
         public String render(MyCustomClass value) {
             return "foo";
+        }
+    }
+
+    @Path("path")
+    public static class ReturnsResponse {
+        @GET
+        public Response get() {
+            return response(Status.SEE_OTHER);
         }
     }
 }

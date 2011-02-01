@@ -13,6 +13,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import static com.googlecode.totallylazy.Predicates.*;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.status;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 
 public class CoreModule extends AbstractModule {
@@ -42,7 +43,7 @@ public class CoreModule extends AbstractModule {
 
     @Override
     public Module addResponseHandlers(ResponseHandlers handlers){
-        handlers.addGuard(where(entity(), is(aNull(Object.class))), NullHandler.class);
+        handlers.addGuard(where(entity(), is(aNull(Object.class))), NoContentHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(SeeOther.class))), RedirectHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
