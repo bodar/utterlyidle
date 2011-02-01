@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.proxy;
 
+import com.googlecode.utterlyidle.Redirect;
 import com.googlecode.utterlyidle.RequestGenerator;
 import com.googlecode.utterlyidle.Response;
 import net.sf.cglib.proxy.InvocationHandler;
@@ -21,6 +22,10 @@ public class Resource implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable {
         redirect.set(getUrl(method, arguments));
         return null;
+    }
+
+    public static <S> Redirect redirect(S value){
+        return Redirect.redirect(redirect.get());
     }
 
     public static <S> String urlOf(S value){
