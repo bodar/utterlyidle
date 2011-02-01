@@ -3,13 +3,7 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Resources;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.SeeOther;
-import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.TestApplication;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.utterlyidle.modules.ResourcesModule;
@@ -19,10 +13,8 @@ import org.junit.Test;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -115,11 +107,11 @@ public class SiteMeshHandlerTest {
             return ORIGINAL_CONTENT;
         }
 
-        @GET
-        @Path("redirect")
-        public SeeOther redirect(){
-            return SeeOther.seeOther("foo");
-        }
+//        @GET
+//        @Path("redirect")
+//        public Response redirect(){
+//            return Responses.seeOther("foo");
+//        }
     }
 
     public static class SiteMeshTestModule implements RequestScopedModule, ResourcesModule {
