@@ -23,7 +23,7 @@ public class CookiesTest {
     public void shouldHandleTrailingSpaces() throws Exception {
         Cookies cookies = cookies(request(headerParameters(pair("Cookie", "a=1; ; ;"))));
 
-        assertThat(cookies.getValue(cookieName("a")), is("1"));
+        assertThat(cookies.getRawValue(cookieName("a")), is("1"));
     }
 
     @Test
@@ -31,16 +31,16 @@ public class CookiesTest {
         Cookies lowercaseCookies = cookies(request(headerParameters(pair("cookie", "a=1"))));
         Cookies uppercaseCookies = cookies(request(headerParameters(pair("COOKIE", "b=2"))));
 
-        assertThat(lowercaseCookies.getValue(cookieName("a")), is("1"));
-        assertThat(uppercaseCookies.getValue(cookieName("b")), is("2"));
+        assertThat(lowercaseCookies.getRawValue(cookieName("a")), is("1"));
+        assertThat(uppercaseCookies.getRawValue(cookieName("b")), is("2"));
     }
 
     @Test
     public void shouldCopeWithRequestCookiesInMultipleHeaders() throws Exception {
         Cookies cookies = cookies(request(headerParameters(pair("Cookie", "a=1"), pair("Cookie", "b=2"))));
 
-        assertThat(cookies.getValue(cookieName("a")), is("1"));
-        assertThat(cookies.getValue(cookieName("b")), is("2"));
+        assertThat(cookies.getRawValue(cookieName("a")), is("1"));
+        assertThat(cookies.getRawValue(cookieName("b")), is("2"));
     }
 
     @Test
@@ -51,8 +51,8 @@ public class CookiesTest {
         assertThat(cookies.getValue(cookieName("$Path")), is(nullValue()));
         assertThat(cookies.getValue(cookieName("$Domain")), is(nullValue()));
 
-        assertThat(cookies.getValue(cookieName("a")), is("1"));
-        assertThat(cookies.getValue(cookieName("b")), is("2"));
+        assertThat(cookies.getRawValue(cookieName("a")), is("1"));
+        assertThat(cookies.getRawValue(cookieName("b")), is("2"));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class CookiesTest {
         final String value = response.header(SET_COOKIE_HEADER);
         final HeaderParameters headers = (HeaderParameters) headerParameters().add(REQUEST_COOKIE_HEADER, value);
         Cookies cookiesRead = cookies(request(headers));
-        assertThat(cookiesRead.getValue(cookieName), is("1"));
+        assertThat(cookiesRead.getRawValue(cookieName), is("1"));
     }
 
     private Request someRequest() {
