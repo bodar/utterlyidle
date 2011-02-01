@@ -25,7 +25,8 @@ public class RestApplication implements Application {
 
     public Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
-        requestScope.addInstance(Resolver.class, requestScope);
+        requestScope.addInstance(Container.class, requestScope);
+        requestScope.addActivator(Resolver.class, requestScope.getActivator(Container.class));
         requestScope.add(HttpHandler.class, BaseHandler.class);
         sequence(modules).safeCast(RequestScopedModule.class).forEach(addPerRequestObjects(requestScope));
         requestScope.decorate(HttpHandler.class, CookiesHandler.class);
@@ -46,13 +47,7 @@ public class RestApplication implements Application {
     }
 
     public Response handle(Request request) throws Exception {
-        return createRequestScope(request).get(HttpHandler.class).handle(request);
-    }
-
-    private Container createRequestScope(Request request) {
-        Container requestScope = createRequestScope();
-        requestScope.addInstance(Request.class, request);
-        return requestScope;
+        return createRequestScope().get(HttpHandler.class).handle(request);
     }
 
     public Resources resources() {
