@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.cookies.Cookies;
 import com.googlecode.utterlyidle.handlers.*;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
@@ -19,7 +18,6 @@ import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.rende
 public class CoreModule extends AbstractModule {
     @Override
     public Module addPerRequestObjects(Container container) {
-        container.add(Cookies.class);
         container.addActivator(BasePath.class, BasePathActivator.class);
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
