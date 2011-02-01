@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.utterlyidle.cookies.Cookies;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
 import org.junit.Test;
 
@@ -19,10 +19,8 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
 import static com.googlecode.utterlyidle.RequestBuilder.*;
-import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
@@ -46,6 +44,13 @@ public class RestTest {
         Response response = application.handle(request);
         assertThat(response.output().toString(), is("value"));
         assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
+    }
+
+    @Test
+    public void canHandleCookieParams() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(GettableWithCookies.class);
+        assertThat(application.responseAsString(get("bar").withHeader("cookie", "name=bob")), is("bob"));
     }
 
     @Test
@@ -301,18 +306,18 @@ public class RestTest {
         }
     }
 
-    @Path("foo")
     public static class GettableWithCookies {
-        private Request request;
-
-        public GettableWithCookies(Request request) {
-            this.request = request;
+        @GET
+        @Path("foo")
+        public String get(CookieParameters cookies) {
+            cookies.set("anotherName", cookie("anotherValue"));
+            return cookies.getValue("name");
         }
 
         @GET
-        public String get() {
-            request.cookies().set(cookie(cookieName("anotherName"), "anotherValue"));
-            return request.cookies().getRawValue(cookieName("name"));
+        @Path("bar")
+        public String get(@CookieParam("name") String name) {
+            return name;
         }
     }
 

@@ -1,16 +1,14 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;
 import com.googlecode.yadic.resolvers.ProgrammerErrorResolver;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -19,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
-import static com.googlecode.totallylazy.Sequences.contains;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Param.isParam;
 import static com.googlecode.utterlyidle.Param.toParam;
@@ -66,6 +63,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, with(FormParameters.class));
                 annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
                 annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
+                annotations.safeCast(CookieParam.class).map(toParam()).foldLeft(container, with(CookieParameters.class));
 
                 if (!container.contains(String.class)) {
                     container.add(String.class, new ProgrammerErrorResolver(String.class));
@@ -105,6 +103,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         container.addInstance(HeaderParameters.class, request.headers());
         container.addInstance(QueryParameters.class, request.query());
         container.addInstance(FormParameters.class, request.form());
+        container.addInstance(CookieParameters.class, request.cookies());
         container.addInstance(InputStream.class, request.input());
         container.add(new TypeFor<Option<?>>() {{}}.get(), new OptionResolver(container, instanceOf(IllegalArgumentException.class)));
         container.add(new TypeFor<Either<?, ?>>() {{}}.get(), new EitherResolver(container));

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.cookies.Cookies;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
 
@@ -18,7 +18,7 @@ public class MemoryRequest implements Request {
     private BasePath basePath;
     private QueryParameters query;
     private FormParameters form;
-    private Cookies cookies;
+    private CookieParameters cookies;
 
     protected MemoryRequest(String method, Url url, HeaderParameters headers, byte[] input, BasePath basePath) {
         this.method = method;
@@ -57,9 +57,9 @@ public class MemoryRequest implements Request {
         return query;
     }
 
-    public Cookies cookies() {
+    public CookieParameters cookies() {
         if(cookies==null){
-            cookies = Cookies.cookies(this);
+            cookies = CookieParameters.cookies(this);
         }
         return cookies;
     }
