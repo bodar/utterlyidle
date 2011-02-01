@@ -303,16 +303,16 @@ public class RestTest {
 
     @Path("foo")
     public static class GettableWithCookies {
-        private final Cookies cookies;
+        private Request request;
 
-        public GettableWithCookies(Cookies cookies) {
-            this.cookies = cookies;
+        public GettableWithCookies(Request request) {
+            this.request = request;
         }
 
         @GET
         public String get() {
-            cookies.set(cookie(cookieName("anotherName"), "anotherValue"));
-            return cookies.getValue(cookieName("name"));
+            request.cookies().set(cookie(cookieName("anotherName"), "anotherValue"));
+            return request.cookies().getValue(cookieName("name"));
         }
     }
 

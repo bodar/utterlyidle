@@ -6,15 +6,13 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.cookies.Cookies;
 
 public class CookiesHandler implements HttpHandler{
-    private final Cookies cookies;
     private HttpHandler decorated;
 
-    public CookiesHandler(Cookies cookies, HttpHandler decorated) {
-        this.cookies = cookies;
+    public CookiesHandler(HttpHandler decorated) {
         this.decorated = decorated;
     }
 
     public Response handle(Request request) throws Exception {
-        return cookies.commit(decorated.handle(request));
+        return request.cookies().commit(decorated.handle(request));
     }
 }
