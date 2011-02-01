@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.cookies.Cookies;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.io.Url;
 
 import java.io.InputStream;
@@ -18,7 +18,7 @@ public interface Request {
 
     public QueryParameters query();
 
-    public Cookies cookies();
+    public CookieParameters cookies();
 
     public FormParameters form();
 
