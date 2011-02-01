@@ -59,7 +59,7 @@ public class MemoryRequest implements Request {
 
     public Cookies cookies() {
         if(cookies==null){
-            cookies = new Cookies(this);
+            cookies = Cookies.cookies(this);
         }
         return cookies;
     }

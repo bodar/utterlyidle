@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,21 +8,27 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class Parameters implements Iterable<Pair<String, String>> {
-    private final List<Pair<String, String>> values = new ArrayList<Pair<String, String>>();
+public class Parameters<K,V> implements Iterable<Pair<K, V>> {
+    private final List<Pair<K, V>> values = new ArrayList<Pair<K, V>>();
+    private final Callable1<K, Predicate<K>> predicate;
 
-    public Parameters add(String name, String value) {
+    public Parameters(Callable1<K, Predicate<K>> predicate) {
+        this.predicate = predicate;
+    }
+
+    public Parameters add(K name, V value) {
         values.add(pair(name, value));
         return this;
     }
 
-    public Parameters remove(String name) {
-        values.removeAll(filterByName(name).toList());
+    public Parameters remove(K name) {
+        values.removeAll(filterByKey(name).toList());
         return this;
     }
 
@@ -34,38 +37,31 @@ public class Parameters implements Iterable<Pair<String, String>> {
     }
 
     @SuppressWarnings("unchecked")
-    public String getValue(String name) {
-        return filterByName(name).headOption().map(second(String.class)).getOrNull();
+    public V getValue(K key) {
+        return filterByKey(key).headOption().map(Callables.<V>second()).getOrNull();
     }
 
     @SuppressWarnings("unchecked")
-    public Iterable<String> getValues(String name) {
-        return filterByName(name).map(second(String.class));
+    public Iterable<V> getValues(K key) {
+        return filterByKey(key).map(Callables.<V>second());
     }
 
-    private Predicate<String> equalIgnoringCase(final String name) {
-        return new Predicate<String>() {
-            public boolean matches(String other) {
-                return name.equalsIgnoreCase(other);
-            }
-        };
+    public boolean contains(K key) {
+        return !filterByKey(key).headOption().isEmpty();
     }
 
-    public boolean contains(String name) {
-        return !filterByName(name).headOption().isEmpty();
-    }
-
-    public Iterator<Pair<String, String>> iterator() {
+    public Iterator<Pair<K, V>> iterator() {
         return values.iterator();
     }
 
-    private Sequence<Pair<String, String>> filterByName(String name) {
-        return sequence(values).filter(by(first(String.class), is(equalIgnoringCase(name))));
-    }
+    private Sequence<Pair<K, V>> filterByKey(K key) {
+        return sequence(values).filter(by(Callables.<K>first(), is(call(predicate, key))));
+     }
 
-    public static Callable2<Parameters, Pair<String, String>, Parameters> pairIntoParameters() {
-        return new Callable2<Parameters, Pair<String, String>, Parameters>() {
-            public Parameters call(Parameters result, Pair<String, String> pair) throws Exception {
+    public static <K,V> Callable2<Parameters<K,V>, Pair<K,V>, Parameters<K,V>> pairIntoParameters() {
+        return new Callable2<Parameters<K,V>, Pair<K,V>, Parameters<K,V>>() {
+            @SuppressWarnings("unchecked")
+            public Parameters<K,V> call(Parameters<K,V> result, Pair<K,V> pair) throws Exception {
                 return result.add(pair.first(), pair.second());
             }
         };

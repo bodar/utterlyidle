@@ -44,7 +44,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }
     }
 
-    public static <T extends Parameters> String extractParam(Container container, Param param, Class<T> aClass) {
+    public static <T extends Parameters<String,String>> String extractParam(Container container, Param param, Class<T> aClass) {
         T params = container.get(aClass);
         if (!params.contains(param.value())) {
             throw new IllegalArgumentException();
