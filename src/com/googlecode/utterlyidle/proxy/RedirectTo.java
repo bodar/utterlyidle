@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.proxy;
 
-import com.googlecode.utterlyidle.Redirect;
 import net.sf.cglib.proxy.InvocationHandler;
 
 import java.lang.reflect.Method;
@@ -8,7 +7,7 @@ import java.lang.reflect.Method;
 import static com.googlecode.totallylazy.proxy.Generics.getGenericSuperclassType;
 import static com.googlecode.totallylazy.proxy.Proxy.createProxy;
 
-public abstract class RedirectTo<T> implements Redirect, InvocationHandler{
+public abstract class RedirectTo<T> implements InvocationHandler{
     private String location;
     protected final T call;
 

@@ -1,8 +1,5 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -10,16 +7,14 @@ import org.junit.Test;
 import javax.ws.rs.core.HttpHeaders;
 
 import static com.googlecode.utterlyidle.BasePath.basePath;
-import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.SeeOther.seeOther;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
-public class RedirectHandlerTest {
+public class BasePathRedirectorTest {
     @Test
     public void canApplyToResponse() {
         BasePath base = basePath("");
-        Response response = new RedirectHandler(base).handle(response().entity(seeOther("foo")));
+        Response response = new BasePathRedirector(base).redirect("foo");
         assertThat(response.header(HttpHeaders.LOCATION), is("/foo"));
         MatcherAssert.assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }
