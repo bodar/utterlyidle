@@ -17,6 +17,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 public class MemoryRequestTest {
+
+
+
     @Test
     public void shouldBeReversibleToRawMessage() {
         assertThat(post("http://www.youtube.com/watch?v=606eK4abteQ")

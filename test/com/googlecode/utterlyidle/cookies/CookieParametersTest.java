@@ -55,52 +55,6 @@ public class CookieParametersTest {
     }
 
     @Test
-    public void shouldCommitCookiesToResponse() throws Exception {
-        CookieParameters cookies = cookies(someRequest());
-        cookies.set("a", "1");
-        cookies.set("b", "2");
-
-        cookies.commit(response);
-
-        assertThat(response.headers(SET_COOKIE_HEADER), containsInAnyOrder("a=\"1\"; ", "b=\"2\"; "));
-    }
-
-    @Test
-    public void shouldAllowRollbackOfChanges() throws Exception {
-        CookieParameters cookies = cookies(someRequest());
-        cookies.set("a", "1");
-
-        cookies.rollback();
-        cookies.commit(response);
-
-        assertThat(response.header(SET_COOKIE_HEADER), is(nullValue()));
-    }
-
-    @Test
-    public void shouldSupportSettingCookieAttributes() throws Exception {
-        CookieParameters cookies = cookies(someRequest());
-        cookies.set("a", cookie("1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(date(2010, 12, 26, 13, 16, 59))));
-
-        cookies.commit(response);
-
-        assertThat(
-                response.header(SET_COOKIE_HEADER),
-                is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Sun, 26-Dec-2010 13:16:59 GMT\""));
-    }
-
-    @Test
-    public void shouldCorrectlyReadAndWrite() throws Exception {
-        CookieParameters cookies = cookies(someRequest());
-        cookies.set("a", "1");
-        cookies.commit(response);
-
-        final String value = response.header(SET_COOKIE_HEADER);
-        final HeaderParameters headers = (HeaderParameters) headerParameters().add(REQUEST_COOKIE_HEADER, value);
-        CookieParameters cookiesRead = cookies(request(headers));
-        assertThat(cookiesRead.getValue("a"), is("1"));
-    }
-
-    @Test
     public void shouldHandleDoubleQuotesInCookieValues() throws Exception {
         assertThat(
                 toHttpHeader("a", cookie("Some \"double quoted thing\"")),

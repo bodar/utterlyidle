@@ -47,6 +47,13 @@ public class RestTest {
     }
 
     @Test
+    public void canHandleQuotedCookies() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(GettableWithCookies.class);
+        assertThat(application.responseAsString(get("foo").withHeader("cookie", "name=\"value\"")), is("value"));
+    }
+
+    @Test
     public void canHandleCookieParams() throws Exception {
         TestApplication application = new TestApplication();
         application.add(GettableWithCookies.class);
