@@ -2,15 +2,22 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Strings;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
-public class HeaderParameters extends Parameters {
+public class HeaderParameters extends Parameters<String, String> {
+    public HeaderParameters() {
+        super(equalIgnoringCase());
+    }
+
     public static HeaderParameters headerParameters(Pair<String, String>... pairs) {
         return headerParameters(sequence(pairs));
     }
     public static HeaderParameters headerParameters(Iterable<Pair<String, String>> pairs) {
-        return (HeaderParameters) sequence(pairs).foldLeft(new HeaderParameters(), pairIntoParameters());
+        return (HeaderParameters) sequence(pairs).foldLeft(new HeaderParameters(), Parameters.<String,String>pairIntoParameters());
     }
 
     @Override

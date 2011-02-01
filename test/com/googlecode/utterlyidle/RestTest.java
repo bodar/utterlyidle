@@ -312,7 +312,7 @@ public class RestTest {
         @GET
         public String get() {
             request.cookies().set(cookie(cookieName("anotherName"), "anotherValue"));
-            return request.cookies().getValue(cookieName("name"));
+            return request.cookies().getRawValue(cookieName("name"));
         }
     }
 

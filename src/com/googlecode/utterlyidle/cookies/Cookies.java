@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Rfc2616;
@@ -8,26 +9,30 @@ import com.googlecode.utterlyidle.Rfc2616;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Predicates.equalTo;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieName.cookieName;
 
-public class Cookies {
-    private final Map<CookieName, Cookie> requestCookies;
+public class Cookies extends Parameters<CookieName, Cookie> {
     private final Map<CookieName, Cookie> newCookies = new HashMap<CookieName, Cookie>();
     public static final String REQUEST_COOKIE_HEADER = "Cookie";
     public static final String SET_COOKIE_HEADER = "Set-Cookie";
 
-    public static Cookies cookies(Request request) {
-        return new Cookies(request);
+    private Cookies(Request request) {
+        super(new Callable1<CookieName, Predicate<CookieName>>() {
+            public Predicate<CookieName> call(CookieName cookieName) throws Exception {
+                return equalTo(cookieName);
+            }
+        });
+        parseRequestCookies(sequence(request.headers().getValues(REQUEST_COOKIE_HEADER)));
     }
 
-    public Cookies(Request request) {
-        this.requestCookies = parseRequestCookies(sequence(request.headers().getValues(REQUEST_COOKIE_HEADER)));
+    public static Cookies cookies(Request request) {
+        return new Cookies(request);
     }
 
     public Cookies set(CookieName name, String value) {
@@ -39,16 +44,16 @@ public class Cookies {
         return this;
     }
 
-    public Cookie get(CookieName name) {
-        if (requestCookies.containsKey(name))
-            return requestCookies.get(name);
+    public Cookie getValue(CookieName name) {
+        if (contains(name))
+            return super.getValue(name);
         if (newCookies.containsKey(name))
             return newCookies.get(name);
         return null;
     }
 
-    public String getValue(CookieName name) {
-        final Cookie cookie = get(name);
+    public String getRawValue(CookieName name) {
+        final Cookie cookie = getValue(name);
         return cookie == null ? null : cookie.getValue();
     }
 
@@ -60,19 +65,25 @@ public class Cookies {
         newCookies.clear();
     }
 
-    public static Map<CookieName, Cookie> parseRequestCookies(Sequence<String> headers) {
-        return headers.fold(new HashMap<CookieName, Cookie>(), parseRequestCookie());
+    private void parseRequestCookies(Sequence<String> headers) {
+        for (String header : headers) {
+            parseIntoPairs(header).fold(this, Parameters.<CookieName, Cookie>pairIntoParameters());
+        }
     }
 
-    private static Callable2<? super HashMap<CookieName, Cookie>, ? super String, HashMap<CookieName, Cookie>> parseRequestCookie() {
-        return new Callable2<HashMap<CookieName, Cookie>, String, HashMap<CookieName, Cookie>>() {
-            public HashMap<CookieName, Cookie> call(HashMap<CookieName, Cookie> cookies, String header) throws Exception {
-                regex("\\s*;\\s*").
-                        split(header).
-                        map(splitOnFirst("=")).
-                        filter(not(anAttribute())).
-                        foldLeft(cookies, pairToCookie());
-                return cookies;
+    private Sequence<Pair<CookieName, Cookie>> parseIntoPairs(String header) {
+        return regex("\\s*;\\s*").
+                split(header).
+                map(splitOnFirst("=")).
+                filter(not(anAttribute())).
+                map(asCookiePair());
+    }
+
+    private Callable1<? super Pair<String, String>, Pair<CookieName, Cookie>> asCookiePair() {
+        return new Callable1<Pair<String, String>, Pair<CookieName, Cookie>>() {
+            public Pair<CookieName, Cookie> call(Pair<String, String> nameValue) throws Exception {
+                CookieName name = cookieName(nameValue.first());
+                return pair(name, cookie(name, Rfc2616.toUnquotedString(nameValue.second())));
             }
         };
     }
@@ -82,16 +93,6 @@ public class Cookies {
         return new Predicate<Pair<String, String>>() {
             public boolean matches(Pair<String, String> pair) {
                 return pair.first().startsWith("$");
-            }
-        };
-    }
-
-    public static Callable2<Map<CookieName, Cookie>, Pair<String, String>, Map<CookieName, Cookie>> pairToCookie() {
-        return new Callable2<Map<CookieName, Cookie>, Pair<String, String>, Map<CookieName, Cookie>>() {
-            public Map<CookieName, Cookie> call(Map<CookieName, Cookie> map, Pair<String, String> nameValue) throws Exception {
-                final CookieName name = cookieName(nameValue.first());
-                map.put(name, cookie(name, Rfc2616.toUnquotedString(nameValue.second())));
-                return map;
             }
         };
     }
