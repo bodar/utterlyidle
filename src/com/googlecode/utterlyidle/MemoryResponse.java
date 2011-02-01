@@ -1,10 +1,15 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.cookies.Cookie;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.cookies.CookieParameters.SET_COOKIE_HEADER;
+import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
     private Status status;
@@ -44,6 +49,11 @@ public class MemoryResponse implements Response {
 
     public Response header(String name, String value) {
         headers.add(name, value);
+        return this;
+    }
+
+    public Response cookie(String name, Cookie value) {
+        header(SET_COOKIE_HEADER, toHttpHeader(name, value));
         return this;
     }
 
