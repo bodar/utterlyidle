@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.SET_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
+    public static final String SET_COOKIE_HEADER = "Set-Cookie";
+
     private Status status;
     private HeaderParameters headers = headerParameters();
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
