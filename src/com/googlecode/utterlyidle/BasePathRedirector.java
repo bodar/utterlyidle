@@ -13,7 +13,18 @@ public class BasePathRedirector implements Redirector{
         this.basePath = basePath;
     }
 
-    public Response redirect(String location) {
-        return response().status(SEE_OTHER).header(LOCATION, basePath.file(location).toString());
+    public Response redirect(Redirect redirect) {
+        return response().status(SEE_OTHER).header(LOCATION, addBasePathIfNeeded(redirect.location()));
+    }
+
+    private String addBasePathIfNeeded(String location) {
+        if(isAbsolute(location)){
+            return location;
+        }
+        return basePath.file(location).toString();
+    }
+
+    private boolean isAbsolute(String location) {
+        return location.startsWith("http://") || location.startsWith("/");
     }
 }

@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -16,17 +15,16 @@ import java.util.Formatter;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
 import static com.googlecode.utterlyidle.RequestBuilder.*;
+import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
-import static com.googlecode.utterlyidle.proxy.Resource.urlOf;
 import static javax.ws.rs.core.HttpHeaders.LOCATION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -484,15 +482,9 @@ public class RestTest {
 
     @Path("path/{id}")
     public static class PostRedirectGet {
-        private final Redirector redirector;
-
-        public PostRedirectGet(Redirector redirector) {
-            this.redirector = redirector;
-        }
-
         @POST
-        public Response post(@PathParam("id") String id) {
-            return redirector.redirect(urlOf(resource(PostRedirectGet.class).get(id)));
+        public Redirect post(@PathParam("id") String id) {
+            return redirect(resource(PostRedirectGet.class).get(id));
         }
 
         @GET
