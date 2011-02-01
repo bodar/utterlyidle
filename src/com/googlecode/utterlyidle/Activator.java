@@ -9,7 +9,7 @@ public interface Activator {
 
     int numberOfArguments();
 
-    Response activate(Resolver resolver, Request request, Response response) throws InvocationTargetException, IllegalAccessException;
+    Response activate(Resolver resolver, Request request) throws InvocationTargetException, IllegalAccessException;
 
     int priority();
 }

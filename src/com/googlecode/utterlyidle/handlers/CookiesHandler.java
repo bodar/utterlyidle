@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.cookies.Cookies;
 
 public class CookiesHandler implements HttpHandler{
     private HttpHandler decorated;
