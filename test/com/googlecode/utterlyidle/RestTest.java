@@ -309,9 +309,8 @@ public class RestTest {
     public static class GettableWithCookies {
         @GET
         @Path("foo")
-        public String get(CookieParameters cookies) {
-            cookies.set("anotherName", cookie("anotherValue"));
-            return cookies.getValue("name");
+        public Response getAndSet(@CookieParam("name") String name) {
+            return response().cookie("anotherName", cookie("anotherValue")).entity(name);
         }
 
         @GET
