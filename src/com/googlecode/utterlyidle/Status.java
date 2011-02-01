@@ -1,6 +1,9 @@
 package com.googlecode.utterlyidle;
 
 public class Status {
+    public static Status CONTINUE = status(100, "Continue");
+    public static Status SWITCHING_PROTOCOLS = status(101, "Switching Protocols");
+
     public static Status OK = status(200, "OK");
     public static Status NO_CONTENT = status(204, "No Content");
 
@@ -51,7 +54,7 @@ public class Status {
         if (other instanceof Status)
         {
             final Status status = (Status) other;
-            return code == status.code && description.equals(status.description);
+            return code == status.code;
         }
         return false;
     }

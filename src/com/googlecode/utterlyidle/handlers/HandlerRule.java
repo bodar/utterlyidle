@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.totallylazy.Pair.pair;
 
@@ -39,6 +40,14 @@ public class HandlerRule {
 
     public static Callable1<? super Pair<Request, Response>, Object> entity() {
         return entity(Object.class);
+    }
+
+    public static Callable1<? super Pair<Request, Response>, Status> status() {
+        return new Callable1<Pair<Request, Response>, Status>() {
+            public Status call(Pair<Request, Response> pair) throws Exception {
+                return pair.second().status();
+            }
+        };
     }
 
     public static <T> Callable1<? super Pair<Request, Response>, T> entity(final Class<T> aClass) {
