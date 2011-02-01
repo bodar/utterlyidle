@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.cookies.Cookie;
 
 import java.io.Closeable;
 import java.io.OutputStream;
@@ -18,6 +19,8 @@ public interface Response {
 
     Response header(String name, String value);
 
+    Response cookie(String name, Cookie value);
+
     OutputStream output();
 
     byte[] bytes();
@@ -27,4 +30,5 @@ public interface Response {
     Object entity();
 
     Response entity(Object value);
+
 }
