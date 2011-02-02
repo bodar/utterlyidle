@@ -50,6 +50,8 @@ public class RestHandler implements HttpHandler {
         httpExchange.sendResponseHeaders(response.status().code(), bytes.length);
         OutputStream responseBody = httpExchange.getResponseBody();
         responseBody.write(bytes);
+
+        httpExchange.close();
     }
 
 
