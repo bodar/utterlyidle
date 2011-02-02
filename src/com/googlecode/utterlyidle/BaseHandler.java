@@ -23,7 +23,7 @@ public class BaseHandler implements HttpHandler {
 
     public Response handle(Request request) throws Exception {
         Container resolver = container.addInstance(Request.class, request);
-        final Either<MatchFailure, HttpMethodActivator> either = activators.findActivator(request);
+        final Either<MatchFailure, Activator> either = activators.findActivator(request);
         if (either.isLeft()) {
             return findAndHandle(request, response(
                     either.left().status(),

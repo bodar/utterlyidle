@@ -28,7 +28,7 @@ public class RestEngine implements Resources {
         }
     }
 
-    public Either<MatchFailure, HttpMethodActivator> findActivator(final Request request) {
+    public Either<MatchFailure, Activator> findActivator(final Request request) {
         final Either<MatchFailure, Sequence<HttpMethodActivator>> result = filter(
                 pair(pathMatches(request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
@@ -41,7 +41,7 @@ public class RestEngine implements Resources {
             return left(result.left());
         }
 
-        return right(result.right().sortBy(matchQuality(request)).head());
+        return right((Activator) result.right().sortBy(matchQuality(request)).head());
     }
 
     private Either<MatchFailure, Sequence<HttpMethodActivator>> filter(Pair<Predicate<HttpMethodActivator>, Status>... filterAndResult) {

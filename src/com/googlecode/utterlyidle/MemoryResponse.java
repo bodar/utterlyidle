@@ -75,10 +75,6 @@ public class MemoryResponse implements Response {
         return this;
     }
 
-    public Response output(OutputStream outputStream) {
-        throw new UnsupportedOperationException();
-    }
-
     public Object entity() {
         return entity;
     }
