@@ -12,7 +12,6 @@ import javax.ws.rs.core.StreamingOutput;
 
 import static com.googlecode.totallylazy.Predicates.*;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
-import static com.googlecode.utterlyidle.handlers.HandlerRule.status;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 
 public class CoreModule extends AbstractModule {
@@ -22,7 +21,6 @@ public class CoreModule extends AbstractModule {
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
         container.add(ResponseHandlersFinder.class);
-        container.add(Redirector.class, BasePathRedirector.class);
         return this;
     }
 
@@ -43,7 +41,6 @@ public class CoreModule extends AbstractModule {
     @Override
     public Module addResponseHandlers(ResponseHandlers handlers){
         handlers.addGuard(where(entity(), is(aNull(Object.class))), NoContentHandler.class);
-        handlers.addGuard(where(entity(), is(instanceOf(Redirect.class))), RedirectHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
         handlers.addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class));

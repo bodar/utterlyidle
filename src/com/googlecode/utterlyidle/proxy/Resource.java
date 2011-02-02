@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.proxy;
 
-import com.googlecode.utterlyidle.Redirect;
 import com.googlecode.utterlyidle.RequestGenerator;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
 import net.sf.cglib.proxy.InvocationHandler;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -24,8 +24,8 @@ public class Resource implements InvocationHandler {
         return null;
     }
 
-    public static <S> Redirect redirect(S value){
-        return Redirect.redirect(redirect.get());
+    public static <S> Response redirect(S value){
+        return Responses.seeOther(redirect.get());
     }
 
     public static <S> String urlOf(S value){

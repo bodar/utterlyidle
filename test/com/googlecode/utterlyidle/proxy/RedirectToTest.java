@@ -5,13 +5,45 @@ import com.googlecode.utterlyidle.*;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import java.io.IOException;
 
+import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.proxy.Resource.*;
+import static javax.ws.rs.core.HttpHeaders.LOCATION;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RedirectToTest {
+       @Test
+    public void canPostRedirectGet() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(PostRedirectGet.class);
+        Response response = application.handle(post("path/bob"));
+        assertThat(response.status(), Matchers.is(SEE_OTHER));
+        assertThat(response.header(LOCATION), Matchers.is(Matchers.<Object>notNullValue()));
+        assertThat(application.responseAsString(get(response.header(LOCATION))), Matchers.is("bob"));
+    }
+
+    @Path("path/{id}")
+    public static class PostRedirectGet {
+        @POST
+        public Response post(@PathParam("id") final String id) {
+            return new RedirectTo<PostRedirectGet>(){{ call.get(id); }}.response();
+        }
+
+        @GET
+        public String get(@PathParam("id") String id) {
+            return id;
+        }
+    }
+
+
     @Test
     public void supportsSome() throws Exception {
         RedirectTo redirect = new RedirectTo<SomeResource>() {{ call.getHtml(Option.some("foo")); }};
