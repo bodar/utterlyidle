@@ -15,7 +15,7 @@ public interface Response {
 
     Iterable<String> headers(String name);
 
-    Iterable<Pair<String, String>> headers();
+    HeaderParameters headers();
 
     Response header(String name, String value);
 

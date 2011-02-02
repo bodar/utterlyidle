@@ -1,11 +1,13 @@
 package com.googlecode.utterlyidle.proxy;
 
+import com.googlecode.utterlyidle.Response;
 import net.sf.cglib.proxy.InvocationHandler;
 
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.proxy.Generics.getGenericSuperclassType;
 import static com.googlecode.totallylazy.proxy.Proxy.createProxy;
+import static com.googlecode.utterlyidle.Responses.seeOther;
 
 public abstract class RedirectTo<T> implements InvocationHandler{
     private String location;
@@ -23,5 +25,9 @@ public abstract class RedirectTo<T> implements InvocationHandler{
 
     public String location() {
         return location;
+    }
+
+    public Response response() {
+        return seeOther(location());
     }
 }

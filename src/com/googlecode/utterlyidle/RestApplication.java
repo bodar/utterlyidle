@@ -28,6 +28,7 @@ public class RestApplication implements Application {
         requestScope.addActivator(Resolver.class, requestScope.getActivator(Container.class));
         requestScope.add(HttpHandler.class, BaseHandler.class);
         sequence(modules).safeCast(RequestScopedModule.class).forEach(addPerRequestObjects(requestScope));
+        requestScope.decorate(HttpHandler.class, AbsoluteLocationHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         return requestScope;
     }
