@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.cookies.Cookie;
-import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -15,7 +15,7 @@ public class Responses {
         return new MemoryResponse(status, headers, entity);
     }
 
-    public Response seeOther(String location) {
+    public static Response seeOther(String location) {
         return response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, location);
     }
 

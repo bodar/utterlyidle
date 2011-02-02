@@ -157,4 +157,8 @@ public class Url {
     public String getQuery() {
         return toURI().getRawQuery();
     }
+
+    public boolean isAbsolute() {
+        return toURI().isAbsolute();
+    }
 }

@@ -483,7 +483,7 @@ public class RestTest {
     @Path("path/{id}")
     public static class PostRedirectGet {
         @POST
-        public Redirect post(@PathParam("id") String id) {
+        public Response post(@PathParam("id") String id) {
             return redirect(resource(PostRedirectGet.class).get(id));
         }
 
