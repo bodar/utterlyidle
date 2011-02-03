@@ -41,7 +41,7 @@ public class ApplicationServlet extends HttpServlet {
             resp.setHeader(pair.first(), pair.second());
         }
         byte[] bytes = response.bytes();
-        resp.setIntHeader(HttpHeaders.CONTENT_LENGTH, bytes.length);
+        resp.setContentLength(bytes.length);
         resp.getOutputStream().write(bytes);
     }
 
