@@ -33,12 +33,12 @@ public class BaseHandler implements HttpHandler {
         Container resolver = container.addInstance(Request.class, request);
         final Either<MatchFailure, Activator> either = findActivator(request);
         if (either.isLeft()) {
-            return findAndHandle(request, response(
+            return handlers.findAndHandle(request, response(
                     either.left().status(),
                     headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
                     either.left()));
         } else {
-            return findAndHandle(request, either.right().activate(resolver, request));
+            return handlers.findAndHandle(request, either.right().activate(resolver, request));
         }
     }
 
@@ -70,9 +70,6 @@ public class BaseHandler implements HttpHandler {
         return right(sequence);
     }
 
-    private Response findAndHandle(Request request, Response response) throws Exception {
-        return handlers.findHandler(request, response).handle(response);
-    }
 
     private Predicate<HttpMethodActivator> argumentsMatches(final Request request) {
         return new Predicate<HttpMethodActivator>() {
