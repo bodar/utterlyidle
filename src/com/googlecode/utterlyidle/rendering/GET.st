@@ -1,0 +1,1 @@
+$resource.method$ <a href="$base$$resource.uriTemplate$$resource.query$">$base$$resource.uriTemplate$$resource.query$</a>
