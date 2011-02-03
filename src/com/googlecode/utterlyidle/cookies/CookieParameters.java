@@ -8,6 +8,8 @@ import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Rfc2616;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -15,11 +17,9 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 
 public class CookieParameters extends Parameters<String, String> {
-    public static final String REQUEST_COOKIE_HEADER = "Cookie";
-
     private CookieParameters(Request request) {
         super(equalIgnoringCase());
-        parseRequestCookies(sequence(request.headers().getValues(REQUEST_COOKIE_HEADER)));
+        parseRequestCookies(sequence(request.headers().getValues(HttpHeaders.COOKIE)));
     }
 
     public static CookieParameters cookies(Request request) {

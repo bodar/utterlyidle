@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.cookies.Cookie;
 
+import javax.ws.rs.core.HttpHeaders;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,8 +11,6 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
-    public static final String SET_COOKIE_HEADER = "Set-Cookie";
-
     private Status status;
     private HeaderParameters headers = headerParameters();
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -53,7 +52,7 @@ public class MemoryResponse implements Response {
     }
 
     public Response cookie(String name, Cookie value) {
-        header(SET_COOKIE_HEADER, toHttpHeader(name, value));
+        header(HttpHeaders.SET_COOKIE, toHttpHeader(name, value));
         return this;
     }
 
