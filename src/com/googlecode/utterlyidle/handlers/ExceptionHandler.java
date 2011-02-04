@@ -36,6 +36,6 @@ public class ExceptionHandler implements HttpHandler {
                 INTERNAL_SERVER_ERROR,
                 headerParameters(pair(CONTENT_TYPE, TEXT_PLAIN)),
                 exception);
-        return handlers.findHandler(request, response).handle(response);
+        return handlers.findAndHandle(request, response);
     }
 }
