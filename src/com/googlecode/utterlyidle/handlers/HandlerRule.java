@@ -30,7 +30,7 @@ public class HandlerRule {
         };
     }
 
-    public static Callable1<? super HandlerRule, Object> handler() {
+    public static Callable1<? super HandlerRule, Object> getHandlerFromRule() {
         return new Callable1<HandlerRule, Object>() {
             public Object call(HandlerRule handlerRule) throws Exception {
                 return handlerRule.handler;
