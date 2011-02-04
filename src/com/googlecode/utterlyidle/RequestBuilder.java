@@ -18,7 +18,6 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.REQUEST_COOKIE_HEADER;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static com.googlecode.utterlyidle.io.Url.url;
 
@@ -45,7 +44,7 @@ public class RequestBuilder {
     }
 
     public RequestBuilder withCookie(String name, Cookie cookie) {
-        headers.add(pair(REQUEST_COOKIE_HEADER, toHttpHeader(name, cookie)));
+        headers.add(pair(HttpHeaders.COOKIE, toHttpHeader(name, cookie)));
         return this;
     }
 
