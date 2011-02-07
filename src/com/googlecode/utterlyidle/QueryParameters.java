@@ -15,6 +15,10 @@ public class QueryParameters extends Parameters<String, String> {
     }
 
     public static QueryParameters queryParameters(Pair<String, String>... pairs) {
+        return queryParameters(sequence(pairs));
+    }
+
+    public static QueryParameters queryParameters(Iterable<Pair<String, String>> pairs) {
         return (QueryParameters) sequence(pairs).foldLeft(new QueryParameters(), Parameters.<String,String>pairIntoParameters());
     }
 
