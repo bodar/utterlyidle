@@ -1,7 +1,5 @@
 package com.googlecode.utterlyidle.proxy;
 
-import com.googlecode.utterlyidle.Response;
-
 public class ThreadLocalRedirect extends ThreadLocal<String> {
     @Override
     public String get() {
