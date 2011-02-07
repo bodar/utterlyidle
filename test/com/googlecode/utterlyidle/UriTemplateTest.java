@@ -10,7 +10,20 @@ import static org.hamcrest.Matchers.is;
 
 public class UriTemplateTest {
     @Test
-    public void supportedMultiplePathParams() {
+    public void encodesOnlyPathParamsWhichDontContainForwardSlashes() throws Exception {
+        UriTemplate template = uriTemplate("properties/{name}");
+
+        assertThat(
+                template.generate(pathParameters(pair("name", "a name with spaces"))),
+                   is("properties/a+name+with+spaces"));
+
+        assertThat(
+                template.generate(pathParameters(pair("name", "a/name/with/slashes"))),
+                   is("properties/a/name/with/slashes"));
+    }
+
+    @Test
+    public void supportsMultiplePathParams() {
         UriTemplate template = uriTemplate("properties/{id}/{name}");
         assertThat(template.matches("properties/123/bob"), is(true));
         PathParameters parameters = template.extract("properties/123/bob");

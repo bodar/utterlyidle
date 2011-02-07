@@ -72,7 +72,10 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     public String generate(final PathParameters parameters) {
         return matches.replace(new Callable1<MatchResult, CharSequence>() {
             public CharSequence call(MatchResult matchResult) throws Exception {
-                return parameters.getValue(matchResult.group(1));
+                String paramValue = parameters.getValue(matchResult.group(1));
+                if(paramValue==null)return null;
+                if(paramValue.contains("/")) return paramValue;
+                return UrlEncodedMessage.encode(paramValue);
             }
         });
     }
