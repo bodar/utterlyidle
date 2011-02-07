@@ -43,6 +43,7 @@ public class ApplicationServlet extends HttpServlet {
         byte[] bytes = response.bytes();
         resp.setContentLength(bytes.length);
         resp.getOutputStream().write(bytes);
+        resp.getOutputStream().close();
     }
 
     private Request request(HttpServletRequest request) {
