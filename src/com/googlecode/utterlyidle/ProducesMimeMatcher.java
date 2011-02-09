@@ -30,14 +30,14 @@ public class ProducesMimeMatcher implements Predicate<Request> {
 
     public boolean matches(Request request) {
         if (request.headers().contains(HttpHeaders.ACCEPT)) {
-            return accept(request.headers().getValue(HttpHeaders.ACCEPT)).contains(mimeType);
+            return accept(request.headers().getValues(HttpHeaders.ACCEPT)).contains(mimeType);
         }
         return true;
     }
 
     public float matchQuality(Request request) {
         if (request.headers().contains(HttpHeaders.ACCEPT)) {
-            return accept(request.headers().getValue(HttpHeaders.ACCEPT)).quality(mimeType);
+            return accept(request.headers().getValues(HttpHeaders.ACCEPT)).quality(mimeType);
         }
         return 1.0f;
     }

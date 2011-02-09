@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import com.googlecode.totallylazy.regex.Regex;
 
 import javax.ws.rs.core.MediaType;
@@ -37,8 +38,8 @@ public class Accept {
         };
     }
 
-    public static Accept accept(String header) {
-        Sequence<MediaRange> mediaRanges = regex.findMatches(header).map(new Callable1<MatchResult, MediaRange>() {
+    public static Accept accept(Iterable<String> headers) {
+        Sequence<MediaRange> mediaRanges = regex.findMatches(sequence(headers).toString(",")).map(new Callable1<MatchResult, MediaRange>() {
             public MediaRange call(MatchResult m) throws Exception {
                 float quality = m.group(3) == null ? 1.0f : valueOf(m.group(3));
                 return new MediaRange(m.group(1), quality);
