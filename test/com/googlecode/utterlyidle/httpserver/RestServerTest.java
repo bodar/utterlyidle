@@ -1,36 +1,18 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Runnable1;
-import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.io.Url;
-import org.junit.Test;
+import com.googlecode.utterlyidle.Application;
+import static com.googlecode.utterlyidle.BasePath.basePath;
+import com.googlecode.utterlyidle.ServerContract;
 
-import java.io.InputStream;
+public class RestServerTest extends ServerContract {
+    private static RestServer server;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public class RestServerTest {
-    @Test
-    public void stillsWorks() throws Exception {
-        RestServer.main(null);
-        InputAsString output = new InputAsString();
-        Pair<Integer, String> status = Url.url("http://localhost:8000/helloWorld?name=foo").get("*/*", output);
-
-        assertThat(status.first(), is(200));
-        assertThat(output.value(), is("Hello foo"));
+    protected void ensureServerIsStarted(Application application) throws Exception {
+        if(server!=null)return;
+        server = new RestServer(port(), basePath("/"), application);
     }
 
-    private static class InputAsString implements Runnable1<InputStream> {
-        private String value;
-
-        public void run(InputStream inputStream) {
-            value = Strings.toString(inputStream);
-        }
-
-        public String value(){
-            return value;
-        }
+    protected int port() {
+        return 8001;
     }
 }
