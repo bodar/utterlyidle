@@ -30,8 +30,8 @@ public class RestServer {
     public static void main(String[] args) throws IOException {
         new Test();
     }
-    public static class Test extends RestServer{
 
+    public static class Test extends RestServer{
         public Test() throws IOException {
             super(8000, new RestApplication().add(new SingleResourceModule(HelloWorld.class)));
         }
