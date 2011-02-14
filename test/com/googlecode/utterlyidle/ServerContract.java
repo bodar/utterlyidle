@@ -9,6 +9,8 @@ import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.containsString;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -77,6 +79,16 @@ public abstract class ServerContract {
         HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://localhost:" + port() + "/doesnotexist").openConnection();
 
         assertThat(urlConnection.getResponseCode(), is(404));
+    }
+
+    @Test
+    public void canHandleMultiValueQueryParameters() throws Exception {
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://localhost:" + port() + "/echoquery?param=firstvalue&param=secondvalue").openConnection();
+
+        String result = Strings.toString(urlConnection.getInputStream());
+
+        assertThat(result, containsString("firstvalue"));
+        assertThat(result, containsString("secondvalue"));
     }
 
     private static class InputAsString implements Runnable1<InputStream> {
