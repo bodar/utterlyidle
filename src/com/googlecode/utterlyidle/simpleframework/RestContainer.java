@@ -2,10 +2,10 @@ package com.googlecode.utterlyidle.simpleframework;
 
 import static com.googlecode.totallylazy.Bytes.bytes;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
 import static com.googlecode.totallylazy.Maps.entryToPair;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Callable2;
-import static com.googlecode.totallylazy.Sequences.repeat;
+import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -29,7 +29,7 @@ public class RestContainer implements Container {
     public void handle(Request request, Response response) {
         try {
             com.googlecode.utterlyidle.Response applicationResponse = applcation.handle(request(request));
-            mapTo(applicationResponse,  response);
+            mapTo(applicationResponse, response);
 
             response.getPrintStream().close();
             response.commit();
@@ -64,13 +64,13 @@ public class RestContainer implements Container {
     }
 
     private HeaderParameters headers(final Request request) {
-        return headerParameters(sequence(request.getNames()).flatMap(headerValues(request)));
+        return headerParameters(sequence(request.getNames()).map(headerValue(request)));
     }
 
-    private Callable1<String, Iterable<? extends Pair<String, String>>> headerValues(final Request request) {
-        return new Callable1<String, Iterable<? extends Pair<String, String>>>() {
-            public Iterable<? extends Pair<String, String>> call(String headerName) throws Exception {
-                return repeat(headerName).zip(sequence(request.getValues(headerName)));
+    private Callable1<String, Pair<String, String>> headerValue(final Request request) {
+        return new Callable1<String, Pair<String, String>>() {
+            public Pair<String, String> call(String headerName) throws Exception {
+                return pair(headerName, request.getValue(headerName));
             }
         };
     }
