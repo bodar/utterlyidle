@@ -35,6 +35,12 @@ public class HelloWorld {
         return hello(name);
     }
 
+    @GET
+    @Path("echoheaders")
+    public String get(HeaderParameters headers){
+        return headers.toString();
+    }
+
 
 
     private String hello(String name) {
