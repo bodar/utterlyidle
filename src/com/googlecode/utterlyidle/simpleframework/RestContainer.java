@@ -13,6 +13,7 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import com.googlecode.utterlyidle.Requests;
+import static com.googlecode.utterlyidle.io.Url.url;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
@@ -76,6 +77,6 @@ public class RestContainer implements Container {
     }
 
     private QueryParameters query(Request request) {
-        return queryParameters(sequence(request.getQuery().entrySet()).map(entryToPair(String.class, String.class)));
+        return QueryParameters.parse(url(request.getTarget()).getQuery());
     }
 }

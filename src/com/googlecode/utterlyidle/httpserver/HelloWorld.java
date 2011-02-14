@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
-import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.*;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import com.googlecode.totallylazy.Pair;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -37,10 +34,15 @@ public class HelloWorld {
 
     @GET
     @Path("echoheaders")
-    public String get(HeaderParameters headers){
+    public String echoHeaders(HeaderParameters headers){
         return headers.toString();
     }
 
+    @GET
+    @Path("echoquery")
+    public String echoQueryParams(QueryParameters params){
+        return params.toString();
+    }
 
 
     private String hello(String name) {
