@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Pair;
 import static com.googlecode.totallylazy.Pair.pair;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 public class HelloWorld {
     @GET
@@ -42,6 +43,13 @@ public class HelloWorld {
     @Path("echoquery")
     public String echoQueryParams(QueryParameters params){
         return params.toString();
+    }
+
+    @GET
+    @Path("html")
+    @Produces(MediaType.TEXT_HTML)
+    public String html(){
+        return "<html><body>some content</body></html>";
     }
 
 
