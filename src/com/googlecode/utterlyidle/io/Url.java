@@ -1,14 +1,14 @@
 package com.googlecode.utterlyidle.io;
 
 import com.googlecode.totallylazy.Pair;
+import static com.googlecode.totallylazy.Pair.pair;
 import com.googlecode.totallylazy.Runnable1;
+import static com.googlecode.totallylazy.Runnables.doNothing;
 import com.googlecode.totallylazy.regex.Regex;
 
 import java.io.*;
 import java.net.*;
 import java.util.UUID;
-
-import static com.googlecode.totallylazy.Pair.pair;
 
 public class Url {
     private static Regex JarUrl = Regex.regex("jar:([^!]*)!(.*)");
@@ -103,6 +103,35 @@ public class Url {
         }
     }
 
+    public Pair<Integer, String> post(String mimeType, Runnable1<OutputStream> requestContent) {
+        return post(mimeType, requestContent, doNothing(InputStream.class));
+    }
+
+    public Pair<Integer, String> post(String mimeType, Runnable1<OutputStream> requestContent, Runnable1<InputStream> responseHandler) {
+        try {
+            HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", mimeType);
+            urlConnection.setDoOutput(true);
+            urlConnection.setDoInput(true);
+            urlConnection.connect();
+
+            OutputStream outputStream = urlConnection.getOutputStream();
+            requestContent.run(outputStream);
+            outputStream.close();
+
+            InputStream inputStream = urlConnection.getInputStream();
+            responseHandler.run(inputStream);
+            inputStream.close();
+
+            return pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+        } catch (ProtocolException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Pair<Integer, String> delete() {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
@@ -160,5 +189,17 @@ public class Url {
 
     public boolean isAbsolute() {
         return toURI().isAbsolute();
+    }
+
+    public static Runnable1<OutputStream> writeBytes(final byte[] bytes) {
+        return new Runnable1<OutputStream>() {
+            public void run(OutputStream outputStream) {
+                try {
+                    outputStream.write(bytes);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
     }
 }

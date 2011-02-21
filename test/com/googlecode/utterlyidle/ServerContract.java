@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.io.Url;
+import static com.googlecode.utterlyidle.io.Url.writeBytes;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -14,12 +15,11 @@ import static org.hamcrest.Matchers.containsString;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
-import java.util.List;
-import java.util.Map;
 
 public abstract class ServerContract {
     protected abstract void ensureServerIsStarted(Application application) throws Exception;
@@ -42,15 +42,11 @@ public abstract class ServerContract {
 
     @Test
     public void handlesPosts() throws Exception {
-        HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://localhost:" + port() + "/helloworld/formparam").openConnection();
-        urlConnection.setRequestMethod("POST");
-        urlConnection.setDoOutput(true);
-        urlConnection.setRequestProperty("accept", "*/*");
-        urlConnection.getOutputStream().write("name=fred".getBytes());
+        InputAsString output = new InputAsString();
+        Pair<Integer, String> status = Url.url("http://localhost:" + port() + "/helloworld/formparam").post(MediaType.APPLICATION_FORM_URLENCODED, writeBytes("name=fred".getBytes()), output);
 
-        String result = Strings.toString(urlConnection.getInputStream());
-
-        assertThat(result, is("Hello fred"));
+        assertThat(status.first(), is(200));
+        assertThat(output.value(), is("Hello fred"));
     }
 
     @Test
@@ -83,12 +79,23 @@ public abstract class ServerContract {
 
     @Test
     public void canHandleMultiValueQueryParameters() throws Exception {
-        HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://localhost:" + port() + "/echoquery?param=firstvalue&param=secondvalue").openConnection();
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://localhost:" + port() + "/echoquery?a=first&a=second").openConnection();
+        urlConnection.setRequestProperty("accept", "*/*");
 
         String result = Strings.toString(urlConnection.getInputStream());
 
-        assertThat(result, containsString("firstvalue"));
-        assertThat(result, containsString("secondvalue"));
+        assertThat(result, containsString("first"));
+        assertThat(result, containsString("second"));
+    }
+
+    @Test
+    public void retainsOrderOfQueryParameters() throws Exception {
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://localhost:" + port() + "/echoquery?a=1&b=2&a=3&b=4").openConnection();
+        urlConnection.setRequestProperty("accept", "*/*");
+
+        String result = Strings.toString(urlConnection.getInputStream());
+
+        assertThat(result, is("?a=1&b=2&a=3&b=4"));
     }
 
     private static class InputAsString implements Runnable1<InputStream> {

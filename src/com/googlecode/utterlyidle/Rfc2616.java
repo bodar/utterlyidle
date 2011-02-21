@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Predicate;
 
 import static com.googlecode.totallylazy.Sequences.characters;
-import static com.googlecode.totallylazy.Sequences.range;
+import static com.googlecode.totallylazy.numbers.Numbers.range;
 import static com.googlecode.totallylazy.numbers.Numbers.toCharacter;
 import static java.util.Arrays.asList;
 
