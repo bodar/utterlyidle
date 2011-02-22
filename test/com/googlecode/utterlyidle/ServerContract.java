@@ -33,7 +33,7 @@ public abstract class ServerContract {
 
     @Test
     public void handlesGets() throws Exception {
-        InputAsString output = new InputAsString();
+        ResponseAsString output = new ResponseAsString();
         Pair<Integer, String> status = Url.url("http://localhost:" + port() + "/helloworld/queryparam?name=foo").get("*/*", output);
 
         assertThat(status.first(), is(200));
@@ -42,7 +42,7 @@ public abstract class ServerContract {
 
     @Test
     public void handlesPosts() throws Exception {
-        InputAsString output = new InputAsString();
+        ResponseAsString output = new ResponseAsString();
         Pair<Integer, String> status = Url.url("http://localhost:" + port() + "/helloworld/formparam").post(MediaType.APPLICATION_FORM_URLENCODED, writeBytes("name=fred".getBytes()), output);
 
         assertThat(status.first(), is(200));
@@ -98,7 +98,7 @@ public abstract class ServerContract {
         assertThat(result, is("?a=1&b=2&a=3&b=4"));
     }
 
-    private static class InputAsString implements Runnable1<InputStream> {
+    public static class ResponseAsString implements Runnable1<InputStream> {
         private String value;
 
         public void run(InputStream inputStream) {

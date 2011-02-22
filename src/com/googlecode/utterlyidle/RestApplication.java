@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
+import static com.googlecode.utterlyidle.modules.Modules.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -56,38 +57,4 @@ public class RestApplication implements Application {
     public ResponseHandlers responseHandlers() {
         return applicationScope.get(ResponseHandlers.class);
     }
-
-    private Runnable1<ResponseHandlersModule> addResponseHandlers(final ResponseHandlers registry) {
-        return new Runnable1<ResponseHandlersModule>() {
-            public void run(ResponseHandlersModule responseHandlersModule) {
-                responseHandlersModule.addResponseHandlers(registry);
-            }
-        };
-    }
-
-    private Runnable1<RequestScopedModule> addPerRequestObjects(final Container requestScope) {
-        return new Runnable1<RequestScopedModule>() {
-            public void run(RequestScopedModule requestScopedModule) {
-                requestScopedModule.addPerRequestObjects(requestScope);
-            }
-        };
-    }
-
-    private Runnable1<ResourcesModule> addResources(final Resources resources) {
-        return new Runnable1<ResourcesModule>() {
-            public void run(ResourcesModule resourcesModule) {
-                resourcesModule.addResources(resources);
-            }
-        };
-    }
-
-    private Runnable1<ApplicationScopedModule> addPerApplicationObjects(final Container applicationScope) {
-        return new Runnable1<ApplicationScopedModule>() {
-            public void run(ApplicationScopedModule applicationScopedModule) {
-                applicationScopedModule.addPerApplicationObjects(applicationScope);
-            }
-        };
-    }
-
-
 }
