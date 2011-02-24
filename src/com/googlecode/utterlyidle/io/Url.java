@@ -1,13 +1,16 @@
 package com.googlecode.utterlyidle.io;
 
-import static com.googlecode.totallylazy.Pair.pair;
-import com.googlecode.totallylazy.*;
-import static com.googlecode.totallylazy.Option.none;
+import com.googlecode.totallylazy.Callables;
 import static com.googlecode.totallylazy.Closeables.closeAfter;
-import static com.googlecode.totallylazy.Predicates.some;
-import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Exceptions.handleException;
+import com.googlecode.totallylazy.Pair;
+import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Predicates.instanceOf;
+import com.googlecode.totallylazy.Runnable1;
 import static com.googlecode.totallylazy.Runnables.doNothing;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import com.googlecode.totallylazy.regex.Regex;
+import static com.googlecode.utterlyidle.io.HttpURLConnections.getInputStream;
 import static com.googlecode.utterlyidle.io.HttpURLConnections.getOutputStream;
 
 import java.io.*;
@@ -82,10 +85,7 @@ public class Url {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestProperty("Accept", mimeType);
-            InputStream inputStream = urlConnection.getInputStream();
-            handler.run(inputStream);
-            inputStream.close();
-            return pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+            return doRequest(urlConnection, handler);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -96,6 +96,7 @@ public class Url {
             HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestMethod("PUT");
             urlConnection.setRequestProperty("Content-Type", mimeType);
+            urlConnection.setDoInput(true);
             OutputStream outputStream = urlConnection.getOutputStream();
             handler.run(outputStream);
             outputStream.close();
@@ -120,22 +121,11 @@ public class Url {
             urlConnection.setDoInput(true);
             urlConnection.connect();
 
-            Pair<Integer, String> status = pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
-            if (urlConnection.getDoOutput()) {
-                sequence(urlConnection).map(handleException(getOutputStream(), instanceOf(IOException.class))).filter(some(OutputStream.class)).map(Callables.s).forEach(closeAfter(requestContent));
+            OutputStream outputStream = urlConnection.getOutputStream();
+            requestContent.run(outputStream);
+            outputStream.close();
 
-                OutputStream outputStream = urlConnection.getOutputStream();
-                requestContent.run(outputStream);
-                outputStream.close();
-            }
-
-            if (urlConnection.getDoInput()) {
-                InputStream inputStream = urlConnection.getInputStream();
-                responseHandler.run(inputStream);
-                inputStream.close();
-            }
-
-            return status;
+            return doRequest(urlConnection, responseHandler);
         } catch (ProtocolException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -143,8 +133,14 @@ public class Url {
         }
     }
 
-    private static <T, S> void foo(T t, Callable1<T,S> map, Runnable1<S> operation) throws Exception {
-        operation.run(map.call(t));
+    private Pair<Integer, String> doRequest(HttpURLConnection urlConnection, Runnable1<InputStream> responseHandler) throws IOException {
+        Pair<Integer, String> status = pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+        if (status.first() >= 400) {
+            responseHandler.run(urlConnection.getErrorStream());
+        } else {
+            responseHandler.run(urlConnection.getInputStream());
+        }
+        return status;
     }
 
     public Pair<Integer, String> delete() {
