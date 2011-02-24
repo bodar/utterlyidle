@@ -85,7 +85,7 @@
             <entry key="${release.src}.labels" value="Source"/>
         </propertyfile>
 
-         <generate.pom artifact.uri="mvn:com.googlecode.shavenmaven:shavenmaven:jar:${release.version}"
+         <generate.pom artifact.uri="mvn:com.googlecode.${ant.project.name}:${ant.project.name}:jar:${release.version}"
                          dependencies="build/runtime.dependencies"
                          directory="${artifacts}"/>
     </target>
