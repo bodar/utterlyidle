@@ -4,5 +4,7 @@ out
 build/artifacts
 .idea/workspace.xml
 *.orig
-.DS_Store
 utterlyidle.ipr
+lib/build
+lib/runtime
+lib/optional
