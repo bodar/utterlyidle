@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar:///projects/yadic-java/build/artifacts/yadic-dev.build-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/sitemesh-3.0.0-SNAPSHOT-sources.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/stringtemplate-3.2.1-source.jar!/" />
+      <root url="file://$USER_HOME$/Downloads/stringtemplate-3.2.1-source" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
+  </library>
+</component>
