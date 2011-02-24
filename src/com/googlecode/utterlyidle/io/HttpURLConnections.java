@@ -15,10 +15,18 @@ public class HttpURLConnections {
         };
     }
 
-    public static Callable1<? super HttpURLConnection, InputStream> getInputStreamOption() {
+    public static Callable1<? super HttpURLConnection, InputStream> getInputStream() {
         return new Callable1<HttpURLConnection, InputStream>() {
             public InputStream call(HttpURLConnection httpURLConnection) throws Exception {
                 return httpURLConnection.getInputStream();
+            }
+        };
+    }
+
+    public static Callable1<? super HttpURLConnection, InputStream> getErrorStream() {
+        return new Callable1<HttpURLConnection, InputStream>() {
+            public InputStream call(HttpURLConnection httpURLConnection) throws Exception {
+                return httpURLConnection.getErrorStream();
             }
         };
     }
