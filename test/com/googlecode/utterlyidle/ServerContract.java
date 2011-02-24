@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.io.Url;
 import static com.googlecode.utterlyidle.io.Url.writeBytes;
+import static com.googlecode.utterlyidle.io.Url.url;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -96,6 +97,16 @@ public abstract class ServerContract {
         String result = Strings.toString(urlConnection.getInputStream());
 
         assertThat(result, is("?a=1&b=2&a=3&b=4"));
+    }
+
+    @Test
+    public void willPrintStackTraceAsPlainText() throws Exception {
+        ResponseAsString responseContent = new ResponseAsString();
+        Pair<Integer, String> response = url("http://localhost:" + port() + "/goesbang?exceptionMessage=goes_bang").get(MediaType.WILDCARD, responseContent);
+
+        assertThat(response.first(), is(Status.INTERNAL_SERVER_ERROR.code()));
+        assertThat(responseContent.value(), containsString("Exception"));
+        assertThat(responseContent.value(), containsString("goes_bang"));
     }
 
     public static class ResponseAsString implements Runnable1<InputStream> {

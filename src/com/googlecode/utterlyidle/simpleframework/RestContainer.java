@@ -5,20 +5,26 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import static com.googlecode.totallylazy.Maps.entryToPair;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Exceptions;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.HeaderParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import com.googlecode.utterlyidle.QueryParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
-import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.*;
+import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
+import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.io.Url.url;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.HttpHeaders;
+import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class RestContainer implements Container {
     private final Application applcation;
@@ -29,14 +35,24 @@ public class RestContainer implements Container {
 
     public void handle(Request request, Response response) {
         try {
-            com.googlecode.utterlyidle.Response applicationResponse = applcation.handle(request(request));
+            com.googlecode.utterlyidle.Response applicationResponse = getResponse(request);
             mapTo(applicationResponse, response);
 
             response.getPrintStream().close();
             response.commit();
             response.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private com.googlecode.utterlyidle.Response getResponse(Request request) throws Exception {
+        try {
+            return applcation.handle(request(request));
+        } catch (Throwable e) {
+            StringWriter stringWriter = new StringWriter();
+            e.printStackTrace(new PrintWriter(stringWriter));
+            return response(INTERNAL_SERVER_ERROR, headerParameters(pair(CONTENT_TYPE, TEXT_PLAIN)), stringWriter.toString());
         }
     }
 

@@ -1,10 +1,14 @@
 package com.googlecode.utterlyidle.io;
 
-import com.googlecode.totallylazy.Pair;
 import static com.googlecode.totallylazy.Pair.pair;
-import com.googlecode.totallylazy.Runnable1;
+import com.googlecode.totallylazy.*;
+import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Closeables.closeAfter;
+import static com.googlecode.totallylazy.Predicates.some;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Runnables.doNothing;
 import com.googlecode.totallylazy.regex.Regex;
+import static com.googlecode.utterlyidle.io.HttpURLConnections.getOutputStream;
 
 import java.io.*;
 import java.net.*;
@@ -116,20 +120,31 @@ public class Url {
             urlConnection.setDoInput(true);
             urlConnection.connect();
 
-            OutputStream outputStream = urlConnection.getOutputStream();
-            requestContent.run(outputStream);
-            outputStream.close();
+            Pair<Integer, String> status = pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+            if (urlConnection.getDoOutput()) {
+                sequence(urlConnection).map(handleException(getOutputStream(), instanceOf(IOException.class))).filter(some(OutputStream.class)).map(Callables.s).forEach(closeAfter(requestContent));
 
-            InputStream inputStream = urlConnection.getInputStream();
-            responseHandler.run(inputStream);
-            inputStream.close();
+                OutputStream outputStream = urlConnection.getOutputStream();
+                requestContent.run(outputStream);
+                outputStream.close();
+            }
 
-            return pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+            if (urlConnection.getDoInput()) {
+                InputStream inputStream = urlConnection.getInputStream();
+                responseHandler.run(inputStream);
+                inputStream.close();
+            }
+
+            return status;
         } catch (ProtocolException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static <T, S> void foo(T t, Callable1<T,S> map, Runnable1<S> operation) throws Exception {
+        operation.run(map.call(t));
     }
 
     public Pair<Integer, String> delete() {

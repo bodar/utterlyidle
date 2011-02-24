@@ -46,6 +46,12 @@ public class HelloWorld {
     }
 
     @GET
+    @Path("goesbang")
+    public String goBang(@QueryParam("exceptionMessage") String exceptionMessage){
+        throw new RuntimeException(exceptionMessage);
+    }
+
+    @GET
     @Path("html")
     @Produces(MediaType.TEXT_HTML)
     public String html(){
