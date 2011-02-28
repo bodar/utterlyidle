@@ -39,17 +39,32 @@ public class HttpMethodActivator implements Activator {
         return method.getParameterTypes().length;
     }
 
-    public Response activate(Resolver resolver, Request request) throws InvocationTargetException, IllegalAccessException {
+    public Response activate(Resolver resolver, Request request) throws Exception {
         Class<?> declaringClass = method.getDeclaringClass();
         Object instance = resolve(create(declaringClass, resolver), declaringClass);
-        Object result = method.invoke(instance, argumentsExtractor.extract(request));
+        Object result = getResponse(request, instance);
         if (result instanceof Response) {
             return (Response) result;
-        } else {
-            return response().
-                    header(HttpHeaders.CONTENT_TYPE, producesMatcher.mimeType()).
-                    entity(result).
-                    status(Status.OK);
+        }
+
+        return response().
+                header(HttpHeaders.CONTENT_TYPE, producesMatcher.mimeType()).
+                entity(result).
+                status(Status.OK);
+    }
+
+    private Object getResponse(Request request, Object instance) throws Exception {
+        try {
+            return method.invoke(instance, argumentsExtractor.extract(request));
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            // Madness to get around compiler crazies
+            if(cause instanceof Exception){
+                throw (Exception) cause;
+            } else if(cause instanceof Error) {
+                throw (Error) cause;
+            }
+            throw e;
         }
     }
 
