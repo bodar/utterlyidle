@@ -37,9 +37,8 @@ public class BaseHandler implements HttpHandler {
                     either.left().status(),
                     headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
                     either.left()));
-        } else {
-            return handlers.findAndHandle(request, either.right().activate(resolver, request));
         }
+        return handlers.findAndHandle(request, either.right().activate(resolver, request));
     }
 
     private Either<MatchFailure, Activator> findActivator(final Request request) {

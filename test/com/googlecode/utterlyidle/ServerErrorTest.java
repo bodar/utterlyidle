@@ -9,7 +9,6 @@ import javax.ws.rs.Path;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static org.hamcrest.CoreMatchers.is;
@@ -23,7 +22,7 @@ public class ServerErrorTest {
         final String message = "Caught exception";
         TestApplication application = new TestApplication();
         application.add(ThrowingResource.class);
-        application.addResponseHandler(where(entity(), instanceOf(Exception.class)), new WriteMessageToResponseHandler(message));
+        application.addResponseHandler(where(entity(), instanceOf(IllegalArgumentException.class)), new WriteMessageToResponseHandler(message));
 
         Response response = application.handle(get("exception"));
 
@@ -37,7 +36,7 @@ public class ServerErrorTest {
 
         Response response = application.handle(get("exception"));
 
-        assertResponseContains(response, Exception.class);
+        assertResponseContains(response, IllegalArgumentException.class);
     }
 
     @Test
@@ -59,7 +58,7 @@ public class ServerErrorTest {
         @GET
         @Path("exception")
         public String get() throws Exception {
-            throw new Exception();
+            throw new IllegalArgumentException();
         }
     }
 
