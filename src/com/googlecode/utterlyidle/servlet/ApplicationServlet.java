@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -52,8 +51,8 @@ public class ApplicationServlet extends HttpServlet {
                     request.getMethod(),
                     url(request.getRequestURI() + queryString(request.getQueryString())),
                     convertToHeaderParameters(request),
-                    bytes(request.getInputStream()),
-                    extractBasePath(request));
+                    bytes(request.getInputStream())
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

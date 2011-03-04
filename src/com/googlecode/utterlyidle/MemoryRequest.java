@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -15,17 +14,15 @@ public class MemoryRequest implements Request {
     private Url url;
     private final byte[] input;
     private final HeaderParameters headers;
-    private BasePath basePath;
     private QueryParameters query;
     private FormParameters form;
     private CookieParameters cookies;
 
-    protected MemoryRequest(String method, Url url, HeaderParameters headers, byte[] input, BasePath basePath) {
+    protected MemoryRequest(String method, Url url, HeaderParameters headers, byte[] input) {
         this.method = method;
         this.url = url;
         this.headers = headers;
         this.input = input;
-        this.basePath = basePath;
     }
 
     public String method() {
@@ -83,22 +80,5 @@ public class MemoryRequest implements Request {
     private String inputAsRequestString() {
         String input = asString(input());
         return input.length() == 0 ? "" : String.format("Content-length: %s\n\n%s", input.length(), input);
-    }
-
-    public ResourcePath resourcePath() {
-        return ResourcePath.resourcePath(removeBase().toString());
-    }
-
-    private HierarchicalPath removeBase() {
-        final HierarchicalPath path = url().path();
-        final BasePath base = basePath();
-        if(path.containedBy(base)) {
-            return path.remove(base);
-        }
-        return path;
-    }
-
-    public BasePath basePath() {
-        return basePath;
     }
 }

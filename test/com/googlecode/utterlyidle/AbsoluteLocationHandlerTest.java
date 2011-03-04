@@ -24,7 +24,7 @@ public class AbsoluteLocationHandlerTest {
     }
 
     private void assertLocationIsCorrectlyModified(final String originalLocation, final String finalLocation) throws Exception {
-        Response response = new AbsoluteLocationHandler(returnResponse(seeOther(originalLocation))).
+        Response response = new AbsoluteLocationHandler(returnResponse(seeOther(originalLocation)), BasePath.basePath("/")).
                 handle(get("").build());
         assertThat(response.header(HttpHeaders.LOCATION), is(finalLocation));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));

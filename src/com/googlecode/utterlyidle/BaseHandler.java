@@ -31,7 +31,8 @@ public class BaseHandler implements HttpHandler {
 
     public Response handle(Request request) throws Exception {
         Container resolver = container.addInstance(Request.class, request);
-        final Either<MatchFailure, Activator> either = findActivator(request);
+        BasePath basePath = container.get(BasePath.class);
+        final Either<MatchFailure, Activator> either = findActivator(basePath, request);
         if (either.isLeft()) {
             return handlers.findAndHandle(request, response(
                     either.left().status(),
@@ -41,9 +42,9 @@ public class BaseHandler implements HttpHandler {
         return handlers.findAndHandle(request, either.right().activate(resolver, request));
     }
 
-    private Either<MatchFailure, Activator> findActivator(final Request request) {
+    private Either<MatchFailure, Activator> findActivator(BasePath basePath, final Request request) {
         final Either<MatchFailure, Sequence<HttpMethodActivator>> result = filter(
-                pair(pathMatches(request), Status.NOT_FOUND),
+                pair(pathMatches(basePath, request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
                 pair(producesMatches(request), Status.NOT_ACCEPTABLE),
@@ -102,10 +103,10 @@ public class BaseHandler implements HttpHandler {
         };
     }
 
-    private Predicate<HttpMethodActivator> pathMatches(final Request request) {
+    private Predicate<HttpMethodActivator> pathMatches(final BasePath basePath, final Request request) {
         return new Predicate<HttpMethodActivator>() {
             public boolean matches(HttpMethodActivator httpMethodActivator) {
-                return httpMethodActivator.pathMatcher().matches(request);
+                return httpMethodActivator.pathMatcher(basePath).matches(request);
             }
         };
     }

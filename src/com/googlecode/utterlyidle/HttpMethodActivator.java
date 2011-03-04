@@ -15,17 +15,16 @@ public class HttpMethodActivator implements Activator {
     private final Method method;
     private final ArgumentsExtractor argumentsExtractor;
     private final ProducesMimeMatcher producesMatcher;
-    private final PathMatcher pathMatcher;
     private final MethodMatcher methodMatcher;
     private final ConsumesMimeMatcher consumesMatcher;
     private final PriorityExtractor priorityExtractor;
+    private final UriTemplate uriTemplate;
 
     public HttpMethodActivator(String httpMethod, Method method) {
         this.method = method;
-        UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
+        uriTemplate = new UriTemplateExtractor().extract(method);
         argumentsExtractor = new ArgumentsExtractor(uriTemplate, method);
         producesMatcher = new ProducesMimeMatcher(method);
-        pathMatcher = new PathMatcher(uriTemplate);
         methodMatcher = new MethodMatcher(httpMethod);
         consumesMatcher = new ConsumesMimeMatcher(method);
         priorityExtractor = new PriorityExtractor(method);
@@ -72,8 +71,8 @@ public class HttpMethodActivator implements Activator {
         return priorityExtractor.extract(method);
     }
 
-    public PathMatcher pathMatcher() {
-        return pathMatcher;
+    public PathMatcher pathMatcher(BasePath basePath) {
+        return new PathMatcher(basePath, uriTemplate);
     }
 
     public MethodMatcher methodMatcher() {

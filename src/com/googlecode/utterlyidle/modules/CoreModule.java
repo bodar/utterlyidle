@@ -17,7 +17,6 @@ import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.rende
 public class CoreModule extends AbstractModule {
     @Override
     public Module addPerRequestObjects(Container container) {
-        container.addActivator(BasePath.class, BasePathActivator.class);
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
         container.add(ResponseHandlersFinder.class);

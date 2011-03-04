@@ -19,11 +19,9 @@ import static java.lang.System.nanoTime;
 
 public class RestHandler implements HttpHandler {
     private final Application application;
-    private final BasePath basePath;
 
-    public RestHandler(Application application, BasePath basePath) {
+    public RestHandler(Application application) {
         this.application = application;
-        this.basePath = basePath;
     }
 
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -60,8 +58,8 @@ public class RestHandler implements HttpHandler {
                 httpExchange.getRequestMethod(),
                 url(httpExchange.getRequestURI().toString()),
                 convert(httpExchange.getRequestHeaders()),
-                bytes(httpExchange.getRequestBody()),
-                basePath);
+                bytes(httpExchange.getRequestBody())
+        );
     }
 
     private Response exceptionResponse(Request request, Exception e) throws IOException {

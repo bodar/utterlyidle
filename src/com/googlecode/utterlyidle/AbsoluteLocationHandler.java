@@ -9,14 +9,16 @@ import static javax.ws.rs.core.HttpHeaders.LOCATION;
 
 public class AbsoluteLocationHandler implements HttpHandler{
     private final HttpHandler httpHandler;
+    private final BasePath basePath;
 
-    public AbsoluteLocationHandler(HttpHandler httpHandler) {
+    public AbsoluteLocationHandler(final HttpHandler httpHandler, final BasePath basePath) {
         this.httpHandler = httpHandler;
+        this.basePath = basePath;
     }
 
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        Sequence<String> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(addBasePathIfNeeded(request));
+        Sequence<String> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(addBasePathIfNeeded(request, basePath));
         response.headers().remove(LOCATION);
         for (String absoluteLocation : absoluteLocations) {
             response.header(LOCATION, absoluteLocation);
@@ -24,13 +26,13 @@ public class AbsoluteLocationHandler implements HttpHandler{
         return response;
     }
 
-    private Callable1<? super String, String> addBasePathIfNeeded(final Request request) {
+    private Callable1<? super String, String> addBasePathIfNeeded(final Request request, final BasePath basePath) {
         return new Callable1<String, String>() {
             public String call(String location) throws Exception {
                 if(url(location).isAbsolute()){
                     return location;
                 }
-                return request.basePath().file(location).toString();
+                return basePath.file(location).toString();
             }
         };
     }

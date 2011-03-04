@@ -1,26 +1,27 @@
 package com.googlecode.utterlyidle.simpleframework;
 
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ServerContract;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.totallylazy.Strings;
 import org.junit.AfterClass;
 import org.junit.Test;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.startsWith;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static com.googlecode.utterlyidle.BasePath.basePath;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 public class RestContainerTest extends ServerContract {
     private static RestServer server;
 
     protected void ensureServerIsStarted(Application application) throws Exception {
         if(server!=null)return;
-        server = new RestServer(port(), application);
+        server = new RestServer(port(), basePath("/"), application);
     }
 
     @AfterClass

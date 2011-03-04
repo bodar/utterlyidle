@@ -21,8 +21,4 @@ public interface Request {
     public CookieParameters cookies();
 
     public FormParameters form();
-
-    public ResourcePath resourcePath();
-
-    public BasePath basePath();
 }

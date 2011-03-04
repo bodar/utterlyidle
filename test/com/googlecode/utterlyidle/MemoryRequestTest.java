@@ -4,13 +4,13 @@ import com.googlecode.utterlyidle.io.Url;
 import org.junit.Test;
 
 import javax.ws.rs.HttpMethod;
-import java.io.ByteArrayInputStream;
 
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
+import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -43,7 +43,7 @@ public class MemoryRequestTest {
 
     @Test
     public void toStringCanBeCalledMultipleTimes() throws Exception {
-        MemoryRequest request = request("GET", url("smoosh"), HeaderParameters.headerParameters(), "some input".getBytes());
+        Request request = request("GET", url("smoosh"), HeaderParameters.headerParameters(), "some input".getBytes());
 
         assertThat(request.toString(), containsString("some input"));
         assertThat(request.toString(), containsString("some input"));
@@ -63,17 +63,17 @@ public class MemoryRequestTest {
     @Test
     public void shouldSupportRetrievingResourcePath() throws Exception {
         BasePath basePath = basePath("/foobar/");
-        Request request = createRequestWith(basePath, url("http://www.myserver.com/foobar/spaz"));
+        Request request = get("http://www.myserver.com/foobar/spaz").build();
 
-        assertThat(request.resourcePath(), is(resourcePath("spaz")));
+        assertThat(resourcePathOf(request, basePath), is(resourcePath("spaz")));
 
-        Request anotherRequest = createRequestWith(basePath, url("http://www.myserver.com/foobar"));
-        assertThat(anotherRequest.resourcePath(), is(resourcePath("")));
+        Request anotherRequest = get("http://www.myserver.com/foobar").build();
+        assertThat(resourcePathOf(anotherRequest, basePath), is(resourcePath("")));
 
     }
 
-    private Request createRequestWith(BasePath basePath, Url url) {
-        return new MemoryRequest(HttpMethod.GET, url, HeaderParameters.headerParameters(), "foo".getBytes(), basePath);
+    private Request createRequestWith(Url url) {
+        return new MemoryRequest(HttpMethod.GET, url, HeaderParameters.headerParameters(), "foo".getBytes());
     }
 
 }
