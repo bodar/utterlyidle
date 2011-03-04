@@ -15,6 +15,8 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class ApplicationServlet extends HttpServlet {
+    private final ThreadLocal<BasePath> basePath = new ThreadLocal<BasePath>();
+
     Application application = null;
 
     @Override
@@ -25,10 +27,8 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         try {
-            // TODO: Evil duplication from RestApplication.handle - Remove me
-            Response response = application.createRequestScope().
-                    addInstance(BasePath.class, extractBasePath(req)).
-                    get(HttpHandler.class).handle(request(req));
+            basePath.set(extractBasePath(req));
+            Response response = application.handle(request(req));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
