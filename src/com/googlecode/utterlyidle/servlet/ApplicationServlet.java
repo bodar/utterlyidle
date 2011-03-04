@@ -25,7 +25,10 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         try {
-            Response response = application.handle(request(req));
+            // TODO: Evil duplication from RestApplication.handle - Remove me
+            Response response = application.createRequestScope().
+                    addInstance(BasePath.class, extractBasePath(req)).
+                    get(HttpHandler.class).handle(request(req));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
