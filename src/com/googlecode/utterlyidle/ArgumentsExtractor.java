@@ -12,7 +12,9 @@ import javax.ws.rs.*;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -20,7 +22,6 @@ import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Param.isParam;
 import static com.googlecode.utterlyidle.Param.toParam;
-import static com.googlecode.yadic.generics.Types.typeArgumentsOf;
 import static com.googlecode.yadic.resolvers.Resolvers.create;
 
 public class ArgumentsExtractor implements RequestExtractor<Object[]> {
@@ -41,7 +42,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         }
     }
 
-    public static <T extends Parameters<String,String>> String extractParam(Container container, Param param, Class<T> aClass) {
+    public static <T extends Parameters<String, String>> String extractParam(Container container, Param param, Class<T> aClass) {
         T params = container.get(aClass);
         if (!params.contains(param.value())) {
             throw new IllegalArgumentException();
@@ -72,7 +73,7 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 List<Type> types = typeArgumentsOf(type);
 
                 for (Type t : types) {
-                    if(!container.contains(t)){
+                    if (!container.contains(t)) {
                         container.add(t, create(t, container));
                     }
                 }
@@ -80,6 +81,23 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
                 return container.resolve(type);
             }
         }).toArray(Object.class);
+    }
+
+    public static List<Type> typeArgumentsOf(Type type) {
+        List<Type> types = new ArrayList<Type>();
+        if (type instanceof ParameterizedType) {
+            for (Type subType : ((ParameterizedType) type).getActualTypeArguments()) {
+                types.addAll(typeArgumentsOf(subType));
+            }
+            return types;
+        }
+
+        if (type instanceof Class) {
+            types.add(type);
+            return types;
+        }
+
+        throw new UnsupportedOperationException("Does not support " + type.toString());
     }
 
 
@@ -105,8 +123,10 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
         container.addInstance(FormParameters.class, request.form());
         container.addInstance(CookieParameters.class, request.cookies());
         container.addInstance(InputStream.class, request.input());
-        container.add(new TypeFor<Option<?>>() {{}}.get(), new OptionResolver(container, instanceOf(IllegalArgumentException.class)));
-        container.add(new TypeFor<Either<?, ?>>() {{}}.get(), new EitherResolver(container));
+        container.add(new TypeFor<Option<?>>() {{
+        }}.get(), new OptionResolver(container, instanceOf(IllegalArgumentException.class)));
+        container.add(new TypeFor<Either<?, ?>>() {{
+        }}.get(), new EitherResolver(container));
         return container;
     }
 
