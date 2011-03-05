@@ -21,7 +21,7 @@ public class ApplicationServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) {
-        application = (Application) config.getServletContext().getAttribute(Application.class.getCanonicalName());
+        application = ApplicationStarter.getApplication(config.getServletContext());
     }
 
     @Override

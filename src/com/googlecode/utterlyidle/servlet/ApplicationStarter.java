@@ -7,9 +7,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import java.io.IOException;
+
 import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 
 public class ApplicationStarter implements ServletContextListener {
+    public static final String KEY = Application.class.getCanonicalName();
+
     private Application createApplication(ServletContext servletContext) {
         String className = servletContext.getInitParameter(getClass().getName());
         if (className == null || className.equals("")) {
@@ -29,11 +33,23 @@ public class ApplicationStarter implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent event) {
         final ServletContext context = event.getServletContext();
-        Application application = createApplication(context);
+        setApplication(context, createApplication(context));
+    }
+
+    public static void setApplication(ServletContext context, Application application) {
         application.add(new ServletModule(context));
-        context.setAttribute(Application.class.getCanonicalName(), application);
+        context.setAttribute(KEY, application);
+    }
+
+    public static Application getApplication(final ServletContext servletContext) {
+        return (Application) servletContext.getAttribute(KEY);
     }
 
     public void contextDestroyed(ServletContextEvent event) {
+        try {
+            getApplication(event.getServletContext()).close();
+        } catch (IOException e) {
+            throw new UnsupportedOperationException(e);
+        }
     }
 }

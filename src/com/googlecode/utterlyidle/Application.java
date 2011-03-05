@@ -4,7 +4,9 @@ import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.yadic.Container;
 
-public interface Application extends HttpHandler {
+import java.io.Closeable;
+
+public interface Application extends HttpHandler, Closeable {
     Container applicationScope();
 
     Container createRequestScope();
