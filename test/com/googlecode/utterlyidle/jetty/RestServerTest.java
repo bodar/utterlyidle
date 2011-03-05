@@ -1,10 +1,10 @@
-package com.googlecode.utterlyidle.httpserver;
+package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.utterlyidle.Application;
-import static com.googlecode.utterlyidle.BasePath.basePath;
-
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerContract;
+
+import static com.googlecode.utterlyidle.BasePath.basePath;
 
 public class RestServerTest extends ServerContract {
     private static Server server;
@@ -15,6 +15,6 @@ public class RestServerTest extends ServerContract {
     }
 
     protected int port() {
-        return 8001;
+        return 8002;
     }
 }
