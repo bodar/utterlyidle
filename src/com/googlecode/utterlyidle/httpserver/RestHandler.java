@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.utterlyidle.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -11,6 +12,9 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Exceptions.printStackTrace;
+import static com.googlecode.totallylazy.Runnables.write;
+import static com.googlecode.totallylazy.Using.using;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.totallylazy.Bytes.bytes;
@@ -46,9 +50,7 @@ public class RestHandler implements HttpHandler {
         }
         byte[] bytes = response.bytes();
         httpExchange.sendResponseHeaders(response.status().code(), bytes.length);
-        OutputStream responseBody = httpExchange.getResponseBody();
-        responseBody.write(bytes);
-
+        using(httpExchange.getResponseBody(), write(bytes));
         httpExchange.close();
     }
 
@@ -62,13 +64,11 @@ public class RestHandler implements HttpHandler {
         );
     }
 
-    private Response exceptionResponse(Request request, Exception e) throws IOException {
+    private Response exceptionResponse(Request request, final Exception e) throws IOException {
         System.err.println(String.format("%s %s -> %s", request.method(), request.url(), e));
         e.printStackTrace(System.err);
         Response response = response().status(Status.INTERNAL_SERVER_ERROR);
-        PrintWriter writer = new PrintWriter(response.output());
-        e.printStackTrace(writer);
-        writer.close();
+        using(new PrintWriter(response.output()), printStackTrace(e));
         return response;
     }
 

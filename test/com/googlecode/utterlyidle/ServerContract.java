@@ -5,14 +5,18 @@ import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.io.Url;
-import static com.googlecode.utterlyidle.io.Url.writeBytes;
+
+import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.utterlyidle.io.Url.url;
+
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.containsString;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +48,7 @@ public abstract class ServerContract {
     @Test
     public void handlesPosts() throws Exception {
         ResponseAsString output = new ResponseAsString();
-        Pair<Integer, String> status = Url.url("http://localhost:" + port() + "/helloworld/formparam").post(MediaType.APPLICATION_FORM_URLENCODED, writeBytes("name=fred".getBytes()), output);
+        Pair<Integer, String> status = Url.url("http://localhost:" + port() + "/helloworld/formparam").post(MediaType.APPLICATION_FORM_URLENCODED, write("name=fred".getBytes()), output);
 
         assertThat(status.first(), is(200));
         assertThat(output.value(), is("Hello fred"));

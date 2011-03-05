@@ -1,13 +1,21 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callers;
+import com.googlecode.totallylazy.LazyException;
+import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
+
+import static com.googlecode.totallylazy.Callers.call;
+import static com.googlecode.totallylazy.Using.using;
 import static com.googlecode.utterlyidle.modules.Modules.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +54,16 @@ public class RestApplication implements Application {
         return applicationScope;
     }
 
-    public Response handle(Request request) throws Exception {
-        Container requestScope = createRequestScope();
-        Response handle = requestScope.get(HttpHandler.class).handle(request);
-        requestScope.close();
-        return handle;
+    public Response handle(final Request request) throws Exception {
+        return using(createRequestScope(), handleRequest(request));
+    }
+
+    public static Callable1<Container, Response> handleRequest(final Request request) {
+        return new Callable1<Container, Response>(){
+            public Response call(Container container) throws Exception {
+                return container.get(HttpHandler.class).handle(request);
+            }
+        };
     }
 
     public Resources resources() {
