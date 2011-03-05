@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Runnable1;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
@@ -9,6 +8,7 @@ import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +47,10 @@ public class RestApplication implements Application {
     }
 
     public Response handle(Request request) throws Exception {
-        return createRequestScope().get(HttpHandler.class).handle(request);
+        Container requestScope = createRequestScope();
+        Response handle = requestScope.get(HttpHandler.class).handle(request);
+        requestScope.close();
+        return handle;
     }
 
     public Resources resources() {
@@ -56,5 +59,9 @@ public class RestApplication implements Application {
 
     public ResponseHandlers responseHandlers() {
         return applicationScope.get(ResponseHandlers.class);
+    }
+
+    public void close() throws IOException {
+        applicationScope().close();
     }
 }

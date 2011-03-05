@@ -26,7 +26,7 @@ public class RestServer implements Server {
         server.createContext(basePath.toString(), new RestHandler(application.add(new RequestInstanceModule(basePath))));
         server.setExecutor(newFixedThreadPool(50));
         start();
-        System.out.println(format("Listening on %s, started in %s msecs", port, calculateMilliseconds(start, nanoTime())));
+        System.out.println(format("Listening on %s, started HttpServer in %s msecs", port, calculateMilliseconds(start, nanoTime())));
     }
 
     public Server start() throws Exception{
