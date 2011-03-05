@@ -15,17 +15,22 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.BasePath.basePath;
+import static java.lang.String.format;
+import static java.lang.System.nanoTime;
 
 public class RestServer implements Server {
     private Connection connection;
     private SocketAddress address;
 
     public RestServer(int port, BasePath basePath, Application applcation) throws Exception {
+        long start = nanoTime();
         Container container = new RestContainer(applcation.add(new RequestInstanceModule(basePath)));
         connection = new SocketConnection(container);
         address = new InetSocketAddress(port);
         start();
+        System.out.println(format("Listening on %s, started SimpleWeb in %s msecs", port, calculateMilliseconds(start, nanoTime())));
     }
 
     public Server start() throws Exception {
