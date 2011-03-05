@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Bytes.bytes;
+import static com.googlecode.totallylazy.Using.using;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class ApplicationServlet extends HttpServlet {
@@ -44,8 +46,7 @@ public class ApplicationServlet extends HttpServlet {
         }
         byte[] bytes = response.bytes();
         resp.setContentLength(bytes.length);
-        resp.getOutputStream().write(bytes);
-        resp.getOutputStream().close();
+        using(resp.getOutputStream(), write(bytes));
     }
 
     private Request request(HttpServletRequest request) {

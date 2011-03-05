@@ -10,6 +10,8 @@ import com.googlecode.totallylazy.Runnable1;
 import static com.googlecode.totallylazy.Runnables.doNothing;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import com.googlecode.totallylazy.regex.Regex;
+
+import static com.googlecode.totallylazy.Using.using;
 import static com.googlecode.utterlyidle.io.HttpURLConnections.getInputStream;
 import static com.googlecode.utterlyidle.io.HttpURLConnections.getOutputStream;
 
@@ -97,9 +99,9 @@ public class Url {
             urlConnection.setRequestMethod("PUT");
             urlConnection.setRequestProperty("Content-Type", mimeType);
             urlConnection.setDoInput(true);
-            OutputStream outputStream = urlConnection.getOutputStream();
-            handler.run(outputStream);
-            outputStream.close();
+
+            using(urlConnection.getOutputStream(), handler);
+
             return pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
         } catch (ProtocolException e) {
             throw new RuntimeException(e);
@@ -121,9 +123,7 @@ public class Url {
             urlConnection.setDoInput(true);
             urlConnection.connect();
 
-            OutputStream outputStream = urlConnection.getOutputStream();
-            requestContent.run(outputStream);
-            outputStream.close();
+            using(urlConnection.getOutputStream(), requestContent);
 
             return doRequest(urlConnection, responseHandler);
         } catch (ProtocolException e) {
@@ -202,15 +202,4 @@ public class Url {
         return toURI().isAbsolute();
     }
 
-    public static Runnable1<OutputStream> writeBytes(final byte[] bytes) {
-        return new Runnable1<OutputStream>() {
-            public void run(OutputStream outputStream) {
-                try {
-                    outputStream.write(bytes);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-    }
 }
