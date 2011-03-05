@@ -14,7 +14,6 @@ import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.attributeMap;
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.webRoot;
 
 public class ServletModule implements ApplicationScopedModule, RequestScopedModule {
-    private final ThreadLocal<BasePath> basePath = new ThreadLocal<BasePath>();
     private final ServletContext context;
 
     public ServletModule(ServletContext context) {
@@ -28,7 +27,7 @@ public class ServletModule implements ApplicationScopedModule, RequestScopedModu
     }
 
     public Module addPerRequestObjects(Container container) {
-        container.addInstance(BasePath.class, basePath.get());
+        container.addInstance(BasePath.class, ApplicationServlet.basePath.get());
         return this;
     }
 }
