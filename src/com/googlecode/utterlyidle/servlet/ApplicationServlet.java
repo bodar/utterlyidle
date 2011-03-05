@@ -15,7 +15,7 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class ApplicationServlet extends HttpServlet {
-    private final ThreadLocal<BasePath> basePath = new ThreadLocal<BasePath>();
+    static final ThreadLocal<BasePath> basePath = new ThreadLocal<BasePath>();
 
     Application application = null;
 
