@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import static com.googlecode.totallylazy.Using.using;
+import static com.googlecode.totallylazy.Closeables.using;
 
 
 public class StreamingWriterHandler implements ResponseHandler {

@@ -13,7 +13,7 @@ import java.io.IOException;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Bytes.bytes;
-import static com.googlecode.totallylazy.Using.using;
+import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class ApplicationServlet extends HttpServlet {

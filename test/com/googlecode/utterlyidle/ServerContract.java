@@ -1,7 +1,8 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Runnable1;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Runnables;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.io.Url;
@@ -42,7 +43,7 @@ public abstract class ServerContract {
         Pair<Integer, String> status = Url.url("http://localhost:" + port() + "/helloworld/queryparam?name=foo").get("*/*", output);
 
         assertThat(status.first(), is(200));
-        assertThat(output.value(), is("Hello foo"));
+        assertThat(output.toString(), is("Hello foo"));
     }
 
     @Test
@@ -51,7 +52,7 @@ public abstract class ServerContract {
         Pair<Integer, String> status = Url.url("http://localhost:" + port() + "/helloworld/formparam").post(MediaType.APPLICATION_FORM_URLENCODED, write("name=fred".getBytes()), output);
 
         assertThat(status.first(), is(200));
-        assertThat(output.value(), is("Hello fred"));
+        assertThat(output.toString(), is("Hello fred"));
     }
 
     @Test
@@ -109,18 +110,19 @@ public abstract class ServerContract {
         Pair<Integer, String> response = url("http://localhost:" + port() + "/goesbang?exceptionMessage=goes_bang").get(MediaType.WILDCARD, responseContent);
 
         assertThat(response.first(), is(Status.INTERNAL_SERVER_ERROR.code()));
-        assertThat(responseContent.value(), containsString("Exception"));
-        assertThat(responseContent.value(), containsString("goes_bang"));
+        assertThat(responseContent.toString(), containsString("Exception"));
+        assertThat(responseContent.toString(), containsString("goes_bang"));
     }
 
-    public static class ResponseAsString implements Runnable1<InputStream> {
+    public static class ResponseAsString implements Callable1<InputStream, Void> {
         private String value;
 
-        public void run(InputStream inputStream) {
+        public Void call(InputStream inputStream) {
             value = Strings.toString(inputStream);
+            return Runnables.VOID;
         }
 
-        public String value() {
+        public String toString() {
             return value;
         }
     }
