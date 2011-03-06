@@ -6,12 +6,12 @@ import static com.googlecode.totallylazy.Exceptions.handleException;
 import com.googlecode.totallylazy.Pair;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
-import com.googlecode.totallylazy.Runnable1;
+import com.googlecode.totallylazy.Callable1;
 import static com.googlecode.totallylazy.Runnables.doNothing;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import com.googlecode.totallylazy.regex.Regex;
 
-import static com.googlecode.totallylazy.Using.using;
+import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.utterlyidle.io.HttpURLConnections.getInputStream;
 import static com.googlecode.utterlyidle.io.HttpURLConnections.getOutputStream;
 
@@ -83,7 +83,7 @@ public class Url {
         }
     }
 
-    public Pair<Integer, String> get(String mimeType, Runnable1<InputStream> handler) {
+    public Pair<Integer, String> get(String mimeType, Callable1<InputStream, Void> handler) {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestProperty("Accept", mimeType);
@@ -93,7 +93,7 @@ public class Url {
         }
     }
 
-    public Pair<Integer, String> put(String mimeType, Runnable1<OutputStream> handler) {
+    public Pair<Integer, String> put(String mimeType, Callable1<OutputStream, Void> handler) {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestMethod("PUT");
@@ -110,11 +110,11 @@ public class Url {
         }
     }
 
-    public Pair<Integer, String> post(String mimeType, Runnable1<OutputStream> requestContent) {
+    public Pair<Integer, String> post(String mimeType, Callable1<OutputStream, Void> requestContent) {
         return post(mimeType, requestContent, doNothing(InputStream.class));
     }
 
-    public Pair<Integer, String> post(String mimeType, Runnable1<OutputStream> requestContent, Runnable1<InputStream> responseHandler) {
+    public Pair<Integer, String> post(String mimeType, Callable1<OutputStream, Void> requestContent, Callable1<InputStream, Void> responseHandler) {
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) openConnection();
             urlConnection.setRequestMethod("POST");
@@ -133,12 +133,12 @@ public class Url {
         }
     }
 
-    private Pair<Integer, String> doRequest(HttpURLConnection urlConnection, Runnable1<InputStream> responseHandler) throws IOException {
+    private Pair<Integer, String> doRequest(HttpURLConnection urlConnection, Callable1<InputStream, Void> responseHandler) throws IOException {
         Pair<Integer, String> status = pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
         if (status.first() >= 400) {
-            responseHandler.run(urlConnection.getErrorStream());
+            using(urlConnection.getErrorStream(), responseHandler);
         } else {
-            responseHandler.run(urlConnection.getInputStream());
+            using(urlConnection.getInputStream(), responseHandler);
         }
         return status;
     }

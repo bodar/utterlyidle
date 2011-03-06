@@ -9,7 +9,7 @@ import static com.googlecode.totallylazy.Maps.entryToPair;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Using.using;
+import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 

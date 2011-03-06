@@ -3,13 +3,13 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.Runnable1;
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.*;
 
 import static com.googlecode.totallylazy.Callers.call;
-import static com.googlecode.totallylazy.Using.using;
+import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.utterlyidle.modules.Modules.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
