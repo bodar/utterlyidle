@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Runnable1;
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.utterlyidle.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.googlecode.totallylazy.Exceptions.printStackTrace;
 import static com.googlecode.totallylazy.Runnables.write;
-import static com.googlecode.totallylazy.Using.using;
+import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.totallylazy.Bytes.bytes;
