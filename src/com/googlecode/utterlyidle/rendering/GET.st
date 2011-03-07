@@ -1,5 +1,5 @@
 <form action="$base$$resource.uriTemplate$" method="$resource.method$">
-    <p><span class="method">$resource.method$</span> $base$$resource.uriTemplate$</p>
+    <p><input type="submit" value="$resource.method$"/> $base$$resource.uriTemplate$ </p>
     $resource.query:{ query |
         $query.keys:{ key |
             $query.(key):{ values |
@@ -7,5 +7,5 @@
             }$
         }$
     }$
-    <input type="submit" value="Submit"/>
+
 </form>
