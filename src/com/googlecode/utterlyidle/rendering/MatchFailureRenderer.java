@@ -48,7 +48,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
             model.add("resources", model().
                     add("method", httpMethod.value()).
                     add("uriTemplate", uriTemplate).
-                    add("query", queries.toString()).
+                    add("query", asModel(queries)).
                     add("form", asModel(forms)));
         }
 
