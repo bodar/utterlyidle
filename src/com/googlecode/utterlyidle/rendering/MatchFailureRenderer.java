@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
@@ -72,6 +69,6 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     }
 
     private Sequence<Object> arguments() {
-        return Sequences.repeat("REPLACE_ME").safeCast(Object.class);
+        return Sequences.repeat(Strings.EMPTY).safeCast(Object.class);
     }
 }
