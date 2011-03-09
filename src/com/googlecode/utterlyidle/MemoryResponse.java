@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static com.googlecode.totallylazy.Bytes.write;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
@@ -65,12 +66,7 @@ public class MemoryResponse implements Response {
     }
 
     public Response bytes(byte[] value) {
-        output = new ByteArrayOutputStream();
-        try {
-            output.write(value);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.output = write(value, new ByteArrayOutputStream());
         return this;
     }
 
