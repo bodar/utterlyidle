@@ -2,6 +2,9 @@ package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.RestApplication;
+import com.googlecode.utterlyidle.httpserver.HelloWorld;
+import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
 import org.mortbay.jetty.Server;
@@ -9,6 +12,7 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 
@@ -34,5 +38,9 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     public com.googlecode.utterlyidle.Server stop() throws Exception {
         server.stop();
         return this;
+    }
+
+    public static void main(String[] args) throws Exception {
+        new RestServer(8002, basePath("/"), new RestApplication().add(new SingleResourceModule(HelloWorld.class)));
     }
 }
