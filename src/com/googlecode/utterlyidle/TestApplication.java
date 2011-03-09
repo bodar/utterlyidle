@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.RequestInstanceModule;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 
@@ -23,7 +24,7 @@ public class TestApplication extends RestApplication {
     }
 
     public <T> void addResponseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
-        responseHandlers().add(predicate, responseHandler);
+        applicationScope().get(ResponseHandlers.class).add(predicate, responseHandler);
     }
 
     public String responseAsString(RequestBuilder request) throws Exception {
