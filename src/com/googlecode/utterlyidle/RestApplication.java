@@ -33,7 +33,7 @@ public class RestApplication implements Application {
         add(new CoreModule());
     }
 
-    public Container createRequestScope() {
+    private Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.addInstance(Container.class, requestScope);
         requestScope.addActivator(Resolver.class, requestScope.getActivator(Container.class));
@@ -56,8 +56,12 @@ public class RestApplication implements Application {
         return applicationScope;
     }
 
+    public <T> T usingRequestScope(Callable1<Container, T> callable) {
+        return using(createRequestScope(), callable);
+    }
+
     public Response handle(final Request request) throws Exception {
-        return using(createRequestScope(), handleRequest(request));
+        return usingRequestScope(handleRequest(request));
     }
 
     public static Callable1<Container, Response> handleRequest(final Request request) {
