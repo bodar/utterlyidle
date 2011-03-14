@@ -8,7 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Method;
 
-import static com.googlecode.totallylazy.Predicates.notNull;
+import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class ConsumesMimeMatcher implements Predicate<Request> {
@@ -16,7 +16,7 @@ public class ConsumesMimeMatcher implements Predicate<Request> {
 
     public ConsumesMimeMatcher(Method method) {
         mimeType = sequence(method.getAnnotation(Consumes.class), method.getDeclaringClass().getAnnotation(Consumes.class)).
-                find(notNull(Consumes.class)).map(firstValue()).getOrElse(MediaType.WILDCARD);
+                find(notNullValue()).map(firstValue()).getOrElse(MediaType.WILDCARD);
     }
 
     private Callable1<Consumes, String> firstValue() {

@@ -39,7 +39,7 @@ public class CoreModule extends AbstractModule {
 
     @Override
     public Module addResponseHandlers(ResponseHandlers handlers){
-        handlers.addGuard(where(entity(), is(aNull(Object.class))), NoContentHandler.class);
+        handlers.addGuard(where(entity(), is(nullValue())), NoContentHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(byte[].class))), ByteArrayHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
