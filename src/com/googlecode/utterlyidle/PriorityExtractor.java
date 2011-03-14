@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 
 import java.lang.reflect.Method;
 
-import static com.googlecode.totallylazy.Predicates.notNull;
+import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class PriorityExtractor implements Extractor<Method, Integer>{
@@ -16,7 +16,7 @@ public class PriorityExtractor implements Extractor<Method, Integer>{
 
     public Integer extract(Method method) {
         return sequence(method.getAnnotation(Priority.class), method.getDeclaringClass().getAnnotation(Priority.class)).
-                find(notNull(Priority.class)).map(value()).getOrElse(Priority.Medium);
+                find(notNullValue()).map(value()).getOrElse(Priority.Medium);
     }
 
     private Callable1<Priority, Integer> value() {
