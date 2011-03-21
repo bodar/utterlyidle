@@ -58,7 +58,7 @@ public class MemoryRequest implements Request {
 
     public CookieParameters cookies() {
         if(cookies==null){
-            cookies = CookieParameters.cookies(this);
+            cookies = CookieParameters.cookies(this.headers());
         }
         return cookies;
     }
