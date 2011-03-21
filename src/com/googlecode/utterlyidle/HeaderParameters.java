@@ -22,7 +22,7 @@ public class HeaderParameters extends Parameters<String, String> {
 
     @Override
     public String toString() {
-            return sequence(this).map(pairToString("", ": ", "")).toString("\n");
+            return sequence(this).map(pairToString("", ": ", "")).toString("\r\n");
     }
 
     private Callable1<? super Pair<String, String>, String> pairToString(final String start, final String separator, final String end) {

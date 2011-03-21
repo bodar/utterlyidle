@@ -30,13 +30,13 @@ public class MemoryRequestTest {
                 .withHeader("Referer", "http://google.com").
                         build().toString(),
                    is(
-                           "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\n" +
-                                   "Accept: text/html\n" +
-                                   "Content-Type: application/x-www-form-urlencoded\n" +
-                                   "Cookie: size=diciptive\n" +
-                                   "Referer: http://google.com\n" +
-                                   "Content-length: 26\n" +
-                                   "\n" +
+                           "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\r\n" +
+                                   "Accept: text/html\r\n" +
+                                   "Content-Type: application/x-www-form-urlencoded\r\n" +
+                                   "Cookie: size=diciptive\r\n" +
+                                   "Referer: http://google.com\r\n" +
+                                   "Content-length: 26\r\n" +
+                                   "\r\n" +
                                    "chups=nah+bru&plinkton=nom"
                    ));
     }

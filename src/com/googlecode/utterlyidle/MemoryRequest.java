@@ -7,7 +7,9 @@ import javax.ws.rs.core.HttpHeaders;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 import static com.googlecode.utterlyidle.io.Converter.asString;
+import static java.lang.String.format;
 
 public class MemoryRequest implements Request {
     private final String method;
@@ -74,11 +76,15 @@ public class MemoryRequest implements Request {
 
     @Override
     public String toString() {
-        return String.format("%s %s HTTP/1.1\n%s\n%s", method, url, headers(), inputAsRequestString());
+        StringBuffer result = new StringBuffer(format("%s %s HTTP/1.1%s", method, url, HTTP_LINE_SEPARATOR));
+        result.append(headers());
+        result.append(HTTP_LINE_SEPARATOR);
+        result.append(inputAsRequestString());
+        return result.toString();
     }
 
     private String inputAsRequestString() {
-        String input = asString(input());
-        return input.length() == 0 ? "" : String.format("Content-length: %s\n\n%s", input.length(), input);
+        String inputAsString = asString(input());
+        return inputAsString.length() == 0 ? "" : format("Content-length: %s" + HTTP_LINE_SEPARATOR + "\r\n%s", input.length, inputAsString);
     }
 }

@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.io.Url;
@@ -18,6 +19,7 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
+import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static com.googlecode.utterlyidle.io.Url.url;
 
@@ -32,6 +34,23 @@ public class RequestBuilder {
     public RequestBuilder(String method, String path) {
         this.method = method;
         this.path = path;
+    }
+
+    public RequestBuilder(Request request) {
+        this(request.method(), request.url().toString());
+
+        sequence(request.headers()).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
+            public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
+                requestBuilder.withHeader(nameAndValue.first(), nameAndValue.second());
+                return requestBuilder;
+            }
+        });
+        sequence(request.form()).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
+            public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
+                requestBuilder.withForm(nameAndValue.first(), nameAndValue.second());
+                return requestBuilder;
+            }
+        });
     }
 
     public RequestBuilder accepting(String value) {

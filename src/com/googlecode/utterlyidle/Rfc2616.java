@@ -10,6 +10,7 @@ import static java.util.Arrays.asList;
 public class Rfc2616 {
     public static final String SEPARATORS = "()<>@,;:\\\"/[]?={} \t";
     public static final String CTLs = range(0,32).join(asList(127)).map(toCharacter()).toString("");
+    static final String HTTP_LINE_SEPARATOR = "\r\n";
 
     public static boolean isValidToken(String value) {
         if(value == null || value.length()==0)return false;
