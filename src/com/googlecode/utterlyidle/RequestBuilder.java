@@ -29,7 +29,7 @@ public class RequestBuilder {
     private final List<Pair<String, String>> form = new ArrayList<Pair<String, String>>();
     private byte[] input;
     private final String method;
-    private final String path;
+    private String path;
 
     public RequestBuilder(String method, String path) {
         this.method = method;
@@ -53,6 +53,11 @@ public class RequestBuilder {
         });
     }
 
+    public RequestBuilder withPath(String value) {
+        path = value;
+        return this;
+    }
+    
     public RequestBuilder accepting(String value) {
         return withHeader(HttpHeaders.ACCEPT, value);
     }
