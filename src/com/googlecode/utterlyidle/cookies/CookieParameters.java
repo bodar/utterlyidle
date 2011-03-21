@@ -4,8 +4,8 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Parameters;
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Rfc2616;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -17,13 +17,13 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 
 public class CookieParameters extends Parameters<String, String> {
-    private CookieParameters(Request request) {
+    private CookieParameters(final HeaderParameters headerParameters) {
         super(equalIgnoringCase());
-        parseRequestCookies(sequence(request.headers().getValues(HttpHeaders.COOKIE)));
+        parseRequestCookies(sequence(headerParameters.getValues(HttpHeaders.COOKIE)));
     }
 
-    public static CookieParameters cookies(Request request) {
-        return new CookieParameters(request);
+    public static CookieParameters cookies(final HeaderParameters headerParameters) {
+        return new CookieParameters(headerParameters);
     }
 
     private void parseRequestCookies(Sequence<String> headers) {
