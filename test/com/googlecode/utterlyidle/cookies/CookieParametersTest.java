@@ -10,7 +10,6 @@ import static com.googlecode.totallylazy.Dates.date;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.*;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -20,15 +19,15 @@ public class CookieParametersTest {
 
     @Test
     public void shouldHandleTrailingSpaces() throws Exception {
-        CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", "a=1; ; ;"))));
+        CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", "a=1; ; ;"))).headers());
 
         assertThat(cookies.getValue("a"), is("1"));
     }
 
     @Test
     public void shouldBeCaseInsensitive() throws Exception {
-        CookieParameters lowercaseCookies = cookies(request(headerParameters(pair("cookie", "a=1"))));
-        CookieParameters uppercaseCookies = cookies(request(headerParameters(pair("COOKIE", "b=2"))));
+        CookieParameters lowercaseCookies = cookies(request(headerParameters(pair("cookie", "a=1"))).headers());
+        CookieParameters uppercaseCookies = cookies(request(headerParameters(pair("COOKIE", "b=2"))).headers());
 
         assertThat(lowercaseCookies.getValue("a"), is("1"));
         assertThat(uppercaseCookies.getValue("b"), is("2"));
@@ -36,7 +35,7 @@ public class CookieParametersTest {
 
     @Test
     public void shouldCopeWithRequestCookiesInMultipleHeaders() throws Exception {
-        CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", "a=1"), pair("Cookie", "b=2"))));
+        CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", "a=1"), pair("Cookie", "b=2"))).headers());
 
         assertThat(cookies.getValue("a"), is("1"));
         assertThat(cookies.getValue("b"), is("2"));
@@ -44,7 +43,7 @@ public class CookieParametersTest {
 
     @Test
     public void willIgnoreAttributesOnRequestCookiesForTheTimeBeing() throws Exception {
-        CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", "$Version=1; a=1; $Path=whatever; $Domain=something; b=2"))));
+        CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", "$Version=1; a=1; $Path=whatever; $Domain=something; b=2"))).headers());
 
         assertThat(cookies.getValue("$Version"), is(nullValue()));
         assertThat(cookies.getValue("$Path"), is(nullValue()));
