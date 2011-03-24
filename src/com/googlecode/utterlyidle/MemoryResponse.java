@@ -85,6 +85,6 @@ public class MemoryResponse implements Response {
 
     @Override
     public String toString() {
-        return String.format("HTTP/1.1 %s\n%s\n", status, headers);
+        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, new String(bytes()));
     }
 }

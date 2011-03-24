@@ -9,6 +9,7 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 
 public class MemoryResponseTest {
@@ -19,6 +20,13 @@ public class MemoryResponseTest {
         assertThat(
                 response.header(HttpHeaders.SET_COOKIE),
                 is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Sun, 26-Dec-2010 13:16:59 GMT\""));
+    }
+
+    @Test
+    public void shouldPrintContent() throws Exception {
+        String content = "<blah></blah>";
+        Response response = response().header("X-Forwarded-For", "192.168.0.1").bytes(content.getBytes());
+        assertThat(response.toString(), endsWith(content));
     }
 
 
