@@ -76,24 +76,24 @@ public class RestApplication implements Application {
     }
 
     public <T> T usingArgumentScope(Request request, Callable1<Container, T> callable) {
-        return using(createArgumentContainer(request), callable);
+        return using(createArgumentScope(request), callable);
     }
 
-    private Container createArgumentContainer(Request request) {
-        final Container argumentContainer = new SimpleContainer();
-        argumentContainer.addInstance(Request.class, request);
-        argumentContainer.addInstance(Url.class, request.url());
-        argumentContainer.addInstance(HierarchicalPath.class, request.url().path());
-        argumentContainer.addActivator(PathParameters.class, PathParametersActivator.class);
-        argumentContainer.addInstance(HeaderParameters.class, request.headers());
-        argumentContainer.addInstance(QueryParameters.class, request.query());
-        argumentContainer.addInstance(FormParameters.class, request.form());
-        argumentContainer.addInstance(CookieParameters.class, request.cookies());
-        argumentContainer.addInstance(InputStream.class, request.input());
-        argumentContainer.add(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentContainer, instanceOf(IllegalArgumentException.class)));
-        argumentContainer.add(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentContainer));
-        sequence(modules).safeCast(ArgumentScopedModule.class).forEach(addPerArgumentObjects(argumentContainer));
-        return argumentContainer;
+    private Container createArgumentScope(Request request) {
+        final Container argumentScope = new SimpleContainer();
+        argumentScope.addInstance(Request.class, request);
+        argumentScope.addInstance(Url.class, request.url());
+        argumentScope.addInstance(HierarchicalPath.class, request.url().path());
+        argumentScope.addActivator(PathParameters.class, PathParametersActivator.class);
+        argumentScope.addInstance(HeaderParameters.class, request.headers());
+        argumentScope.addInstance(QueryParameters.class, request.query());
+        argumentScope.addInstance(FormParameters.class, request.form());
+        argumentScope.addInstance(CookieParameters.class, request.cookies());
+        argumentScope.addInstance(InputStream.class, request.input());
+        argumentScope.add(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
+        argumentScope.add(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentScope));
+        sequence(modules).safeCast(ArgumentScopedModule.class).forEach(addPerArgumentObjects(argumentScope));
+        return argumentScope;
     }
 
     public static Callable1<Container, Response> handleRequest(final Request request) {
