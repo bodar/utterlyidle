@@ -44,4 +44,13 @@ public class Modules {
             }
         };
     }
+
+    public static Callable1<ArgumentScopedModule, Void> addPerArgumentObjects(final Container argumentScope) {
+        return new Callable1<ArgumentScopedModule, Void>() {
+            public Void call(ArgumentScopedModule argumentScopedModule) {
+                argumentScopedModule.addPerArgumentObjects(argumentScope);
+                return VOID;
+            }
+        };
+    }
 }
