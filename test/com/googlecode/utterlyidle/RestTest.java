@@ -4,6 +4,9 @@ import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
+import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
+import com.googlecode.utterlyidle.modules.Module;
+import com.googlecode.yadic.Container;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -27,9 +30,24 @@ import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static javax.ws.rs.core.HttpHeaders.LOCATION;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 public class RestTest {
+    @Test
+    public void supportCustomArgumentActivation() throws Exception {
+        final String SOME_CUSTOM_VALUE = "some custom value";
+
+        TestApplication application = new TestApplication();
+        application.add(UsesCustomValue.class).add(new ArgumentScopedModule() {
+            public Module addPerArgumentObjects(Container container) {
+                container.addInstance(CustomValue.class, new CustomValue(SOME_CUSTOM_VALUE));
+                return this;
+            }
+        });
+        assertThat(application.responseAsString(get("path")), is(SOME_CUSTOM_VALUE));
+    }
+
     @Test
     public void supportReturningResponse() throws Exception {
         TestApplication application = new TestApplication();
@@ -592,4 +610,25 @@ public class RestTest {
             return response(Status.SEE_OTHER);
         }
     }
+
+    @Path("path")
+    public static class UsesCustomValue {
+        @GET
+        public String get(CustomValue value) {
+            return value.getValue();
+        }
+    }
+
+    public static class CustomValue{
+        private final String value;
+
+        CustomValue(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
 }
