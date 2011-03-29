@@ -80,7 +80,7 @@ public class RequestBuilder {
 
     public RequestBuilder withForm(String name, String value) {
         if (sequence(headers).filter(by(first(String.class), is(equalIgnoringCase(HttpHeaders.CONTENT_TYPE)))).isEmpty()) {
-            withHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
+            withHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
         }
         form.add(pair(name, value));
         return this;
