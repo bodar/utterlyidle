@@ -11,5 +11,7 @@ public interface Application extends HttpHandler, Closeable {
 
     <T> T usingRequestScope(Callable1<Container, T> callable);
 
+    <T> T usingArgumentScope(Request request, Callable1<Container, T> callable);
+
     Application add(Module module);
 }

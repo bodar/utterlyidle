@@ -25,12 +25,14 @@ import static com.googlecode.utterlyidle.Param.toParam;
 import static com.googlecode.yadic.resolvers.Resolvers.create;
 
 public class ArgumentsExtractor implements RequestExtractor<Object[]> {
-    private final UriTemplate uriTemplate;
     private final Method method;
+    private final UriTemplate uriTemplate;
+    private final Application application;
 
-    public ArgumentsExtractor(UriTemplate uriTemplate, Method method) {
-        this.uriTemplate = uriTemplate;
+    public ArgumentsExtractor(Method method, UriTemplate uriTemplate, Application application) {
         this.method = method;
+        this.uriTemplate = uriTemplate;
+        this.application = application;
     }
 
     public boolean matches(Request request) {
@@ -56,29 +58,34 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
 
         return parametersWithAnnotations.map(new Callable1<Pair<Type, Annotation[]>, Object>() {
             public Object call(Pair<Type, Annotation[]> pair) throws Exception {
-                Type type = pair.first();
-                Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
+                final Type type = pair.first();
+                final Sequence<Annotation> annotations = sequence(pair.second()).filter(isParam());
 
-                final Container container = createContainer(request);
-                annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, with(QueryParameters.class));
-                annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, with(FormParameters.class));
-                annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
-                annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
-                annotations.safeCast(CookieParam.class).map(toParam()).foldLeft(container, with(CookieParameters.class));
+                return application.usingArgumentScope(request, new Callable1<Container, Object>() {
+                    public Object call(Container container) throws Exception {
+                        container.addInstance(UriTemplate.class, uriTemplate);
 
-                if (!container.contains(String.class)) {
-                    container.add(String.class, new ProgrammerErrorResolver(String.class));
-                }
+                        annotations.safeCast(QueryParam.class).map(toParam()).foldLeft(container, with(QueryParameters.class));
+                        annotations.safeCast(FormParam.class).map(toParam()).foldLeft(container, with(FormParameters.class));
+                        annotations.safeCast(PathParam.class).map(toParam()).foldLeft(container, with(PathParameters.class));
+                        annotations.safeCast(HeaderParam.class).map(toParam()).foldLeft(container, with(HeaderParameters.class));
+                        annotations.safeCast(CookieParam.class).map(toParam()).foldLeft(container, with(CookieParameters.class));
 
-                List<Type> types = typeArgumentsOf(type);
+                        if (!container.contains(String.class)) {
+                            container.add(String.class, new ProgrammerErrorResolver(String.class));
+                        }
 
-                for (Type t : types) {
-                    if (!container.contains(t)) {
-                        container.add(t, create(t, container));
+                        List<Type> types = typeArgumentsOf(type);
+
+                        for (Type t : types) {
+                            if (!container.contains(t)) {
+                                container.add(t, create(t, container));
+                            }
+                        }
+
+                        return container.resolve(type);
                     }
-                }
-
-                return container.resolve(type);
+                });
             }
         }).toArray(Object.class);
     }
@@ -112,22 +119,4 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
             }
         };
     }
-
-    public Container createContainer(Request request) {
-        final Container container = new SimpleContainer();
-        container.addInstance(Request.class, request);
-        container.addInstance(UriTemplate.class, uriTemplate);
-        container.addInstance(PathParameters.class, uriTemplate.extract(request.url().path().toString()));
-        container.addInstance(HeaderParameters.class, request.headers());
-        container.addInstance(QueryParameters.class, request.query());
-        container.addInstance(FormParameters.class, request.form());
-        container.addInstance(CookieParameters.class, request.cookies());
-        container.addInstance(InputStream.class, request.input());
-        container.add(new TypeFor<Option<?>>() {{
-        }}.get(), new OptionResolver(container, instanceOf(IllegalArgumentException.class)));
-        container.add(new TypeFor<Either<?, ?>>() {{
-        }}.get(), new EitherResolver(container));
-        return container;
-    }
-
 }
