@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import javax.ws.rs.HttpMethod;
 
+import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -28,6 +29,13 @@ public class RequestParserTest {
         assertThat(parsedRequest.headers().getValue("header 2"), is(equalTo("header 2 value")));
         assertThat(parsedRequest.form().getValue("form 1"), is(equalTo("form 1 value")));
         assertThat(parsedRequest.form().getValue("form 2"), is(equalTo("form 2 value")));
+    }
+
+    @Test
+    public void handlesHeadersParamsWithNoValue() {
+        String input = get("/").withHeader("header", "").build().toString();
+        Request parsed = new RequestParser().parse(input).build();
+        assertThat(parsed.headers().getValue("header"), is(equalTo("")));
     }
 
     @Test
