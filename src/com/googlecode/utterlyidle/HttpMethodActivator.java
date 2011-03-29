@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
 
@@ -7,6 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static com.googlecode.totallylazy.Exceptions.toException;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.yadic.resolvers.Resolvers.create;
 import static com.googlecode.yadic.resolvers.Resolvers.resolve;
@@ -20,10 +22,10 @@ public class HttpMethodActivator implements Activator {
     private final PriorityExtractor priorityExtractor;
     private final UriTemplate uriTemplate;
 
-    public HttpMethodActivator(String httpMethod, Method method) {
+    public HttpMethodActivator(String httpMethod, Method method, Application application) {
         this.method = method;
         uriTemplate = new UriTemplateExtractor().extract(method);
-        argumentsExtractor = new ArgumentsExtractor(uriTemplate, method);
+        argumentsExtractor = new ArgumentsExtractor(method, uriTemplate, application);
         producesMatcher = new ProducesMimeMatcher(method);
         methodMatcher = new MethodMatcher(httpMethod);
         consumesMatcher = new ConsumesMimeMatcher(method);
@@ -56,14 +58,7 @@ public class HttpMethodActivator implements Activator {
         try {
             return method.invoke(instance, argumentsExtractor.extract(request));
         } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            // Madness to get around compiler crazies
-            if(cause instanceof Exception){
-                throw (Exception) cause;
-            } else if(cause instanceof Error) {
-                throw (Error) cause;
-            }
-            throw e;
+            throw toException(e.getCause());
         }
     }
 
