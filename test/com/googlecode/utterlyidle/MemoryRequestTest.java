@@ -32,7 +32,7 @@ public class MemoryRequestTest {
                    is(
                            "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\r\n" +
                                    "Accept: text/html\r\n" +
-                                   "Content-Type: application/x-www-form-urlencoded\r\n" +
+                                   "Content-Type: application/x-www-form-urlencoded; charset=UTF-8\r\n" +
                                    "Cookie: size=diciptive\r\n" +
                                    "Referer: http://google.com\r\n" +
                                    "Content-length: 26\r\n" +
