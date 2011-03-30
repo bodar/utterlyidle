@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Left;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.util.Formatter;
 
+import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.Priority.High;
@@ -53,6 +55,13 @@ public class RestTest {
         TestApplication application = new TestApplication();
         application.add(ReturnsResponse.class);
         assertThat(application.handle(get("path")).status(), is(SEE_OTHER));
+    }
+
+    @Test
+    public void supportReturningEither() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(ReturnsEither.class);
+        assertThat(application.responseAsString(get("path")), is("Hello"));
     }
 
     @Test
@@ -608,6 +617,14 @@ public class RestTest {
         @GET
         public Response get() {
             return response(Status.SEE_OTHER);
+        }
+    }
+
+    @Path("path")
+    public static class ReturnsEither {
+        @GET
+        public Either<String, Exception> get() {
+            return left("Hello");
         }
     }
 
