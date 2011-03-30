@@ -44,7 +44,7 @@ public class RequestParser {
         return new Callable2<RequestBuilder, String, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, String headerLine) throws Exception {
                 String[] nameAndValue = headerLine.split(": ");
-                requestBuilder.withHeader(nameAndValue[0], nameAndValue[1]);
+                requestBuilder.withHeader(nameAndValue[0], nameAndValue.length == 2 ? nameAndValue[1] : "");
                 return requestBuilder;
             }
         };
