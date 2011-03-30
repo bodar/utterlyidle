@@ -11,6 +11,9 @@ public class Status {
 
     public static Status BAD_REQUEST = status(400, "Bad Request");
     public static Status UNSATISFIABLE_PARAMETERS = BAD_REQUEST.description("Unsatisfiable Parameters");
+    public static Status UNAUTHORIZED = status(401, "Unauthorized");
+    public static Status PAYMENT_REQUIRED = status(402, "Payment Required");
+    public static Status FORBIDDEN = status(403, "Forbidden");
     public static Status NOT_FOUND = status(404, "Not Found");
     public static Status METHOD_NOT_ALLOWED = status(405, "Method Not Allowed");
     public static Status NOT_ACCEPTABLE = status(406, "Not Acceptable");
