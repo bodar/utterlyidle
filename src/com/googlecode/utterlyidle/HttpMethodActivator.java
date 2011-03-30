@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
@@ -46,6 +47,9 @@ public class HttpMethodActivator implements Activator {
         Object result = getResponse(request, instance);
         if (result instanceof Response) {
             return (Response) result;
+        }
+        if (result instanceof Either) {
+            result = ((Either)result).value();
         }
 
         return response().
