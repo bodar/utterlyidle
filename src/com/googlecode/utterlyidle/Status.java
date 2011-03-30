@@ -9,7 +9,7 @@ public class Status {
     public static Status ACCEPTED = status(202, "Accepted");
     public static Status NON_AUTHORITATIVE_INFORMATION = status(203, "Non-Authoritative Information");
     public static Status NO_CONTENT = status(204, "No Content");
-    public static Status RESET_CONTENT = status(204, "Reset Content");
+    public static Status RESET_CONTENT = status(205, "Reset Content");
     public static Status PARTIAL_CONTENT = status(206, "Partial Content");
 
     public static Status MULTIPLE_CHOICES = status(300, "Multiple Choices");
