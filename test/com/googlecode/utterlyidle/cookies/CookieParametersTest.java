@@ -60,6 +60,13 @@ public class CookieParametersTest {
                 is("a=\"Some \\\"double quoted thing\\\"\"; "));
     }
 
+    @Test
+    public void copesWithCookieHeaderWithNoCookiesBoo() {
+        CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", ""))).headers());
+
+        assertThat(cookies.size(), is(0));
+    }
+
     private Request someRequest() {
         return request(headerParameters());
     }

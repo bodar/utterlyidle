@@ -39,6 +39,13 @@ public class RequestParserTest {
     }
 
     @Test
+    public void handlesFormParamsWithNoValue() {
+        String input = get("/").withForm("form", "").build().toString();
+        Request parsed = new RequestParser().parse(input).build();
+        assertThat(parsed.form().getValue("form"), is(equalTo("")));
+    }
+
+    @Test
     public void canParseRequestWithOnlyRequestLine() {
         RequestBuilder builder = new RequestBuilder(HttpMethod.GET, "/my/path");
         Request originalRequest = builder.build();
