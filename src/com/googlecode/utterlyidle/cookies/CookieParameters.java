@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Rfc2616;
@@ -13,13 +10,15 @@ import javax.ws.rs.core.HttpHeaders;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.empty;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.regex.Regex.regex;
+import static javax.ws.rs.core.HttpHeaders.COOKIE;
 
 public class CookieParameters extends Parameters<String, String> {
     private CookieParameters(final HeaderParameters headerParameters) {
         super(equalIgnoringCase());
-        parseRequestCookies(sequence(headerParameters.getValues(HttpHeaders.COOKIE)));
+        parseRequestCookies(sequence(headerParameters.getValues(COOKIE)).filter(not(empty())));
     }
 
     public static CookieParameters cookies(final HeaderParameters headerParameters) {
