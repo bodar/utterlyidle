@@ -54,7 +54,7 @@ public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
     }
 
     public String file() {
-        return segments().head();
+        return segments().last();
     }
 
     public HierarchicalPath file(String name) {
