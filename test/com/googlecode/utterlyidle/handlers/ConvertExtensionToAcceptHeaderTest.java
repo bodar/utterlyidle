@@ -24,9 +24,11 @@ public class ConvertExtensionToAcceptHeaderTest {
     @Test
     public void findsExtensionInRequestUrl() {
         assertThat(extensionOf("/spong"), is(nullValue()));
+        assertThat(extensionOf("/spong?param=not.an.extension"), is(nullValue()));
         assertThat(extensionOf("/spong/groupof.stuff/actual.html?moose=still+not+monkey"), is(".html"));
         assertThat(extensionOf("/spong/groupof.stuff/actual.html"), is(".html"));
         assertThat(extensionOf("actual.html"), is(".html"));
+        assertThat(extensionOf("actual.html?param=something"), is(".html"));
         assertThat(extensionOf("something/.html"), is(".html"));
         assertThat(extensionOf("something/.html?spong=moomintroll"), is(".html"));
         assertThat(extensionOf("/something.html?url=/something_else.xml"), is(".html"));
@@ -90,10 +92,8 @@ public class ConvertExtensionToAcceptHeaderTest {
         assertThat(request.url(), is(url(expectedAfterConversion)));
     }
 
-
     private String extensionOf(String url) {
-        Matches matches = ConvertExtensionToAcceptHeader.FILE_EXTENSION.findMatches(url);
-        return matches.isEmpty() ? null : matches.head().group(1);
+        return ConvertExtensionToAcceptHeader.fileExtension(url(url)).getOrNull();
     }
 
     private static class StubHttpHandler implements HttpHandler {

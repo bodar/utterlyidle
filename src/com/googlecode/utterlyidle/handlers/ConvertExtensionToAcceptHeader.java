@@ -13,13 +13,15 @@ import java.util.Iterator;
 import java.util.regex.MatchResult;
 
 import static com.googlecode.totallylazy.Callables.returnArgument;
+import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
+import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static javax.ws.rs.core.HttpHeaders.LOCATION;
 
 public class ConvertExtensionToAcceptHeader implements HttpHandler {
-    public static final Regex FILE_EXTENSION = regex("(\\.[^?/.]+?)(?:\\?.*)?$");
     private final Sequence<Pair<String, String>> replacements;
     private final HttpHandler decorated;
 
@@ -56,33 +58,38 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     private Predicate<? super Pair<String, String>> appliesTo(final Request request) {
         return new Predicate<Pair<String, String>>() {
             public boolean matches(Pair<String, String> extensionAndReplacementMimeType) {
-                Matches actual = fileExtension(request);
+                Option<String> actual = fileExtension(request);
                 String expected = extensionAndReplacementMimeType.first();
-                return !actual.isEmpty() && ("." + expected).equals(actual.head().group(1));
+                return !actual.isEmpty() && ("." + expected).equals(actual.get());
             }
         };
     }
 
-    private static Matches fileExtension(Request request) {
-        return FILE_EXTENSION.findMatches(request.url().toString());
+    public static Option<String> fileExtension(Request request) {
+        return fileExtension(request.url());
+    }
+
+    public static Option<String> fileExtension(Url url) {
+        String file = url.path().file();
+        return file.indexOf(".") < 0 ? none(String.class) : some(file.substring(file.lastIndexOf(".")));
+    }
+
+    private Url removeExtension(Url url) {
+        if(fileExtension(url).isEmpty()) return url;
+        String file = url.path().file();
+        String fileWithoutExtension = file.substring(0, file.lastIndexOf("."));
+        return url.replacePath(hierarchicalPath(url.path().segments().reverse().drop(1).reverse().add(fileWithoutExtension).toString("/")));
     }
 
     private Callable2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
         return new Callable2<Request, Pair<String, String>, Request>() {
             public Request call(Request request, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
-
                 request.headers().remove(HttpHeaders.ACCEPT);
                 request.headers().add(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second());
-                request.url(removeExtension(request.url(), fileExtension(request)));
+                request.url(removeExtension(request.url()));
                 return request;
             }
         };
-    }
-
-    private Url removeExtension(Url originalUrl, Matches fileExtension) {
-        MatchResult match = fileExtension.head();
-        String original = originalUrl.toString();
-        return url(original.substring(0, match.start(1)) + original.substring(match.start(1) + match.group(1).length()));
     }
 
     public static class Replacements implements Iterable<Pair<String, String>> {
