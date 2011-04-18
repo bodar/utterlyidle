@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
-public interface Server {
-    Server start() throws Exception;
+import java.io.Closeable;
 
-    Server stop() throws Exception;
+public interface Server extends Closeable {
 }

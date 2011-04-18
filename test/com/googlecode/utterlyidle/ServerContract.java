@@ -10,6 +10,9 @@ import com.googlecode.utterlyidle.io.Url;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.utterlyidle.io.Url.url;
 
+import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
+import com.googlecode.utterlyidle.modules.ApplicationScopedModule;
+import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -18,24 +21,44 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.containsString;
 
+import com.googlecode.yadic.Container;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
 
 public abstract class ServerContract {
-    protected abstract void ensureServerIsStarted(Application application) throws Exception;
+    protected Server server;
+    protected abstract Server createServer(CloseableCallable<Application> application) throws Exception;
 
     protected abstract int port();
 
     @Before
-    public void startServer() throws Exception {
-        ensureServerIsStarted(new RestApplication().add(new SingleResourceModule(HelloWorld.class)));
+    public void start() throws Exception {
+        server = createServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
     }
+
+    @After
+    public void stop() throws Exception {
+        server.close();
+    }
+
+    @Test
+    public void stoppingTheServerClosesTheApplication() throws Exception {
+        stop();
+        ApplicationCloseableCallable application = new ApplicationCloseableCallable();
+        server = createServer(application);
+        stop();
+        assertThat(application.closed(), is(true));
+    }
+
 
     @Test
     public void handlesGets() throws Exception {
@@ -115,8 +138,8 @@ public abstract class ServerContract {
     }
 
     public static class ResponseAsString implements Callable1<InputStream, Void> {
-        private String value;
 
+        private String value;
         public Void call(InputStream inputStream) {
             value = Strings.toString(inputStream);
             return Runnables.VOID;
@@ -124,6 +147,49 @@ public abstract class ServerContract {
 
         public String toString() {
             return value;
+        }
+
+    }
+
+    private class NullApplication implements Application {
+        public Container applicationScope() {
+            return null;
+        }
+
+        public <T> T usingRequestScope(Callable1<Container, T> callable) {
+            return null;
+        }
+
+        public <T> T usingArgumentScope(Request request, Callable1<Container, T> callable) {
+            return null;
+        }
+
+        public Application add(Module module) {
+            return null;
+        }
+
+        public void close() throws IOException {
+
+        }
+
+        public Response handle(Request request) throws Exception {
+            return null;
+        }
+    }
+
+    private class ApplicationCloseableCallable implements CloseableCallable<Application> {
+        private boolean closed = false;
+
+        public Application call() throws Exception {
+            return new NullApplication();
+        }
+
+        public void close() throws IOException {
+            closed = true;
+        }
+
+        public boolean closed() {
+            return closed;
         }
     }
 }
