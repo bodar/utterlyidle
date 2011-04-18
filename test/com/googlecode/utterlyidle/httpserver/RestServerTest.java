@@ -1,17 +1,16 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.utterlyidle.Application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.CloseableCallable;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerContract;
+import org.junit.AfterClass;
 
 public class RestServerTest extends ServerContract {
-    private static Server server;
-
-    protected void ensureServerIsStarted(Application application) throws Exception {
-        if(server!=null)return;
-        server = new RestServer(port(), basePath("/"), application);
+    protected Server createServer(CloseableCallable<Application> activator) throws Exception {
+        return new RestServer(port(), basePath("/"), activator);
     }
 
     protected int port() {

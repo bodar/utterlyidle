@@ -1,9 +1,8 @@
 package com.googlecode.utterlyidle.simpleframework;
 
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.ServerContract;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 
@@ -17,16 +16,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
 public class RestContainerTest extends ServerContract {
-    private static RestServer server;
-
-    protected void ensureServerIsStarted(Application application) throws Exception {
-        if(server!=null)return;
-        server = new RestServer(port(), basePath("/"), application);
-    }
-
-    @AfterClass
-    public static void stopServer() throws Exception {
-        server.stop();
+    protected Server createServer(CloseableCallable<Application> appActivator) throws Exception {
+        return new RestServer(port(), basePath("/"), appActivator);
     }
 
     protected int port() {
