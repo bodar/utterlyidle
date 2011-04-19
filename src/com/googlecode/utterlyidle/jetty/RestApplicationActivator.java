@@ -12,15 +12,20 @@ import java.io.IOException;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class RestApplicationActivator implements CloseableCallable<Application> {
-    private Application application;
+    private final Application application;
     private final Module[] modules;
 
     public RestApplicationActivator(Module... modules) {
+        this(new RestApplication(), modules);
+    }
+
+    public RestApplicationActivator(Application application, Module... modules) {
+        this.application = application;
         this.modules = modules;
     }
 
     public Application call() throws Exception {
-        application = sequence(modules).foldLeft(new RestApplication(), addToApplication());
+        sequence(modules).foldLeft(application, addToApplication());
         return application;
     }
 
