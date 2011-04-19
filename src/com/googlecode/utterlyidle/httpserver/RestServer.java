@@ -49,7 +49,7 @@ public class RestServer implements Server {
         server.createContext(basePath.toString(), new RestHandler(application.add(new RequestInstanceModule(basePath))));
         server.setExecutor(newFixedThreadPool(50));
         server.start();
-        url = url(format("http://%s:%s%s", server.getAddress().getAddress().getHostAddress(), server.getAddress().getPort(), basePath));
+        url = url(format("http://localhost:%s%s", server.getAddress().getPort(), basePath));
         System.out.println(format("Listening on %s, started HttpServer in %s msecs", url, calculateMilliseconds(start, nanoTime())));
         return server;
     }
