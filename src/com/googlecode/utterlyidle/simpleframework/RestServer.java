@@ -59,7 +59,7 @@ public class RestServer implements Server {
         Container container = new RestContainer(application.add(new RequestInstanceModule(basePath)));
         SocketConnection connection = new SocketConnection(container);
         InetSocketAddress socketAddress = (InetSocketAddress)connection.connect(new InetSocketAddress(port));
-        url = url(format("http://%s:%s%s", socketAddress.getAddress().getHostAddress(), socketAddress.getPort(), basePath));
+        url = url(format("http://localhost:%s%s", socketAddress.getPort(), basePath));
         System.out.println(format("Listening on %s, started SimpleWeb in %s msecs", url, calculateMilliseconds(start, nanoTime())));
         return connection;
     }
