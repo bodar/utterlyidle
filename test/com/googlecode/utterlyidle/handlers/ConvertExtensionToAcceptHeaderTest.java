@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.regex.Matches;
 import com.googlecode.utterlyidle.*;
 import org.junit.Test;
 
@@ -31,7 +30,7 @@ public class ConvertExtensionToAcceptHeaderTest {
         assertThat(extensionOf("actual.html?param=something"), is(".html"));
         assertThat(extensionOf("something/.html"), is(".html"));
         assertThat(extensionOf("something/.html?spong=moomintroll"), is(".html"));
-        assertThat(extensionOf("/something.html?url=/something_else.xml"), is(".html"));
+        assertThat(extensionOf("/something.html?getUrl=/something_else.xml"), is(".html"));
     }
 
     @Test
@@ -45,8 +44,8 @@ public class ConvertExtensionToAcceptHeaderTest {
         assertUrlConversion(converter, ".html?twigs=berries", "?twigs=berries");
 
         assertUrlConversion(converter,
-                "/something.html?url=/something_else.xml",
-                "/something?url=/something_else.xml");
+                "/something.html?getUrl=/something_else.xml",
+                "/something?getUrl=/something_else.xml");
 
         assertUrlConversion(converter, "resource.notmapped?twigs=berries", "resource.notmapped?twigs=berries");
     }
