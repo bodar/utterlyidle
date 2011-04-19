@@ -4,6 +4,7 @@ import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.CloseableCallable;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
+import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
@@ -14,6 +15,7 @@ import org.mortbay.jetty.servlet.ServletHolder;
 import java.io.Closeable;
 import java.io.IOException;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static java.lang.String.format;
@@ -22,10 +24,15 @@ import static java.lang.System.nanoTime;
 public class RestServer implements com.googlecode.utterlyidle.Server {
     private final Server server;
     private final Closeable appCloseable;
+    private Url url;
 
     public RestServer(final int port, final BasePath basePath, final CloseableCallable<Application> appActivator) throws Exception {
         appCloseable = appActivator;
         server = startApp(port, basePath, appActivator.call());
+    }
+
+    public RestServer(final BasePath basePath, final CloseableCallable<Application> appActivator) throws Exception {
+        this(0, basePath, appActivator);
     }
 
     public void close() throws IOException {
@@ -49,8 +56,16 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         context.setAttribute(Application.class.getCanonicalName(), application);
         context.addServlet(new ServletHolder(new ApplicationServlet()), "/*");
         server.start();
-        System.out.println(format("Listening on %s, started Jetty in %s msecs", port, calculateMilliseconds(start, nanoTime())));
+        url = Url.url(format("http://localhost:%s%s", getPortNumber(server), basePath));
+        System.out.println(format("Listening on %s, started Jetty in %s msecs", getPortNumber(server), calculateMilliseconds(start, nanoTime())));
         return server;
     }
 
+    private int getPortNumber(Server server) {
+        return sequence(server.getConnectors()).head().getLocalPort();
+    }
+
+    public Url getUrl() {
+        return url;
+    }
 }
