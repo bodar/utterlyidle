@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.Method;
@@ -13,15 +14,15 @@ public interface Activator {
 
     int priority();
 
-    PathMatcher pathMatcher(BasePath basePath);
+    Predicate<Request> pathMatcher(BasePath basePath);
 
-    MethodMatcher methodMatcher();
+    Predicate<Request>  methodMatcher();
 
-    ConsumesMimeMatcher consumesMatcher();
+    Predicate<Request>  consumesMatcher();
 
-    ProducesMimeMatcher producesMatcher();
+    Predicate<Request>  producesMatcher();
 
-    ArgumentsExtractor argumentMatcher();
+    Predicate<Request>  argumentMatcher();
 
     Method method();
 }

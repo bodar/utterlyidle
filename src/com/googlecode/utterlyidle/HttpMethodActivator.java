@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Exceptions;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
 
@@ -70,15 +70,15 @@ public class HttpMethodActivator implements Activator {
         return priorityExtractor.extract(method);
     }
 
-    public PathMatcher pathMatcher(BasePath basePath) {
+    public Predicate<Request> pathMatcher(BasePath basePath) {
         return new PathMatcher(basePath, uriTemplate);
     }
 
-    public MethodMatcher methodMatcher() {
+    public Predicate<Request>  methodMatcher() {
         return methodMatcher;
     }
 
-    public ConsumesMimeMatcher consumesMatcher() {
+    public Predicate<Request>  consumesMatcher() {
         return consumesMatcher;
     }
 
@@ -87,11 +87,11 @@ public class HttpMethodActivator implements Activator {
         return method.getDeclaringClass().getSimpleName() + "." + method.getName() + Sequences.sequence(method.getGenericParameterTypes()).toString("(", ", ", ")");
     }
 
-    public ProducesMimeMatcher producesMatcher() {
+    public Predicate<Request>  producesMatcher() {
         return producesMatcher;
     }
 
-    public ArgumentsExtractor argumentMatcher() {
+    public Predicate<Request>  argumentMatcher() {
         return argumentsExtractor;
     }
 
