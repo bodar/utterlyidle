@@ -1,7 +1,9 @@
-package com.googlecode.utterlyidle;
+package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.Extractor;
+import com.googlecode.utterlyidle.UriTemplate;
 
 import javax.ws.rs.Path;
 import java.lang.reflect.Method;
