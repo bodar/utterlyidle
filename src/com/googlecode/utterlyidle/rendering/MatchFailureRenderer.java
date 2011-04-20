@@ -36,14 +36,14 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
 
         for (Activator activator : value.matchesSoFar().filter(not(hidden()))) {
             Method method = activator.method();
-            final HttpMethod httpMethod = new HttpMethodExtractor().extract(method).get();
-            final UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
+            final String httpMethod = activator.httpMethod();
+            final UriTemplate uriTemplate = activator.uriTemplate();
             final ParametersExtractor parametersExtractor = new ParametersExtractor(method, arguments());
             final QueryParameters queries = parametersExtractor.extract(queryParameters(), QueryParam.class);
             final FormParameters forms = parametersExtractor.extract(formParameters(), FormParam.class);
             
             model.add("resources", model().
-                    add("method", httpMethod.value()).
+                    add("method", httpMethod).
                     add("uriTemplate", uriTemplate).
                     add("query", asModel(queries)).
                     add("form", asModel(forms)));
