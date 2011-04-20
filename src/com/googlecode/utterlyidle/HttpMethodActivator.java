@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.utterlyidle.annotations.Matchers;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -33,7 +32,6 @@ public class HttpMethodActivator implements Activator {
         this.argumentsExtractor = argumentsExtractor;
         this.priority = priority;
     }
-
 
     public String httpMethod() {
         return httpMethod;
