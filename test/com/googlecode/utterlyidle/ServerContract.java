@@ -17,13 +17,11 @@ import org.junit.Test;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.utterlyidle.io.Url.url;
+import static java.net.InetAddress.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -48,7 +46,7 @@ public abstract class ServerContract {
 
         String result = Strings.toString(urlConnection.getInputStream());
 
-        assertThat(result, is("Hello 127.0.0.1"));
+        assertThat(result, is("Hello " + getByName("localhost").getHostAddress()));
     }
 
     @Test
