@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.utterlyidle.annotations.Matchers;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -16,24 +17,23 @@ import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 
 public class HttpMethodActivator implements Activator {
     private final Method method;
-    private final ArgumentsExtractor argumentsExtractor;
-    private final ProducesMimeMatcher producesMatcher;
-    private final MethodMatcher methodMatcher;
-    private final ConsumesMimeMatcher consumesMatcher;
-    private final PriorityExtractor priorityExtractor;
     private final UriTemplate uriTemplate;
     private final String httpMethod;
+    private final Predicate<Request> consumesMatcher;
+    private final ProducesMimeMatcher producesMatcher;
+    private final RequestExtractor<Object[]> argumentsExtractor;
+    private final int priority;
 
-    public HttpMethodActivator(String httpMethod, Method method, Application application) {
-        this.httpMethod = httpMethod;
+    public HttpMethodActivator(Method method, UriTemplate uriTemplate, String httpMethod, Predicate<Request> consumesMatcher, ProducesMimeMatcher producesMatcher, RequestExtractor<Object[]> argumentsExtractor, int priority) {
         this.method = method;
-        uriTemplate = new UriTemplateExtractor().extract(method);
-        argumentsExtractor = new ArgumentsExtractor(method, uriTemplate, application);
-        producesMatcher = new ProducesMimeMatcher(method);
-        methodMatcher = new MethodMatcher(this.httpMethod);
-        consumesMatcher = new ConsumesMimeMatcher(method);
-        priorityExtractor = new PriorityExtractor(method);
+        this.uriTemplate = uriTemplate;
+        this.httpMethod = httpMethod;
+        this.consumesMatcher = consumesMatcher;
+        this.producesMatcher = producesMatcher;
+        this.argumentsExtractor = argumentsExtractor;
+        this.priority = priority;
     }
+
 
     public String httpMethod() {
         return httpMethod;
@@ -55,7 +55,7 @@ public class HttpMethodActivator implements Activator {
             return (Response) result;
         }
         if (result instanceof Either) {
-            result = ((Either)result).value();
+            result = ((Either) result).value();
         }
 
         return response().
@@ -73,7 +73,7 @@ public class HttpMethodActivator implements Activator {
     }
 
     public int priority() {
-        return priorityExtractor.extract(method);
+        return priority;
     }
 
     public Predicate<Request> pathMatcher(BasePath basePath) {
@@ -84,11 +84,11 @@ public class HttpMethodActivator implements Activator {
         return uriTemplate;
     }
 
-    public Predicate<Request>  methodMatcher() {
-        return methodMatcher;
+    public Predicate<Request> methodMatcher() {
+        return new MethodMatcher(httpMethod);
     }
 
-    public Predicate<Request>  consumesMatcher() {
+    public Predicate<Request> consumesMatcher() {
         return consumesMatcher;
     }
 
@@ -97,11 +97,11 @@ public class HttpMethodActivator implements Activator {
         return method.getDeclaringClass().getSimpleName() + "." + method.getName() + Sequences.sequence(method.getGenericParameterTypes()).toString("(", ", ", ")");
     }
 
-    public Predicate<Request>  producesMatcher() {
+    public Predicate<Request> producesMatcher() {
         return producesMatcher;
     }
 
-    public Predicate<Request>  argumentMatcher() {
+    public Predicate<Request> argumentMatcher() {
         return argumentsExtractor;
     }
 
