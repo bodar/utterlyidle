@@ -52,9 +52,9 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         return template.toString();
     }
 
-    private Model asModel(Parameters parameters) {
+    private Model asModel(Parameters<String, String> parameters) {
         Model result = model();
-        for (Pair<String, String> parameter : (Iterable<Pair<String,String>>)parameters) {
+        for (Pair<String, String> parameter : parameters) {
             result.add(parameter.first(), parameter.second());
         }
         return result;
