@@ -17,13 +17,11 @@ import org.junit.Test;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.utterlyidle.io.Url.url;
+import static java.net.InetAddress.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -40,6 +38,26 @@ public abstract class ServerContract {
     @After
     public void stop() throws Exception {
         server.close();
+    }
+
+    @Test
+    public void setXForwardedForIfRequestDoesntHaveOne() throws Exception {
+        URLConnection urlConnection = urlOf("helloworld/xff").openConnection();
+
+        String result = Strings.toString(urlConnection.getInputStream());
+
+        assertThat(result, is("Hello " + getByName("localhost").getHostAddress()));
+    }
+
+    @Test
+    public void preservesXForwardedForIfRequestHasOne() throws Exception {
+        URLConnection urlConnection = urlOf("helloworld/xff").openConnection();
+        urlConnection.setRequestProperty("X-Forwarded-For", "sky.com");
+
+
+        String result = Strings.toString(urlConnection.getInputStream());
+
+        assertThat(result, is("Hello sky.com"));
     }
 
     @Test
