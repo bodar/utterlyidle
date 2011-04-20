@@ -16,6 +16,8 @@ import static com.googlecode.totallylazy.Exceptions.printStackTrace;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
+import static com.googlecode.utterlyidle.HeaderParameters.*;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -59,7 +61,7 @@ public class RestHandler implements HttpHandler {
         return Requests.request(
                 httpExchange.getRequestMethod(),
                 url(httpExchange.getRequestURI().toString()),
-                convert(httpExchange.getRequestHeaders()),
+                withXForwardedFor(clientAddress(httpExchange.getRemoteAddress().getAddress()), convert(httpExchange.getRequestHeaders())),
                 bytes(httpExchange.getRequestBody())
         );
     }
@@ -73,7 +75,7 @@ public class RestHandler implements HttpHandler {
     }
 
     public static HeaderParameters convert(Map<String, List<String>> requestHeaders) {
-        HeaderParameters result = HeaderParameters.headerParameters();
+        HeaderParameters result = headerParameters();
         for (Map.Entry<String, List<String>> entry : requestHeaders.entrySet()) {
             for (String value : entry.getValue()) {
                 result.add(entry.getKey(), value);

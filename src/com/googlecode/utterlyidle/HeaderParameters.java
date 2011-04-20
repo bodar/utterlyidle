@@ -2,8 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Strings;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
@@ -31,5 +29,12 @@ public class HeaderParameters extends Parameters<String, String> {
                 return pair.toString(start, separator, end);
             }
         };
+    }
+
+    public static HeaderParameters withXForwardedFor(ClientAddress clientAddress, HeaderParameters headerParameters) {
+        if(!headerParameters.contains("X-Forwarded-For")) {
+            headerParameters.add("X-Forwarded-For", clientAddress.value());
+        }
+        return headerParameters;
     }
 }
