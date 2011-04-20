@@ -1,6 +1,8 @@
-package com.googlecode.utterlyidle;
+package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.utterlyidle.Param;
+import com.googlecode.utterlyidle.Parameters;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
