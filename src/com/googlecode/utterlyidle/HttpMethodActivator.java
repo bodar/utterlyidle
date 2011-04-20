@@ -22,15 +22,21 @@ public class HttpMethodActivator implements Activator {
     private final ConsumesMimeMatcher consumesMatcher;
     private final PriorityExtractor priorityExtractor;
     private final UriTemplate uriTemplate;
+    private final String httpMethod;
 
     public HttpMethodActivator(String httpMethod, Method method, Application application) {
+        this.httpMethod = httpMethod;
         this.method = method;
         uriTemplate = new UriTemplateExtractor().extract(method);
         argumentsExtractor = new ArgumentsExtractor(method, uriTemplate, application);
         producesMatcher = new ProducesMimeMatcher(method);
-        methodMatcher = new MethodMatcher(httpMethod);
+        methodMatcher = new MethodMatcher(this.httpMethod);
         consumesMatcher = new ConsumesMimeMatcher(method);
         priorityExtractor = new PriorityExtractor(method);
+    }
+
+    public String httpMethod() {
+        return httpMethod;
     }
 
     public float matchQuality(Request request) {
@@ -72,6 +78,10 @@ public class HttpMethodActivator implements Activator {
 
     public Predicate<Request> pathMatcher(BasePath basePath) {
         return new PathMatcher(basePath, uriTemplate);
+    }
+
+    public UriTemplate uriTemplate() {
+        return uriTemplate;
     }
 
     public Predicate<Request>  methodMatcher() {
