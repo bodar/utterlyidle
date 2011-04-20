@@ -23,9 +23,8 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.HttpHeaders;
-
+import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
+import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 
@@ -80,7 +79,7 @@ public class RestContainer implements Container {
                 request.getMethod(),
                 request.getPath().toString(),
                 query(request),
-                headers(request),
+                withXForwardedFor(clientAddress(request.getClientAddress().getAddress()),headers(request)),
                 bytes(request.getInputStream()));
     }
 
