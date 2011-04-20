@@ -43,7 +43,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Either<MatchFailure, Activator> findActivator(BasePath basePath, final Request request) {
-        final Either<MatchFailure, Sequence<HttpMethodActivator>> result = filter(
+        final Either<MatchFailure, Sequence<Activator>> result = filter(
                 pair(pathMatches(basePath, request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
@@ -58,54 +58,54 @@ public class BaseHandler implements HttpHandler {
         return right((Activator) result.right().sortBy(matchQuality(request)).head());
     }
 
-    private Either<MatchFailure, Sequence<HttpMethodActivator>> filter(Pair<Predicate<HttpMethodActivator>, Status>... filterAndResult) {
-        Sequence<HttpMethodActivator> sequence = sequence(activators.activators());
-        for (Pair<Predicate<HttpMethodActivator>, Status> pair : filterAndResult) {
-            Sequence<HttpMethodActivator> matchesSoFar = sequence;
-            sequence = sequence.filter(pair.first());
-            if (sequence.isEmpty()) {
+    private Either<MatchFailure, Sequence<Activator>> filter(Pair<Predicate<Activator>, Status>... filterAndResult) {
+        Sequence<Activator> activators = sequence(this.activators.activators());
+        for (Pair<Predicate<Activator>, Status> pair : filterAndResult) {
+            Sequence<Activator> matchesSoFar = activators;
+            activators = activators.filter(pair.first());
+            if (activators.isEmpty()) {
                 return left(matchFailure(pair.second(), matchesSoFar));
             }
         }
-        return right(sequence);
+        return right(activators);
     }
 
 
-    private Predicate<HttpMethodActivator> argumentsMatches(final Request request) {
-        return new Predicate<HttpMethodActivator>() {
-            public boolean matches(HttpMethodActivator httpMethodActivator) {
+    private Predicate<Activator> argumentsMatches(final Request request) {
+        return new Predicate<Activator>() {
+            public boolean matches(Activator httpMethodActivator) {
                 return httpMethodActivator.argumentMatcher().matches(request);
             }
         };
     }
 
-    private Predicate<HttpMethodActivator> producesMatches(final Request request) {
-        return new Predicate<HttpMethodActivator>() {
-            public boolean matches(HttpMethodActivator httpMethodActivator) {
+    private Predicate<Activator> producesMatches(final Request request) {
+        return new Predicate<Activator>() {
+            public boolean matches(Activator httpMethodActivator) {
                 return httpMethodActivator.producesMatcher().matches(request);
             }
         };
     }
 
-    private Predicate<HttpMethodActivator> contentMatches(final Request request) {
-        return new Predicate<HttpMethodActivator>() {
-            public boolean matches(HttpMethodActivator httpMethodActivator) {
+    private Predicate<Activator> contentMatches(final Request request) {
+        return new Predicate<Activator>() {
+            public boolean matches(Activator httpMethodActivator) {
                 return httpMethodActivator.consumesMatcher().matches(request);
             }
         };
     }
 
-    private Predicate<HttpMethodActivator> methodMatches(final Request request) {
-        return new Predicate<HttpMethodActivator>() {
-            public boolean matches(HttpMethodActivator httpMethodActivator) {
+    private Predicate<Activator> methodMatches(final Request request) {
+        return new Predicate<Activator>() {
+            public boolean matches(Activator httpMethodActivator) {
                 return httpMethodActivator.methodMatcher().matches(request);
             }
         };
     }
 
-    private Predicate<HttpMethodActivator> pathMatches(final BasePath basePath, final Request request) {
-        return new Predicate<HttpMethodActivator>() {
-            public boolean matches(HttpMethodActivator httpMethodActivator) {
+    private Predicate<Activator> pathMatches(final BasePath basePath, final Request request) {
+        return new Predicate<Activator>() {
+            public boolean matches(Activator httpMethodActivator) {
                 return httpMethodActivator.pathMatcher(basePath).matches(request);
             }
         };

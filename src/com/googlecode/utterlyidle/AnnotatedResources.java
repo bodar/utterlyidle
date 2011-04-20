@@ -8,7 +8,7 @@ import java.util.List;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class AnnotatedResources implements Resources {
-    private final List<HttpMethodActivator> activators = new ArrayList<HttpMethodActivator>();
+    private final List<Activator> activators = new ArrayList<Activator>();
     private final Application application;
 
     public AnnotatedResources(Application application) {
@@ -18,12 +18,16 @@ public class AnnotatedResources implements Resources {
     public void add(Class resource) {
         for (final Method method : resource.getMethods()) {
             for (final HttpMethod httpMethod : new HttpMethodExtractor().extract(method)) {
-                activators.add(new HttpMethodActivator(httpMethod.value(), method, application));
+                add(new HttpMethodActivator(httpMethod.value(), method, application));
             }
         }
     }
 
-    public Iterable<HttpMethodActivator> activators() {
+    public void add(Activator activator) {
+        activators.add(activator);
+    }
+
+    public Iterable<Activator> activators() {
         return activators;
     }
 }

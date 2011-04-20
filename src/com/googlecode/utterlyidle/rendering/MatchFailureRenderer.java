@@ -34,8 +34,8 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         model.add("base", basePath);
         model.add("status", value.status());
 
-        for (HttpMethodActivator httpMethodActivator : value.matchesSoFar().filter(not(hidden()))) {
-            Method method = httpMethodActivator.method();
+        for (Activator activator : value.matchesSoFar().filter(not(hidden()))) {
+            Method method = activator.method();
             final HttpMethod httpMethod = new HttpMethodExtractor().extract(method).get();
             final UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
             final ParametersExtractor parametersExtractor = new ParametersExtractor(method, arguments());
@@ -60,10 +60,10 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         return result;
     }
 
-    private Predicate<? super HttpMethodActivator> hidden() {
-        return new Predicate<HttpMethodActivator>() {
-            public boolean matches(HttpMethodActivator httpMethodActivator) {
-                return httpMethodActivator.method().getAnnotation(Hidden.class) != null;
+    private Predicate<? super Activator> hidden() {
+        return new Predicate<Activator>() {
+            public boolean matches(Activator activator) {
+                return activator.method().getAnnotation(Hidden.class) != null;
             }
         };
     }

@@ -4,14 +4,14 @@ import com.googlecode.totallylazy.Sequence;
 
 public class MatchFailure {
     private final Status status;
-    private final Sequence<HttpMethodActivator> matchesSoFar;
+    private final Sequence<Activator> matchesSoFar;
 
-    public MatchFailure(Status status, Sequence<HttpMethodActivator> matchesSoFar) {
+    public MatchFailure(Status status, Sequence<Activator> matchesSoFar) {
         this.status = status;
         this.matchesSoFar = matchesSoFar;
     }
 
-    public static MatchFailure matchFailure(Status status, Sequence<HttpMethodActivator> matchesSoFar) {
+    public static MatchFailure matchFailure(Status status, Sequence<Activator> matchesSoFar) {
         return new MatchFailure(status, matchesSoFar);
     }
 
@@ -19,7 +19,7 @@ public class MatchFailure {
         return status;
     }
 
-    public Sequence<HttpMethodActivator> matchesSoFar() {
+    public Sequence<Activator> matchesSoFar() {
         return matchesSoFar;
     }
 
