@@ -8,12 +8,6 @@ import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class PriorityExtractor implements Extractor<Method, Integer>{
-    private final Method method;
-
-    public PriorityExtractor(Method method) {
-        this.method = method;
-    }
-
     public Integer extract(Method method) {
         return sequence(method.getAnnotation(Priority.class), method.getDeclaringClass().getAnnotation(Priority.class)).
                 find(notNullValue()).map(value()).getOrElse(Priority.Medium);

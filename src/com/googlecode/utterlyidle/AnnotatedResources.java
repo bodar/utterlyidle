@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.annotations.Matchers;
+
 import javax.ws.rs.HttpMethod;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class AnnotatedResources implements Resources {
     public void add(Class resource) {
         for (final Method method : resource.getMethods()) {
             for (final HttpMethod httpMethod : new HttpMethodExtractor().extract(method)) {
-                add(new HttpMethodActivator(httpMethod.value(), method, application));
+                add(Matchers.httpMethodActivator(httpMethod.value(), method, application));
             }
         }
     }
