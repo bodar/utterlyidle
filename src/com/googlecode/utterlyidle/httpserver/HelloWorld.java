@@ -27,6 +27,12 @@ public class HelloWorld {
         return hello(name);
     }
 
+    @GET
+    @Path("helloworld/xff")
+    public String xForwardedFor(@HeaderParam("X-Forwarded-For") String forwardedFor){
+        return hello(forwardedFor);
+    }
+
     @POST
     @Path("helloworld/formparam")
     public String post(@FormParam("name") String name){
