@@ -43,6 +43,26 @@ public abstract class ServerContract {
     }
 
     @Test
+    public void setXForwardedForIfRequestDoesntHaveOne() throws Exception {
+        URLConnection urlConnection = urlOf("helloworld/xff").openConnection();
+
+        String result = Strings.toString(urlConnection.getInputStream());
+
+        assertThat(result, is("Hello 127.0.0.1"));
+    }
+
+    @Test
+    public void preservesXForwardedForIfRequestHasOne() throws Exception {
+        URLConnection urlConnection = urlOf("helloworld/xff").openConnection();
+        urlConnection.setRequestProperty("X-Forwarded-For", "sky.com");
+
+
+        String result = Strings.toString(urlConnection.getInputStream());
+
+        assertThat(result, is("Hello sky.com"));
+    }
+
+    @Test
     public void stoppingTheServerClosesTheApplication() throws Exception {
         stop();
         ApplicationCloseableCallable application = new ApplicationCloseableCallable();

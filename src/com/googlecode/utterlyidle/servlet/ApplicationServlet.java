@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.ClientAddress;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,6 +15,8 @@ import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.utterlyidle.ClientAddress.*;
+import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.io.Url.url;
 
 public class ApplicationServlet extends HttpServlet {
@@ -54,7 +57,7 @@ public class ApplicationServlet extends HttpServlet {
             return Requests.request(
                     request.getMethod(),
                     url(request.getRequestURI() + queryString(request.getQueryString())),
-                    convertToHeaderParameters(request),
+                    withXForwardedFor(clientAddress(request.getRemoteAddr()), convertToHeaderParameters(request)),
                     bytes(request.getInputStream())
             );
         } catch (IOException e) {
