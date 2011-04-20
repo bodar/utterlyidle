@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.annotations.HttpMethodExtractor;
 import com.googlecode.utterlyidle.annotations.Matchers;
 
 import javax.ws.rs.HttpMethod;

@@ -2,13 +2,13 @@ package com.googlecode.utterlyidle.rendering;
 
 import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.annotations.ParametersExtractor;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import javax.ws.rs.FormParam;
-import javax.ws.rs.HttpMethod;
 import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.lang.reflect.Method;
