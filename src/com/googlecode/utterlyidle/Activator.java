@@ -25,4 +25,8 @@ public interface Activator {
     Predicate<Request>  argumentMatcher();
 
     Method method();
+
+    String httpMethod();
+
+    UriTemplate uriTemplate();
 }
