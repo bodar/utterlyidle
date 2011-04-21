@@ -18,17 +18,17 @@ public class HttpMethodActivator implements Activator {
     private final Method method;
     private final UriTemplate uriTemplate;
     private final String httpMethod;
-    private final Predicate<Request> consumesMatcher;
+    private final String consumes;
     private final ProducesMimeMatcher producesMatcher;
     private final RequestExtractor<Object[]> argumentsExtractor;
     private final int priority;
 
-    public HttpMethodActivator(Method method, UriTemplate uriTemplate, String httpMethod, Predicate<Request> consumesMatcher, ProducesMimeMatcher producesMatcher, RequestExtractor<Object[]> argumentsExtractor, int priority) {
+    public HttpMethodActivator(Method method, UriTemplate uriTemplate, String httpMethod, String consumes, String produces, RequestExtractor<Object[]> argumentsExtractor, int priority) {
         this.method = method;
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
-        this.consumesMatcher = consumesMatcher;
-        this.producesMatcher = producesMatcher;
+        this.consumes = consumes;
+        this.producesMatcher = new ProducesMimeMatcher(produces);
         this.argumentsExtractor = argumentsExtractor;
         this.priority = priority;
     }
@@ -87,7 +87,7 @@ public class HttpMethodActivator implements Activator {
     }
 
     public Predicate<Request> consumesMatcher() {
-        return consumesMatcher;
+        return new ConsumesMimeMatcher(consumes);
     }
 
     @Override
