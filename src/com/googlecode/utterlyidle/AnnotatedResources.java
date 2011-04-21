@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.annotations.HttpMethodExtractor;
 import com.googlecode.utterlyidle.annotations.Matchers;
+import com.googlecode.utterlyidle.dsl.ActivatorBuilder;
 
 import javax.ws.rs.HttpMethod;
 import java.lang.reflect.Method;
@@ -28,6 +29,10 @@ public class AnnotatedResources implements Resources {
 
     public void add(Activator activator) {
         activators.add(activator);
+    }
+
+    public void add(ActivatorBuilder activator) {
+        activators.add(activator.build(application));
     }
 
     public Iterable<Activator> activators() {

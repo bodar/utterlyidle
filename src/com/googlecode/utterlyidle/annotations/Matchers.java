@@ -24,12 +24,12 @@ import static com.googlecode.utterlyidle.annotations.Param.param;
 import static com.googlecode.utterlyidle.annotations.Param.toParam;
 
 public class Matchers {
-    public static ProducesMimeMatcher producesMimeMatcher(Method method) {
-        return new ProducesMimeMatcher(extractMediaType(method, Produces.class));
+    public static String producesMimeMatcher(Method method) {
+        return extractMediaType(method, Produces.class);
     }
 
-    public static ConsumesMimeMatcher consumesMimeMatcher(Method method) {
-        return new ConsumesMimeMatcher(extractMediaType(method, Consumes.class));
+    public static String consumesMimeMatcher(Method method) {
+        return extractMediaType(method, Consumes.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -48,7 +48,9 @@ public class Matchers {
 
     public static HttpMethodActivator httpMethodActivator(String httpMethod, Method method, Application application) {
         UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
-        return new HttpMethodActivator(method, uriTemplate, httpMethod, consumesMimeMatcher(method), producesMimeMatcher(method), new ParametersExtractor(uriTemplate, application, extractTypesAndNames(method)), new PriorityExtractor().extract(method));
+        return new HttpMethodActivator(method, uriTemplate, httpMethod,
+                consumesMimeMatcher(method), producesMimeMatcher(method),
+                new ParametersExtractor(uriTemplate, application, extractTypesAndNames(method)), new PriorityExtractor().extract(method));
     }
 
     private static Sequence<Pair<Type, Option<NamedParameter>>> extractTypesAndNames(Method method) {
