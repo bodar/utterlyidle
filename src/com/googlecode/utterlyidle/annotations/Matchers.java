@@ -10,32 +10,29 @@ import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.annotations.Param.toParam;
 
 public class Matchers {
     public static ProducesMimeMatcher producesMimeMatcher(Method method) {
-        return new ProducesMimeMatcher(sequence(method.getAnnotation(Produces.class), method.getDeclaringClass().getAnnotation(Produces.class)).
-                find(notNullValue()).map(firstValue()).getOrElse(MediaType.WILDCARD));
-    }
-
-    private static Callable1<Produces, String> firstValue() {
-        return new Callable1<Produces, String>() {
-            public String call(Produces produces) throws Exception {
-                return sequence(produces.value()).head();
-            }
-        };
-    }
-
-    private static Callable1<Consumes, String> firstConsumesValue() {
-        return new Callable1<Consumes, String>() {
-            public String call(Consumes consumes) throws Exception {
-                return sequence(consumes.value()).head();
-            }
-        };
+        return new ProducesMimeMatcher(extractMediaType(method, Produces.class));
     }
 
     public static ConsumesMimeMatcher consumesMimeMatcher(Method method) {
-        return new ConsumesMimeMatcher(sequence(method.getAnnotation(Consumes.class), method.getDeclaringClass().getAnnotation(Consumes.class)).
-                find(notNullValue()).map(firstConsumesValue()).getOrElse(MediaType.WILDCARD));
+        return new ConsumesMimeMatcher(extractMediaType(method, Consumes.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static String extractMediaType(Method method, Class annotation) {
+        return sequence(method.getAnnotation(annotation), method.getDeclaringClass().getAnnotation(annotation)).
+                find(notNullValue()).map(toParam()).map(firstValue()).getOrElse(MediaType.WILDCARD);
+    }
+
+    private static Callable1<Param, String> firstValue() {
+        return new Callable1<Param, String>() {
+            public String call(Param param) throws Exception {
+                return sequence(param.<String[]>value()).head();
+            }
+        };
     }
 
     public static HttpMethodActivator httpMethodActivator(String httpMethod, Method method, Application application) {
