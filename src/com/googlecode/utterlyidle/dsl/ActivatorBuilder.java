@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
+import javax.ws.rs.HttpMethod;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -16,7 +17,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 public class ActivatorBuilder {
     private Method method;
     private UriTemplate uriTemplate;
-    private String httpMethod = "GET";
+    private String httpMethod = HttpMethod.GET;
     private String consumes = "*/*";
     private String produces = "*/*";
     private int priority = 0;
@@ -68,6 +69,18 @@ public class ActivatorBuilder {
 
     public static ActivatorBuilder get(String path) {
         return new ActivatorBuilder().path(path);
+    }
+
+    public static ActivatorBuilder post(String path) {
+        return new ActivatorBuilder().httpMethod(HttpMethod.POST).path(path);
+    }
+
+    public static ActivatorBuilder delete(String path) {
+        return new ActivatorBuilder().httpMethod(HttpMethod.DELETE).path(path);
+    }
+
+    public static ActivatorBuilder put(String path) {
+        return new ActivatorBuilder().httpMethod(HttpMethod.PUT).path(path);
     }
 
     private static ThreadLocalParameters parameters = new ThreadLocalParameters();
