@@ -13,11 +13,14 @@ import javax.ws.rs.core.MediaType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.annotations.Param.param;
 import static com.googlecode.utterlyidle.annotations.Param.toParam;
 
 public class Matchers {
@@ -52,30 +55,25 @@ public class Matchers {
         return sequence(method.getGenericParameterTypes()).zip(convertToAnnotationsToNamedParameter(method));
     }
 
+    private static Map<Class<? extends Annotation>, Class<? extends Parameters<String, String>>> supportedAnnotations = new HashMap<Class<? extends Annotation>, Class<? extends Parameters<String, String>>> (){{
+        put(QueryParam.class, QueryParameters.class);
+        put(FormParam.class, FormParameters.class);
+        put(PathParam.class, PathParameters.class);
+        put(HeaderParam.class, HeaderParameters.class);
+        put(CookieParam.class, CookieParameters.class);
+    }};
+
     private static Sequence<Option<NamedParameter>> convertToAnnotationsToNamedParameter(final Method method) {
         return sequence(method.getParameterAnnotations()).map(new Callable1<Annotation[], Option<NamedParameter>>() {
             public Option<NamedParameter> call(Annotation[] annotations) throws Exception {
                 for (final Param param : sequence(annotations).map(toParam())) {
-                    if (param.annotation() instanceof QueryParam) {
-                        return some(new NamedParameter(param.<String>value(), QueryParameters.class));
-                    }
-                    if (param.annotation() instanceof FormParam) {
-                        return some(new NamedParameter(param.<String>value(), FormParameters.class));
-
-                    }
-                    if (param.annotation() instanceof PathParam) {
-                        return some(new NamedParameter(param.<String>value(), PathParameters.class));
-                    }
-                    if (param.annotation() instanceof HeaderParam) {
-                        return some(new NamedParameter(param.<String>value(), HeaderParameters.class));
-                    }
-                    if (param.annotation() instanceof CookieParam) {
-                        return some(new NamedParameter(param.<String>value(), CookieParameters.class));
+                    Class<? extends Annotation> key = param.annotation().annotationType();
+                    if(supportedAnnotations.containsKey(key)){
+                        return some(new NamedParameter(param.<String>value(), supportedAnnotations.get(key)));
                     }
                 }
                 return none();
             }
         });
     }
-
 }
