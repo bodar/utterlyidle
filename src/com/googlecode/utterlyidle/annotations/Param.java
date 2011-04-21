@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle;
+package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
@@ -45,8 +45,8 @@ public class Param {
         return new Param(annotation);
     }
 
-    public String value() {
-        return getValue(annotation);
+    public <T> T value() {
+        return this.<T>getValue(annotation);
     }
 
     public static <T> T getValue(Annotation annotation) {

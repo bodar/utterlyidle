@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.*;
-import com.googlecode.utterlyidle.Param;
 import com.googlecode.utterlyidle.Parameters;
 
 import java.lang.annotation.Annotation;
@@ -9,8 +8,8 @@ import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.Param.isParam;
-import static com.googlecode.utterlyidle.Param.toParam;
+import static com.googlecode.utterlyidle.annotations.Param.isParam;
+import static com.googlecode.utterlyidle.annotations.Param.toParam;
 
 public class ParametersExtractor {
     private Sequence<Pair<Object,Annotation[]>> pairs;
