@@ -64,7 +64,8 @@ public class HttpMethodActivator implements Activator {
 
     private Object getResponse(Request request, Object instance) throws Exception {
         try {
-            return method.invoke(instance, argumentsExtractor.extract(request));
+            Object[] arguments = argumentsExtractor.extract(request);
+            return method.invoke(instance, arguments);
         } catch (InvocationTargetException e) {
             throw toException(e.getCause());
         }
