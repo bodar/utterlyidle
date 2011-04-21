@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.annotations;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 
+import javax.ws.rs.QueryParam;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
@@ -59,5 +60,9 @@ public class Param {
         } catch (IllegalAccessException e) {
             throw new UnsupportedOperationException(e);
         }
+    }
+
+    public Annotation annotation() {
+        return annotation;
     }
 }
