@@ -1,15 +1,12 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.utterlyidle.annotations.Param;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.yadic.Container;
-import com.googlecode.yadic.SimpleContainer;
-import com.googlecode.yadic.generics.TypeFor;
-import com.googlecode.yadic.resolvers.OptionResolver;
 import com.googlecode.yadic.resolvers.ProgrammerErrorResolver;
 
 import javax.ws.rs.*;
-import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -18,10 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.Param.isParam;
-import static com.googlecode.utterlyidle.Param.toParam;
+import static com.googlecode.utterlyidle.annotations.Param.isParam;
+import static com.googlecode.utterlyidle.annotations.Param.toParam;
 import static com.googlecode.yadic.resolvers.Resolvers.create;
 
 public class ArgumentsExtractor implements RequestExtractor<Object[]> {
@@ -46,10 +42,10 @@ public class ArgumentsExtractor implements RequestExtractor<Object[]> {
 
     public static <T extends Parameters<String, String>> String extractParam(Container container, Param param, Class<T> aClass) {
         T params = container.get(aClass);
-        if (!params.contains(param.value())) {
+        if (!params.contains(param.<String>value())) {
             throw new IllegalArgumentException();
         }
-        return params.getValue(param.value());
+        return params.getValue(param.<String>value());
     }
 
     public Object[] extract(final Request request) {
