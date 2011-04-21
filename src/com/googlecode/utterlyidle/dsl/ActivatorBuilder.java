@@ -31,6 +31,21 @@ public class ActivatorBuilder {
         return this;
     }
 
+    public ActivatorBuilder consumes(String value) {
+        this.consumes = value;
+        return this;
+    }
+
+    public ActivatorBuilder produces(String value) {
+        this.produces = value;
+        return this;
+    }
+
+    public ActivatorBuilder priority(int value) {
+        this.priority = value;
+        return this;
+    }
+
     public ActivatorBuilder method(Method method) {
         this.method = method;
         return this;
