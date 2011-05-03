@@ -19,7 +19,7 @@ public class HttpMethodActivator implements Activator {
     private final UriTemplate uriTemplate;
     private final String httpMethod;
     private final String consumes;
-    private final ProducesMimeMatcher producesMatcher;
+    private final String produces;
     private final RequestExtractor<Object[]> argumentsExtractor;
     private final int priority;
 
@@ -28,7 +28,7 @@ public class HttpMethodActivator implements Activator {
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
         this.consumes = consumes;
-        this.producesMatcher = new ProducesMimeMatcher(produces);
+        this.produces = produces;
         this.argumentsExtractor = argumentsExtractor;
         this.priority = priority;
     }
@@ -38,7 +38,7 @@ public class HttpMethodActivator implements Activator {
     }
 
     public float matchQuality(Request request) {
-        return producesMatcher.matchQuality(request);
+        return producesMatcher().matchQuality(request);
     }
 
     public int numberOfArguments() {
@@ -57,7 +57,7 @@ public class HttpMethodActivator implements Activator {
         }
 
         return response().
-                header(HttpHeaders.CONTENT_TYPE, producesMatcher.mimeType()).
+                header(HttpHeaders.CONTENT_TYPE, producesMatcher().mimeType()).
                 entity(result).
                 status(Status.OK);
     }
@@ -96,8 +96,8 @@ public class HttpMethodActivator implements Activator {
         return method.getDeclaringClass().getSimpleName() + "." + method.getName() + Sequences.sequence(method.getGenericParameterTypes()).toString("(", ", ", ")");
     }
 
-    public Predicate<Request> producesMatcher() {
-        return producesMatcher;
+    public ProducesMimeMatcher producesMatcher() {
+        return new ProducesMimeMatcher(produces);
     }
 
     public Predicate<Request> argumentMatcher() {
