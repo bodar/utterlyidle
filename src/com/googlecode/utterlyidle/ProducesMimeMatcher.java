@@ -2,8 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Predicate;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import static com.googlecode.utterlyidle.Accept.accept;
 
 public class ProducesMimeMatcher implements Predicate<Request> {
@@ -14,17 +12,11 @@ public class ProducesMimeMatcher implements Predicate<Request> {
     }
 
     public boolean matches(Request request) {
-        if (request.headers().contains(HttpHeaders.ACCEPT)) {
-            return accept(request.headers().getValue(HttpHeaders.ACCEPT)).contains(mimeType);
-        }
-        return true;
+       return accept(request).contains(mimeType);
     }
 
     public float matchQuality(Request request) {
-        if (request.headers().contains(HttpHeaders.ACCEPT)) {
-            return accept(request.headers().getValue(HttpHeaders.ACCEPT)).quality(mimeType);
-        }
-        return 1.0f;
+       return accept(request).quality(mimeType);
     }
 
     public String mimeType() {

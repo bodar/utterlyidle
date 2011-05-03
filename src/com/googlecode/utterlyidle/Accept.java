@@ -3,13 +3,14 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import com.googlecode.totallylazy.regex.Regex;
 
-import javax.ws.rs.core.MediaType;
 import java.util.regex.MatchResult;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.Float.valueOf;
+import static javax.ws.rs.core.HttpHeaders.ACCEPT;
+import static javax.ws.rs.core.MediaType.WILDCARD;
 
 public class Accept {
     private static Regex regex = Regex.regex("([^,;\\s]+)(;\\s*q=([0-9\\.]+))?,?");
@@ -24,13 +25,13 @@ public class Accept {
     }
 
     public float quality(String value) {
-        return mediaRanges.find(sameValue(value)).get().quality;
+        return mediaRanges.find(sameValue(value)).get().quality();
     }
 
     private Predicate<MediaRange> sameValue(final String value) {
         return new Predicate<MediaRange>() {
             public boolean matches(MediaRange mediaRange) {
-                if (mediaRange.value().equals(MediaType.WILDCARD)) {
+                if (mediaRange.value().equals(WILDCARD)) {
                     return true;
                 }
                 return mediaRange.value().equals(value);
@@ -46,5 +47,12 @@ public class Accept {
             }
         });
         return new Accept(mediaRanges);
+    }
+
+    public static Accept accept(Request request) {
+        if (request.headers().contains(ACCEPT)) {
+            return accept(request.headers().getValue(ACCEPT));
+        }
+        return new Accept(sequence(new MediaRange("*/*", 1.0f)));
     }
 }
