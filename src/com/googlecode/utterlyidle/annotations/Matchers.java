@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.FormParameters;
 import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.Hidden;
 import com.googlecode.utterlyidle.HttpMethodActivator;
 import com.googlecode.utterlyidle.HttpSignature;
 import com.googlecode.utterlyidle.NamedParameter;
@@ -60,8 +61,12 @@ public class Matchers {
 
     public static HttpMethodActivator httpMethodActivator(String httpMethod, Method method) {
         UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
-        HttpSignature httpSignature = new HttpSignature(uriTemplate, httpMethod, consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method));
+        HttpSignature httpSignature = new HttpSignature(uriTemplate, httpMethod, consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method));
         return new HttpMethodActivator(httpSignature, method);
+    }
+
+    private static boolean hidden(Method method) {
+         return method.getAnnotation(Hidden.class) != null;
     }
 
     private static Sequence<Pair<Type, Option<NamedParameter>>> extractTypesAndNames(Method method) {

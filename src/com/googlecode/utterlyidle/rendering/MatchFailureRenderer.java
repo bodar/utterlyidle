@@ -1,21 +1,34 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.totallylazy.*;
-import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.annotations.ParametersExtractor;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Strings;
+import com.googlecode.utterlyidle.Activator;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.Hidden;
+import com.googlecode.utterlyidle.HttpSignature;
+import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Renderer;
+import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.QueryParam;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Predicates.not;
-import static com.googlecode.utterlyidle.FormParameters.formParameters;
-import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static com.googlecode.utterlyidle.rendering.Model.model;
 
@@ -35,28 +48,42 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         model.add("status", value.status());
 
         for (Activator activator : value.matchesSoFar().filter(not(hidden()))) {
-            Method method = activator.method();
             HttpSignature httpSignature = activator.httpSignature();
             final String httpMethod = httpSignature.httpMethod();
             final UriTemplate uriTemplate = httpSignature.uriTemplate();
-            final ParametersExtractor parametersExtractor = new ParametersExtractor(method, arguments());
-            final QueryParameters queries = parametersExtractor.extract(queryParameters(), QueryParam.class);
-            final FormParameters forms = parametersExtractor.extract(formParameters(), FormParam.class);
-            
+            Sequence<NamedParameter> parameters = extractNamedParameters(httpSignature.parameters());
+
             model.add("resources", model().
                     add("method", httpMethod).
                     add("uriTemplate", uriTemplate).
-                    add("query", asModel(queries)).
-                    add("form", asModel(forms)));
+                    add("query", asModel(parameters.filter(where(parametersClass(), matches(QueryParameters.class))))).
+                    add("form", asModel(parameters.filter(where(parametersClass(), matches(FormParameters.class))))));
         }
 
         return template.toString();
     }
 
-    private Model asModel(Parameters<String, String> parameters) {
+    private Predicate<? super Class> matches(Class aClass) {
+        return Predicates.is(aClass);
+    }
+
+    private Callable1<? super NamedParameter, Class<? extends Parameters<String, String>>> parametersClass() {
+        return new Callable1<NamedParameter, Class<? extends Parameters<String, String>>>() {
+            public Class<? extends Parameters<String, String>> call(NamedParameter namedParameter) throws Exception {
+                 return namedParameter.parametersClass();
+            }
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    private Sequence<NamedParameter> extractNamedParameters(Sequence<Pair<Type, Option<NamedParameter>>> parameters) {
+        return parameters.map(Callables.<Option<NamedParameter>>second()).filter(Predicates.<NamedParameter>some()).map(Callables.<NamedParameter>value());
+    }
+
+    private Model asModel(Sequence<NamedParameter> parameters) {
         Model result = model();
-        for (Pair<String, String> parameter : parameters) {
-            result.add(parameter.first(), parameter.second());
+        for (NamedParameter parameter : parameters) {
+            result.add(parameter.name(), Strings.EMPTY);
         }
         return result;
     }
@@ -64,12 +91,8 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     private Predicate<? super Activator> hidden() {
         return new Predicate<Activator>() {
             public boolean matches(Activator activator) {
-                return activator.method().getAnnotation(Hidden.class) != null;
+                return activator.httpSignature().hidden();
             }
         };
-    }
-
-    private Sequence<Object> arguments() {
-        return Sequences.repeat(Strings.EMPTY).safeCast(Object.class);
     }
 }

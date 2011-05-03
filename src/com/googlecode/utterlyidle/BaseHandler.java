@@ -86,7 +86,7 @@ public class BaseHandler implements HttpHandler {
     private Predicate<Activator> argumentsMatches(final Request request) {
         return new Predicate<Activator>() {
             public boolean matches(Activator httpMethodActivator) {
-                return new ParametersExtractor(httpMethodActivator.httpSignature().uriTemplate(), application, httpMethodActivator.httpSignature().arguments()).matches(request);
+                return new ParametersExtractor(httpMethodActivator.httpSignature().uriTemplate(), application, httpMethodActivator.httpSignature().parameters()).matches(request);
             }
         };
     }

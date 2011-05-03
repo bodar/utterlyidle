@@ -13,14 +13,16 @@ public class HttpSignature {
     private final String produces;
     private final Sequence<Pair<Type, Option<NamedParameter>>> arguments;
     private final int priority;
+    private final boolean hidden;
 
-    public HttpSignature(UriTemplate uriTemplate, String httpMethod, String consumes, String produces, Sequence<Pair<Type, Option<NamedParameter>>> arguments, int priority) {
+    public HttpSignature(UriTemplate uriTemplate, String httpMethod, String consumes, String produces, Sequence<Pair<Type, Option<NamedParameter>>> arguments, int priority, boolean hidden) {
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
         this.consumes = consumes;
         this.produces = produces;
         this.arguments = arguments;
         this.priority = priority;
+        this.hidden = hidden;
     }
 
     public UriTemplate uriTemplate() {
@@ -39,7 +41,7 @@ public class HttpSignature {
         return produces;
     }
 
-    public Sequence<Pair<Type, Option<NamedParameter>>> arguments() {
+    public Sequence<Pair<Type, Option<NamedParameter>>> parameters() {
         return arguments;
     }
 
@@ -50,5 +52,9 @@ public class HttpSignature {
 
     public int priority() {
         return priority;
+    }
+
+    public boolean hidden() {
+        return hidden;
     }
 }

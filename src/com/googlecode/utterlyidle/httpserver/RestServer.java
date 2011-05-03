@@ -1,20 +1,29 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.CloseableCallable;
+import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
+import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Properties;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.totallylazy.proxy.Call.method;
+import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BasePath.basePath;
-import static com.googlecode.utterlyidle.io.Url.*;
+import static com.googlecode.utterlyidle.dsl.ActivatorBuilder.get;
+import static com.googlecode.utterlyidle.dsl.ActivatorBuilder.queryParam;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
@@ -40,7 +49,12 @@ public class RestServer implements Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(8000, basePath("/"), new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
+        new RestServer(8000, basePath("/"), new RestApplicationActivator(new SingleResourceModule(HelloWorld.class), new ResourcesModule() {
+            public Module addResources(Resources resources) {
+                resources.add(get("/dsl").resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))));
+                return this;
+            }
+        }));
     }
 
     private HttpServer startApp(int port, BasePath basePath, Application application) throws Exception{
