@@ -22,9 +22,10 @@ public class ActivatorBuilder {
     private String produces = "*/*";
     private int priority = 0;
     private List<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter = Collections.emptyList();
+    private boolean hidden = false;
 
     public Activator build() {
-        return new HttpMethodActivator(new HttpSignature(uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority), method);
+        return new HttpMethodActivator(new HttpSignature(uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority, hidden), method);
     }
 
     public ActivatorBuilder path(String value) {
@@ -32,23 +33,28 @@ public class ActivatorBuilder {
         return this;
     }
 
+    public ActivatorBuilder hidden(boolean value){
+        hidden = value;
+        return this;
+    }
+
     public ActivatorBuilder consumes(String value) {
-        this.consumes = value;
+        consumes = value;
         return this;
     }
 
     public ActivatorBuilder produces(String value) {
-        this.produces = value;
+        produces = value;
         return this;
     }
 
     public ActivatorBuilder priority(int value) {
-        this.priority = value;
+        priority = value;
         return this;
     }
 
-    public ActivatorBuilder method(Method method) {
-        this.method = method;
+    public ActivatorBuilder method(Method value) {
+        method = value;
         return this;
     }
 
