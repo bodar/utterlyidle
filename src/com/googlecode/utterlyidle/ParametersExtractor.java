@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;
@@ -96,4 +97,13 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
 
         throw new UnsupportedOperationException("Does not support " + type.toString());
     }
+
+    public static Predicate<HttpSignature> parametersMatches(final Request request, final Application application) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new ParametersExtractor(httpSignature.uriTemplate(), application, httpSignature.parameters()).matches(request);
+            }
+        };
+    }
+
 }
