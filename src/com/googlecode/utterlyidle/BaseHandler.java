@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -27,8 +28,6 @@ import static com.googlecode.utterlyidle.ParametersExtractor.parametersMatches;
 import static com.googlecode.utterlyidle.PathMatcher.pathMatches;
 import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.yadic.resolvers.Resolvers.create;
-import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
@@ -46,7 +45,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     public Response handle(Request request) throws Exception {
-        container.addInstance(Request.class, request);
+        setupContainer(request);
         final Either<MatchFailure, Activator> either = findActivator(request);
         if (either.isLeft()) {
             return handlers.findAndHandle(request, response(
@@ -56,6 +55,19 @@ public class BaseHandler implements HttpHandler {
         }
         Response response = activate(either.right(), request);
         return handlers.findAndHandle(request, response);
+    }
+
+    private void setupContainer(Request request) {
+        container.addInstance(Request.class, request);
+        activators().fold(container, new Callable2<Container, Activator, Container>() {
+            public Container call(Container container, Activator activator) throws Exception {
+                Class<?> aClass = activator.method().getDeclaringClass();
+                if(!container.contains(aClass)){
+                    container.add(aClass);
+                }
+                return container;
+            }
+        });
     }
 
     private Either<MatchFailure, Activator> findActivator(final Request request) {
@@ -75,7 +87,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Either<MatchFailure, Sequence<Activator>> filter(Pair<Predicate<HttpSignature>, Status>... filterAndResult) {
-        Sequence<Activator> activators = sequence(this.activators.activators());
+        Sequence<Activator> activators = activators();
         for (Pair<Predicate<HttpSignature>, Status> pair : filterAndResult) {
             Sequence<Activator> matchesSoFar = activators;
             activators = activators.filter(Predicates.where(signature(), pair.first()));
@@ -86,9 +98,13 @@ public class BaseHandler implements HttpHandler {
         return right(activators);
     }
 
+    private Sequence<Activator> activators() {
+        return sequence(this.activators.activators());
+    }
+
     public Response activate(Activator activator, Request request) throws Exception {
         Class<?> declaringClass = activator.method().getDeclaringClass();
-        Object instance = resolve(create(declaringClass, container), declaringClass);
+        Object instance = container.get(declaringClass);
         Object result = getResponse(activator, request, instance);
         if (result instanceof Response) {
             return (Response) result;
