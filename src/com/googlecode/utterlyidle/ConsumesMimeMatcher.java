@@ -21,4 +21,13 @@ public class ConsumesMimeMatcher implements Predicate<Request> {
         }
         return true;
     }
+
+    public static Predicate<HttpSignature> contentMatches(final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new ConsumesMimeMatcher(httpSignature.consumes()).matches(request);
+            }
+        };
+    }
+
 }

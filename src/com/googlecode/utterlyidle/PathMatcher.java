@@ -24,4 +24,11 @@ public class PathMatcher implements Predicate<Request> {
         return where(first(Request.class), new PathMatcher(basePath, UriTemplate.uriTemplate(path)));
     }
 
+    public static Predicate<HttpSignature> pathMatches(final BasePath basePath, final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new PathMatcher(basePath, httpSignature.uriTemplate()).matches(request);
+            }
+        };
+    }
 }

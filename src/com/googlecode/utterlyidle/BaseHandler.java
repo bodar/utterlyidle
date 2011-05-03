@@ -14,9 +14,14 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.comparators.Comparators.where;
+import static com.googlecode.utterlyidle.ConsumesMimeMatcher.contentMatches;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
+import static com.googlecode.utterlyidle.MethodMatcher.methodMatches;
+import static com.googlecode.utterlyidle.ParametersExtractor.parametersMatches;
+import static com.googlecode.utterlyidle.PathMatcher.pathMatches;
+import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Responses.response;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
@@ -53,7 +58,7 @@ public class BaseHandler implements HttpHandler {
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
                 pair(producesMatches(request), Status.NOT_ACCEPTABLE),
-                pair(argumentsMatches(request), Status.UNSATISFIABLE_PARAMETERS)
+                pair(parametersMatches(request, application), Status.UNSATISFIABLE_PARAMETERS)
         );
 
         if (result.isLeft()) {
@@ -84,44 +89,8 @@ public class BaseHandler implements HttpHandler {
     }
 
 
-    private Predicate<HttpSignature> argumentsMatches(final Request request) {
-        return new Predicate<HttpSignature>() {
-            public boolean matches(HttpSignature httpSignature) {
-                return new ParametersExtractor(httpSignature.uriTemplate(), application, httpSignature.parameters()).matches(request);
-            }
-        };
-    }
 
-    private Predicate<HttpSignature> producesMatches(final Request request) {
-        return new Predicate<HttpSignature>() {
-            public boolean matches(HttpSignature httpSignature) {
-                return new ProducesMimeMatcher(httpSignature.produces()).matches(request);
-            }
-        };
-    }
 
-    private Predicate<HttpSignature> contentMatches(final Request request) {
-        return new Predicate<HttpSignature>() {
-            public boolean matches(HttpSignature httpSignature) {
-                return new ConsumesMimeMatcher(httpSignature.consumes()).matches(request);
-            }
-        };
-    }
 
-    private Predicate<HttpSignature> methodMatches(final Request request) {
-        return new Predicate<HttpSignature>() {
-            public boolean matches(HttpSignature httpSignature) {
-                return  new MethodMatcher(httpSignature.httpMethod()).matches(request);
-            }
-        };
-    }
-
-    private Predicate<HttpSignature> pathMatches(final BasePath basePath, final Request request) {
-        return new Predicate<HttpSignature>() {
-            public boolean matches(HttpSignature httpSignature) {
-                return new PathMatcher(basePath, httpSignature.uriTemplate()).matches(request);
-            }
-        };
-    }
 
 }

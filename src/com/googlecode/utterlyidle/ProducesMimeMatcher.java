@@ -22,4 +22,12 @@ public class ProducesMimeMatcher implements Predicate<Request> {
     public String mimeType() {
         return mimeType;
     }
+
+    public static Predicate<HttpSignature> producesMatches(final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new ProducesMimeMatcher(httpSignature.produces()).matches(request);
+            }
+        };
+    }
 }
