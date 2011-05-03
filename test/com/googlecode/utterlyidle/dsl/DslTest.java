@@ -6,8 +6,8 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.dsl.ActivatorBuilder.get;
-import static com.googlecode.utterlyidle.dsl.ActivatorBuilder.queryParam;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

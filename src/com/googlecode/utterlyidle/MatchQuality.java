@@ -4,14 +4,14 @@ import com.googlecode.totallylazy.numbers.Numbers;
 
 import java.util.Comparator;
 
-class MatchQuality implements Comparator<HttpSignature> {
+class MatchQuality implements Comparator<Binding> {
     private final Request request;
 
     private MatchQuality(Request request) {
         this.request = request;
     }
 
-    public int compare(HttpSignature firstSignature, HttpSignature secondSignature) {
+    public int compare(Binding firstSignature, Binding secondSignature) {
         float firstQuality = new ProducesMimeMatcher(firstSignature.produces()).matchQuality(request);
         float secondQuality = new ProducesMimeMatcher(secondSignature.produces()).matchQuality(request);
 

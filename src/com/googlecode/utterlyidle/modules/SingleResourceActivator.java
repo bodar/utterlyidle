@@ -1,17 +1,17 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.utterlyidle.Resources;
-import com.googlecode.utterlyidle.dsl.ActivatorBuilder;
+import com.googlecode.utterlyidle.dsl.BindingBuilder;
 
 public class SingleResourceActivator implements ResourcesModule {
-    private final ActivatorBuilder activatorBuilder;
+    private final BindingBuilder bindingBuilder;
 
-    public SingleResourceActivator(final ActivatorBuilder activatorBuilder) {
-        this.activatorBuilder = activatorBuilder;
+    public SingleResourceActivator(final BindingBuilder bindingBuilder) {
+        this.bindingBuilder = bindingBuilder;
     }
 
     public Module addResources(Resources resources) {
-        resources.add(activatorBuilder);
+        resources.add(bindingBuilder);
         return this;
     }
 }

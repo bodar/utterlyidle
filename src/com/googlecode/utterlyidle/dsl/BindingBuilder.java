@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class ActivatorBuilder {
+public class BindingBuilder {
     private Method method;
     private UriTemplate uriTemplate;
     private String httpMethod = HttpMethod.GET;
@@ -24,69 +24,69 @@ public class ActivatorBuilder {
     private List<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter = Collections.emptyList();
     private boolean hidden = false;
 
-    public Activator build() {
-        return new HttpMethodActivator(new HttpSignature(uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority, hidden), method);
+    public Binding build() {
+        return new Binding(method, uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority, hidden);
     }
 
-    public ActivatorBuilder path(String value) {
+    public BindingBuilder path(String value) {
         uriTemplate = UriTemplate.uriTemplate(value);
         return this;
     }
 
-    public ActivatorBuilder hidden(boolean value){
+    public BindingBuilder hidden(boolean value){
         hidden = value;
         return this;
     }
 
-    public ActivatorBuilder consumes(String value) {
+    public BindingBuilder consumes(String value) {
         consumes = value;
         return this;
     }
 
-    public ActivatorBuilder produces(String value) {
+    public BindingBuilder produces(String value) {
         produces = value;
         return this;
     }
 
-    public ActivatorBuilder priority(int value) {
+    public BindingBuilder priority(int value) {
         priority = value;
         return this;
     }
 
-    public ActivatorBuilder method(Method value) {
+    public BindingBuilder method(Method value) {
         method = value;
         return this;
     }
 
-    public ActivatorBuilder resource(Invocation invocation) {
+    public BindingBuilder resource(Invocation invocation) {
         typesWithNamedParameter = parameters.get();
         parameters.remove();
         return method(invocation.method());
     }
 
-    public ActivatorBuilder resource(CallOn callOn) {
+    public BindingBuilder resource(CallOn callOn) {
         return resource(callOn.invocation());
     }
 
-    public ActivatorBuilder httpMethod(String value){
+    public BindingBuilder httpMethod(String value){
         httpMethod = value;
         return this;
     }
 
-    public static ActivatorBuilder get(String path) {
-        return new ActivatorBuilder().path(path);
+    public static BindingBuilder get(String path) {
+        return new BindingBuilder().path(path);
     }
 
-    public static ActivatorBuilder post(String path) {
-        return new ActivatorBuilder().httpMethod(HttpMethod.POST).path(path);
+    public static BindingBuilder post(String path) {
+        return new BindingBuilder().httpMethod(HttpMethod.POST).path(path);
     }
 
-    public static ActivatorBuilder delete(String path) {
-        return new ActivatorBuilder().httpMethod(HttpMethod.DELETE).path(path);
+    public static BindingBuilder delete(String path) {
+        return new BindingBuilder().httpMethod(HttpMethod.DELETE).path(path);
     }
 
-    public static ActivatorBuilder put(String path) {
-        return new ActivatorBuilder().httpMethod(HttpMethod.PUT).path(path);
+    public static BindingBuilder put(String path) {
+        return new BindingBuilder().httpMethod(HttpMethod.PUT).path(path);
     }
 
     private static ThreadLocalParameters parameters = new ThreadLocalParameters();
@@ -98,7 +98,7 @@ public class ActivatorBuilder {
     }
 
     public static <T> T queryParam(Class<T> aClass, String value) {
-        return ActivatorBuilder.<T>queryParam((Type)aClass, value);
+        return BindingBuilder.<T>queryParam((Type) aClass, value);
     }
 
     public static <T> T formParam(Type type, String value) {
@@ -108,7 +108,7 @@ public class ActivatorBuilder {
     }
 
     public static <T> T formParam(Class<T> aClass, String value) {
-        return ActivatorBuilder.<T>formParam((Type)aClass, value);
+        return BindingBuilder.<T>formParam((Type) aClass, value);
     }
 
     public static <T> T pathParam(Type type, String value) {
@@ -118,7 +118,7 @@ public class ActivatorBuilder {
     }
 
     public static <T> T pathParam(Class<T> aClass, String value) {
-        return ActivatorBuilder.<T>pathParam((Type)aClass, value);
+        return BindingBuilder.<T>pathParam((Type) aClass, value);
     }
 
     public static <T> T headerParam(Type type, String value) {
@@ -128,7 +128,7 @@ public class ActivatorBuilder {
     }
 
     public static <T> T headerParam(Class<T> aClass, String value) {
-        return ActivatorBuilder.<T>headerParam((Type)aClass, value);
+        return BindingBuilder.<T>headerParam((Type) aClass, value);
     }
 
     public static <T> T cookieParam(Type type, String value) {
@@ -138,7 +138,7 @@ public class ActivatorBuilder {
     }
 
     public static <T> T cookieParam(Class<T> aClass, String value) {
-        return ActivatorBuilder.<T>cookieParam((Type) aClass, value);
+        return BindingBuilder.<T>cookieParam((Type) aClass, value);
     }
 
 }

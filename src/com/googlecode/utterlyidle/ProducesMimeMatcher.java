@@ -23,10 +23,10 @@ public class ProducesMimeMatcher implements Predicate<Request> {
         return mimeType;
     }
 
-    public static Predicate<HttpSignature> producesMatches(final Request request) {
-        return new Predicate<HttpSignature>() {
-            public boolean matches(HttpSignature httpSignature) {
-                return new ProducesMimeMatcher(httpSignature.produces()).matches(request);
+    public static Predicate<Binding> producesMatches(final Request request) {
+        return new Predicate<Binding>() {
+            public boolean matches(Binding binding) {
+                return new ProducesMimeMatcher(binding.produces()).matches(request);
             }
         };
     }

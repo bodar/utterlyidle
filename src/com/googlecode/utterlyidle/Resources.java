@@ -1,11 +1,11 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.dsl.ActivatorBuilder;
+import com.googlecode.utterlyidle.dsl.BindingBuilder;
 
-public interface Resources extends Activators {
-    void add(Class resource);
+public interface Resources extends Bindings {
+    void add(Class annotatedClass);
 
-    void add(Activator activator);
+    void add(Binding binding);
 
-    void add(ActivatorBuilder activator);
+    void add(BindingBuilder binding);
 }

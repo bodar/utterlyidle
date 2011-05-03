@@ -98,10 +98,10 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
         throw new UnsupportedOperationException("Does not support " + type.toString());
     }
 
-    public static Predicate<HttpSignature> parametersMatches(final Request request, final Application application) {
-        return new Predicate<HttpSignature>() {
-            public boolean matches(HttpSignature httpSignature) {
-                return new ParametersExtractor(httpSignature.uriTemplate(), application, httpSignature.parameters()).matches(request);
+    public static Predicate<Binding> parametersMatches(final Request request, final Application application) {
+        return new Predicate<Binding>() {
+            public boolean matches(Binding binding) {
+                return new ParametersExtractor(binding.uriTemplate(), application, binding.parameters()).matches(request);
             }
         };
     }
