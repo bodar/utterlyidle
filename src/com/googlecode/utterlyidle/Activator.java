@@ -8,11 +8,7 @@ import java.lang.reflect.Method;
 public interface Activator {
     float matchQuality(Request request);
 
-    int numberOfArguments();
-
     Response activate(Resolver resolver, Request request, Application application) throws Exception;
-
-    int priority();
 
     Predicate<Request> pathMatcher(BasePath basePath);
 
@@ -26,7 +22,6 @@ public interface Activator {
 
     Method method();
 
-    String httpMethod();
 
-    UriTemplate uriTemplate();
+    HttpSignature httpSignature();
 }
