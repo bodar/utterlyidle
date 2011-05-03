@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -11,6 +12,7 @@ import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.comparators.Comparators.where;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
@@ -57,7 +59,15 @@ public class BaseHandler implements HttpHandler {
             return left(result.left());
         }
 
-        return right((Activator) result.right().sortBy(matchQuality(request)).head());
+        return right((Activator) result.right().sortBy(where(signature(), matchQuality(request))).head());
+    }
+
+    private Callable1<Activator, HttpSignature> signature() {
+        return new Callable1<Activator, HttpSignature>() {
+            public HttpSignature call(Activator activator) throws Exception {
+                return activator.httpSignature();
+            }
+        };
     }
 
     private Either<MatchFailure, Sequence<Activator>> filter(Pair<Predicate<Activator>, Status>... filterAndResult) {
@@ -76,7 +86,7 @@ public class BaseHandler implements HttpHandler {
     private Predicate<Activator> argumentsMatches(final Request request) {
         return new Predicate<Activator>() {
             public boolean matches(Activator httpMethodActivator) {
-                return httpMethodActivator.parameterMatcher(application).matches(request);
+                return new ParametersExtractor(httpMethodActivator.httpSignature().uriTemplate(), application, httpMethodActivator.httpSignature().arguments()).matches(request);
             }
         };
     }
@@ -84,7 +94,7 @@ public class BaseHandler implements HttpHandler {
     private Predicate<Activator> producesMatches(final Request request) {
         return new Predicate<Activator>() {
             public boolean matches(Activator httpMethodActivator) {
-                return httpMethodActivator.producesMatcher().matches(request);
+                return new ProducesMimeMatcher(httpMethodActivator.httpSignature().produces()).matches(request);
             }
         };
     }
@@ -92,7 +102,7 @@ public class BaseHandler implements HttpHandler {
     private Predicate<Activator> contentMatches(final Request request) {
         return new Predicate<Activator>() {
             public boolean matches(Activator httpMethodActivator) {
-                return httpMethodActivator.consumesMatcher().matches(request);
+                return new ConsumesMimeMatcher(httpMethodActivator.httpSignature().consumes()).matches(request);
             }
         };
     }
@@ -100,7 +110,7 @@ public class BaseHandler implements HttpHandler {
     private Predicate<Activator> methodMatches(final Request request) {
         return new Predicate<Activator>() {
             public boolean matches(Activator httpMethodActivator) {
-                return httpMethodActivator.methodMatcher().matches(request);
+                return  new MethodMatcher(httpMethodActivator.httpSignature().httpMethod()).matches(request);
             }
         };
     }
@@ -108,7 +118,7 @@ public class BaseHandler implements HttpHandler {
     private Predicate<Activator> pathMatches(final BasePath basePath, final Request request) {
         return new Predicate<Activator>() {
             public boolean matches(Activator httpMethodActivator) {
-                return httpMethodActivator.pathMatcher(basePath).matches(request);
+                return new PathMatcher(basePath, httpMethodActivator.httpSignature().uriTemplate()).matches(request);
             }
         };
     }
