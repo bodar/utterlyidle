@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -14,6 +13,7 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.comparators.Comparators.where;
+import static com.googlecode.utterlyidle.Activator.ExtensionMethods.signature;
 import static com.googlecode.utterlyidle.ConsumesMimeMatcher.contentMatches;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
@@ -66,14 +66,6 @@ public class BaseHandler implements HttpHandler {
         }
 
         return right((Activator) result.right().sortBy(where(signature(), matchQuality(request))).head());
-    }
-
-    private Callable1<Activator, HttpSignature> signature() {
-        return new Callable1<Activator, HttpSignature>() {
-            public HttpSignature call(Activator activator) throws Exception {
-                return activator.httpSignature();
-            }
-        };
     }
 
     private Either<MatchFailure, Sequence<Activator>> filter(Pair<Predicate<HttpSignature>, Status>... filterAndResult) {
