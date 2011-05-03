@@ -8,10 +8,8 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.Activator;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.FormParameters;
-import com.googlecode.utterlyidle.Hidden;
 import com.googlecode.utterlyidle.HttpSignature;
 import com.googlecode.utterlyidle.MatchFailure;
 import com.googlecode.utterlyidle.NamedParameter;
@@ -47,8 +45,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         model.add("base", basePath);
         model.add("status", value.status());
 
-        for (Activator activator : value.matchesSoFar().filter(not(hidden()))) {
-            HttpSignature httpSignature = activator.httpSignature();
+        for (HttpSignature httpSignature : value.matchesSoFar().filter(not(hidden()))) {
             final String httpMethod = httpSignature.httpMethod();
             final UriTemplate uriTemplate = httpSignature.uriTemplate();
             Sequence<NamedParameter> parameters = extractNamedParameters(httpSignature.parameters());
@@ -88,10 +85,10 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         return result;
     }
 
-    private Predicate<? super Activator> hidden() {
-        return new Predicate<Activator>() {
-            public boolean matches(Activator activator) {
-                return activator.httpSignature().hidden();
+    public static Predicate<? super HttpSignature> hidden() {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return httpSignature.hidden();
             }
         };
     }

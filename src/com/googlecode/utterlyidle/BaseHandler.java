@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Container;
@@ -70,55 +71,55 @@ public class BaseHandler implements HttpHandler {
         };
     }
 
-    private Either<MatchFailure, Sequence<Activator>> filter(Pair<Predicate<Activator>, Status>... filterAndResult) {
+    private Either<MatchFailure, Sequence<Activator>> filter(Pair<Predicate<HttpSignature>, Status>... filterAndResult) {
         Sequence<Activator> activators = sequence(this.activators.activators());
-        for (Pair<Predicate<Activator>, Status> pair : filterAndResult) {
+        for (Pair<Predicate<HttpSignature>, Status> pair : filterAndResult) {
             Sequence<Activator> matchesSoFar = activators;
-            activators = activators.filter(pair.first());
+            activators = activators.filter(Predicates.where(signature(), pair.first()));
             if (activators.isEmpty()) {
-                return left(matchFailure(pair.second(), matchesSoFar));
+                return left(matchFailure(pair.second(), matchesSoFar.map(signature())));
             }
         }
         return right(activators);
     }
 
 
-    private Predicate<Activator> argumentsMatches(final Request request) {
-        return new Predicate<Activator>() {
-            public boolean matches(Activator httpMethodActivator) {
-                return new ParametersExtractor(httpMethodActivator.httpSignature().uriTemplate(), application, httpMethodActivator.httpSignature().parameters()).matches(request);
+    private Predicate<HttpSignature> argumentsMatches(final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new ParametersExtractor(httpSignature.uriTemplate(), application, httpSignature.parameters()).matches(request);
             }
         };
     }
 
-    private Predicate<Activator> producesMatches(final Request request) {
-        return new Predicate<Activator>() {
-            public boolean matches(Activator httpMethodActivator) {
-                return new ProducesMimeMatcher(httpMethodActivator.httpSignature().produces()).matches(request);
+    private Predicate<HttpSignature> producesMatches(final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new ProducesMimeMatcher(httpSignature.produces()).matches(request);
             }
         };
     }
 
-    private Predicate<Activator> contentMatches(final Request request) {
-        return new Predicate<Activator>() {
-            public boolean matches(Activator httpMethodActivator) {
-                return new ConsumesMimeMatcher(httpMethodActivator.httpSignature().consumes()).matches(request);
+    private Predicate<HttpSignature> contentMatches(final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new ConsumesMimeMatcher(httpSignature.consumes()).matches(request);
             }
         };
     }
 
-    private Predicate<Activator> methodMatches(final Request request) {
-        return new Predicate<Activator>() {
-            public boolean matches(Activator httpMethodActivator) {
-                return  new MethodMatcher(httpMethodActivator.httpSignature().httpMethod()).matches(request);
+    private Predicate<HttpSignature> methodMatches(final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return  new MethodMatcher(httpSignature.httpMethod()).matches(request);
             }
         };
     }
 
-    private Predicate<Activator> pathMatches(final BasePath basePath, final Request request) {
-        return new Predicate<Activator>() {
-            public boolean matches(Activator httpMethodActivator) {
-                return new PathMatcher(basePath, httpMethodActivator.httpSignature().uriTemplate()).matches(request);
+    private Predicate<HttpSignature> pathMatches(final BasePath basePath, final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return new PathMatcher(basePath, httpSignature.uriTemplate()).matches(request);
             }
         };
     }
