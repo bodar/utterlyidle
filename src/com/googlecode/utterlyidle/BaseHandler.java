@@ -8,6 +8,10 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Container;
 
+import javax.ws.rs.core.HttpHeaders;
+import java.lang.reflect.InvocationTargetException;
+
+import static com.googlecode.totallylazy.Exceptions.toException;
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Right.right;
@@ -23,6 +27,8 @@ import static com.googlecode.utterlyidle.ParametersExtractor.parametersMatches;
 import static com.googlecode.utterlyidle.PathMatcher.pathMatches;
 import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.yadic.resolvers.Resolvers.create;
+import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
@@ -40,21 +46,21 @@ public class BaseHandler implements HttpHandler {
     }
 
     public Response handle(Request request) throws Exception {
-        Container resolver = container.addInstance(Request.class, request);
-        BasePath basePath = container.get(BasePath.class);
-        final Either<MatchFailure, Activator> either = findActivator(basePath, request);
+        container.addInstance(Request.class, request);
+        final Either<MatchFailure, Activator> either = findActivator(request);
         if (either.isLeft()) {
             return handlers.findAndHandle(request, response(
                     either.left().status(),
                     headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
                     either.left()));
         }
-        return handlers.findAndHandle(request, either.right().activate(resolver, request, application));
+        Response response = activate(either.right(), request);
+        return handlers.findAndHandle(request, response);
     }
 
-    private Either<MatchFailure, Activator> findActivator(BasePath basePath, final Request request) {
+    private Either<MatchFailure, Activator> findActivator(final Request request) {
         final Either<MatchFailure, Sequence<Activator>> result = filter(
-                pair(pathMatches(basePath, request), Status.NOT_FOUND),
+                pair(pathMatches(container.get(BasePath.class), request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
                 pair(producesMatches(request), Status.NOT_ACCEPTABLE),
@@ -79,6 +85,33 @@ public class BaseHandler implements HttpHandler {
         }
         return right(activators);
     }
+
+    public Response activate(Activator activator, Request request) throws Exception {
+        Class<?> declaringClass = activator.method().getDeclaringClass();
+        Object instance = resolve(create(declaringClass, container), declaringClass);
+        Object result = getResponse(activator, request, instance);
+        if (result instanceof Response) {
+            return (Response) result;
+        }
+        if (result instanceof Either) {
+            result = ((Either) result).value();
+        }
+
+        return response().
+                header(HttpHeaders.CONTENT_TYPE, activator.httpSignature().produces()).
+                entity(result).
+                status(Status.OK);
+    }
+
+    private Object getResponse(Activator activator, Request request, Object resourceInstance) throws Exception {
+        try {
+            Object[] arguments = new ParametersExtractor(activator.httpSignature().uriTemplate(), application, activator.httpSignature().parameters()).extract(request);
+            return activator.method().invoke(resourceInstance, arguments);
+        } catch (InvocationTargetException e) {
+            throw toException(e.getCause());
+        }
+    }
+
 
 
 
