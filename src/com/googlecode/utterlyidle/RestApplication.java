@@ -75,7 +75,7 @@ public class RestApplication implements Application {
         return requestScope;
     }
 
-    public <T> T usingArgumentScope(Request request, Callable1<Container, T> callable) {
+    public <T> T usingParameterScope(Request request, Callable1<Container, T> callable) {
         return using(createArgumentScope(request), callable);
     }
 

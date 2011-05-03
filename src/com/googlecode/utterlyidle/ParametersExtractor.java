@@ -38,41 +38,46 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
     public Object[] extract(final Request request) {
         return typesWithNamedParameter.map(new Callable1<Pair<Type, Option<NamedParameter>>, Object>() {
             public Object call(Pair<Type, Option<NamedParameter>> pair) throws Exception {
+                return application.usingParameterScope(request, resolveParameter(pair));
+            }
+        }).toArray(Object.class);
+    }
+
+    private Callable1<Container, Object> resolveParameter(final Pair<Type, Option<NamedParameter>> pair) {
+        return new Callable1<Container, Object>() {
+            public Object call(Container container) throws Exception {
                 final Type type = pair.first();
                 final Option<NamedParameter> optionalParameter = pair.second();
 
-                return application.usingArgumentScope(request, new Callable1<Container, Object>() {
-                    public Object call(Container container) throws Exception {
-                        container.addInstance(UriTemplate.class, uriTemplate);
+                container.addInstance(UriTemplate.class, uriTemplate);
 
-                        final Type iterableStringType = new TypeFor<Iterable<String>>() {}.get();
+                final Type iterableStringType = new TypeFor<Iterable<String>>() {
+                }.get();
 
-                        for (NamedParameter namedParameter : optionalParameter) {
-                            container.add(String.class, namedParameter.extractValueFrom(container)).
-                                    add(iterableStringType, namedParameter.extractValuesFrom(container));
-                        }
+                for (NamedParameter namedParameter : optionalParameter) {
+                    container.add(String.class, namedParameter.extractValueFrom(container)).
+                            add(iterableStringType, namedParameter.extractValuesFrom(container));
+                }
 
-                        if (!container.contains(String.class)) {
-                            container.add(String.class, new ProgrammerErrorResolver(String.class));
-                        }
-                        if (!container.contains(iterableStringType)) {
-                            container.add(iterableStringType, new ProgrammerErrorResolver(iterableStringType));
-                        }
+                if (!container.contains(String.class)) {
+                    container.add(String.class, new ProgrammerErrorResolver(String.class));
+                }
+                if (!container.contains(iterableStringType)) {
+                    container.add(iterableStringType, new ProgrammerErrorResolver(iterableStringType));
+                }
 
-                        List<Type> types = typeArgumentsOf(type);
+                List<Type> types = typeArgumentsOf(type);
 
-                        for (Type t : types) {
-                            if (!container.contains(t)) {
-                                container.add(t, create(t, container));
-                            }
-                        }
-
-                        return container.resolve(type);
-
+                for (Type t : types) {
+                    if (!container.contains(t)) {
+                        container.add(t, create(t, container));
                     }
-                });
+                }
+
+                return container.resolve(type);
+
             }
-        }).toArray(Object.class);
+        };
     }
 
     public static List<Type> typeArgumentsOf(Type type) {
