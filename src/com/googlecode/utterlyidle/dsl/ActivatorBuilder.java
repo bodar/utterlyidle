@@ -24,7 +24,7 @@ public class ActivatorBuilder {
     private List<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter = Collections.emptyList();
 
     public Activator build() {
-        return new HttpMethodActivator(method, uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority );
+        return new HttpMethodActivator(new HttpSignature(uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority), method);
     }
 
     public ActivatorBuilder path(String value) {

@@ -1,17 +1,13 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Exceptions.toException;
 import static com.googlecode.utterlyidle.Responses.response;
@@ -19,35 +15,22 @@ import static com.googlecode.yadic.resolvers.Resolvers.create;
 import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 
 public class HttpMethodActivator implements Activator {
+    private final HttpSignature httpSignature;
     private final Method method;
-    private final UriTemplate uriTemplate;
-    private final String httpMethod;
-    private final String consumes;
-    private final String produces;
-    private final Sequence<Pair<Type, Option<NamedParameter>>> arguments;
-    private final int priority;
 
-    public HttpMethodActivator(Method method, UriTemplate uriTemplate, String httpMethod, String consumes, String produces, Sequence<Pair<Type, Option<NamedParameter>>> arguments, int priority) {
+    public HttpMethodActivator(HttpSignature httpSignature, Method method) {
+        this.httpSignature = httpSignature;
         this.method = method;
-        this.uriTemplate = uriTemplate;
-        this.httpMethod = httpMethod;
-        this.consumes = consumes;
-        this.produces = produces;
-        this.arguments = arguments;
-        this.priority = priority;
     }
 
-    public String httpMethod() {
-        return httpMethod;
+    public HttpSignature httpSignature() {
+        return httpSignature;
     }
 
     public float matchQuality(Request request) {
         return producesMatcher().matchQuality(request);
     }
 
-    public int numberOfArguments() {
-        return method.getParameterTypes().length;
-    }
 
     public Response activate(Resolver resolver, Request request, Application application) throws Exception {
         Class<?> declaringClass = method.getDeclaringClass();
@@ -76,27 +59,19 @@ public class HttpMethodActivator implements Activator {
     }
 
     private ParametersExtractor parameterExtractor(Application application) {
-        return new ParametersExtractor(uriTemplate, application, arguments);
-    }
-
-    public int priority() {
-        return priority;
+        return new ParametersExtractor(httpSignature().uriTemplate(), application, httpSignature().arguments());
     }
 
     public Predicate<Request> pathMatcher(BasePath basePath) {
-        return new PathMatcher(basePath, uriTemplate);
-    }
-
-    public UriTemplate uriTemplate() {
-        return uriTemplate;
+        return new PathMatcher(basePath, httpSignature().uriTemplate());
     }
 
     public Predicate<Request> methodMatcher() {
-        return new MethodMatcher(httpMethod);
+        return new MethodMatcher(httpSignature().httpMethod());
     }
 
     public Predicate<Request> consumesMatcher() {
-        return new ConsumesMimeMatcher(consumes);
+        return new ConsumesMimeMatcher(httpSignature().consumes());
     }
 
     @Override
@@ -105,7 +80,7 @@ public class HttpMethodActivator implements Activator {
     }
 
     public ProducesMimeMatcher producesMatcher() {
-        return new ProducesMimeMatcher(produces);
+        return new ProducesMimeMatcher(httpSignature().produces());
     }
 
     public Predicate<Request> parameterMatcher(Application application) {

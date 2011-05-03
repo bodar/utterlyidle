@@ -7,6 +7,7 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.FormParameters;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpMethodActivator;
+import com.googlecode.utterlyidle.HttpSignature;
 import com.googlecode.utterlyidle.NamedParameter;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.PathParameters;
@@ -59,9 +60,8 @@ public class Matchers {
 
     public static HttpMethodActivator httpMethodActivator(String httpMethod, Method method) {
         UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
-        return new HttpMethodActivator(method, uriTemplate, httpMethod,
-                consumesMimeMatcher(method), producesMimeMatcher(method),
-                extractTypesAndNames(method), new PriorityExtractor().extract(method));
+        HttpSignature httpSignature = new HttpSignature(uriTemplate, httpMethod, consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method));
+        return new HttpMethodActivator(httpSignature, method);
     }
 
     private static Sequence<Pair<Type, Option<NamedParameter>>> extractTypesAndNames(Method method) {
