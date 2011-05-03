@@ -41,34 +41,13 @@ public class BaseHandler implements HttpHandler {
         this.application = application;
     }
 
-    public Response handle(Request request) throws Exception {
+    public Response handle(final Request request) throws Exception {
         setupContainer(request);
-        final Either<MatchFailure, Binding> either = findActivator(request);
-        if (either.isLeft()) {
-            return handlers.findAndHandle(request, response(
-                    either.left().status(),
-                    headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
-                    either.left()));
-        }
-        Response response = activate(either.right(), request);
-        return handlers.findAndHandle(request, response);
+        return handlers.findAndHandle(request, responseFor(request));
     }
 
-    private void setupContainer(Request request) {
-        container.addInstance(Request.class, request);
-        bindings().fold(container, new Callable2<Container, Binding, Container>() {
-            public Container call(Container container, Binding binding) throws Exception {
-                Class<?> aClass = binding.method().getDeclaringClass();
-                if(!container.contains(aClass)){
-                    container.add(aClass);
-                }
-                return container;
-            }
-        });
-    }
-
-    private Either<MatchFailure, Binding> findActivator(final Request request) {
-        final Either<MatchFailure, Sequence<Binding>> result = filter(
+    private Response responseFor(final Request request) throws Exception {
+        final Either<MatchFailure, Sequence<Binding>> failureOrBindings = filter(
                 pair(pathMatches(container.get(BasePath.class), request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
@@ -76,11 +55,40 @@ public class BaseHandler implements HttpHandler {
                 pair(parametersMatches(request, application), Status.UNSATISFIABLE_PARAMETERS)
         );
 
-        if (result.isLeft()) {
-            return left(result.left());
+        if (failureOrBindings.isLeft()) {
+            return response(
+                    failureOrBindings.left().status(),
+                    headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
+                    failureOrBindings.left());
         }
 
-        return right((Binding) result.right().sortBy(matchQuality(request)).head());
+        Binding bestMatch = failureOrBindings.right().sortBy(matchQuality(request)).head();
+        Object methodResult = invokeMethod(bestMatch, request);
+
+        if (methodResult instanceof Response) {
+            return (Response) methodResult;
+        }
+
+        if (methodResult instanceof Either) {
+            methodResult = ((Either) methodResult).value();
+        }
+
+        return response().
+                header(HttpHeaders.CONTENT_TYPE, bestMatch.produces()).
+                entity(methodResult);
+    }
+
+    private void setupContainer(Request request) {
+        container.addInstance(Request.class, request);
+        bindings().fold(container, new Callable2<Container, Binding, Container>() {
+            public Container call(Container container, Binding binding) throws Exception {
+                Class<?> aClass = binding.method().getDeclaringClass();
+                if (!container.contains(aClass)) {
+                    container.add(aClass);
+                }
+                return container;
+            }
+        });
     }
 
     private Either<MatchFailure, Sequence<Binding>> filter(Pair<Predicate<Binding>, Status>... filterAndResult) {
@@ -99,36 +107,16 @@ public class BaseHandler implements HttpHandler {
         return sequence(this.bindings.bindings());
     }
 
-    private Response activate(Binding binding, Request request) throws Exception {
-        Class<?> declaringClass = binding.method().getDeclaringClass();
-        Object instance = container.get(declaringClass);
-        Object result = getResponse(binding, request, instance);
-        if (result instanceof Response) {
-            return (Response) result;
-        }
-        if (result instanceof Either) {
-            result = ((Either) result).value();
-        }
-
-        return response().
-                header(HttpHeaders.CONTENT_TYPE, binding.produces()).
-                entity(result).
-                status(Status.OK);
-    }
-
-    private Object getResponse(Binding binding, Request request, Object resourceInstance) throws Exception {
+    private Object invokeMethod(Binding binding, Request request) throws Exception {
         try {
+            Class<?> declaringClass = binding.method().getDeclaringClass();
+            Object resourceInstance = container.get(declaringClass);
             Object[] arguments = new ParametersExtractor(binding.uriTemplate(), application, binding.parameters()).extract(request);
             return binding.method().invoke(resourceInstance, arguments);
         } catch (InvocationTargetException e) {
             throw toException(e.getCause());
         }
     }
-
-
-
-
-
 
 
 }
