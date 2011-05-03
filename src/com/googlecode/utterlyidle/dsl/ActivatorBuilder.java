@@ -23,8 +23,8 @@ public class ActivatorBuilder {
     private int priority = 0;
     private List<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter = Collections.emptyList();
 
-    public Activator build(Application application) {
-        return new HttpMethodActivator(method, uriTemplate, httpMethod, consumes, produces, new ParametersExtractor(uriTemplate, application, sequence(typesWithNamedParameter)), priority );
+    public Activator build() {
+        return new HttpMethodActivator(method, uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority );
     }
 
     public ActivatorBuilder path(String value) {

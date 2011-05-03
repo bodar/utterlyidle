@@ -10,7 +10,7 @@ public interface Activator {
 
     int numberOfArguments();
 
-    Response activate(Resolver resolver, Request request) throws Exception;
+    Response activate(Resolver resolver, Request request, Application application) throws Exception;
 
     int priority();
 
@@ -22,7 +22,7 @@ public interface Activator {
 
     Predicate<Request>  producesMatcher();
 
-    Predicate<Request>  argumentMatcher();
+    Predicate<Request> parameterMatcher(Application application);
 
     Method method();
 

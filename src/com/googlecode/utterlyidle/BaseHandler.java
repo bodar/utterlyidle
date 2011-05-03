@@ -22,11 +22,13 @@ public class BaseHandler implements HttpHandler {
     private final Activators activators;
     private final ResponseHandlersFinder handlers;
     private final Container container;
+    private final Application application;
 
-    public BaseHandler(Activators activators, ResponseHandlersFinder handlers, Container container) {
+    public BaseHandler(Activators activators, ResponseHandlersFinder handlers, Container container, Application application) {
         this.activators = activators;
         this.handlers = handlers;
         this.container = container;
+        this.application = application;
     }
 
     public Response handle(Request request) throws Exception {
@@ -39,7 +41,7 @@ public class BaseHandler implements HttpHandler {
                     headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
                     either.left()));
         }
-        return handlers.findAndHandle(request, either.right().activate(resolver, request));
+        return handlers.findAndHandle(request, either.right().activate(resolver, request, application));
     }
 
     private Either<MatchFailure, Activator> findActivator(BasePath basePath, final Request request) {
@@ -74,7 +76,7 @@ public class BaseHandler implements HttpHandler {
     private Predicate<Activator> argumentsMatches(final Request request) {
         return new Predicate<Activator>() {
             public boolean matches(Activator httpMethodActivator) {
-                return httpMethodActivator.argumentMatcher().matches(request);
+                return httpMethodActivator.parameterMatcher(application).matches(request);
             }
         };
     }

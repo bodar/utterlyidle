@@ -4,11 +4,23 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.ParametersExtractor;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpMethodActivator;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.PathParameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -20,7 +32,6 @@ import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.annotations.Param.param;
 import static com.googlecode.utterlyidle.annotations.Param.toParam;
 
 public class Matchers {
@@ -46,11 +57,11 @@ public class Matchers {
         };
     }
 
-    public static HttpMethodActivator httpMethodActivator(String httpMethod, Method method, Application application) {
+    public static HttpMethodActivator httpMethodActivator(String httpMethod, Method method) {
         UriTemplate uriTemplate = new UriTemplateExtractor().extract(method);
         return new HttpMethodActivator(method, uriTemplate, httpMethod,
                 consumesMimeMatcher(method), producesMimeMatcher(method),
-                new ParametersExtractor(uriTemplate, application, extractTypesAndNames(method)), new PriorityExtractor().extract(method));
+                extractTypesAndNames(method), new PriorityExtractor().extract(method));
     }
 
     private static Sequence<Pair<Type, Option<NamedParameter>>> extractTypesAndNames(Method method) {
