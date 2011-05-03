@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnnotatedResources implements Resources {
+public class RegisteredResources implements Resources {
     private final List<Activator> activators = new ArrayList<Activator>();
 
     public void add(Class resource) {
