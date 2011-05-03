@@ -9,8 +9,10 @@ import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
+import com.googlecode.yadic.Container;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.Closeable;
@@ -52,6 +54,11 @@ public class RestServer implements Server {
         new RestServer(8000, basePath("/"), new RestApplicationActivator(new SingleResourceModule(HelloWorld.class), new ResourcesModule() {
             public Module addResources(Resources resources) {
                 resources.add(get("/dsl").resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))));
+                return this;
+            }
+        }, new RequestScopedModule() {
+            public Module addPerRequestObjects(Container container) {
+                container.addInstance(Properties.class, System.getProperties());
                 return this;
             }
         }));
