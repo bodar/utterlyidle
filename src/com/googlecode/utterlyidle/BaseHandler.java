@@ -43,10 +43,10 @@ public class BaseHandler implements HttpHandler {
 
     public Response handle(final Request request) throws Exception {
         setupContainer(request);
-        return handlers.findAndHandle(request, responseFor(request));
+        return handlers.findAndHandle(request, getResponse(request));
     }
 
-    private Response responseFor(final Request request) throws Exception {
+    private Response getResponse(final Request request) throws Exception {
         final Either<MatchFailure, Sequence<Binding>> failureOrBindings = filter(
                 pair(pathMatches(container.get(BasePath.class), request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
@@ -62,33 +62,12 @@ public class BaseHandler implements HttpHandler {
                     failureOrBindings.left());
         }
 
-        Binding bestMatch = failureOrBindings.right().sortBy(matchQuality(request)).head();
-        Object methodResult = invokeMethod(bestMatch, request);
-
-        if (methodResult instanceof Response) {
-            return (Response) methodResult;
-        }
-
-        if (methodResult instanceof Either) {
-            methodResult = ((Either) methodResult).value();
-        }
-
-        return response().
-                header(HttpHeaders.CONTENT_TYPE, bestMatch.produces()).
-                entity(methodResult);
+        Binding binding = findBestMatch(request, failureOrBindings.right());
+        return wrapInResponse(binding.produces(), unwrapEither(invokeMethod(binding, request)));
     }
 
-    private void setupContainer(Request request) {
-        container.addInstance(Request.class, request);
-        bindings().fold(container, new Callable2<Container, Binding, Container>() {
-            public Container call(Container container, Binding binding) throws Exception {
-                Class<?> aClass = binding.method().getDeclaringClass();
-                if (!container.contains(aClass)) {
-                    container.add(aClass);
-                }
-                return container;
-            }
-        });
+    private Binding findBestMatch(Request request, final Sequence<Binding> bindings) {
+        return bindings.sortBy(matchQuality(request)).head();
     }
 
     private Either<MatchFailure, Sequence<Binding>> filter(Pair<Predicate<Binding>, Status>... filterAndResult) {
@@ -118,5 +97,33 @@ public class BaseHandler implements HttpHandler {
         }
     }
 
+    private Response wrapInResponse(final String contentType, Object instance) {
+        if (instance instanceof Response) {
+            return (Response) instance;
+        }
 
+        return response().
+                header(HttpHeaders.CONTENT_TYPE, contentType).
+                entity(instance);
+    }
+
+    private Object unwrapEither(Object instance) {
+        if (instance instanceof Either) {
+            return ((Either) instance).value();
+        }
+        return instance;
+    }
+
+    private void setupContainer(Request request) {
+        container.addInstance(Request.class, request);
+        bindings().fold(container, new Callable2<Container, Binding, Container>() {
+            public Container call(Container container, Binding binding) throws Exception {
+                Class<?> aClass = binding.method().getDeclaringClass();
+                if (!container.contains(aClass)) {
+                    container.add(aClass);
+                }
+                return container;
+            }
+        });
+    }
 }
