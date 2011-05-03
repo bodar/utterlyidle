@@ -12,4 +12,12 @@ public class MethodMatcher implements Predicate<Request> {
     public boolean matches(Request request) {
         return method.equals(request.method());
     }
+
+    public static Predicate<HttpSignature> methodMatches(final Request request) {
+        return new Predicate<HttpSignature>() {
+            public boolean matches(HttpSignature httpSignature) {
+                return  new MethodMatcher(httpSignature.httpMethod()).matches(request);
+            }
+        };
+    }
 }
