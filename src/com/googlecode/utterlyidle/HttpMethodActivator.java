@@ -1,13 +1,17 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Resolver;
 
 import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Exceptions.toException;
 import static com.googlecode.utterlyidle.Responses.response;
@@ -20,16 +24,16 @@ public class HttpMethodActivator implements Activator {
     private final String httpMethod;
     private final String consumes;
     private final String produces;
-    private final RequestExtractor<Object[]> argumentsExtractor;
+    private final Sequence<Pair<Type, Option<NamedParameter>>> arguments;
     private final int priority;
 
-    public HttpMethodActivator(Method method, UriTemplate uriTemplate, String httpMethod, String consumes, String produces, RequestExtractor<Object[]> argumentsExtractor, int priority) {
+    public HttpMethodActivator(Method method, UriTemplate uriTemplate, String httpMethod, String consumes, String produces, Sequence<Pair<Type, Option<NamedParameter>>> arguments, int priority) {
         this.method = method;
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
         this.consumes = consumes;
         this.produces = produces;
-        this.argumentsExtractor = argumentsExtractor;
+        this.arguments = arguments;
         this.priority = priority;
     }
 
@@ -45,10 +49,10 @@ public class HttpMethodActivator implements Activator {
         return method.getParameterTypes().length;
     }
 
-    public Response activate(Resolver resolver, Request request) throws Exception {
+    public Response activate(Resolver resolver, Request request, Application application) throws Exception {
         Class<?> declaringClass = method.getDeclaringClass();
         Object instance = resolve(create(declaringClass, resolver), declaringClass);
-        Object result = getResponse(request, instance);
+        Object result = getResponse(request, instance, application);
         if (result instanceof Response) {
             return (Response) result;
         }
@@ -62,13 +66,17 @@ public class HttpMethodActivator implements Activator {
                 status(Status.OK);
     }
 
-    private Object getResponse(Request request, Object instance) throws Exception {
+    private Object getResponse(Request request, Object instance, Application application) throws Exception {
         try {
-            Object[] arguments = argumentsExtractor.extract(request);
+            Object[] arguments = parameterExtractor(application).extract(request);
             return method.invoke(instance, arguments);
         } catch (InvocationTargetException e) {
             throw toException(e.getCause());
         }
+    }
+
+    private ParametersExtractor parameterExtractor(Application application) {
+        return new ParametersExtractor(uriTemplate, application, arguments);
     }
 
     public int priority() {
@@ -100,8 +108,8 @@ public class HttpMethodActivator implements Activator {
         return new ProducesMimeMatcher(produces);
     }
 
-    public Predicate<Request> argumentMatcher() {
-        return argumentsExtractor;
+    public Predicate<Request> parameterMatcher(Application application) {
+        return parameterExtractor(application);
     }
 
     public Method method() {

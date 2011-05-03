@@ -45,8 +45,7 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
                     public Object call(Container container) throws Exception {
                         container.addInstance(UriTemplate.class, uriTemplate);
 
-                        final Type iterableStringType = new TypeFor<Iterable<String>>() {
-                        }.get();
+                        final Type iterableStringType = new TypeFor<Iterable<String>>() {}.get();
 
                         for (NamedParameter namedParameter : optionalParameter) {
                             container.add(String.class, namedParameter.extractValueFrom(container)).
