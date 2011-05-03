@@ -4,14 +4,14 @@ import com.googlecode.totallylazy.Sequence;
 
 public class MatchFailure {
     private final Status status;
-    private final Sequence<HttpSignature> matchesSoFar;
+    private final Sequence<Binding> matchesSoFar;
 
-    public MatchFailure(Status status, Sequence<HttpSignature> matchesSoFar) {
+    public MatchFailure(Status status, Sequence<Binding> matchesSoFar) {
         this.status = status;
         this.matchesSoFar = matchesSoFar;
     }
 
-    public static MatchFailure matchFailure(Status status, Sequence<HttpSignature> matchesSoFar) {
+    public static MatchFailure matchFailure(Status status, Sequence<Binding> matchesSoFar) {
         return new MatchFailure(status, matchesSoFar);
     }
 
@@ -19,7 +19,7 @@ public class MatchFailure {
         return status;
     }
 
-    public Sequence<HttpSignature> matchesSoFar() {
+    public Sequence<Binding> matchesSoFar() {
         return matchesSoFar;
     }
 
