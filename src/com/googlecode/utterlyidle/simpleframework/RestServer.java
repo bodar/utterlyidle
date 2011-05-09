@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
 import com.googlecode.utterlyidle.modules.RequestInstanceModule;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import org.simpleframework.http.core.Container;
+import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
@@ -57,7 +58,7 @@ public class RestServer implements Server {
     private Connection startApp(int port, BasePath basePath, Application application) throws Exception {
         long start = nanoTime();
         Container container = new RestContainer(application.add(new RequestInstanceModule(basePath)));
-        SocketConnection connection = new SocketConnection(container);
+        SocketConnection connection = new SocketConnection(new ContainerServer(container, 50));
         InetSocketAddress socketAddress = (InetSocketAddress)connection.connect(new InetSocketAddress(port));
         url = url(format("http://localhost:%s%s", socketAddress.getPort(), basePath));
         System.out.println(format("Listening on %s, started SimpleWeb in %s msecs", url, calculateMilliseconds(start, nanoTime())));
