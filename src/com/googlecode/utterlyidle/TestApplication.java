@@ -3,8 +3,10 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.utterlyidle.modules.SingleResourceActivator;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 
 import static com.googlecode.utterlyidle.BasePath.basePath;
@@ -16,6 +18,11 @@ public class TestApplication extends RestApplication {
 
     public TestApplication add(final Class resource) {
         add(new SingleResourceModule(resource));
+        return this;
+    }
+
+    public TestApplication add(final BindingBuilder bindingBuilder) {
+        add(new SingleResourceActivator(bindingBuilder));
         return this;
     }
 

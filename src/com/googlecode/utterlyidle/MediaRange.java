@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Value;
 
 public class MediaRange implements Value<String>{
     private final String value;
-    public final float quality;
+    private final float quality;
 
     public MediaRange(String value, float quality) {
         this.value = value;
@@ -13,5 +13,9 @@ public class MediaRange implements Value<String>{
 
     public String value() {
         return value;
+    }
+
+    public float quality() {
+        return quality;
     }
 }

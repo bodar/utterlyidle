@@ -24,4 +24,11 @@ public class PathMatcher implements Predicate<Request> {
         return where(first(Request.class), new PathMatcher(basePath, UriTemplate.uriTemplate(path)));
     }
 
+    public static Predicate<Binding> pathMatches(final BasePath basePath, final Request request) {
+        return new Predicate<Binding>() {
+            public boolean matches(Binding binding) {
+                return new PathMatcher(basePath, binding.uriTemplate()).matches(request);
+            }
+        };
+    }
 }

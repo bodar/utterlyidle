@@ -28,6 +28,4 @@ public class MemoryResponseTest {
         Response response = response().header("X-Forwarded-For", "192.168.0.1").bytes(content.getBytes());
         assertThat(response.toString(), endsWith(content));
     }
-
-
 }
