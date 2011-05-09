@@ -12,7 +12,7 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
-    private Status status;
+    private Status status = Status.OK;
     private HeaderParameters headers = headerParameters();
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
     private Object entity;

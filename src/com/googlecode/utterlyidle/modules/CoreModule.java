@@ -25,8 +25,8 @@ public class CoreModule extends AbstractModule {
 
     @Override
     public Module addPerApplicationObjects(Container container) {
-        container.add(Resources.class, AnnotatedResources.class);
-        container.addActivator(Activators.class, container.getActivator(Resources.class));
+        container.add(Resources.class, RegisteredResources.class);
+        container.addActivator(Bindings.class, container.getActivator(Resources.class));
         container.add(ResponseHandlers.class);
         return this;
     }
