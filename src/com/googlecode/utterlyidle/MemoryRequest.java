@@ -7,9 +7,11 @@ import javax.ws.rs.core.HttpHeaders;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static java.lang.String.format;
+import static javax.ws.rs.core.HttpHeaders.CONTENT_LENGTH;
 
 public class MemoryRequest implements Request {
     private final String method;
@@ -24,7 +26,15 @@ public class MemoryRequest implements Request {
         this.method = method;
         this.url = url;
         this.headers = headers;
-        this.input = input;
+        this.input = input == null ? new byte[0] : input;
+        setContentLength();
+    }
+
+    private void setContentLength() {
+        if(headers().contains(CONTENT_LENGTH)){
+            headers().remove(CONTENT_LENGTH);
+        }
+        headers().add(CONTENT_LENGTH, String.valueOf(input().length));
     }
 
     public String method() {
@@ -41,8 +51,8 @@ public class MemoryRequest implements Request {
         return this;
     }
 
-    public InputStream input() {
-        return new ByteArrayInputStream(input);
+    public byte[] input() {
+        return input;
     }
 
     public HeaderParameters headers() {
@@ -67,7 +77,7 @@ public class MemoryRequest implements Request {
         if (form == null) {
             String contentType = headers().getValue(HttpHeaders.CONTENT_TYPE);
             if (contentType != null && contentType.startsWith("application/x-www-form-urlencoded")) {
-                form = FormParameters.parse(asString(input()));
+                form = FormParameters.parse(new String(input()));
             } else {
                 form = FormParameters.formParameters();
             }
@@ -79,13 +89,9 @@ public class MemoryRequest implements Request {
     public String toString() {
         StringBuffer result = new StringBuffer(format("%s %s HTTP/1.1%s", method, url, HTTP_LINE_SEPARATOR));
         result.append(headers());
-        result.append(HTTP_LINE_SEPARATOR);
-        result.append(inputAsRequestString());
+        result.append(HTTP_BODY_SEPARATOR);
+        result.append(new String(input()));
         return result.toString();
     }
 
-    private String inputAsRequestString() {
-        String inputAsString = asString(input());
-        return inputAsString.length() == 0 ? "" : format("Content-length: %s" + HTTP_LINE_SEPARATOR + "\r\n%s", input.length, inputAsString);
-    }
 }
