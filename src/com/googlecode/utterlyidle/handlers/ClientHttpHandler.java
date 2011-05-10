@@ -20,7 +20,7 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.status;
 import static com.googlecode.utterlyidle.io.Url.inputStream;
 
-public class UrlHttpHandler implements HttpHandler {
+public class ClientHttpHandler implements HttpHandler {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.url().toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
