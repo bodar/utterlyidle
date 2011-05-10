@@ -10,6 +10,7 @@ public class Rfc2616 {
     public static final String SEPARATORS = "()<>@,;:\\\"/[]?={} \t";
     public static final String CTLs = range(0,32).add(127).map(toCharacter()).toString("");
     static final String HTTP_LINE_SEPARATOR = "\r\n";
+    static final String HTTP_BODY_SEPARATOR = HTTP_LINE_SEPARATOR + HTTP_LINE_SEPARATOR;
 
     public static boolean isValidToken(String value) {
         if(value == null || value.length()==0)return false;

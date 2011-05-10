@@ -128,4 +128,7 @@ public class RequestBuilder {
         return new RequestBuilder(HttpMethod.DELETE, path);
     }
 
+    public String path() {
+        return path;
+    }
 }

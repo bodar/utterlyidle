@@ -7,24 +7,26 @@ import java.io.StringReader;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.lines;
+import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
+import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public class RequestParser {
     public RequestBuilder parse(String stringified) {
         HttpRequestParts parts = getParts(stringified);
 
         RequestBuilder requestBuilder = requestBuilder(parts.requestLine);
-        addHeaders(requestBuilder,parts.headers);
+        addHeaders(requestBuilder, parts.headers);
         requestBuilder.withInput(parts.messageBody.getBytes());
 
         return requestBuilder;
     }
 
     private HttpRequestParts getParts(String stringified) {
-        Sequence<String> headerAndBody = sequence(stringified.split("\r\n\r\n"));
+        Sequence<String> headerAndBody = sequence(stringified.split(HTTP_BODY_SEPARATOR));
 
         Sequence<String> headerLines = linesOf(headerAndBody.first());
 
-        return new HttpRequestParts(headerLines.take(1).first(), headerLines.drop(1), (headerAndBody.size().equals(2) ? headerAndBody.second(): ""));
+        return new HttpRequestParts(headerLines.take(1).first(), headerLines.drop(1), (headerAndBody.size().equals(2) ? headerAndBody.second() : ""));
     }
 
     private RequestBuilder requestBuilder(String requestLine) {
