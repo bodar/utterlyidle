@@ -7,19 +7,21 @@ import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static javax.ws.rs.core.MediaType.WILDCARD;
 
 public class BindingBuilder {
     private Method method;
     private UriTemplate uriTemplate;
     private String httpMethod = HttpMethod.GET;
-    private String consumes = "*/*";
-    private String produces = "*/*";
+    private Sequence<String> consumes = Sequences.sequence(WILDCARD);
+    private Sequence<String> produces = Sequences.sequence(WILDCARD);
     private int priority = 0;
     private List<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter = Collections.emptyList();
     private boolean hidden = false;
@@ -39,12 +41,12 @@ public class BindingBuilder {
     }
 
     public BindingBuilder consumes(String value) {
-        consumes = value;
+        consumes = consumes.add(value);
         return this;
     }
 
     public BindingBuilder produces(String value) {
-        produces = value;
+        produces = consumes.add(value);
         return this;
     }
 
