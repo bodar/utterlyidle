@@ -97,13 +97,13 @@ public class BaseHandler implements HttpHandler {
         }
     }
 
-    private Response wrapInResponse(final String contentType, Object instance) {
+    private Response wrapInResponse(final Sequence<String> contentType, Object instance) {
         if (instance instanceof Response) {
             return (Response) instance;
         }
 
         return response().
-                header(HttpHeaders.CONTENT_TYPE, contentType).
+                header(HttpHeaders.CONTENT_TYPE, contentType.head()).
                 entity(instance);
     }
 
