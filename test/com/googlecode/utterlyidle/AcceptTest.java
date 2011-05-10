@@ -11,7 +11,7 @@ public class AcceptTest {
     public void canParseRealWorldAccepts() {
         Accept accept = accept("application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
 
-        assertThat(accept.contains("text/html"), is(true));
+        assertThat(accept.matches("text/html"), is(true));
         assertThat(accept.quality("text/html"), NumberMatcher.is(0.9f));
     }
 
@@ -19,7 +19,7 @@ public class AcceptTest {
     public void canParseMultipleAcceptsHeaders() {
         Accept accept = accept("application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
 
-        assertThat(accept.contains("text/html"), is(true));
+        assertThat(accept.matches("text/html"), is(true));
         assertThat(accept.quality("text/html"), NumberMatcher.is(0.9f));
     }
 
@@ -27,23 +27,24 @@ public class AcceptTest {
     public void canHandleWildcard() {
         Accept accept = accept("application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
 
-        assertThat(accept.contains("*/*"), is(true));
-        assertThat(accept.quality("*/*"), NumberMatcher.is(0.5f));
+        assertThat(accept.matches("*/*"), is(true));
+        assertThat(accept.quality("*/*"), NumberMatcher.is(1.0f));
+        // If the resource produces all mime types then the quality will be the highest out of the set
     }
 
     @Test
     public void canHandleWildcardWithExtraSpaceAndNoLeadingZero() {
         Accept accept = accept("text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2");
 
-        assertThat(accept.contains("*/*"), is(true));
-        assertThat(accept.quality("*/*"), NumberMatcher.is(0.2f));
+        assertThat(accept.matches("*/*"), is(true));
+        assertThat(accept.quality("*/*"), NumberMatcher.is(1.0f));
     }
 
     @Test
     public void wildcardWillMatch() {
         Accept accept = accept("text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2");
 
-        assertThat(accept.contains("application/xml"), is(true));
+        assertThat(accept.matches("application/xml"), is(true));
         assertThat(accept.quality("application/xml"), NumberMatcher.is(0.2f));
     }
 

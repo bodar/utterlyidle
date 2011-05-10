@@ -12,7 +12,7 @@ public interface Request {
 
     public Request url(Url url);
 
-    public InputStream input();
+    public byte[] input();
 
     public HeaderParameters headers();
 

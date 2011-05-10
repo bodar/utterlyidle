@@ -11,19 +11,19 @@ public class Binding {
     private final Method method;
     private final String httpMethod;
     private final UriTemplate uriTemplate;
-    private final String consumes;
-    private final String produces;
-    private final Sequence<Pair<Type, Option<NamedParameter>>> arguments;
+    private final Sequence<String> consumes;
+    private final Sequence<String> produces;
+    private final Sequence<Pair<Type, Option<NamedParameter>>> parameters;
     private final int priority;
     private final boolean hidden;
 
-    public Binding(Method method, UriTemplate uriTemplate, String httpMethod, String consumes, String produces, Sequence<Pair<Type, Option<NamedParameter>>> arguments, int priority, boolean hidden) {
+    public Binding(Method method, UriTemplate uriTemplate, String httpMethod, Sequence<String> consumes, Sequence<String> produces, Sequence<Pair<Type, Option<NamedParameter>>> parameters, int priority, boolean hidden) {
         this.method = method;
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
         this.consumes = consumes;
         this.produces = produces;
-        this.arguments = arguments;
+        this.parameters = parameters.realise();
         this.priority = priority;
         this.hidden = hidden;
     }
@@ -40,20 +40,20 @@ public class Binding {
         return uriTemplate;
     }
 
-    public String consumes() {
+    public Sequence<String> consumes() {
         return consumes;
     }
 
-    public String produces() {
+    public Sequence<String> produces() {
         return produces;
     }
 
     public Sequence<Pair<Type, Option<NamedParameter>>> parameters() {
-        return arguments;
+        return parameters;
     }
 
     public Number numberOfArguments() {
-        return arguments.size();
+        return parameters.size();
     }
 
 
