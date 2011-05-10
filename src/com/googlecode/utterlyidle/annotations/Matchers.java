@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.FormParameters;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -36,24 +33,24 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.annotations.Param.toParam;
 
 public class Matchers {
-    public static String producesMimeMatcher(Method method) {
+    public static Sequence<String> producesMimeMatcher(Method method) {
         return extractMediaType(method, Produces.class);
     }
 
-    public static String consumesMimeMatcher(Method method) {
+    public static Sequence<String> consumesMimeMatcher(Method method) {
         return extractMediaType(method, Consumes.class);
     }
 
     @SuppressWarnings("unchecked")
-    private static String extractMediaType(Method method, Class annotation) {
+    private static Sequence<String> extractMediaType(Method method, Class annotation) {
         return sequence(method.getAnnotation(annotation), method.getDeclaringClass().getAnnotation(annotation)).
-                find(notNullValue()).map(toParam()).map(firstValue()).getOrElse(MediaType.WILDCARD);
+                find(notNullValue()).map(toParam()).map(asSequence()).getOrElse(sequence(MediaType.WILDCARD));
     }
 
-    private static Callable1<Param, String> firstValue() {
-        return new Callable1<Param, String>() {
-            public String call(Param param) throws Exception {
-                return sequence(param.<String[]>value()).head();
+    private static Callable1<Param, Sequence<String>> asSequence() {
+        return new Callable1<Param, Sequence<String>>() {
+            public Sequence<String> call(Param param) throws Exception {
+                return sequence(param.<String[]>value());
             }
         };
     }
