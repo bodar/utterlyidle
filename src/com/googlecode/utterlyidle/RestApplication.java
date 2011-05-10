@@ -21,6 +21,7 @@ import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class RestApplication implements Application {
         argumentScope.addInstance(QueryParameters.class, request.query());
         argumentScope.addInstance(FormParameters.class, request.form());
         argumentScope.addInstance(CookieParameters.class, request.cookies());
-        argumentScope.addInstance(InputStream.class, request.input());
+        argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.input()));
         argumentScope.add(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
         argumentScope.add(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentScope));
         sequence(modules).safeCast(ArgumentScopedModule.class).forEach(addPerArgumentObjects(argumentScope));
