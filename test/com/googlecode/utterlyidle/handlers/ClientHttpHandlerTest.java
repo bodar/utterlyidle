@@ -12,7 +12,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class UrlHttpHandlerTest {
+public class ClientHttpHandlerTest {
     @Test
     public void canGetAResource() throws Exception {
         Response response = handle(get("helloworld/queryparam?name=foo"));
@@ -29,7 +29,7 @@ public class UrlHttpHandlerTest {
 
     private Response handle(final RequestBuilder request) throws Exception {
         Server server = new RestServer(BasePath.basePath("/"), new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
-        HttpHandler urlHandler = new UrlHttpHandler();
+        HttpHandler urlHandler = new ClientHttpHandler();
         return urlHandler.handle(request.withPath(server.getUrl().toString() + request.path()).build());
     }
 }
