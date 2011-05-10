@@ -134,13 +134,16 @@ public class Url {
     }
 
     private Pair<Integer, String> doRequest(HttpURLConnection urlConnection, Callable1<InputStream, Void> responseHandler) throws IOException {
-        Pair<Integer, String> status = pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
-        if (status.first() >= 400) {
-            using(urlConnection.getErrorStream(), responseHandler);
+        using(inputStream(urlConnection), responseHandler);
+        return  pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+    }
+
+    public static InputStream inputStream(HttpURLConnection urlConnection) throws IOException {
+        if (urlConnection.getResponseCode() >= 400) {
+            return urlConnection.getErrorStream();
         } else {
-            using(urlConnection.getInputStream(), responseHandler);
+            return urlConnection.getInputStream();
         }
-        return status;
     }
 
     public Pair<Integer, String> delete() {

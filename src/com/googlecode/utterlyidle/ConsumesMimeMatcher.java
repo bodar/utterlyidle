@@ -1,23 +1,26 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
-public class ConsumesMimeMatcher implements Predicate<Request> {
-    private final String mimeType;
+import static com.googlecode.utterlyidle.MediaRange.sameValue;
 
-    public ConsumesMimeMatcher(String mimeType) {
-        this.mimeType = mimeType;
+public class ConsumesMimeMatcher implements Predicate<Request> {
+    private final Sequence<String> mimeTypes;
+
+    public ConsumesMimeMatcher(Sequence<String> mimeTypes) {
+        this.mimeTypes = mimeTypes;
     }
 
     public boolean matches(Request request) {
-        if (mimeType.equals(MediaType.WILDCARD)) {
+        if (mimeTypes.contains(MediaType.WILDCARD)) {
             return true;
         }
         if (request.headers().contains(HttpHeaders.CONTENT_TYPE)) {
-            return request.headers().getValue(HttpHeaders.CONTENT_TYPE).equals(mimeType);
+            return mimeTypes.contains(request.headers().getValue(HttpHeaders.CONTENT_TYPE));
         }
         return true;
     }

@@ -35,7 +35,7 @@ public class MemoryRequestTest {
                                    "Content-Type: application/x-www-form-urlencoded; charset=UTF-8\r\n" +
                                    "Cookie: size=diciptive\r\n" +
                                    "Referer: http://google.com\r\n" +
-                                   "Content-length: 26\r\n" +
+                                   "Content-Length: 26\r\n" +
                                    "\r\n" +
                                    "chups=nah+bru&plinkton=nom"
                    ));

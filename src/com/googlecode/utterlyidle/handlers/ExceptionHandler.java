@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.*;
 
-import javax.ws.rs.core.MediaType;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.googlecode.totallylazy.Pair.pair;
@@ -25,17 +24,17 @@ public class ExceptionHandler implements HttpHandler {
         try {
             return httpHandler.handle(request);
         } catch (InvocationTargetException e) {
-            return findAndHandle(request, e);
+            return findAndHandle(request, e.getCause());
         } catch (Exception e) {
             return findAndHandle(request, e);
         }
     }
 
-    private Response findAndHandle(Request request, Exception exception) throws Exception {
+    private Response findAndHandle(Request request, Throwable throwable) throws Exception {
         Response response = response(
                 INTERNAL_SERVER_ERROR,
                 headerParameters(pair(CONTENT_TYPE, TEXT_PLAIN)),
-                exception);
+                throwable);
         return handlers.findAndHandle(request, response);
     }
 }

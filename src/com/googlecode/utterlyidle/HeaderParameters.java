@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Pair;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public class HeaderParameters extends Parameters<String, String> {
     public HeaderParameters() {
@@ -20,7 +21,7 @@ public class HeaderParameters extends Parameters<String, String> {
 
     @Override
     public String toString() {
-            return sequence(this).map(pairToString("", ": ", "")).toString("\r\n");
+            return sequence(this).map(pairToString("", ": ", "")).toString(HTTP_LINE_SEPARATOR);
     }
 
     private Callable1<? super Pair<String, String>, String> pairToString(final String start, final String separator, final String end) {
