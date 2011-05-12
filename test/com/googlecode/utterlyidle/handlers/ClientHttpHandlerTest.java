@@ -28,7 +28,7 @@ public class ClientHttpHandlerTest {
     }
 
     private Response handle(final RequestBuilder request) throws Exception {
-        Server server = new RestServer(BasePath.basePath("/"), new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
+        Server server = new RestServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
         HttpHandler urlHandler = new ClientHttpHandler();
         return urlHandler.handle(request.withPath(server.getUrl().toString() + request.path()).build());
     }
