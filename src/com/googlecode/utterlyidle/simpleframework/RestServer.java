@@ -13,6 +13,7 @@ import org.simpleframework.transport.connect.SocketConnection;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
@@ -65,7 +66,7 @@ public class RestServer implements Server {
     private SocketConnection startUpApp(Application application, ServerConfiguration configuration) throws IOException {
         Container container = new RestContainer(application.add(new RequestInstanceModule(configuration.basePath())));
         SocketConnection connection = new SocketConnection(new ContainerServer(container, configuration.maxThreadNumber()));
-        InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.portNumber()));
+        InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.portNumber()));
         url = url(format("http://localhost:%s%s", socketAddress.getPort(), configuration.basePath()));
         return connection;
     }
