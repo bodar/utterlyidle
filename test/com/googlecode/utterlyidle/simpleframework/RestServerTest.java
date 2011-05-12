@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.net.HttpURLConnection;
 
-import static com.googlecode.utterlyidle.BasePath.basePath;
+import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.not;
 
 public class RestServerTest extends ServerContract {
     protected Server createServer(CloseableCallable<Application> appActivator) throws Exception {
-        return new RestServer(basePath("/"), appActivator);
+        return new RestServer(appActivator);
     }
 
     @Test
