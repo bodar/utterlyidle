@@ -31,7 +31,7 @@ public class ServerConfiguration {
         return initialize(new ServerConfiguration(), properties);
     }
 
-    private ServerConfiguration withBindAddress(InetAddress bindAddress) {
+    public ServerConfiguration withBindAddress(InetAddress bindAddress) {
         this.bindAddress = bindAddress;
         return this;
     }
