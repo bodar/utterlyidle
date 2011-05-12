@@ -8,13 +8,16 @@ import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
+import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.thread.QueuedThreadPool;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetAddress;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
@@ -47,8 +50,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)), serverConfiguration().
-                        withPortNumber(8002));
+        new RestServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)), serverConfiguration().withPortNumber(8002));
     }
 
     private Server startApp(CloseableCallable<Application> applicationActivator, final ServerConfiguration serverConfig) throws Exception {
@@ -59,7 +61,11 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     private Server startUpServer(Application application, ServerConfiguration serverConfig) throws Exception {
-        Server server = new Server(serverConfig.portNumber());
+        Server server = new Server();
+        SocketConnector socketConnector = new SocketConnector();
+        socketConnector.setPort(serverConfig.portNumber());
+        socketConnector.setHost(serverConfig.bindAddress().getHostAddress());
+        server.addConnector(socketConnector);
         server.setThreadPool(new QueuedThreadPool(serverConfig.maxThreadNumber()));
         Context context = new Context(server, serverConfig.basePath().toString(), NO_SESSIONS);
         application.add(new ServletModule(context.getServletContext()));
