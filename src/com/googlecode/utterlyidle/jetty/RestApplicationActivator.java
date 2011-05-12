@@ -5,7 +5,6 @@ import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.CloseableCallable;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.modules.Module;
-import com.googlecode.utterlyidle.modules.ResourcesModule;
 
 import java.io.IOException;
 
