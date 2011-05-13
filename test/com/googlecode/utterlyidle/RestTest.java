@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Left;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.utterlyidle.handlers.RenderingResponseHandler;
@@ -24,12 +23,14 @@ import static com.googlecode.utterlyidle.Priority.High;
 import static com.googlecode.utterlyidle.Priority.Low;
 import static com.googlecode.utterlyidle.RequestBuilder.*;
 import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.HttpHeaders.LOCATION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -153,6 +154,42 @@ public class RestTest {
 
         Response response = application.handle(get("text").accepting("text/plain"));
         assertThat(response.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
+    }
+
+    @Test
+    public void setsResponseMimeTypeWhenThereAreMultiplePossibleTypes() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(GetsWithMultipleMimeTypes.class);
+
+        Response plainResponse = application.handle(get("text").accepting("text/plain"));
+        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
+        assertThat(new String(plainResponse.bytes()), is("<xml/>"));
+
+        Response xmlResponse = application.handle(get("text").accepting("text/xml"));
+        assertThat(xmlResponse.header(HttpHeaders.CONTENT_TYPE), is("text/xml"));
+        assertThat(new String(xmlResponse.bytes()), is("<xml/>"));
+    }
+
+    @Test
+    public void setsContentTypeCorrectlyEvenWhenNoAcceptHeaderIsPresent() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(GetsWithSingleMime.class);
+
+        Response plainResponse = application.handle(get("text"));
+        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
+        assertThat(new String(plainResponse.bytes()), is("Hello"));
+    }
+
+    @Test
+    public void aSingleResouceMethodCanAcceptsMultiplePossibleMimeTypes() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(PutWithMultipleMimeTypes.class);
+
+        Response plainResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/plain").withInput("<xml/>".getBytes()));
+        assertThat(plainResponse.status(), is(NO_CONTENT));
+
+        Response xmlResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/xml").withInput("<xml/>".getBytes()));
+        assertThat(xmlResponse.status(), is(NO_CONTENT));
     }
 
     @Test
@@ -427,6 +464,34 @@ public class RestTest {
         @Produces("text/html")
         public String getHtml() {
             return "html";
+        }
+    }
+
+    @Path("text")
+    public static class GetsWithSingleMime {
+        @GET
+        @Produces("text/plain")
+        public String getPlain() {
+            return "Hello";
+        }
+
+    }
+
+    @Path("text")
+    public static class GetsWithMultipleMimeTypes {
+        @GET
+        @Produces({"text/plain", "text/xml"})
+        public String getPlain() {
+            return "<xml/>";
+        }
+
+    }
+
+    @Path("text")
+    public static class PutWithMultipleMimeTypes {
+        @PUT
+        @Consumes({"text/plain", "text/xml"})
+        public void getPlain(InputStream input) {
         }
     }
 
