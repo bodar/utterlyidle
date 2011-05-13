@@ -8,6 +8,7 @@ import static com.googlecode.totallylazy.Pair.pair;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+@Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
     @GET
     @Path("helloworld/inresponseheaders")

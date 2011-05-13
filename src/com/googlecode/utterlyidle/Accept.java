@@ -8,6 +8,7 @@ import java.util.regex.MatchResult;
 import static com.googlecode.totallylazy.Callables.descending;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.MediaRange.convertWildCardsTo;
 import static com.googlecode.utterlyidle.MediaRange.sameValue;
 import static java.lang.Float.valueOf;
 import static javax.ws.rs.core.HttpHeaders.ACCEPT;
@@ -73,6 +74,13 @@ public class Accept implements Predicate<String>{
             return accept(request.headers().getValue(ACCEPT));
         }
         return new Accept(sequence(new MediaRange(WILDCARD, 1.0f)));
+    }
+
+    public String bestMatch(Sequence<String> possibleContentTypes) {
+        return mediaRanges.flatMap(convertWildCardsTo(possibleContentTypes)).
+                filter(containedBy(possibleContentTypes)).
+                sortBy(descending(mediaQuality())).
+                head().value();
     }
 
 }
