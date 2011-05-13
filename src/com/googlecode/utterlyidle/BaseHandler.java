@@ -16,6 +16,7 @@ import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.Accept.accept;
 import static com.googlecode.utterlyidle.ConsumesMimeMatcher.contentMatches;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
@@ -63,7 +64,7 @@ public class BaseHandler implements HttpHandler {
         }
 
         Binding binding = findBestMatch(request, failureOrBindings.right());
-        return wrapInResponse(binding.produces(), unwrapEither(invokeMethod(binding, request)));
+        return wrapInResponse(accept(request), binding.produces(), unwrapEither(invokeMethod(binding, request)));
     }
 
     private Binding findBestMatch(Request request, final Sequence<Binding> bindings) {
@@ -97,13 +98,13 @@ public class BaseHandler implements HttpHandler {
         }
     }
 
-    private Response wrapInResponse(final Sequence<String> contentType, Object instance) {
+    private Response wrapInResponse(Accept accept, final Sequence<String> possibleContentTypes, Object instance) {
         if (instance instanceof Response) {
             return (Response) instance;
         }
 
         return response().
-                header(HttpHeaders.CONTENT_TYPE, contentType.head()).
+                header(HttpHeaders.CONTENT_TYPE, accept.bestMatch(possibleContentTypes)).
                 entity(instance);
     }
 
