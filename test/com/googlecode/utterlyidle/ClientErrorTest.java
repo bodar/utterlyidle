@@ -8,6 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -18,6 +19,7 @@ public class ClientErrorTest {
         TestApplication application = new TestApplication();
         Response response = application.handle(get("invalidPath"));
 
+        ServerUrl serverUrl = serverUrl("http://localhost");
         assertThat(response.status(), is(Status.NOT_FOUND));
     }
 

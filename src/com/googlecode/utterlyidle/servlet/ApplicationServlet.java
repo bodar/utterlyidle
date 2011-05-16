@@ -17,10 +17,12 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.utterlyidle.ClientAddress.*;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.ServerUrl.*;
 import static com.googlecode.utterlyidle.io.Url.url;
+import static java.lang.String.*;
 
 public class ApplicationServlet extends HttpServlet {
-    static final ThreadLocal<BasePath> basePath = new ThreadLocal<BasePath>();
+    static final ThreadLocal<ServerUrl> serverUrl = new ThreadLocal<ServerUrl>();
 
     Application application = null;
 
@@ -32,7 +34,7 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         try {
-            basePath.set(extractBasePath(req));
+            serverUrl.set(extractUrl(req));
             Response response = application.handle(request(req));
             mapTo(response, resp);
         } catch (Exception e) {
@@ -79,8 +81,8 @@ public class ApplicationServlet extends HttpServlet {
         return result;
     }
 
-    private static BasePath extractBasePath(HttpServletRequest request) {
-        return BasePath.basePath(request.getContextPath() + request.getServletPath());
+    private static ServerUrl extractUrl(HttpServletRequest request) {
+        return serverUrl(format("%s://%s:%s%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), request.getServletPath()));
     }
 
 }
