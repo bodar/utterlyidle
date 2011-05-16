@@ -8,6 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
+import static javax.ws.rs.core.HttpHeaders.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -27,7 +28,7 @@ public class AbsoluteLocationHandlerTest {
     private void assertLocationIsCorrectlyModified(final String originalLocation, final String finalLocation) throws Exception {
         Response response = new AbsoluteLocationHandler(returnResponse(seeOther(originalLocation)), serverUrl("http://mayhost:8080/")).
                 handle(get("").build());
-        assertThat(response.header(HttpHeaders.LOCATION), is(finalLocation));
+        assertThat(response.header(LOCATION), is(finalLocation));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }
 
