@@ -21,6 +21,7 @@ import static com.googlecode.totallylazy.callables.TimeCallable.calculateMillise
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
+import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -48,7 +49,7 @@ public class RestServer implements Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(applicationActivator(), serverConfiguration().withPortNumber(8000));
+        new RestServer(applicationActivator(), serverConfiguration().port(8000));
     }
 
     public Url getUrl() {
@@ -63,12 +64,17 @@ public class RestServer implements Server {
     }
 
     private HttpServer startUpServer(Application application, ServerConfiguration configuration) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.portNumber()), 0);
-        server.createContext(configuration.basePath().toString(), new RestHandler(application.add(new RequestInstanceModule(configuration.basePath()))));
+        HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getByName(configuration.serverUrl().host()), configuration.serverUrl().port()), 0);
+        server.createContext(configuration.serverUrl().path().toString(), new RestHandler(application.add(new RequestInstanceModule(configuration.serverUrl()))));
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
         server.start();
-        url = url(format("http://localhost:%s%s", server.getAddress().getPort(), configuration.basePath()));
+        updatePort(configuration, server);
+        url = configuration.serverUrl();
         return server;
+    }
+
+    private void updatePort(ServerConfiguration configuration, HttpServer server) {
+        configuration.port(server.getAddress().getPort());
     }
 
     private static RestApplicationActivator applicationActivator() {
