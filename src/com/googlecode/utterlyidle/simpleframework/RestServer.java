@@ -13,7 +13,6 @@ import org.simpleframework.transport.connect.SocketConnection;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
@@ -50,9 +49,8 @@ public class RestServer implements Server {
     }
 
     public static class Test extends RestServer {
-
         public Test() throws Exception {
-            super(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)), serverConfiguration().withPortNumber(8000));
+            super(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)), serverConfiguration().port(8000).serverUrl(ServerUrl.serverUrl("http://10.240.224.196:8000/")));
         }
     }
 
@@ -64,10 +62,15 @@ public class RestServer implements Server {
     }
 
     private SocketConnection startUpApp(Application application, ServerConfiguration configuration) throws IOException {
-        Container container = new RestContainer(application.add(new RequestInstanceModule(configuration.basePath())));
+        Container container = new RestContainer(application.add(new RequestInstanceModule(configuration.serverUrl())));
         SocketConnection connection = new SocketConnection(new ContainerServer(container, configuration.maxThreadNumber()));
-        InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.portNumber()));
-        url = url(format("http://localhost:%s%s", socketAddress.getPort(), configuration.basePath()));
+        InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.serverUrl().host(), configuration.serverUrl().port()));
+        updatePort(configuration, socketAddress);
+        url = configuration.serverUrl();
         return connection;
+    }
+
+    private void updatePort(ServerConfiguration configuration, InetSocketAddress socketAddress) {
+        configuration.port(socketAddress.getPort());
     }
 }

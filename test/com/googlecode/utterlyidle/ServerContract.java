@@ -46,7 +46,7 @@ public abstract class ServerContract {
 
         String result = Strings.toString(urlConnection.getInputStream());
 
-        assertThat(result, is("Hello " + getByName("localhost").getHostAddress()));
+        assertThat(result, is("Hello " + getLocalHost().getHostAddress()));
     }
 
     @Test
