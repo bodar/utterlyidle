@@ -49,7 +49,7 @@ public class RestServer implements Server {
 
     public static class Test extends RestServer {
         public Test() throws Exception {
-            super(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)), serverConfiguration().port(8000).serverUrl(ServerUrl.serverUrl("http://10.240.224.196:8000/")));
+            super(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)), serverConfiguration().port(8000));
         }
     }
 

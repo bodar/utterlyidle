@@ -5,8 +5,6 @@ import com.googlecode.utterlyidle.io.Url;
 
 import java.net.URI;
 
-import static java.net.URLDecoder.decode;
-
 public class ServerUrl extends Url {
     public static ServerUrl serverUrl(String url) {
         return new ServerUrl(url);
