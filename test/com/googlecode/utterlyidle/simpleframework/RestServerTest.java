@@ -5,6 +5,7 @@ import com.googlecode.utterlyidle.CloseableCallable;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerContract;
+import com.googlecode.utterlyidle.httpserver.*;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;
@@ -16,8 +17,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
 public class RestServerTest extends ServerContract {
-    protected Server createServer(CloseableCallable<Application> appActivator) throws Exception {
-        return new RestServer(appActivator);
+    @Override
+    protected Class<? extends Server> server() throws Exception {
+        return RestServer.class;
     }
 
     @Test

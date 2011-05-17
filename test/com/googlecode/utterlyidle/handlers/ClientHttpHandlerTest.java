@@ -3,12 +3,14 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.Server;
+import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.httpserver.RestServer;
-import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,7 +43,11 @@ public class ClientHttpHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        server = new RestServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
+        server = new RestServer(new RestApplication(new SingleResourceModule(HelloWorld.class)), ServerConfiguration.defaultConfiguration());
+    }
 
+    @After
+    public void tearDown() throws Exception {
+        server.close();
     }
 }

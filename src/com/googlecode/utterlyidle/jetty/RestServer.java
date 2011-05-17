@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.CloseableCallable;
+import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.io.Url;
@@ -13,28 +13,20 @@ import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.thread.QueuedThreadPool;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
-import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 import static org.mortbay.jetty.servlet.Context.NO_SESSIONS;
 
 public class RestServer implements com.googlecode.utterlyidle.Server {
     private final Server server;
-    private final Closeable appClosable;
     private Url url;
 
-    public RestServer(final CloseableCallable<Application> applicationActivator) throws Exception {
-        this(applicationActivator, serverConfiguration());
-    }
-
-    public RestServer(final CloseableCallable<Application> applicationActivator, final ServerConfiguration configuration) throws Exception {
-        appClosable = applicationActivator;
-        server = startApp(applicationActivator, configuration);
+    public RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
+        server = startApp(application, configuration);
     }
 
     public void close() throws IOException {
@@ -43,16 +35,15 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         } catch (Exception e) {
             throw new IOException(e);
         }
-        appClosable.close();
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)), serverConfiguration().port(8002));
+        new RestServer(new RestApplication(new SingleResourceModule(HelloWorld.class)), ServerConfiguration.defaultConfiguration().port(8002));
     }
 
-    private Server startApp(CloseableCallable<Application> applicationActivator, final ServerConfiguration serverConfig) throws Exception {
+    private Server startApp(Application application, final ServerConfiguration serverConfig) throws Exception {
         long start = nanoTime();
-        Server server = startUpServer(applicationActivator.call(), serverConfig);
+        Server server = startUpServer(application, serverConfig);
         System.out.println(format("Listening on %s, started Jetty in %s msecs", getPortNumber(server), calculateMilliseconds(start, nanoTime())));
         return server;
     }
@@ -73,7 +64,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         Server server = new Server();
         SocketConnector socketConnector = new SocketConnector();
         socketConnector.setPort(serverConfig.serverUrl().port());
-        socketConnector.setHost(serverConfig.serverUrl().host());
+        socketConnector.setHost(serverConfig.bindAddress().getHostAddress());
         server.addConnector(socketConnector);
         server.setThreadPool(new QueuedThreadPool(serverConfig.maxThreadNumber()));
         return server;

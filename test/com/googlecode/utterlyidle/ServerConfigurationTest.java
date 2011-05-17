@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
 import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
 import static java.lang.String.valueOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,7 +15,7 @@ public class ServerConfigurationTest {
         int oldPort = 12943;
         int newPort = 9999;
         String url = "http://coolhost:" + oldPort + "/soemthing/nothing/what/a/b;c=123?d=789";
-        ServerConfiguration serverConfig = serverConfiguration().serverUrl(serverUrl(url));
+        ServerConfiguration serverConfig = ServerConfiguration.defaultConfiguration().serverUrl(serverUrl(url));
         serverConfig.port(newPort);
         assertThat(serverConfig.serverUrl().toString(), is(equalTo(url.replaceFirst(valueOf(oldPort), valueOf(newPort)))));
     }
