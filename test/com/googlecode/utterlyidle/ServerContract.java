@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Runnables;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
-import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.yadic.Container;
@@ -19,6 +18,7 @@ import java.io.InputStream;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -29,12 +29,11 @@ import static org.hamcrest.Matchers.startsWith;
 
 public abstract class ServerContract {
     protected Server server;
-
-    protected abstract Server createServer(CloseableCallable<Application> application) throws Exception;
+    protected abstract Class<? extends Server> server() throws Exception;
 
     @Before
     public void start() throws Exception {
-        server = createServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
+        server = new ServerActivator(defaultConfiguration().serverClass(server()), new RestApplication(new SingleResourceModule(HelloWorld.class))).call();
     }
 
     @After
@@ -59,16 +58,6 @@ public abstract class ServerContract {
 
         assertThat(result, is("sky.com"));
     }
-
-    @Test
-    public void stoppingTheServerClosesTheApplication() throws Exception {
-        stop();
-        ApplicationCloseableCallable application = new ApplicationCloseableCallable();
-        server = createServer(application);
-        stop();
-        assertThat(application.closed(), is(true));
-    }
-
 
     @Test
     public void handlesGets() throws Exception {
