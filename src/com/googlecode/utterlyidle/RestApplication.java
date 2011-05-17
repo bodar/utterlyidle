@@ -108,6 +108,14 @@ public class RestApplication implements Application {
         };
     }
 
+    public static <T, R> Callable1<Container, R> inject(final T instance, final Callable1<Container, R> handler) {
+        return new Callable1<Container, R>() {
+            public R call(Container container) throws Exception {
+                return handler.call(container.addInstance((Class) instance.getClass(), instance));
+            }
+        };
+    }
+
     public void close() throws IOException {
         applicationScope().close();
     }

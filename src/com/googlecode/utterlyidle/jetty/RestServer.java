@@ -42,7 +42,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private Server startApp(Application application, final ServerConfiguration serverConfig) throws Exception {
         long start = nanoTime();
         Server server = startUpServer(application, serverConfig);
-        System.out.println(format("Listening on %s, started Jetty in %s msecs", getPortNumber(server), calculateMilliseconds(start, nanoTime())));
+        System.out.println(format("Listening on %s, started Jetty in %s msecs", url, calculateMilliseconds(start, nanoTime())));
         return server;
     }
 
