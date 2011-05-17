@@ -1,14 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Container;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.googlecode.totallylazy.Exceptions.toException;
@@ -19,15 +14,15 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Accept.accept;
 import static com.googlecode.utterlyidle.ConsumesMimeMatcher.contentMatches;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
+import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 import static com.googlecode.utterlyidle.MethodMatcher.methodMatches;
 import static com.googlecode.utterlyidle.ParametersExtractor.parametersMatches;
 import static com.googlecode.utterlyidle.PathMatcher.pathMatches;
 import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Responses.response;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
 public class BaseHandler implements HttpHandler {
     private final Bindings bindings;

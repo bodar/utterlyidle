@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
 import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
-import static java.lang.String.*;
+import static java.lang.String.valueOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;

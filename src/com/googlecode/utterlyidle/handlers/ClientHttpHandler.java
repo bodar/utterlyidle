@@ -1,12 +1,8 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.*;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;

@@ -11,11 +11,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.io.IOException;
 
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
-import static com.googlecode.utterlyidle.proxy.Resource.*;
-import static javax.ws.rs.core.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.proxy.Resource.resource;
+import static com.googlecode.utterlyidle.proxy.Resource.urlOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

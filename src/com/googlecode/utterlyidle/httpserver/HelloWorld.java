@@ -1,12 +1,12 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.*;
-import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import com.googlecode.totallylazy.Pair;
-import static com.googlecode.totallylazy.Pair.pair;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+
+import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
@@ -30,8 +30,8 @@ public class HelloWorld {
 
     @GET
     @Path("helloworld/xff")
-    public String xForwardedFor(@HeaderParam("X-Forwarded-For") String forwardedFor){
-        return hello(forwardedFor);
+    public String xForwardedFor(@HeaderParam(X_FORWARDED_FOR) String forwardedFor){
+        return forwardedFor;
     }
 
     @POST

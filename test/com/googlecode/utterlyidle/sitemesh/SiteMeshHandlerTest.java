@@ -13,9 +13,9 @@ import org.junit.Test;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import static com.googlecode.utterlyidle.BasePath.basePath;
+import static com.googlecode.utterlyidle.MediaType.TEXT_XML;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -23,7 +23,6 @@ import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentTy
 import static com.googlecode.utterlyidle.sitemesh.MetaTagRule.metaTagRule;
 import static com.googlecode.utterlyidle.sitemesh.StaticDecoratorRule.staticRule;
 import static com.googlecode.utterlyidle.sitemesh.TemplateName.templateName;
-import static javax.ws.rs.core.MediaType.TEXT_XML;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 

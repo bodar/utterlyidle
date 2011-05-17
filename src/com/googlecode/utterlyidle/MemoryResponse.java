@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.cookies.Cookie;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

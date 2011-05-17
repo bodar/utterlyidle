@@ -1,9 +1,8 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Runnables;
-import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Container;
 
 import static com.googlecode.totallylazy.Runnables.VOID;
