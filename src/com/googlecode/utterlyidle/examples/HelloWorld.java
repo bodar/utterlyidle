@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.httpserver;
+package com.googlecode.utterlyidle.examples;
 
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.MediaType;

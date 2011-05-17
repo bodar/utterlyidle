@@ -1,11 +1,9 @@
 package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.ServerConfiguration;
-import com.googlecode.utterlyidle.httpserver.HelloWorld;
+import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.io.Url;
-import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
 import org.mortbay.jetty.Server;
@@ -38,7 +36,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(new RestApplication(new SingleResourceModule(HelloWorld.class)), ServerConfiguration.defaultConfiguration().port(8002));
+        new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8002));
     }
 
     private Server startApp(Application application, final ServerConfiguration serverConfig) throws Exception {
@@ -55,8 +53,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         context.setAttribute(Application.class.getCanonicalName(), application);
         context.addServlet(ApplicationServlet.class, "/*");
         server.start();
-        updatePort(serverConfig, server);
-        url = serverConfig.serverUrl();
+        url = serverConfig.port(getPortNumber(server)).serverUrl();
         return server;
     }
 
@@ -68,10 +65,6 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         server.addConnector(socketConnector);
         server.setThreadPool(new QueuedThreadPool(serverConfig.maxThreadNumber()));
         return server;
-    }
-
-    private void updatePort(ServerConfiguration serverConfig, Server server) {
-        serverConfig.port(getPortNumber(server));
     }
 
     private int getPortNumber(Server server) {

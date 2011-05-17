@@ -1,13 +1,11 @@
 package com.googlecode.utterlyidle.simpleframework;
 
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
-import com.googlecode.utterlyidle.httpserver.HelloWorld;
+import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.RequestInstanceModule;
-import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.connect.Connection;
@@ -33,17 +31,11 @@ public class RestServer implements Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new Test();
+        new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8000));
     }
 
     public Url getUrl() {
         return url;
-    }
-
-    public static class Test extends RestServer {
-        public Test() throws Exception {
-            super(new RestApplication(new SingleResourceModule(HelloWorld.class)), ServerConfiguration.defaultConfiguration().port(8000));
-        }
     }
 
     private Connection startApp(Application application, ServerConfiguration configuration) throws Exception {
@@ -57,12 +49,9 @@ public class RestServer implements Server {
         Container container = new RestContainer(application.add(new RequestInstanceModule(configuration.serverUrl())));
         SocketConnection connection = new SocketConnection(new ContainerServer(container, configuration.maxThreadNumber()));
         InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.serverUrl().port()));
-        updatePort(configuration, socketAddress);
-        url = configuration.serverUrl();
+
+        url = configuration.port(socketAddress.getPort()).serverUrl();
         return connection;
     }
 
-    private void updatePort(ServerConfiguration configuration, InetSocketAddress socketAddress) {
-        configuration.port(socketAddress.getPort());
-    }
 }
