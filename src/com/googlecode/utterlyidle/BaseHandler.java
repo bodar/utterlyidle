@@ -1,6 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Container;
 

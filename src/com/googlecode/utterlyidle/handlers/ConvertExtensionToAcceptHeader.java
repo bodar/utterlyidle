@@ -1,6 +1,10 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;

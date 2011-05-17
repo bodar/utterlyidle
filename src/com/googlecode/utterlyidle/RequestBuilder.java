@@ -2,10 +2,10 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.io.Url;
 
-import javax.ws.rs.HttpMethod;
 import java.util.ArrayList;
 import java.util.List;
 

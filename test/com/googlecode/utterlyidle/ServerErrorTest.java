@@ -4,8 +4,8 @@ import com.googlecode.utterlyidle.handlers.WriteMessageToResponseHandler;
 import com.googlecode.yadic.ContainerException;
 import org.junit.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;

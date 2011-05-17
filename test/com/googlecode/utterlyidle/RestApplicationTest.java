@@ -8,8 +8,8 @@ import com.googlecode.yadic.Container;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
 import java.io.Closeable;
 import java.io.IOException;
 

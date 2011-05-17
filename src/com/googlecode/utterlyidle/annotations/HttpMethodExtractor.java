@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.Extractor;
 
-import javax.ws.rs.HttpMethod;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
