@@ -1,0 +1,35 @@
+html, body {
+    margin: 10px;
+    padding: 0;
+    background-color: #fff;
+    color: #333;
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+}
+
+h1 {
+    background-image: url('logo.png');
+    background-repeat: no-repeat;
+    height: 50px;
+    margin: 0;
+    padding: 5px 5px 5px 60px;
+}
+
+ul.resources{
+    list-style: none;
+}
+
+label {
+    text-align: right;
+    width: 200px;
+}
+
+input.text, span.method{
+    border: 1px solid #906;
+}
+
+span.method{
+    background-color: #C39;
+    color: #FFF;
+    padding: 1px 5px;
+}
