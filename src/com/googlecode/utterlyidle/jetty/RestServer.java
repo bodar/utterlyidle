@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.jetty;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.CloseableCallable;
 import com.googlecode.utterlyidle.ServerConfiguration;
-import com.googlecode.utterlyidle.ServerUrl;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
@@ -12,7 +11,6 @@ import com.googlecode.utterlyidle.servlet.ServletModule;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.thread.QueuedThreadPool;
 
 import java.io.Closeable;
@@ -64,7 +62,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         Context context = new Context(server, serverConfig.serverUrl().path().toString(), NO_SESSIONS);
         application.add(new ServletModule(context.getServletContext()));
         context.setAttribute(Application.class.getCanonicalName(), application);
-        context.addServlet(new ServletHolder(new ApplicationServlet()), "/*");
+        context.addServlet(ApplicationServlet.class, "/*");
         server.start();
         updatePort(serverConfig, server);
         url = serverConfig.serverUrl();

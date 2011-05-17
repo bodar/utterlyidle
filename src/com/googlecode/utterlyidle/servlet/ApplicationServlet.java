@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.ClientAddress;
+import com.googlecode.utterlyidle.modules.RequestInstanceModule;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -11,30 +11,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.googlecode.totallylazy.Runnables.write;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.utterlyidle.ClientAddress.*;
+import static com.googlecode.totallylazy.Runnables.write;
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
-import static com.googlecode.utterlyidle.ServerUrl.*;
 import static com.googlecode.utterlyidle.io.Url.url;
-import static java.lang.String.*;
+import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
+import static java.lang.String.format;
 
 public class ApplicationServlet extends HttpServlet {
-    static final ThreadLocal<ServerUrl> serverUrl = new ThreadLocal<ServerUrl>();
-
-    Application application = null;
+    public static final String KEY = "application";
+    private Application application = null;
 
     @Override
     public void init(ServletConfig config) {
-        application = ApplicationStarter.getApplication(config.getServletContext());
+        application = getApplication(config.getServletContext(), config.getInitParameter(KEY));
     }
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         try {
-            serverUrl.set(extractUrl(req));
+            application.add(new RequestInstanceModule(extractUrl(req)));
             Response response = application.handle(request(req));
             mapTo(response, resp);
         } catch (Exception e) {
@@ -82,7 +81,8 @@ public class ApplicationServlet extends HttpServlet {
     }
 
     private static ServerUrl extractUrl(HttpServletRequest request) {
-        return serverUrl(format("%s://%s:%s%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), request.getServletPath()));
+        return ServerUrl.serverUrl(format("%s://%s:%s%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), request.getServletPath()));
     }
+
 
 }

@@ -10,6 +10,8 @@ import com.googlecode.yadic.Container;
 
 import javax.servlet.ServletContext;
 
+import java.util.concurrent.Callable;
+
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.attributeMap;
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.webRoot;
 
@@ -27,7 +29,6 @@ public class ServletModule implements ApplicationScopedModule, RequestScopedModu
     }
 
     public Module addPerRequestObjects(Container container) {
-        container.addInstance(ServerUrl.class, ApplicationServlet.serverUrl.get());
         return this;
     }
 }

@@ -17,7 +17,6 @@ import java.net.InetSocketAddress;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
-import static com.googlecode.utterlyidle.io.Url.url;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 

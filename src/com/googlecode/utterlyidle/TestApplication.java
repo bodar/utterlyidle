@@ -9,7 +9,6 @@ import com.googlecode.utterlyidle.modules.RequestInstanceModule;
 import com.googlecode.utterlyidle.modules.SingleResourceActivator;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 
-import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
 
 public class TestApplication extends RestApplication {

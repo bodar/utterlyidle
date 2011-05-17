@@ -3,11 +3,7 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
-import com.googlecode.utterlyidle.modules.Module;
-import com.googlecode.utterlyidle.modules.RequestInstanceModule;
-import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.utterlyidle.modules.ResourcesModule;
-import com.googlecode.utterlyidle.modules.SingleResourceModule;
+import com.googlecode.utterlyidle.modules.*;
 import com.googlecode.yadic.Container;
 import com.sun.net.httpserver.HttpServer;
 
@@ -65,7 +61,8 @@ public class RestServer implements Server {
 
     private HttpServer startUpServer(Application application, ServerConfiguration configuration) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getByName(configuration.serverUrl().host()), configuration.serverUrl().port()), 0);
-        server.createContext(configuration.serverUrl().path().toString(), new RestHandler(application.add(new RequestInstanceModule(configuration.serverUrl()))));
+        server.createContext(configuration.serverUrl().path().toString(),
+                new RestHandler(application.add(new RequestInstanceModule(configuration.serverUrl()))));
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
         server.start();
         updatePort(configuration, server);
