@@ -8,7 +8,7 @@ public class ServerActivator implements Callable<Server> {
     private final ServerConfiguration serverConfiguration;
     private final Application application;
 
-    public ServerActivator(ServerConfiguration serverConfiguration, Application application) {
+    public ServerActivator(Application application, ServerConfiguration serverConfiguration) {
         this.serverConfiguration = serverConfiguration;
         this.application = application;
     }
