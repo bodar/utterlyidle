@@ -1,28 +1,18 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Runnables;
-import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
-import com.googlecode.utterlyidle.modules.Module;
-import com.googlecode.utterlyidle.modules.SingleResourceModule;
-import com.googlecode.yadic.Container;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
+import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
-import static com.googlecode.utterlyidle.io.Url.url;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -78,14 +68,14 @@ public abstract class ServerContract {
 
     @Test
     public void mapsRequestHeaders() throws Exception {
-        Response response = handle(get("helloworld/headerparam").accepting("*/*").withHeader("name", "bar"), server);
+        Response response = handle(get("helloworld/headerparam").accepting(WILDCARD).withHeader("name", "bar"), server);
 
         assertThat(new String(response.bytes()), is("Hello bar"));
     }
 
     @Test
     public void mapsResponseHeaders() throws Exception {
-        Response response = handle(get("helloworld/inresponseheaders?name=mike").accepting("*/*"), server);
+        Response response = handle(get("helloworld/inresponseheaders?name=mike").accepting(WILDCARD), server);
 
         assertThat(response.header("greeting"), is("Hello mike"));
     }
@@ -99,7 +89,7 @@ public abstract class ServerContract {
 
     @Test
     public void canHandleMultiValueQueryParameters() throws Exception {
-        Response response = handle(get("echoquery").withQuery("a", "first").withQuery("a", "second").accepting("*/*"), server);
+        Response response = handle(get("echoquery").withQuery("a", "first").withQuery("a", "second").accepting(WILDCARD), server);
 
         String result = new String(response.bytes());
 
@@ -109,76 +99,16 @@ public abstract class ServerContract {
 
     @Test
     public void retainsOrderOfQueryParameters() throws Exception {
-        Response response = handle(get("echoquery").withQuery("a", "1").withQuery("b", "2").withQuery("a", "3").withQuery("b", "4").accepting("*/*"), server);
+        Response response = handle(get("echoquery").withQuery("a", "1").withQuery("b", "2").withQuery("a", "3").withQuery("b", "4").accepting(WILDCARD), server);
 
         assertThat(new String(response.bytes()), is("?a=1&b=2&a=3&b=4"));
     }
 
     @Test
     public void willPrintStackTraceAsPlainText() throws Exception {
-        ResponseAsString responseContent = new ResponseAsString();
-        Pair<Integer, String> response = url(server.getUrl() + "goesbang?exceptionMessage=goes_bang").get(MediaType.WILDCARD, responseContent);
+        Response response = handle(get("goesbang").withQuery("exceptionMessage", "goes_bang").accepting(WILDCARD), server);
 
-        assertThat(response.first(), is(Status.INTERNAL_SERVER_ERROR.code()));
-        assertThat(responseContent.toString(), containsString("Exception"));
-        assertThat(responseContent.toString(), containsString("goes_bang"));
-    }
-
-
-    public static class ResponseAsString implements Callable1<InputStream, Void> {
-
-        private String value;
-
-        public Void call(InputStream inputStream) {
-            value = Strings.toString(inputStream);
-            return Runnables.VOID;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-    }
-
-    private class NullApplication implements Application {
-        public Container applicationScope() {
-            return null;
-        }
-
-        public <T> T usingRequestScope(Callable1<Container, T> callable) {
-            return null;
-        }
-
-        public <T> T usingParameterScope(Request request, Callable1<Container, T> callable) {
-            return null;
-        }
-
-        public Application add(Module module) {
-            return null;
-        }
-
-        public void close() throws IOException {
-
-        }
-
-        public Response handle(Request request) throws Exception {
-            return null;
-        }
-    }
-
-    private class ApplicationCloseableCallable implements CloseableCallable<Application> {
-        private boolean closed = false;
-
-        public Application call() throws Exception {
-            return new NullApplication();
-        }
-
-        public void close() throws IOException {
-            closed = true;
-        }
-
-        public boolean closed() {
-            return closed;
-        }
+        assertThat(response.status(), is(Status.INTERNAL_SERVER_ERROR));
+        assertThat(new String(response.bytes()), allOf(containsString("Exception"), containsString("goes_bang")));
     }
 }

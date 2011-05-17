@@ -30,7 +30,7 @@ public class RestServer implements Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8000));
+        new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8001));
     }
 
     public Url getUrl() {
