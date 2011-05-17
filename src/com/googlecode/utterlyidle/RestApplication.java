@@ -8,7 +8,13 @@ import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
-import com.googlecode.utterlyidle.modules.*;
+import com.googlecode.utterlyidle.modules.ApplicationScopedModule;
+import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
+import com.googlecode.utterlyidle.modules.CoreModule;
+import com.googlecode.utterlyidle.modules.Module;
+import com.googlecode.utterlyidle.modules.RequestScopedModule;
+import com.googlecode.utterlyidle.modules.ResourcesModule;
+import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -24,7 +30,11 @@ import java.util.List;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.modules.Modules.*;
+import static com.googlecode.utterlyidle.modules.Modules.addPerApplicationObjects;
+import static com.googlecode.utterlyidle.modules.Modules.addPerArgumentObjects;
+import static com.googlecode.utterlyidle.modules.Modules.addPerRequestObjects;
+import static com.googlecode.utterlyidle.modules.Modules.addResources;
+import static com.googlecode.utterlyidle.modules.Modules.addResponseHandlers;
 
 public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();

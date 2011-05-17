@@ -2,7 +2,11 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
-import javax.ws.rs.*;
+import com.googlecode.utterlyidle.annotations.Consumes;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.Produces;
+import com.googlecode.utterlyidle.annotations.QueryParam;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;

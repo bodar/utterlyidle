@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Extractor;
 import com.googlecode.utterlyidle.UriTemplate;
 
-import javax.ws.rs.Path;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Predicates.notNullValue;

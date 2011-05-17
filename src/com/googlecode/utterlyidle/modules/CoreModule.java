@@ -1,16 +1,31 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.handlers.*;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.BasePathActivator;
+import com.googlecode.utterlyidle.Bindings;
+import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.RegisteredResources;
+import com.googlecode.utterlyidle.ResourcePath;
+import com.googlecode.utterlyidle.ResourcePathActivator;
+import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.StreamingOutput;
+import com.googlecode.utterlyidle.StreamingWriter;
+import com.googlecode.utterlyidle.handlers.ByteArrayHandler;
+import com.googlecode.utterlyidle.handlers.NoContentHandler;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
+import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
+import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
+import com.googlecode.utterlyidle.handlers.StreamingWriterHandler;
 import com.googlecode.utterlyidle.rendering.BuiltInResources;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.rendering.MatchFailureRenderer;
 import com.googlecode.utterlyidle.rendering.ObjectRenderer;
 import com.googlecode.yadic.Container;
 
-import javax.ws.rs.core.StreamingOutput;
-
-import static com.googlecode.totallylazy.Predicates.*;
+import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.nullValue;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 

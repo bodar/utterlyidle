@@ -1,6 +1,10 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Server;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.httpserver.RestServer;
 import com.googlecode.utterlyidle.jetty.RestApplicationActivator;

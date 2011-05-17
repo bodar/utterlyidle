@@ -1,7 +1,13 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ServerUrl;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.modules.RequestInstanceModule;
 
 import javax.servlet.ServletConfig;

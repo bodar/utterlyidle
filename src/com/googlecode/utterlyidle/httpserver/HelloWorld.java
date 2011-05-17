@@ -1,8 +1,18 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.utterlyidle.*;
-
-import javax.ws.rs.*;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.MediaType;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
+import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.annotations.FormParam;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.HeaderParam;
+import com.googlecode.utterlyidle.annotations.POST;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.Produces;
+import com.googlecode.utterlyidle.annotations.QueryParam;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
