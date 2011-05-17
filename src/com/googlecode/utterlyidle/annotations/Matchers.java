@@ -7,7 +7,6 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.FormParameters;
 import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.Hidden;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.NamedParameter;
 import com.googlecode.utterlyidle.Parameters;

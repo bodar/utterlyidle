@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.CloseableCallable;
 import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.io.Url;
@@ -15,16 +15,13 @@ import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.yadic.Container;
 import com.sun.net.httpserver.HttpServer;
 
-import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Properties;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static java.lang.String.format;
@@ -33,40 +30,33 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class RestServer implements Server {
     private HttpServer server;
-    private final Closeable closableActivator;
     private Url url;
 
-    public RestServer(final CloseableCallable<Application> applicationActivator) throws Exception {
-        this(applicationActivator, serverConfiguration());
-    }
-
-    public RestServer(final CloseableCallable<Application> applicationActivator, final ServerConfiguration configuration) throws Exception {
-        closableActivator = applicationActivator;
-        server = startApp(applicationActivator, configuration);
+    public RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
+        server = startApp(application, configuration);
     }
 
     public void close() throws IOException {
         server.stop(0);
-        closableActivator.close();
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(applicationActivator(), serverConfiguration().port(8000));
+        new RestServer(new RestApplication(new SingleResourceModule(HelloWorld.class)), ServerConfiguration.defaultConfiguration().port(8000));
     }
 
     public Url getUrl() {
         return url;
     }
 
-    private HttpServer startApp(CloseableCallable<Application> applicationActivator, ServerConfiguration configuration) throws Exception {
+    private HttpServer startApp(Application application, ServerConfiguration configuration) throws Exception {
         long start = nanoTime();
-        HttpServer server = startUpServer(applicationActivator.call(), configuration);
+        HttpServer server = startUpServer(application, configuration);
         System.out.println(format("Listening on %s, started HttpServer in %s msecs", url, calculateMilliseconds(start, nanoTime())));
         return server;
     }
 
     private HttpServer startUpServer(Application application, ServerConfiguration configuration) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getByName(configuration.serverUrl().host()), configuration.serverUrl().port()), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.serverUrl().port()), 0);
         server.createContext(configuration.serverUrl().path().toString(),
                 new RestHandler(application.add(new RequestInstanceModule(configuration.serverUrl()))));
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));

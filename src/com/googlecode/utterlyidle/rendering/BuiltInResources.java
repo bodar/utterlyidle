@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.utterlyidle.Hidden;
+import com.googlecode.utterlyidle.annotations.Hidden;
 import com.googlecode.utterlyidle.RegisteredResources;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;

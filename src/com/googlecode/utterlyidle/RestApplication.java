@@ -40,9 +40,12 @@ public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
     private final List<Module> modules = new ArrayList<Module>();
 
-    public RestApplication() {
+    public RestApplication(Module ... modules) {
         applicationScope.addInstance(Application.class, this);
         add(new CoreModule());
+        for (Module module : modules) {
+            add(module);
+        }
     }
 
     public Application add(Module module) {
