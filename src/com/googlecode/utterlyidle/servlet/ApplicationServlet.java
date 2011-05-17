@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.servlet;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -8,7 +9,7 @@ import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ServerUrl;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.yadic.Container;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -23,6 +24,8 @@ import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.RestApplication.handleRequest;
+import static com.googlecode.utterlyidle.RestApplication.inject;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
 import static java.lang.String.format;
@@ -37,10 +40,10 @@ public class ApplicationServlet extends HttpServlet {
     }
 
     @Override
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+    public void service(final HttpServletRequest httpServletRequest, HttpServletResponse resp) throws ServletException {
         try {
-            application.add(new RequestInstanceModule(extractUrl(req)));
-            Response response = application.handle(request(req));
+            ServerUrl serverUrl = extractUrl(httpServletRequest);
+            Response response = application.usingRequestScope(inject(serverUrl, handleRequest(request(httpServletRequest))));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
