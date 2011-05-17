@@ -47,10 +47,12 @@ public class RestServer implements Server {
     private HttpServer startUpServer(Application application, ServerConfiguration configuration) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.serverUrl().port()), 0);
         server.createContext(configuration.serverUrl().path().toString(),
-                new RestHandler(application.add(new RequestInstanceModule(configuration.serverUrl()))));
+                new RestHandler(application));
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
         server.start();
-        url = configuration.port(server.getAddress().getPort()).serverUrl();
+        ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
+        application.add(new RequestInstanceModule(updatedConfiguration.serverUrl()));
+        url = updatedConfiguration.serverUrl();
         return server;
     }
 
