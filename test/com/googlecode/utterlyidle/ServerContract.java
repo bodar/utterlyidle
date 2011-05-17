@@ -24,7 +24,7 @@ public abstract class ServerContract {
 
     @Before
     public void start() throws Exception {
-        server = new ServerActivator(defaultConfiguration().serverClass(server()), new HelloWorldApplication()).call();
+        server = new ServerActivator(new HelloWorldApplication(), defaultConfiguration().serverClass(server())).call();
     }
 
     @After
