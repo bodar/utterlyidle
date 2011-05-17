@@ -16,7 +16,6 @@ public class ServerConfigurationTest {
         int newPort = 9999;
         String url = "http://coolhost:" + oldPort + "/soemthing/nothing/what/a/b;c=123?d=789";
         ServerConfiguration serverConfig = ServerConfiguration.defaultConfiguration().serverUrl(serverUrl(url));
-        serverConfig.port(newPort);
-        assertThat(serverConfig.serverUrl().toString(), is(equalTo(url.replaceFirst(valueOf(oldPort), valueOf(newPort)))));
+        assertThat(serverConfig.port(newPort).serverUrl().toString(), is(equalTo(url.replaceFirst(valueOf(oldPort), valueOf(newPort)))));
     }
 }

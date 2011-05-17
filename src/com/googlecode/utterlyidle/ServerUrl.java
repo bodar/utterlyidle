@@ -22,7 +22,7 @@ public class ServerUrl extends Url {
         return toURI().getHost();
     }
 
-    public ServerUrl replacePort(int port) {
+    public ServerUrl port(int port) {
         URI uri = toURI();
         return serverUrl(toString(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), port, uri.getRawPath(), uri.getRawQuery(), uri.getRawFragment()));
     }
