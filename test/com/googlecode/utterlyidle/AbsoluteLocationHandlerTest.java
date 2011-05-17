@@ -3,12 +3,10 @@ package com.googlecode.utterlyidle;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import javax.ws.rs.core.HttpHeaders;
-
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
-import static javax.ws.rs.core.HttpHeaders.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

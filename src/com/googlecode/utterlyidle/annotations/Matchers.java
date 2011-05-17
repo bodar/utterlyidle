@@ -1,25 +1,13 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.*;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.FormParameters;
-import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.Hidden;
-import com.googlecode.utterlyidle.NamedParameter;
-import com.googlecode.utterlyidle.Parameters;
-import com.googlecode.utterlyidle.PathParameters;
-import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.UriTemplate;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;

@@ -6,13 +6,14 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Dates.date;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.*;
+import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
+import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class CookieParametersTest {
     private MemoryResponse response = new MemoryResponse();

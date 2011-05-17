@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Value;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static javax.ws.rs.core.MediaType.WILDCARD;
+import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 
 public class MediaRange implements Value<String>{
     private final String value;

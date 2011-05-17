@@ -1,15 +1,17 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
 
 import java.lang.reflect.InvocationTargetException;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
 
 public class ExceptionHandler implements HttpHandler {
     private final HttpHandler httpHandler;

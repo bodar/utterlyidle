@@ -1,6 +1,9 @@
 package com.googlecode.utterlyidle.simpleframework;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.CloseableCallable;
+import com.googlecode.utterlyidle.Server;
+import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.httpserver.HelloWorld;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
