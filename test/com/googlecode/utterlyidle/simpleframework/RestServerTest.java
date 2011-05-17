@@ -1,6 +1,10 @@
 package com.googlecode.utterlyidle.simpleframework;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.CloseableCallable;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Server;
+import com.googlecode.utterlyidle.ServerContract;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;

@@ -1,9 +1,17 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.CloseableCallable;
+import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.Server;
+import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
-import com.googlecode.utterlyidle.modules.*;
+import com.googlecode.utterlyidle.modules.Module;
+import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.utterlyidle.modules.RequestScopedModule;
+import com.googlecode.utterlyidle.modules.ResourcesModule;
+import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.yadic.Container;
 import com.sun.net.httpserver.HttpServer;
 

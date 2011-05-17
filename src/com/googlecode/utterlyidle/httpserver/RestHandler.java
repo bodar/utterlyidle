@@ -1,7 +1,13 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.MemoryRequest;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 

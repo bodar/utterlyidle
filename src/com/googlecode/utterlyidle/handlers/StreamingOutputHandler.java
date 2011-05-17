@@ -2,8 +2,8 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
+import com.googlecode.utterlyidle.StreamingOutput;
 
-import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 
 public class StreamingOutputHandler implements ResponseHandler {

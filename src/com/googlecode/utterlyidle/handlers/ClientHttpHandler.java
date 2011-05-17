@@ -1,7 +1,15 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.*;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.totallylazy.Bytes;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Runnables;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 
 import java.io.InputStream;
 import java.io.OutputStream;

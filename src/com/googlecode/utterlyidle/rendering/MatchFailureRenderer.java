@@ -1,7 +1,22 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.totallylazy.*;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Strings;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Renderer;
+import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
