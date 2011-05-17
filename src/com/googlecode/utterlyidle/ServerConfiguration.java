@@ -41,7 +41,7 @@ public class ServerConfiguration {
         this(new ServerUrl(properties.getProperty(SERVER_URL, DEFAULT_SERVER_URL)),
                 valueOf(properties.getProperty(MAX_THREAD_NUM, DEFAULT_THREAD_NUMBER)),
                 toInetAddress(properties.getProperty(SERVER_BIND_ADDRESS, DEFAULT_BIND_ADDRESS)),
-                toServer(properties.getProperty(SERVER_CLASS, DEFAULT_BIND_ADDRESS)));
+                toServer(properties.getProperty(SERVER_CLASS, DEFAULT_SERVER_CLASS)));
     }
 
     public static ServerConfiguration defaultConfiguration() {
