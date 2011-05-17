@@ -4,7 +4,8 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Runnables;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.httpserver.HelloWorld;
+import com.googlecode.utterlyidle.examples.HelloWorld;
+import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.yadic.Container;
@@ -33,7 +34,7 @@ public abstract class ServerContract {
 
     @Before
     public void start() throws Exception {
-        server = new ServerActivator(defaultConfiguration().serverClass(server()), new RestApplication(new SingleResourceModule(HelloWorld.class))).call();
+        server = new ServerActivator(defaultConfiguration().serverClass(server()), new HelloWorldApplication()).call();
     }
 
     @After
