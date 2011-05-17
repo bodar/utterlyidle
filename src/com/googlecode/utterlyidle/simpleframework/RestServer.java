@@ -46,11 +46,13 @@ public class RestServer implements Server {
     }
 
     private SocketConnection startUpApp(Application application, ServerConfiguration configuration) throws IOException {
-        Container container = new RestContainer(application.add(new RequestInstanceModule(configuration.serverUrl())));
+        Container container = new RestContainer(application);
         SocketConnection connection = new SocketConnection(new ContainerServer(container, configuration.maxThreadNumber()));
         InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.serverUrl().port()));
 
-        url = configuration.port(socketAddress.getPort()).serverUrl();
+        ServerConfiguration updatedConfiguration = configuration.port(socketAddress.getPort());
+        application.add(new RequestInstanceModule(updatedConfiguration.serverUrl()));
+        url = updatedConfiguration.serverUrl();
         return connection;
     }
 
