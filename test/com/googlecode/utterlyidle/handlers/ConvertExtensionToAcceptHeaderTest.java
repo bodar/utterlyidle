@@ -1,18 +1,18 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.handlers.ConvertExtensionToAcceptHeader.Replacements.replacements;
 import static com.googlecode.utterlyidle.io.Url.url;
-import static javax.ws.rs.core.HttpHeaders.LOCATION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;

@@ -1,16 +1,12 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.None;
-import com.googlecode.totallylazy.Option;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Left.left;
-import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Right.right;
 
 public class EitherResolver implements Resolver<Either> {

@@ -3,11 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
-import static com.googlecode.utterlyidle.MediaRange.sameValue;
-
 public class ConsumesMimeMatcher implements Predicate<Request> {
     private final Sequence<String> mimeTypes;
 

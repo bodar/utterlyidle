@@ -1,10 +1,11 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.matchers.NumberMatcher;
+import org.junit.Test;
+
 import static com.googlecode.utterlyidle.Accept.accept;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import org.junit.Test;
 
 public class AcceptTest {
     @Test

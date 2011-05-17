@@ -1,13 +1,14 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import static com.googlecode.totallylazy.Pair.pair;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.googlecode.totallylazy.Pair.pair;
 
 public class UrlEncodedMessage {
     private static final String charSet = "UTF-8";

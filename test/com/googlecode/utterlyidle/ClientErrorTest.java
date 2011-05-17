@@ -3,9 +3,7 @@ package com.googlecode.utterlyidle;
 import org.junit.Test;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.HttpHeaders;
 
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.ServerUrl.serverUrl;

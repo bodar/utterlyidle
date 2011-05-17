@@ -1,9 +1,7 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
-import java.io.Closeable;
 import java.io.OutputStream;
 
 public interface Response {

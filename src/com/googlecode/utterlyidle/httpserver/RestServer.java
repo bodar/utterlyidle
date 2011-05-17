@@ -17,10 +17,8 @@ import static com.googlecode.totallylazy.callables.TimeCallable.calculateMillise
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ServerConfiguration.serverConfiguration;
-import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
-import static com.googlecode.utterlyidle.io.Url.url;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 import static java.util.concurrent.Executors.newFixedThreadPool;

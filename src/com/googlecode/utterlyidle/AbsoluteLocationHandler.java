@@ -3,9 +3,8 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Sequence;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.ServerUrl.*;
-import static com.googlecode.utterlyidle.io.Url.url;
-import static javax.ws.rs.core.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.ServerUrl.changeToAbsoluteUrl;
 
 public class AbsoluteLocationHandler implements HttpHandler{
     private final HttpHandler httpHandler;

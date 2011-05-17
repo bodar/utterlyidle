@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.utterlyidle.RegisteredResources;
 import com.googlecode.utterlyidle.Hidden;
+import com.googlecode.utterlyidle.RegisteredResources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

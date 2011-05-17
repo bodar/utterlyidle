@@ -1,6 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.regex.Regex;
 
 import java.util.regex.MatchResult;
@@ -8,11 +11,11 @@ import java.util.regex.MatchResult;
 import static com.googlecode.totallylazy.Callables.descending;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.MediaRange.convertWildCardsTo;
 import static com.googlecode.utterlyidle.MediaRange.sameValue;
+import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 import static java.lang.Float.valueOf;
-import static javax.ws.rs.core.HttpHeaders.ACCEPT;
-import static javax.ws.rs.core.MediaType.WILDCARD;
 
 public class Accept implements Predicate<String>{
     private static Regex regex = Regex.regex("([^,;\\s]+)(;\\s*q=([0-9\\.]+))?,?");

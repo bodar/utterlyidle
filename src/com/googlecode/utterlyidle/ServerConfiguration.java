@@ -58,6 +58,6 @@ public class ServerConfiguration {
     }
 
     private static String anyLocalAddress() {
-        return "0.0.0.0";
+        return "localhost";
     }
 }
