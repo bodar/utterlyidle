@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
@@ -9,7 +9,6 @@ import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ServerUrl;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.yadic.Container;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -90,7 +89,11 @@ public class ApplicationServlet extends HttpServlet {
     }
 
     private static ServerUrl extractUrl(HttpServletRequest request) {
-        return ServerUrl.serverUrl(format("%s://%s:%s%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), request.getServletPath()));
+        return ServerUrl.serverUrl(format("%s://%s:%s%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), context(request.getContextPath()), request.getServletPath()));
+    }
+
+    private static String context(String contextPath) {
+        return Strings.EMPTY.equals(contextPath) ? "/" : contextPath ;
     }
 
 

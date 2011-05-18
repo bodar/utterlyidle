@@ -1,10 +1,13 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
@@ -30,6 +33,14 @@ public abstract class ServerContract {
     @After
     public void stop() throws Exception {
         server.close();
+    }
+
+    @Test
+    public void shouldSetServerUrlIntoRequestScopeSoThatAllRedirectsAreFullyQualified() throws Exception {
+        Response response = handle(get("helloworld/redirect"), server);
+
+        assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
+        assertThat(response.header(LOCATION), CoreMatchers.startsWith(server.getUrl().toString()));
     }
 
     @Test

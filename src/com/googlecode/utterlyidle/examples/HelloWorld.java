@@ -21,6 +21,12 @@ import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
     @GET
+    @Path("helloworld/redirect")
+    public Response redirect(){
+        return Responses.seeOther("relative");
+    }
+
+    @GET
     @Path("helloworld/inresponseheaders")
     public Response getx(@QueryParam("name") String name){
         return Responses.response(Status.OK, headerParameters(pair("greeting",hello(name))), "");

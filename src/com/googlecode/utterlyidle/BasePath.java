@@ -12,7 +12,7 @@ public class BasePath extends HierarchicalPath {
         super(ensureEndsInSlash(v));
     }
 
-    private static String ensureEndsInSlash(String value) {
+    public static String ensureEndsInSlash(String value) {
         if(!value.endsWith("/")){
             return value + "/";
         }
