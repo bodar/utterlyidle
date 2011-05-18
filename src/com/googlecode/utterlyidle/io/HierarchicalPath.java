@@ -49,7 +49,7 @@ public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
         return new HierarchicalPath(joinDirectories(segments().add(name)));
     }
 
-    public HierarchicalPath subDirectory(HierarchicalPath name) {
+    public HierarchicalPath subDirectory(Path name) {
         return subDirectory(name.toString());
     }
 

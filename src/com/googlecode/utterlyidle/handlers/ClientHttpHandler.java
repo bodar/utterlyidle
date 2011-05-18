@@ -28,6 +28,7 @@ public class ClientHttpHandler implements HttpHandler {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.url().toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod(request.method());
         sequence(request.headers()).fold(connection, requestHeaders());
         if (Integer.valueOf(request.headers().getValue(HttpHeaders.CONTENT_LENGTH)) > 0) {
