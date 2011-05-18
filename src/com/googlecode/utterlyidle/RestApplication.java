@@ -74,9 +74,16 @@ public class RestApplication implements Application {
         requestScope.addActivator(Resolver.class, requestScope.getActivator(Container.class));
         requestScope.add(HttpHandler.class, BaseHandler.class);
         sequence(modules).safeCast(RequestScopedModule.class).forEach(addPerRequestObjects(requestScope));
+        addServerUrlIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, AbsoluteLocationHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         return requestScope;
+    }
+
+    private void addServerUrlIfNeeded(Container requestScope) {
+        if(!requestScope.contains(ServerUrl.class)){
+            requestScope.addInstance(ServerUrl.class, ServerUrl.serverUrl("/")); // Ideally all RestServers should add a ServerUrl but for internal requests this is not required
+        }
     }
 
     public <T> T usingParameterScope(Request request, Callable1<Container, T> callable) {
@@ -111,6 +118,9 @@ public class RestApplication implements Application {
     public static <T, R> Callable1<Container, R> inject(final T instance, final Callable1<Container, R> handler) {
         return new Callable1<Container, R>() {
             public R call(Container container) throws Exception {
+                if(container.contains(instance.getClass())){
+                    container.remove(instance.getClass());
+                }
                 return handler.call(container.addInstance((Class) instance.getClass(), instance));
             }
         };

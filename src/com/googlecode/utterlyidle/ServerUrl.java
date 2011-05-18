@@ -7,7 +7,8 @@ import java.net.URI;
 
 public class ServerUrl extends Url {
     public static ServerUrl serverUrl(String url) {
-        return new ServerUrl(url);
+        ServerUrl serverUrl = new ServerUrl(url);
+        return new ServerUrl(serverUrl.replacePath(serverUrl.path()).toString());
     }
 
     protected ServerUrl(String url) {
