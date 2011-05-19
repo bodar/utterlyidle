@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -27,16 +28,20 @@ public class ExceptionHandler implements HttpHandler {
             return httpHandler.handle(request);
         } catch (InvocationTargetException e) {
             return findAndHandle(request, e.getCause());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return findAndHandle(request, e);
         }
     }
 
-    private Response findAndHandle(Request request, Throwable throwable) throws Exception {
+    private Response findAndHandle(Request request, Throwable throwable) {
         Response response = response(
                 INTERNAL_SERVER_ERROR,
                 headerParameters(pair(CONTENT_TYPE, TEXT_PLAIN)),
                 throwable);
-        return handlers.findAndHandle(request, response);
+        try {
+            return handlers.findAndHandle(request, response);
+        } catch (Throwable t) {
+            return response.bytes(ExceptionRenderer.toString(t).getBytes());
+        }
     }
 }
