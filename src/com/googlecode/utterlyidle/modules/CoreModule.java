@@ -10,7 +10,9 @@ import com.googlecode.utterlyidle.ResourcePathActivator;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.StreamingWriter;
+import com.googlecode.utterlyidle.handlers.Auditor;
 import com.googlecode.utterlyidle.handlers.ByteArrayHandler;
+import com.googlecode.utterlyidle.handlers.DoNothingAuditor;
 import com.googlecode.utterlyidle.handlers.NoContentHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
@@ -36,6 +38,8 @@ public class CoreModule extends AbstractModule {
         container.addActivator(BasePath.class, BasePathActivator.class);
         container.add(BuiltInResources.class);
         container.add(ResponseHandlersFinder.class);
+        container.add(Auditor.class, DoNothingAuditor.class);
+
         return this;
     }
 
