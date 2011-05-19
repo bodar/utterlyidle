@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
+import com.googlecode.utterlyidle.handlers.AuditHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
@@ -77,6 +78,8 @@ public class RestApplication implements Application {
         addServerUrlIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, AbsoluteLocationHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
+        requestScope.decorate(HttpHandler.class, AuditHandler.class);
+
         return requestScope;
     }
 
