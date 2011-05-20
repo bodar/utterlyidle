@@ -8,11 +8,11 @@ import javax.servlet.ServletContext;
 public class ApplicationContext {
     public static final String KEY = Application.class.getCanonicalName();
 
-    public static void setApplication(ServletContext context, Application application) {
+    public static synchronized void setApplication(ServletContext context, Application application) {
         context.setAttribute(KEY, application);
     }
 
-    public static Application getApplication(final ServletContext servletContext, final String className) {
+    public static synchronized Application getApplication(final ServletContext servletContext, final String className) {
         if (servletContext.getAttribute(KEY) == null) {
             Application application = createApplication(servletContext, getClass(className));
             setApplication(servletContext, application);
