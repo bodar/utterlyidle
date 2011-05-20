@@ -63,7 +63,17 @@ public class BaseHandler implements HttpHandler {
         }
 
         Binding binding = findBestMatch(request, failureOrBindings.right());
-        return wrapInResponse(accept(request), binding.produces(), unwrapEither(invokeMethod(binding, request)));
+        return setContentType(accept(request).bestMatch(binding.produces()),
+                wrapInResponse(
+                        unwrapEither(
+                                invokeMethod(binding, request))));
+    }
+
+    private Response setContentType(String mimeType, Response response) {
+        if (response.header(HttpHeaders.CONTENT_TYPE) == null) {
+            return response.header(HttpHeaders.CONTENT_TYPE, mimeType);
+        }
+        return response;
     }
 
     private Binding findBestMatch(Request request, final Sequence<Binding> bindings) {
@@ -97,14 +107,12 @@ public class BaseHandler implements HttpHandler {
         }
     }
 
-    private Response wrapInResponse(Accept accept, final Sequence<String> possibleContentTypes, Object instance) {
+    private Response wrapInResponse(Object instance) {
         if (instance instanceof Response) {
             return (Response) instance;
         }
 
-        return response().
-                header(HttpHeaders.CONTENT_TYPE, accept.bestMatch(possibleContentTypes)).
-                entity(instance);
+        return response().entity(instance);
     }
 
     private Object unwrapEither(Object instance) {

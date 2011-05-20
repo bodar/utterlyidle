@@ -67,6 +67,14 @@ public class RestTest {
     }
 
     @Test
+    public void whenReturningAResponseUseTheProducesContentTypeIfNoneExplicitlySet() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(ReturnsResponseWithContentType.class);
+        assertThat(application.handle(get("path").withQuery("override", String.valueOf(false))).header(CONTENT_TYPE), is(MediaType.APPLICATION_ATOM_XML));
+        assertThat(application.handle(get("path").withQuery("override", String.valueOf(true))).header(CONTENT_TYPE), is(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
     public void supportReturningResponse() throws Exception {
         TestApplication application = new TestApplication();
         application.add(ReturnsResponse.class);
@@ -689,6 +697,19 @@ public class RestTest {
     public static class MyCustomClassRenderer implements Renderer<MyCustomClass> {
         public String render(MyCustomClass value) {
             return "foo";
+        }
+    }
+
+    @Path("path")
+    public static class ReturnsResponseWithContentType {
+        @GET
+        @Produces(MediaType.APPLICATION_ATOM_XML)
+        public Response get(@QueryParam("override") Boolean override ) {
+            Response response = response(Status.SEE_OTHER);
+            if(override){
+                response = response.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+            }
+            return response;
         }
     }
 
