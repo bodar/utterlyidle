@@ -12,7 +12,6 @@ import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.yadic.Container;
-import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;

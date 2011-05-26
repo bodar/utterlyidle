@@ -1,15 +1,19 @@
 package com.googlecode.utterlyidle.modules;
 
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Classes;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Methods.invoke;
+import static com.googlecode.totallylazy.Classes.isInstance;
+import static com.googlecode.totallylazy.Methods.methods;
+import static com.googlecode.totallylazy.Runnables.VOID;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
@@ -43,42 +47,52 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
 
     public ModuleActivator activateApplicationModule(Module module, Container applicationScope) {
         modules.add(module);
-        activate(module, applicationScope, Arrays.<Class<? extends Module>>asList(ModuleDefiner.class));
-        activate(module, applicationScope, application);
+        activate(module, applicationScope, Sequences.<Class<? extends Module>>sequence(ModuleDefiner.class).join(application));
         return this;
     }
 
     public ModuleActivator activateRequestModules(Container requestScope) {
         setup(requestScope);
-        for (Module module : modules) {
-            activate(module, requestScope, request);
-        }
+        sequence(modules).forEach(activate(requestScope, request));
         return this;
     }
 
     public ModuleActivator activateArgumentModules(Container argumentScope) {
         setup(argumentScope);
-        for (Module module : modules) {
-            activate(module, argumentScope, argument);
-        }
+        sequence(modules).forEach(activate(argumentScope, argument));
         return this;
     }
 
-    private void activate(Module module, Container container, final Iterable<Class<? extends Module>> classes) {
-        for (Class<? extends Module> aClass : classes) {
-            if (aClass.isInstance(module)) {
-                for (Method method : aClass.getMethods()) {
-                    invoke(method, module, convertToInstances(method.getGenericParameterTypes(), container));
-                }
+    private static Callable1<Module, Void> activate(final Container container, final Iterable<Class<? extends Module>> modules) {
+        return new Callable1<Module, Void>() {
+            public Void call(Module module) throws Exception {
+                activate(module, container, modules);
+                return VOID;
             }
-        }
+        };
     }
 
-    private Object[] convertToInstances(Type[] genericParameterTypes, Container container) {
-        return sequence(genericParameterTypes).map(asCallable1(container)).toArray(Object.class);
+    private static void activate(Module module, Resolver resolver, final Iterable<Class<? extends Module>> classes) {
+        sequence(classes).
+                filter(isInstance(module)).
+                flatMap(methods()).
+                forEach(invoke(module, resolver));
     }
 
-    private void setup(Container container) {
+    private static Callable1<Method, Void> invoke(final Object instance, final Resolver resolver) {
+        return new Callable1<Method, Void>() {
+            public Void call(Method method) throws Exception {
+                method.invoke(instance, convertToInstances(method.getGenericParameterTypes(), resolver));
+                return VOID;
+            }
+        };
+    }
+
+    private static Object[] convertToInstances(Type[] genericParameterTypes, Resolver resolver) {
+        return sequence(genericParameterTypes).map(asCallable1(resolver)).toArray(Object.class);
+    }
+
+    private static void setup(Container container) {
         container.addInstance(Container.class, container);
         container.addActivator(Resolver.class, container.getActivator(Container.class));
     }
