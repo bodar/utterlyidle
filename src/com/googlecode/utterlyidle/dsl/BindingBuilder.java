@@ -28,8 +28,8 @@ public class BindingBuilder {
     private Method method;
     private UriTemplate uriTemplate;
     private String httpMethod = HttpMethod.GET;
-    private Sequence<String> consumes = Sequences.sequence(WILDCARD);
-    private Sequence<String> produces = Sequences.sequence(WILDCARD);
+    private Sequence<String> consumes = sequence(WILDCARD);
+    private Sequence<String> produces = sequence(WILDCARD);
     private int priority = 0;
     private List<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter = Collections.emptyList();
     private boolean hidden = false;
@@ -48,14 +48,22 @@ public class BindingBuilder {
         return this;
     }
 
-    public BindingBuilder consumes(String value) {
-        consumes = consumes.add(value);
+    public BindingBuilder consumes(Iterable<String> values) {
+        consumes = sequence(values);
         return this;
     }
 
-    public BindingBuilder produces(String value) {
-        produces = consumes.add(value);
+    public BindingBuilder consumes(String... values) {
+        return consumes(sequence(values));
+    }
+
+    public BindingBuilder produces(Iterable<String> values) {
+        produces = sequence(values);
         return this;
+    }
+
+    public BindingBuilder produces(String... values) {
+        return produces(sequence(values));
     }
 
     public BindingBuilder priority(int value) {
