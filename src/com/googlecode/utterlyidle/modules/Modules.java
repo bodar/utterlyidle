@@ -1,55 +1,90 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.utterlyidle.Resources;
-import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Container;
+import com.googlecode.yadic.Resolver;
 
-import static com.googlecode.totallylazy.Runnables.VOID;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class Modules {
-    public static Callable1<ResponseHandlersModule, Void> addResponseHandlers(final ResponseHandlers registry) {
-        return new Callable1<ResponseHandlersModule, Void>() {
-            public Void call(ResponseHandlersModule responseHandlersModule) {
-                responseHandlersModule.addResponseHandlers(registry);
-                return VOID;
-            }
-        };
+import static com.googlecode.totallylazy.Methods.invoke;
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
+
+public class Modules implements ModuleDefinitions {
+    private final List<Module> modules = new ArrayList<Module>();
+    private final List<Class<? extends Module>> application = new ArrayList<Class<? extends Module>>();
+    private final List<Class<? extends Module>> request = new ArrayList<Class<? extends Module>>();
+    private final List<Class<? extends Module>> argument = new ArrayList<Class<? extends Module>>();
+
+    public Modules setupApplicationScope(Container applicationScope) {
+        applicationScope.addInstance(Modules.class, this);
+        applicationScope.addActivator(ModuleDefinitions.class, applicationScope.getActivator(Modules.class));
+        setup(applicationScope);
+        return this;
     }
 
-    public static Callable1<ResourcesModule, Void> addResources(final Resources resources) {
-        return new Callable1<ResourcesModule, Void>() {
-            public Void call(ResourcesModule resourcesModule) {
-                resourcesModule.addResources(resources);
-                return VOID;
-            }
-        };
+    public Modules add(Module module, Container applicationScope) {
+        modules.add(module);
+        activateApplicationModule(module, applicationScope);
+        return this;
     }
 
-    public static Callable1<ApplicationScopedModule, Void> addPerApplicationObjects(final Container applicationScope) {
-        return new Callable1<ApplicationScopedModule, Void>() {
-            public Void call(ApplicationScopedModule applicationScopedModule) {
-                applicationScopedModule.addPerApplicationObjects(applicationScope);
-                return VOID;
-            }
-        };
+    public ModuleDefinitions addApplicationModule(Class<? extends Module> moduleClass) {
+        application.add(moduleClass);
+        return this;
     }
 
-    public static Callable1<RequestScopedModule, Void> addPerRequestObjects(final Container requestScope) {
-        return new Callable1<RequestScopedModule, Void>() {
-            public Void call(RequestScopedModule requestScopedModule) {
-                requestScopedModule.addPerRequestObjects(requestScope);
-                return VOID;
-            }
-        };
+    public ModuleDefinitions addRequestModule(Class<? extends Module> moduleClass) {
+        request.add(moduleClass);
+        return this;
     }
 
-    public static Callable1<ArgumentScopedModule, Void> addPerArgumentObjects(final Container argumentScope) {
-        return new Callable1<ArgumentScopedModule, Void>() {
-            public Void call(ArgumentScopedModule argumentScopedModule) {
-                argumentScopedModule.addPerArgumentObjects(argumentScope);
-                return VOID;
+    public ModuleDefinitions addArgumentModule(Class<? extends Module> moduleClass) {
+        argument.add(moduleClass);
+        return this;
+    }
+
+    private ModuleDefinitions activateApplicationModule(Module module, Container applicationScope) {
+        activate(module, applicationScope, Arrays.<Class<? extends Module>>asList(ModuleDefiner.class));
+        activate(module, applicationScope, application);
+        return this;
+    }
+
+    private void activate(Module module, Container container, final Iterable<Class<? extends Module>> classes) {
+        for (Class<? extends Module> aClass : classes) {
+            if (aClass.isInstance(module)) {
+                for (Method method : aClass.getMethods()) {
+                    invoke(method, module, convertToInstances(method.getGenericParameterTypes(), container));
+                }
             }
-        };
+        }
+    }
+
+    private Object[] convertToInstances(Type[] genericParameterTypes, Container container) {
+        return sequence(genericParameterTypes).map(asCallable1(container)).toArray(Object.class);
+    }
+
+    public ModuleDefinitions activateRequestModules(Container requestScope) {
+        setup(requestScope);
+        for (Module module : modules) {
+            activate(module, requestScope, request);
+        }
+        return this;
+    }
+
+    private void setup(Container container) {
+        container.addInstance(Container.class, container);
+        container.addActivator(Resolver.class, container.getActivator(Container.class));
+    }
+
+    public ModuleDefinitions activateArgumentModules(Container argumentScope) {
+        setup(argumentScope);
+        for (Module module : modules) {
+            activate(module, argumentScope, argument);
+        }
+        return this;
     }
 }
