@@ -16,6 +16,16 @@ import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.rende
 
 public class CoreModule extends AbstractModule {
     @Override
+    public Module defineModules(ModuleDefinitions moduleDefinitions) {
+        moduleDefinitions.addApplicationModule(ApplicationScopedModule.class);
+        moduleDefinitions.addApplicationModule(ResourcesModule.class);
+        moduleDefinitions.addApplicationModule(ResponseHandlersModule.class);
+        moduleDefinitions.addRequestModule(RequestScopedModule.class);
+        moduleDefinitions.addArgumentModule(ArgumentScopedModule.class);
+        return this;
+    }
+
+    @Override
     public Module addPerRequestObjects(Container container) {
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(BuiltInResources.class);
@@ -38,7 +48,7 @@ public class CoreModule extends AbstractModule {
     }
 
     @Override
-    public Module addResponseHandlers(ResponseHandlers handlers){
+    public Module addResponseHandlers(ResponseHandlers handlers) {
         handlers.addGuard(where(entity(), is(nullValue())), NoContentHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(byte[].class))), ByteArrayHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);

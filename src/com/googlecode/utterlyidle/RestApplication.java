@@ -8,13 +8,7 @@ import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
-import com.googlecode.utterlyidle.modules.ApplicationScopedModule;
-import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
-import com.googlecode.utterlyidle.modules.CoreModule;
-import com.googlecode.utterlyidle.modules.Module;
-import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.utterlyidle.modules.ResourcesModule;
-import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
+import com.googlecode.utterlyidle.modules.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -30,25 +24,22 @@ import java.util.List;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.modules.Modules.addPerApplicationObjects;
-import static com.googlecode.utterlyidle.modules.Modules.addPerArgumentObjects;
-import static com.googlecode.utterlyidle.modules.Modules.addPerRequestObjects;
-import static com.googlecode.utterlyidle.modules.Modules.addResources;
-import static com.googlecode.utterlyidle.modules.Modules.addResponseHandlers;
+import static com.googlecode.utterlyidle.modules.Modules.*;
 
 public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
     private final List<Module> modules = new ArrayList<Module>();
+    private final ModuleDefinitions definitions = new ModuleDefinitions();
 
     public RestApplication() {
         applicationScope.addInstance(Application.class, this);
+        applicationScope.addInstance(ModuleDefinitions.class, definitions);
+        applicationScope.addInstance(Container.class, applicationScope);
         add(new CoreModule());
     }
 
     public Application add(Module module) {
-        sequence(module).safeCast(ApplicationScopedModule.class).forEach(addPerApplicationObjects(applicationScope));
-        sequence(module).safeCast(ResourcesModule.class).forEach(addResources(applicationScope.get(Resources.class)));
-        sequence(module).safeCast(ResponseHandlersModule.class).forEach(addResponseHandlers(applicationScope.get(ResponseHandlers.class)));
+        definitions.activateApplicationModule(module, applicationScope);
         modules.add(module);
         return this;
     }
@@ -70,7 +61,7 @@ public class RestApplication implements Application {
         requestScope.addInstance(Container.class, requestScope);
         requestScope.addActivator(Resolver.class, requestScope.getActivator(Container.class));
         requestScope.add(HttpHandler.class, BaseHandler.class);
-        sequence(modules).safeCast(RequestScopedModule.class).forEach(addPerRequestObjects(requestScope));
+        definitions.activateRequestModules(modules, requestScope);
         requestScope.decorate(HttpHandler.class, AbsoluteLocationHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         return requestScope;
@@ -91,14 +82,17 @@ public class RestApplication implements Application {
         argumentScope.addInstance(FormParameters.class, request.form());
         argumentScope.addInstance(CookieParameters.class, request.cookies());
         argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.input()));
-        argumentScope.add(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
-        argumentScope.add(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentScope));
-        sequence(modules).safeCast(ArgumentScopedModule.class).forEach(addPerArgumentObjects(argumentScope));
+        argumentScope.add(new TypeFor<Option<?>>() {
+        }.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
+        argumentScope.add(new TypeFor<Either<?, ?>>() {
+        }.get(), new EitherResolver(argumentScope));
+        argumentScope.addInstance(Container.class, argumentScope);
+        definitions.activateArgumentModules(modules, argumentScope);
         return argumentScope;
     }
 
     public static Callable1<Container, Response> handleRequest(final Request request) {
-        return new Callable1<Container, Response>(){
+        return new Callable1<Container, Response>() {
             public Response call(Container container) throws Exception {
                 return container.get(HttpHandler.class).handle(request);
             }
