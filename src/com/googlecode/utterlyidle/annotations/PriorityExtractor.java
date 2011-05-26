@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.Priority;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Predicates.notNullValue;
-import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class PriorityExtractor implements Extractor<Method, Integer> {
     public Integer extract(Method method) {

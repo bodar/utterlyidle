@@ -8,7 +8,6 @@ import java.io.StringReader;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.lines;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
-import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public class RequestParser {
     public RequestBuilder parse(String stringified) {

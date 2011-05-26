@@ -2,12 +2,16 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import static com.googlecode.totallylazy.Dates.date;
+import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.*;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.domain;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
@@ -25,7 +29,7 @@ public class MemoryResponseTest {
     @Test
     public void shouldPrintContent() throws Exception {
         String content = "<blah></blah>";
-        Response response = response().header("X-Forwarded-For", "192.168.0.1").bytes(content.getBytes());
+        Response response = response().header(X_FORWARDED_FOR, "192.168.0.1").bytes(content.getBytes());
         assertThat(response.toString(), endsWith(content));
     }
 }

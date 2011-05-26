@@ -1,29 +1,31 @@
 package com.googlecode.utterlyidle.io;
 
-import com.googlecode.totallylazy.Callables;
-import static com.googlecode.totallylazy.Closeables.closeAfter;
-import static com.googlecode.totallylazy.Exceptions.handleException;
-import com.googlecode.totallylazy.Pair;
-import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Predicates.instanceOf;
 import com.googlecode.totallylazy.Callable1;
-import static com.googlecode.totallylazy.Runnables.doNothing;
-import static com.googlecode.totallylazy.Sequences.sequence;
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.regex.Regex;
 
-import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.utterlyidle.io.HttpURLConnections.getInputStream;
-import static com.googlecode.utterlyidle.io.HttpURLConnections.getOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 
-import java.io.*;
-import java.net.*;
-import java.util.UUID;
+import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Runnables.doNothing;
 
 public class Url {
     private static Regex JarUrl = Regex.regex("jar:([^!]*)!(.*)");
     private final String value;
 
-    private Url(String value) {
+    protected Url(String value) {
         this.value = value;
     }
 
@@ -32,17 +34,37 @@ public class Url {
             return new Url("jar:" + JarUrl.findMatches(value).head().group(1) + "!" + path.toString());
         }
 
-        try {
-            URI o = toURI();
-            String spaceForQuery = o.getRawQuery() == null ? null : UUID.randomUUID().toString();
+        URI o = toURI();
+        return new Url(toString(o.getScheme(), o.getRawUserInfo(), o.getHost(), o.getPort(), path.toString(), o.getRawQuery(), o.getRawFragment()));
+    }
 
-            URI n = new URI(o.getScheme(), o.getUserInfo(), o.getHost(), o.getPort(), path.toString(), spaceForQuery, o.getRawFragment());
+    protected String toString(final String scheme, final String usernamePassword, final String host, final int port, final String path, final String query, final String fragment) {
+        return new StringBuilder().append(formatScheme(scheme)).append(formatUsernamePassword(usernamePassword)).append(formatHost(host)).append(formatPort(port)).
+                append(path).append(formatQuery(query)).append(formatFragment(fragment)).toString();
+    }
 
-            String newUri = o.getRawQuery() == null ? n.toString() : n.toString().replace(spaceForQuery, o.getRawQuery());
-            return new Url(newUri);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    private String formatScheme(String scheme) {
+        return scheme == null ? "" : scheme + "://";
+    }
+
+    private String formatHost(String host) {
+        return host == null ? "" : host;
+    }
+
+    private String formatFragment(String fragment) {
+        return fragment == null ? "" : "#" + fragment;
+    }
+
+    private String formatQuery(String query) {
+        return query == null ? "" : "?" + query;
+    }
+
+    private String formatPort(int port) {
+        return port == -1 ? "" : ":" + String.valueOf(port) ;
+    }
+
+    private String formatUsernamePassword(String usernamePassword) {
+        return usernamePassword == null ? "" : usernamePassword + "@";
     }
 
     public URI toURI() {
@@ -135,7 +157,7 @@ public class Url {
 
     private Pair<Integer, String> doRequest(HttpURLConnection urlConnection, Callable1<InputStream, Void> responseHandler) throws IOException {
         using(inputStream(urlConnection), responseHandler);
-        return  pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
+        return pair(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
     }
 
     public static InputStream inputStream(HttpURLConnection urlConnection) throws IOException {

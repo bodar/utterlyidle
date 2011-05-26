@@ -1,8 +1,7 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.junit.Test;
-
-import javax.ws.rs.HttpMethod;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.io.Url.url;

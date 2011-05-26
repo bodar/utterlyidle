@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.PathParam;
 
 @Path("path/{id}")
 public class CustomType {

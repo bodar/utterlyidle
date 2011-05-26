@@ -2,11 +2,10 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.io.Url;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
-import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static com.googlecode.utterlyidle.io.Url.url;
 

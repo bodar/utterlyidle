@@ -3,19 +3,25 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.MediaType;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.TestApplication;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.yadic.Container;
 import org.junit.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.Produces;
 
 import static com.googlecode.utterlyidle.BasePath.basePath;
+import static com.googlecode.utterlyidle.MediaType.TEXT_XML;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.io.Url.url;
@@ -23,7 +29,6 @@ import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentTy
 import static com.googlecode.utterlyidle.sitemesh.MetaTagRule.metaTagRule;
 import static com.googlecode.utterlyidle.sitemesh.StaticDecoratorRule.staticRule;
 import static com.googlecode.utterlyidle.sitemesh.TemplateName.templateName;
-import static javax.ws.rs.core.MediaType.TEXT_XML;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 

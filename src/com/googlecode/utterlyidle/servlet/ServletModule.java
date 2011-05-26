@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.utterlyidle.AttributeMap;
-import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.WebRoot;
 import com.googlecode.utterlyidle.modules.ApplicationScopedModule;
 import com.googlecode.utterlyidle.modules.Module;
@@ -27,7 +26,6 @@ public class ServletModule implements ApplicationScopedModule, RequestScopedModu
     }
 
     public Module addPerRequestObjects(Container container) {
-        container.addInstance(BasePath.class, ApplicationServlet.basePath.get());
         return this;
     }
 }

@@ -1,13 +1,16 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.by;
