@@ -38,7 +38,7 @@ public class RestApplication implements Application {
     }
 
     public Application add(Module module) {
-        modules.add(module, applicationScope);
+        modules.activateApplicationModule(module, applicationScope);
         return this;
     }
 
