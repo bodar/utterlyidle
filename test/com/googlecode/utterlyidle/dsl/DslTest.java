@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.TestApplication;
 import org.junit.Test;
 
@@ -31,6 +32,15 @@ public class DslTest {
         TestApplication application = new TestApplication();
         application.add(get("/bar").resource(method(on(Bob.class).say(queryParam(String.class, "firstName"), queryParam(String.class, "lastName")))));
         assertThat(application.responseAsString(RequestBuilder.get("/bar").withQuery("firstName", "Dan").withQuery("lastName", "Bodart")), is("Hello Dan Bodart"));
+    }
+
+    @Test
+    public void supportsProduces() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(get("/bar").produces("text/html", "text/xml").resource(method(on(Bar.class).hello())));
+        assertThat(application.responseAsString(RequestBuilder.get("/bar").accepting("text/html")), is("Hello"));
+        assertThat(application.responseAsString(RequestBuilder.get("/bar").accepting("text/xml")), is("Hello"));
+        assertThat(application.handle(RequestBuilder.get("/bar").accepting("text/plain")).status(), is(Status.NOT_ACCEPTABLE));
     }
 
 

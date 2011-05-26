@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Classes;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
