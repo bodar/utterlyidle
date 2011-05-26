@@ -1,12 +1,16 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Bytes;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -24,6 +28,7 @@ public class ClientHttpHandler implements HttpHandler {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.url().toString());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod(request.method());
         sequence(request.headers()).fold(connection, requestHeaders());
         if (Integer.valueOf(request.headers().getValue(HttpHeaders.CONTENT_LENGTH)) > 0) {

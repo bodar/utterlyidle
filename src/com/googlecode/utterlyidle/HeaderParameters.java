@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Pair;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public class HeaderParameters extends Parameters<String, String> {
@@ -33,8 +34,8 @@ public class HeaderParameters extends Parameters<String, String> {
     }
 
     public static HeaderParameters withXForwardedFor(ClientAddress clientAddress, HeaderParameters headerParameters) {
-        if(!headerParameters.contains("X-Forwarded-For")) {
-            headerParameters.add("X-Forwarded-For", clientAddress.value());
+        if(!headerParameters.contains(X_FORWARDED_FOR)) {
+            headerParameters.add(X_FORWARDED_FOR, clientAddress.value());
         }
         return headerParameters;
     }

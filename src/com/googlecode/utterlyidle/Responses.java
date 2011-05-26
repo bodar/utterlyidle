@@ -1,7 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import javax.ws.rs.core.HttpHeaders;
-
 public class Responses {
     public static Response response() {
         return new MemoryResponse();

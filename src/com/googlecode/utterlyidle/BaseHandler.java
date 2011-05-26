@@ -8,7 +8,6 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Container;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.googlecode.totallylazy.Exceptions.toException;
@@ -16,17 +15,18 @@ import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.Accept.accept;
 import static com.googlecode.utterlyidle.ConsumesMimeMatcher.contentMatches;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
+import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 import static com.googlecode.utterlyidle.MethodMatcher.methodMatches;
 import static com.googlecode.utterlyidle.ParametersExtractor.parametersMatches;
 import static com.googlecode.utterlyidle.PathMatcher.pathMatches;
 import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Responses.response;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-import static javax.ws.rs.core.MediaType.TEXT_HTML;
 
 public class BaseHandler implements HttpHandler {
     private final Bindings bindings;
@@ -63,7 +63,17 @@ public class BaseHandler implements HttpHandler {
         }
 
         Binding binding = findBestMatch(request, failureOrBindings.right());
-        return wrapInResponse(binding.produces(), unwrapEither(invokeMethod(binding, request)));
+        return setContentType(accept(request).bestMatch(binding.produces()),
+                wrapInResponse(
+                        unwrapEither(
+                                invokeMethod(binding, request))));
+    }
+
+    private Response setContentType(String mimeType, Response response) {
+        if (response.header(HttpHeaders.CONTENT_TYPE) == null) {
+            return response.header(HttpHeaders.CONTENT_TYPE, mimeType);
+        }
+        return response;
     }
 
     private Binding findBestMatch(Request request, final Sequence<Binding> bindings) {
@@ -97,14 +107,12 @@ public class BaseHandler implements HttpHandler {
         }
     }
 
-    private Response wrapInResponse(final Sequence<String> contentType, Object instance) {
+    private Response wrapInResponse(Object instance) {
         if (instance instanceof Response) {
             return (Response) instance;
         }
 
-        return response().
-                header(HttpHeaders.CONTENT_TYPE, contentType.head()).
-                entity(instance);
+        return response().entity(instance);
     }
 
     private Object unwrapEither(Object instance) {

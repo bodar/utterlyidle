@@ -1,25 +1,23 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.*;
-import com.googlecode.totallylazy.regex.Matches;
-import com.googlecode.totallylazy.regex.Regex;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.io.Url;
 
-import javax.ws.rs.core.HttpHeaders;
 import java.util.Iterator;
-import java.util.regex.MatchResult;
 
-import static com.googlecode.totallylazy.Callables.returnArgument;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.regex.Regex.regex;
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
-import static com.googlecode.utterlyidle.io.Url.url;
-import static javax.ws.rs.core.HttpHeaders.LOCATION;
 
 public class ConvertExtensionToAcceptHeader implements HttpHandler {
     private final Sequence<Pair<String, String>> replacements;

@@ -3,10 +3,9 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-
-import javax.ws.rs.core.HttpHeaders;
 
 import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Predicates.where;

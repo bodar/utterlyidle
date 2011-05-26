@@ -1,11 +1,15 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.annotations.FormParam;
+import com.googlecode.utterlyidle.annotations.HeaderParam;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.annotations.HttpMethodExtractor;
 import com.googlecode.utterlyidle.annotations.ParametersExtractor;
+import com.googlecode.utterlyidle.annotations.PathParam;
+import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.annotations.UriTemplateExtractor;
 
-import javax.ws.rs.*;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Sequences.sequence;

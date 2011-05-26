@@ -1,6 +1,13 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Left;
+import com.googlecode.totallylazy.None;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Right;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Some;
 import com.googlecode.utterlyidle.Parameters;
 
 import java.lang.annotation.Annotation;
