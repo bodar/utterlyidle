@@ -1,36 +1,34 @@
 package com.googlecode.utterlyidle.simpleframework;
 
-import static com.googlecode.totallylazy.Bytes.bytes;
-
-import com.googlecode.totallylazy.*;
-
-import static com.googlecode.totallylazy.Exceptions.printStackTrace;
-import static com.googlecode.totallylazy.Maps.entryToPair;
-import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Runnables.write;
-import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
-
-import com.googlecode.utterlyidle.*;
-
-import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
-import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.io.Url.url;
-
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Requests;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 
-import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
-import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
-import static javax.ws.rs.core.MediaType.TEXT_PLAIN;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import static com.googlecode.totallylazy.Bytes.bytes;
+import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Exceptions.printStackTrace;
+import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Runnables.write;
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
+import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
+import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
+import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RestContainer implements Container {
     private final Application applcation;

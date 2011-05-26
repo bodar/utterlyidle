@@ -1,11 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.TypeMap;
 
 import java.lang.reflect.Type;
-import java.util.concurrent.Callable;
 
 public class NamedParameter  {
     private final String name;

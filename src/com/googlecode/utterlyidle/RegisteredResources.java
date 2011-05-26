@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.annotations.HttpMethodExtractor;
 import com.googlecode.utterlyidle.annotations.Matchers;
 import com.googlecode.utterlyidle.dsl.BindingBuilder;
 
-import javax.ws.rs.HttpMethod;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

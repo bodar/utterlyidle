@@ -1,21 +1,27 @@
 package com.googlecode.utterlyidle.proxy;
 
 import com.googlecode.totallylazy.Option;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.CustomType;
+import com.googlecode.utterlyidle.Id;
+import com.googlecode.utterlyidle.NoDefaultConstructor;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.SomeResource;
+import com.googlecode.utterlyidle.TestApplication;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.POST;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.PathParam;
 import java.io.IOException;
 
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
-import static com.googlecode.utterlyidle.proxy.Resource.*;
-import static javax.ws.rs.core.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.proxy.Resource.resource;
+import static com.googlecode.utterlyidle.proxy.Resource.urlOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

@@ -3,15 +3,10 @@ package com.googlecode.utterlyidle;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.io.Url;
 
-import javax.ws.rs.core.HttpHeaders;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
-import static com.googlecode.utterlyidle.io.Converter.asString;
 import static java.lang.String.format;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_LENGTH;
 
 public class MemoryRequest implements Request {
     private final String method;

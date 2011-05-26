@@ -1,12 +1,15 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.modules.*;
+import com.googlecode.utterlyidle.modules.ApplicationScopedModule;
+import com.googlecode.utterlyidle.modules.Module;
+import com.googlecode.utterlyidle.modules.RequestScopedModule;
+import com.googlecode.utterlyidle.modules.SingleResourceModule;
 import com.googlecode.yadic.Container;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
 import java.io.Closeable;
 import java.io.IOException;
 

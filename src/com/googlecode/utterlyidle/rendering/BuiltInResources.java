@@ -1,12 +1,11 @@
 package com.googlecode.utterlyidle.rendering;
 
+import com.googlecode.utterlyidle.annotations.Hidden;
 import com.googlecode.utterlyidle.RegisteredResources;
-import com.googlecode.utterlyidle.Hidden;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.PathParam;
+import com.googlecode.utterlyidle.annotations.Produces;
 
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.utterlyidle.io.Converter.asString;

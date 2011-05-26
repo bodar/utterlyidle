@@ -2,11 +2,11 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Option;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.StreamingOutput;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.PathParam;
+import com.googlecode.utterlyidle.annotations.QueryParam;
+import com.googlecode.utterlyidle.StreamingOutput;
 
 @Path("path/{id}")
 public class SomeResource {

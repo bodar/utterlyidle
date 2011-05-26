@@ -1,38 +1,33 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Runnables;
-import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.httpserver.HelloWorld;
-import com.googlecode.utterlyidle.io.Url;
-import com.googlecode.utterlyidle.jetty.RestApplicationActivator;
-import com.googlecode.utterlyidle.modules.Module;
-import com.googlecode.utterlyidle.modules.SingleResourceModule;
-import com.googlecode.yadic.Container;
+import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
-
-import static com.googlecode.totallylazy.Runnables.write;
-import static com.googlecode.utterlyidle.io.Url.url;
-import static java.net.InetAddress.*;
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
+import static com.googlecode.utterlyidle.MediaType.WILDCARD;
+import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
+import static com.googlecode.utterlyidle.Status.NOT_FOUND;
+import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
+import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.startsWith;
 
 public abstract class ServerContract {
     protected Server server;
-    protected abstract Server createServer(CloseableCallable<Application> application) throws Exception;
+    protected abstract Class<? extends Server> server() throws Exception;
 
     @Before
     public void start() throws Exception {
-        server = createServer(new RestApplicationActivator(new SingleResourceModule(HelloWorld.class)));
+        server = new ServerActivator(new HelloWorldApplication(), defaultConfiguration().serverClass(server())).call();
     }
 
     @After
@@ -41,87 +36,73 @@ public abstract class ServerContract {
     }
 
     @Test
+    public void shouldSetServerUrlIntoRequestScopeSoThatAllRedirectsAreFullyQualified() throws Exception {
+        Response response = handle(get("helloworld/redirect"), server);
+
+        assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
+        assertThat(response.header(LOCATION), CoreMatchers.startsWith(server.getUrl().toString()));
+    }
+
+    @Test
     public void setXForwardedForIfRequestDoesntHaveOne() throws Exception {
-        URLConnection urlConnection = urlOf("helloworld/xff").openConnection();
+        Response response = handle(get("helloworld/xff"), server);
 
-        String result = Strings.toString(urlConnection.getInputStream());
+        String result = new String(response.bytes());
 
-        assertThat(result, is("Hello " + getByName("localhost").getHostAddress()));
+        assertThat(result, startsWith("127.0."));
     }
 
     @Test
     public void preservesXForwardedForIfRequestHasOne() throws Exception {
-        URLConnection urlConnection = urlOf("helloworld/xff").openConnection();
-        urlConnection.setRequestProperty("X-Forwarded-For", "sky.com");
+        Response response = handle(get("helloworld/xff").withHeader(X_FORWARDED_FOR, "sky.com"), server);
 
+        String result = new String(response.bytes());
 
-        String result = Strings.toString(urlConnection.getInputStream());
-
-        assertThat(result, is("Hello sky.com"));
+        assertThat(result, is("sky.com"));
     }
-
-    @Test
-    public void stoppingTheServerClosesTheApplication() throws Exception {
-        stop();
-        ApplicationCloseableCallable application = new ApplicationCloseableCallable();
-        server = createServer(application);
-        stop();
-        assertThat(application.closed(), is(true));
-    }
-
 
     @Test
     public void handlesGets() throws Exception {
-        ResponseAsString output = new ResponseAsString();
-        Pair<Integer, String> status = Url.url(server.getUrl() + "helloworld/queryparam?name=foo").get("*/*", output);
+        Response response = handle(get("helloworld/queryparam").withQuery("name", "foo"), server);
 
-        assertThat(status.first(), is(200));
-        assertThat(output.toString(), is("Hello foo"));
+        assertThat(response.status(), is(Status.OK));
+        assertThat(new String(response.bytes()), is("Hello foo"));
     }
 
     @Test
     public void handlesPosts() throws Exception {
-        ResponseAsString output = new ResponseAsString();
-        Pair<Integer, String> status = url(urlOf("helloworld/formparam")).post(MediaType.APPLICATION_FORM_URLENCODED, write("name=fred".getBytes()), output);
+        Response response = handle(post("helloworld/formparam").withForm("name", "fred"), server);
 
-        assertThat(status.first(), is(200));
-        assertThat(output.toString(), is("Hello fred"));
+        assertThat(response.status(), is(Status.OK));
+        assertThat(new String(response.bytes()), is("Hello fred"));
     }
 
     @Test
     public void mapsRequestHeaders() throws Exception {
-        URLConnection urlConnection = urlOf("helloworld/headerparam").openConnection();
-        urlConnection.setRequestProperty("accept", "*/*");
-        urlConnection.setRequestProperty("name", "bar");
+        Response response = handle(get("helloworld/headerparam").accepting(WILDCARD).withHeader("name", "bar"), server);
 
-        String result = Strings.toString(urlConnection.getInputStream());
-
-        assertThat(result, is("Hello bar"));
+        assertThat(new String(response.bytes()), is("Hello bar"));
     }
 
     @Test
     public void mapsResponseHeaders() throws Exception {
-        HttpURLConnection urlConnection = (HttpURLConnection) urlOf("helloworld/inresponseheaders?name=mike").openConnection();
-        urlConnection.setRequestProperty("accept", "*/*");
+        Response response = handle(get("helloworld/inresponseheaders?name=mike").accepting(WILDCARD), server);
 
-        String result = urlConnection.getHeaderField("greeting");
-
-        assertThat(result, is("Hello mike"));
+        assertThat(response.header("greeting"), is("Hello mike"));
     }
 
     @Test
     public void mapsStatusCode() throws Exception {
-        HttpURLConnection urlConnection = (HttpURLConnection) urlOf("doesnotexist").openConnection();
+        Response response = handle(get("doesnotexist"), server);
 
-        assertThat(urlConnection.getResponseCode(), is(404));
+        assertThat(response.status(), is(NOT_FOUND));
     }
 
     @Test
     public void canHandleMultiValueQueryParameters() throws Exception {
-        HttpURLConnection urlConnection = (HttpURLConnection) urlOf("echoquery?a=first&a=second").openConnection();
-        urlConnection.setRequestProperty("accept", "*/*");
+        Response response = handle(get("echoquery").withQuery("a", "first").withQuery("a", "second").accepting(WILDCARD), server);
 
-        String result = Strings.toString(urlConnection.getInputStream());
+        String result = new String(response.bytes());
 
         assertThat(result, containsString("first"));
         assertThat(result, containsString("second"));
@@ -129,81 +110,16 @@ public abstract class ServerContract {
 
     @Test
     public void retainsOrderOfQueryParameters() throws Exception {
-        HttpURLConnection urlConnection = (HttpURLConnection) urlOf("echoquery?a=1&b=2&a=3&b=4").openConnection();
-        urlConnection.setRequestProperty("accept", "*/*");
+        Response response = handle(get("echoquery").withQuery("a", "1").withQuery("b", "2").withQuery("a", "3").withQuery("b", "4").accepting(WILDCARD), server);
 
-        String result = Strings.toString(urlConnection.getInputStream());
-
-        assertThat(result, is("?a=1&b=2&a=3&b=4"));
+        assertThat(new String(response.bytes()), is("?a=1&b=2&a=3&b=4"));
     }
 
     @Test
     public void willPrintStackTraceAsPlainText() throws Exception {
-        ResponseAsString responseContent = new ResponseAsString();
-        Pair<Integer, String> response = url(server.getUrl() + "goesbang?exceptionMessage=goes_bang").get(MediaType.WILDCARD, responseContent);
+        Response response = handle(get("goesbang").withQuery("exceptionMessage", "goes_bang").accepting(WILDCARD), server);
 
-        assertThat(response.first(), is(Status.INTERNAL_SERVER_ERROR.code()));
-        assertThat(responseContent.toString(), containsString("Exception"));
-        assertThat(responseContent.toString(), containsString("goes_bang"));
-    }
-
-    protected URL urlOf(final String name) throws MalformedURLException {
-        return new URL(server.getUrl() + name);
-    }
-    
-    public static class ResponseAsString implements Callable1<InputStream, Void> {
-
-        private String value;
-        public Void call(InputStream inputStream) {
-            value = Strings.toString(inputStream);
-            return Runnables.VOID;
-        }
-
-        public String toString() {
-            return value;
-        }
-
-    }
-
-    private class NullApplication implements Application {
-        public Container applicationScope() {
-            return null;
-        }
-
-        public <T> T usingRequestScope(Callable1<Container, T> callable) {
-            return null;
-        }
-
-        public <T> T usingParameterScope(Request request, Callable1<Container, T> callable) {
-            return null;
-        }
-
-        public Application add(Module module) {
-            return null;
-        }
-
-        public void close() throws IOException {
-
-        }
-
-        public Response handle(Request request) throws Exception {
-            return null;
-        }
-    }
-
-    private class ApplicationCloseableCallable implements CloseableCallable<Application> {
-        private boolean closed = false;
-
-        public Application call() throws Exception {
-            return new NullApplication();
-        }
-
-        public void close() throws IOException {
-            closed = true;
-        }
-
-        public boolean closed() {
-            return closed;
-        }
+        assertThat(response.status(), is(Status.INTERNAL_SERVER_ERROR));
+        assertThat(new String(response.bytes()), allOf(containsString("Exception"), containsString("goes_bang")));
     }
 }

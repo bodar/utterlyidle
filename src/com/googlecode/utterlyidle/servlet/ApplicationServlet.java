@@ -1,8 +1,14 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.ClientAddress;
+import com.googlecode.totallylazy.Strings;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ServerUrl;
+import com.googlecode.utterlyidle.Status;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -11,29 +17,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.googlecode.totallylazy.Runnables.write;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.utterlyidle.ClientAddress.*;
+import static com.googlecode.totallylazy.Runnables.write;
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.RestApplication.handleRequest;
+import static com.googlecode.utterlyidle.RestApplication.inject;
 import static com.googlecode.utterlyidle.io.Url.url;
+import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
+import static java.lang.String.format;
 
 public class ApplicationServlet extends HttpServlet {
-    static final ThreadLocal<BasePath> basePath = new ThreadLocal<BasePath>();
-
-    Application application = null;
+    public static final String KEY = "application";
+    private Application application = null;
 
     @Override
     public void init(ServletConfig config) {
-        application = ApplicationStarter.getApplication(config.getServletContext());
+        application = getApplication(config.getServletContext(), config.getInitParameter(KEY));
     }
 
     @Override
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+    public void service(final HttpServletRequest httpServletRequest, HttpServletResponse resp) throws ServletException {
         try {
-            basePath.set(extractBasePath(req));
-            Response response = application.handle(request(req));
+            ServerUrl serverUrl = extractUrl(httpServletRequest);
+            Response response = application.usingRequestScope(inject(serverUrl, handleRequest(request(httpServletRequest))));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
@@ -79,8 +88,13 @@ public class ApplicationServlet extends HttpServlet {
         return result;
     }
 
-    private static BasePath extractBasePath(HttpServletRequest request) {
-        return BasePath.basePath(request.getContextPath() + request.getServletPath());
+    private static ServerUrl extractUrl(HttpServletRequest request) {
+        return ServerUrl.serverUrl(format("%s://%s:%s%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), context(request.getContextPath()), request.getServletPath()));
     }
+
+    private static String context(String contextPath) {
+        return Strings.EMPTY.equals(contextPath) ? "/" : contextPath ;
+    }
+
 
 }

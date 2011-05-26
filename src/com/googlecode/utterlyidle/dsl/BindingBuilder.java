@@ -1,20 +1,28 @@
 package com.googlecode.utterlyidle.dsl;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.proxy.CallOn;
 import com.googlecode.totallylazy.proxy.Invocation;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.PathParameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.UriTemplate;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.MediaType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static javax.ws.rs.core.MediaType.WILDCARD;
+import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 
 public class BindingBuilder {
     private Method method;
