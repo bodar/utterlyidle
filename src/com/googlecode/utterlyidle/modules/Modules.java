@@ -13,7 +13,7 @@ import static com.googlecode.totallylazy.Methods.invoke;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
-public class Modules implements ModuleDefinitions {
+public class Modules implements ModuleDefinitions, ModuleActivator {
     private final List<Module> modules = new ArrayList<Module>();
     private final List<Class<? extends Module>> application = new ArrayList<Class<? extends Module>>();
     private final List<Class<? extends Module>> request = new ArrayList<Class<? extends Module>>();
@@ -23,12 +23,6 @@ public class Modules implements ModuleDefinitions {
         applicationScope.addInstance(Modules.class, this);
         applicationScope.addActivator(ModuleDefinitions.class, applicationScope.getActivator(Modules.class));
         setup(applicationScope);
-        return this;
-    }
-
-    public Modules add(Module module, Container applicationScope) {
-        modules.add(module);
-        activateApplicationModule(module, applicationScope);
         return this;
     }
 
@@ -47,9 +41,26 @@ public class Modules implements ModuleDefinitions {
         return this;
     }
 
-    private ModuleDefinitions activateApplicationModule(Module module, Container applicationScope) {
+    public ModuleActivator activateApplicationModule(Module module, Container applicationScope) {
+        modules.add(module);
         activate(module, applicationScope, Arrays.<Class<? extends Module>>asList(ModuleDefiner.class));
         activate(module, applicationScope, application);
+        return this;
+    }
+
+    public ModuleActivator activateRequestModules(Container requestScope) {
+        setup(requestScope);
+        for (Module module : modules) {
+            activate(module, requestScope, request);
+        }
+        return this;
+    }
+
+    public ModuleActivator activateArgumentModules(Container argumentScope) {
+        setup(argumentScope);
+        for (Module module : modules) {
+            activate(module, argumentScope, argument);
+        }
         return this;
     }
 
@@ -67,24 +78,9 @@ public class Modules implements ModuleDefinitions {
         return sequence(genericParameterTypes).map(asCallable1(container)).toArray(Object.class);
     }
 
-    public ModuleDefinitions activateRequestModules(Container requestScope) {
-        setup(requestScope);
-        for (Module module : modules) {
-            activate(module, requestScope, request);
-        }
-        return this;
-    }
-
     private void setup(Container container) {
         container.addInstance(Container.class, container);
         container.addActivator(Resolver.class, container.getActivator(Container.class));
     }
 
-    public ModuleDefinitions activateArgumentModules(Container argumentScope) {
-        setup(argumentScope);
-        for (Module module : modules) {
-            activate(module, argumentScope, argument);
-        }
-        return this;
-    }
 }
