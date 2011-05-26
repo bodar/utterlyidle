@@ -10,7 +10,7 @@ import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
-import com.googlecode.utterlyidle.modules.ModuleDefinitions;
+import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -20,21 +20,17 @@ import com.googlecode.yadic.resolvers.OptionResolver;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 
 public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
-    private final List<Module> modules = new ArrayList<Module>();
-    private final ModuleDefinitions definitions = new ModuleDefinitions();
+    private final Modules modules = new Modules();
 
     public RestApplication(Module... modules) {
         applicationScope.addInstance(Application.class, this);
-        applicationScope.addInstance(ModuleDefinitions.class, definitions);
-        applicationScope.addInstance(Container.class, applicationScope);
+        this.modules.setupApplicationScope(applicationScope);
         add(new CoreModule());
         for (Module module : modules) {
             add(module);
@@ -42,8 +38,7 @@ public class RestApplication implements Application {
     }
 
     public Application add(Module module) {
-        definitions.activateApplicationModule(module, applicationScope);
-        modules.add(module);
+        modules.add(module, applicationScope);
         return this;
     }
 
@@ -61,10 +56,8 @@ public class RestApplication implements Application {
 
     private Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
-        requestScope.addInstance(Container.class, requestScope);
-        requestScope.addActivator(Resolver.class, requestScope.getActivator(Container.class));
         requestScope.add(HttpHandler.class, BaseHandler.class);
-        definitions.activateRequestModules(modules, requestScope);
+        modules.activateRequestModules(requestScope);
         addServerUrlIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, AbsoluteLocationHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
@@ -97,8 +90,7 @@ public class RestApplication implements Application {
         }.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
         argumentScope.add(new TypeFor<Either<?, ?>>() {
         }.get(), new EitherResolver(argumentScope));
-        argumentScope.addInstance(Container.class, argumentScope);
-        definitions.activateArgumentModules(modules, argumentScope);
+        modules.activateArgumentModules(argumentScope);
         return argumentScope;
     }
 
