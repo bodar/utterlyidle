@@ -21,13 +21,14 @@ import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.PathParam;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
-import com.googlecode.utterlyidle.StreamingOutput;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Formatter;
+import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
@@ -59,11 +60,23 @@ public class RestTest {
         TestApplication application = new TestApplication();
         application.add(UsesCustomValue.class).add(new ArgumentScopedModule() {
             public Module addPerArgumentObjects(Container container) {
-                container.addInstance(CustomValue.class, new CustomValue(SOME_CUSTOM_VALUE));
+                container.addInstance(CustomValueWithoutPublicContructor.class, new CustomValueWithoutPublicContructor(SOME_CUSTOM_VALUE));
                 return this;
             }
         });
         assertThat(application.responseAsString(get("path")), is(SOME_CUSTOM_VALUE));
+    }
+
+    @Test
+    public void supportCustomArgumentActivationWithOption() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(UsesCustomValueWithOption.class).add(new ArgumentScopedModule() {
+            public Module addPerArgumentObjects(Container container) {
+                container.addActivator(CustomValueWithoutPublicContructor.class, CustomValueWithoutPublicContructorActivator.class);
+                return this;
+            }
+        });
+        assertThat(application.responseAsString(get("path")), is("true"));
     }
 
     @Test
@@ -732,15 +745,23 @@ public class RestTest {
     @Path("path")
     public static class UsesCustomValue {
         @GET
-        public String get(CustomValue value) {
+        public String get(CustomValueWithoutPublicContructor value) {
             return value.getValue();
         }
     }
 
-    public static class CustomValue{
+    @Path("path")
+    public static class UsesCustomValueWithOption {
+        @GET
+        public boolean get(@QueryParam("optionalParam") Option<CustomValueWithoutPublicContructor> option) {
+            return option.isEmpty();
+        }
+    }
+
+    public static class CustomValueWithoutPublicContructor {
         private final String value;
 
-        CustomValue(String value) {
+        CustomValueWithoutPublicContructor(String value) {
             this.value = value;
         }
 
@@ -749,4 +770,16 @@ public class RestTest {
         }
     }
 
+    public static class CustomValueWithoutPublicContructorActivator implements Callable<CustomValueWithoutPublicContructor> {
+
+        private String value;
+
+        public CustomValueWithoutPublicContructorActivator(String value) {
+            this.value = value;
+        }
+
+        public CustomValueWithoutPublicContructor call() throws Exception {
+            return new CustomValueWithoutPublicContructor(value);
+        }
+    }
 }
