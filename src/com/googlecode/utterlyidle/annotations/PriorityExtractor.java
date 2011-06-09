@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.annotations;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Extractor;
-import com.googlecode.utterlyidle.Priority;
 
 import java.lang.reflect.Method;
 
