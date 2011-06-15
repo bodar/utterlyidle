@@ -11,6 +11,7 @@ import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;
 import static com.googlecode.utterlyidle.io.Url.url;
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -69,6 +70,11 @@ public class MemoryRequestTest {
         Request anotherRequest = get("http://www.myserver.com/foobar").build();
         assertThat(resourcePathOf(anotherRequest, basePath), is(resourcePath("")));
 
+    }
+
+    @Test
+    public void shouldSupportEquals(){
+        assertEquals(get("http://www.google.com").build(), get("http://www.google.com").build());
     }
 
     private Request createRequestWith(Url url) {

@@ -4,7 +4,9 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
+import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.domain;
@@ -12,6 +14,7 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
@@ -32,4 +35,10 @@ public class MemoryResponseTest {
         Response response = response().header(X_FORWARDED_FOR, "192.168.0.1").bytes(content.getBytes());
         assertThat(response.toString(), endsWith(content));
     }
+
+    @Test
+    public void shouldSupportEquals() {
+        assertEquals(response().status(OK), response().status(OK));
+    }
+
 }
