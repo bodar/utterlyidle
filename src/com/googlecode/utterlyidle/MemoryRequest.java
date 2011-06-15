@@ -89,4 +89,16 @@ public class MemoryRequest implements Request {
         return result.toString();
     }
 
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(other != null) {
+            return other.toString().equals(toString());
+        }
+        return false;
+    }
 }

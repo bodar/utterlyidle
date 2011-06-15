@@ -86,4 +86,17 @@ public class MemoryResponse implements Response {
     public String toString() {
         return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, new String(bytes()));
     }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(other != null) {
+            return other.toString().equals(toString());
+        }
+        return false;
+    }
 }
