@@ -48,7 +48,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseResponse() {
-        Response originalResponse = response(OK).header("header name", "header value").entity("entity");
+        Response originalResponse = response(OK).header("header name", "header value").bytes("entity".getBytes());
 
         Response response = HttpMessageParser.parseResponse(originalResponse.toString());
 
