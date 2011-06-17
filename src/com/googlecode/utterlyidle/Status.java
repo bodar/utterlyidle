@@ -73,7 +73,7 @@ public class Status {
 
     @Override
     public String toString() {
-        return String.format("Status: %s %s", code, description);
+        return String.format("%s %s", code, description);
     }
 
     @Override

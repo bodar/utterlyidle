@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpMessageParser.*;
@@ -54,16 +55,17 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseResponseWithoutBody() {
-        assertThat(HttpMessageParser.parseResponse("HTTP/1.1 Status: 404 OK").toString(), startsWith("HTTP/1.1 Status: 404 OK"));
+        assertThat(HttpMessageParser.parseResponse("HTTP/1.1 404 OK").toString(), startsWith("HTTP/1.1 404 OK"));
     }
 
     @Test
     public void parseResponse() {
-        Response originalResponse = response(OK).header("header name", "header value").entity("entity");
+        Response originalResponse = response(OK).header("header name", "header value").bytes("entity".getBytes());
 
         Response response = HttpMessageParser.parseResponse(originalResponse.toString());
 
-        assertEquals(originalResponse, response);
+        assertThat(originalResponse, is(response));
+        assertThat(response.bytes(), is("entity".getBytes()));
     }
 
     @Test
