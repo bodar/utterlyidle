@@ -12,6 +12,7 @@ import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -47,8 +48,18 @@ public class HttpMessageParserTest {
     }
 
     @Test
+    public void parseRequestWithoutBody() {
+        assertThat(HttpMessageParser.parseRequest("GET /test HTTP/1.1").toString(), startsWith("GET /test HTTP/1.1"));
+    }
+
+    @Test
+    public void parseResponseWithoutBody() {
+        assertThat(HttpMessageParser.parseResponse("HTTP/1.1 Status: 404 OK").toString(), startsWith("HTTP/1.1 Status: 404 OK"));
+    }
+
+    @Test
     public void parseResponse() {
-        Response originalResponse = response(OK).header("header name", "header value").bytes("entity".getBytes());
+        Response originalResponse = response(OK).header("header name", "header value").entity("entity");
 
         Response response = HttpMessageParser.parseResponse(originalResponse.toString());
 

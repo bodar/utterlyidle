@@ -22,7 +22,13 @@ public class HttpMessageParser {
         Sequence<String> headerLines = headerLines(lines);
 
         RequestBuilder requestBuilder = new RequestBuilder(toMethod(requestLine), toPath(requestLine));
-        return headerLines.fold(requestBuilder, requestHeader()).withInput(last(lines).getBytes()).build();
+
+        requestBuilder = headerLines.fold(requestBuilder, requestHeader());
+
+        if(hasEntity(lines)) {
+            requestBuilder.withInput(last(lines).getBytes());
+        }
+        return requestBuilder.build();
     }
 
     public static Response parseResponse(String responseMessage) {
@@ -31,7 +37,7 @@ public class HttpMessageParser {
         Sequence<String> headerLines = headerLines(lines);
 
         Response response = Responses.response(toStatus(statusLine));
-        return headerLines.fold(response, responseHeader()).bytes(last(lines).getBytes());
+        return headerLines.fold(response, responseHeader()).entity(last(lines).getBytes());
     }
 
     static Status toStatus(String statusLine) {
@@ -62,7 +68,12 @@ public class HttpMessageParser {
     }
 
     private static Sequence<String> headerLines(List<String> lines) {
-        return sequence(lines.subList(1, lines.indexOf("")));
+        int separator = lines.indexOf("");
+        return sequence(lines.subList(1, separator != -1 ? separator : 1));
+    }
+
+    private static boolean hasEntity(List<String> lines) {
+        return lines.indexOf("") <= lines.size() -1;
     }
 
     private static List<String> lines(String responseMessage) {
