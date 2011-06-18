@@ -1,8 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.utterlyidle.annotations.HttpMethod;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpMessageParser.*;
@@ -10,27 +8,28 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class HttpMessageParserTest {
 
     @Test
-    public void parseRequest() {
-        Request originalRequest = new RequestBuilder(HttpMethod.POST, "/my/path").
+    public void parseRequests() {
+        canParseRequest(new RequestBuilder(POST, "/my/path").
                 withHeader("header 1", "header 1 value").
                 withHeader("header 2", "header 2 value").
                 withForm("form 1", "form 1 value").
                 withForm("form 2", "form 2 value").
-                build();
+                build());
+        canParseRequest(new RequestBuilder(GET, "/test").build());
+        canParseRequest(new RequestBuilder(GET, "/test").withHeader("name", "value").build());
+    }
 
-        Request parsedRequest = HttpMessageParser.parseRequest(originalRequest.toString());
-
-        assertEquals(originalRequest, parsedRequest);
+    private void canParseRequest(Request request) {
+        assertThat(request, is(HttpMessageParser.parseRequest(request.toString())));
     }
 
     @Test
@@ -39,14 +38,13 @@ public class HttpMessageParserTest {
     }
 
     @Test
-    public void parseRequestWithoutBody() {
-        Request requestMessage = new RequestBuilder(HttpMethod.GET, "/test").build();
-        assertThat(requestMessage, is(HttpMessageParser.parseRequest(requestMessage.toString())));
+    public void parseResponses() {
+        canParseResponse(response(OK).header("header name", "header value").bytes("entity".getBytes()));
+        canParseResponse(Responses.response(Status.OK).bytes("response".getBytes()));
+        canParseResponse(Responses.response(Status.OK));
     }
 
-    @Test
-    public void parseResponseWithoutBody() {
-        Response response = Responses.response(Status.OK);
+    private void canParseResponse(Response response) {
         assertThat(response, is(HttpMessageParser.parseResponse(response.toString())));
     }
 
@@ -54,16 +52,6 @@ public class HttpMessageParserTest {
     public void parseResponseWithoutBodyWithoutCRLF() {
         assertThat(Responses.response(status(426, "Upgrade Required")),
                 is(HttpMessageParser.parseResponse("HTTP/1.1 426 Upgrade Required")));
-    }
-
-    @Test
-    public void parseResponse() {
-        Response originalResponse = response(OK).header("header name", "header value").bytes("entity".getBytes());
-
-        Response response = HttpMessageParser.parseResponse(originalResponse.toString());
-
-        assertThat(originalResponse, is(response));
-        assertThat(response.bytes(), is("entity".getBytes()));
     }
 
     @Test
