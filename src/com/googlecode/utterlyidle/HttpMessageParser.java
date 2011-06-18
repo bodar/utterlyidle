@@ -1,9 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.*;
 
 import java.io.StringReader;
 import java.util.List;
@@ -18,26 +15,28 @@ import static java.lang.Integer.parseInt;
 public class HttpMessageParser {
     public static Request parseRequest(String requestMessage) {
         List<String> lines = lines(requestMessage);
+
         String requestLine = first(lines);
         Sequence<String> headerLines = headerLines(lines);
+        Sequence<String> entityLines = entityLines(lines);
 
         RequestBuilder requestBuilder = new RequestBuilder(toMethod(requestLine), toPath(requestLine));
-
         requestBuilder = headerLines.fold(requestBuilder, requestHeader());
+        String input = toInput(entityLines);
+        requestBuilder.withInput(input.getBytes());
 
-        if(hasEntity(lines)) {
-            requestBuilder.withInput(last(lines).getBytes());
-        }
         return requestBuilder.build();
     }
 
     public static Response parseResponse(String responseMessage) {
         List<String> lines = lines(responseMessage);
+
         String statusLine = first(lines);
         Sequence<String> headerLines = headerLines(lines);
+        Sequence<String> entityLines = entityLines(lines);
 
         Response response = Responses.response(toStatus(statusLine));
-        return headerLines.fold(response, responseHeader()).bytes(last(lines).getBytes());
+        return headerLines.fold(response, responseHeader()).bytes(toInput(entityLines).getBytes());
     }
 
     static Status toStatus(String statusLine) {
@@ -68,12 +67,21 @@ public class HttpMessageParser {
     }
 
     private static Sequence<String> headerLines(List<String> lines) {
-        int separator = lines.indexOf("");
-        return sequence(lines.subList(1, separator != -1 ? separator : 1));
+        int index = separatorLineIndex(lines);
+        return sequence(lines.subList(1, index != -1 ? index : 1));
     }
 
-    private static boolean hasEntity(List<String> lines) {
-        return lines.indexOf("") <= lines.size() -1;
+    private static String toInput(Sequence<String> entityLines) {
+        return entityLines.fold(new StringBuilder(), addInputLine()).toString();
+    }
+
+    private static int separatorLineIndex(List<String> lines) {
+        return lines.indexOf("");
+    }
+
+    private static Sequence<String> entityLines(List<String> lines) {
+        int index = separatorLineIndex(lines);
+        return index == -1 ? Sequences.<String>sequence() : sequence(lines.subList(index, lines.size()));
     }
 
     private static List<String> lines(String responseMessage) {
@@ -88,6 +96,13 @@ public class HttpMessageParser {
         return lines.get(lines.size() - 1);
     }
 
+    private static Callable2<StringBuilder, String, StringBuilder> addInputLine() {
+        return new Callable2<StringBuilder, String, StringBuilder>() {
+            public StringBuilder call(StringBuilder input, String entityLine) throws Exception {
+                return input.append(entityLine);
+            }
+        };
+    }
 
     private static Callable2<? super RequestBuilder, ? super String, RequestBuilder> requestHeader() {
         return new Callable2<RequestBuilder, String, RequestBuilder>() {
