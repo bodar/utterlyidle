@@ -18,21 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class HttpMessageParserTest {
-    @Test
-    public void parseResponseStatusLine() {
-        assertThat(toStatus("HTTP/1.1 Status: 404 Not Found"), is(NOT_FOUND));
-        assertThat(toStatus("HTTP/1.0 Status: 400 Bad Request"), is(BAD_REQUEST));
-    }
-
-    @Test
-    public void parseRequestLine() {
-        assertThat(toMethodAndPath("GET http://localhost:8080/path/ HTTP/1.1"), is(Pair.<String, String>pair("GET", "http://localhost:8080/path/")));
-    }
-
-    @Test
-    public void parseHeader() {
-        assertThat(toFieldNameAndValue("Accept: text/xml"), is(Pair.<String, String>pair("Accept", "text/xml")));
-    }
 
     @Test
     public void parseRequest() {
@@ -49,13 +34,26 @@ public class HttpMessageParserTest {
     }
 
     @Test
+    public void parseRequestWithoutBodyWithoutCRLF() {
+        assertThat(new RequestBuilder(GET, "/path").build(), is(HttpMessageParser.parseRequest("GET /path HTTP/1.1")));
+    }
+
+    @Test
     public void parseRequestWithoutBody() {
-        assertThat(HttpMessageParser.parseRequest("GET /test HTTP/1.1").toString(), startsWith("GET /test HTTP/1.1"));
+        Request requestMessage = new RequestBuilder(HttpMethod.GET, "/test").build();
+        assertThat(requestMessage, is(HttpMessageParser.parseRequest(requestMessage.toString())));
     }
 
     @Test
     public void parseResponseWithoutBody() {
-        assertThat(HttpMessageParser.parseResponse("HTTP/1.1 404 OK").toString(), startsWith("HTTP/1.1 404 OK"));
+        Response response = Responses.response(Status.OK);
+        assertThat(response, is(HttpMessageParser.parseResponse(response.toString())));
+    }
+
+    @Test
+    public void parseResponseWithoutBodyWithoutCRLF() {
+        assertThat(Responses.response(status(426, "Upgrade Required")),
+                is(HttpMessageParser.parseResponse("HTTP/1.1 426 Upgrade Required")));
     }
 
     @Test
@@ -95,6 +93,22 @@ public class HttpMessageParserTest {
 
         assertThat(parsedRequest.method(), is(equalTo("GET")));
         assertThat(parsedRequest.url(), is(equalTo(url("/my/path"))));
+    }
+
+    @Test
+    public void parseResponseStatusLine() {
+        assertThat(toStatus("HTTP/1.1 Status: 404 Not Found"), is(NOT_FOUND));
+        assertThat(toStatus("HTTP/1.0 Status: 400 Bad Request"), is(BAD_REQUEST));
+    }
+
+    @Test
+    public void parseRequestLine() {
+        assertThat(toMethodAndPath("GET http://localhost:8080/path/ HTTP/1.1"), is(Pair.<String, String>pair("GET", "http://localhost:8080/path/")));
+    }
+
+    @Test
+    public void parseHeader() {
+        assertThat(toFieldNameAndValue("Accept: text/xml"), is(Pair.<String, String>pair("Accept", "text/xml")));
     }
 
 }
