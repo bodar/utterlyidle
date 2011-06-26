@@ -36,7 +36,7 @@ public class HttpMessageParser {
         Sequence<String> entityLines = entityLines(lines);
 
         Response response = Responses.response(toStatus(statusLine));
-        return headerLines.fold(response, responseHeader()).bytes(toInput(entityLines).getBytes());
+        return headerLines.fold(response, responseHeader()).bytes(toInput(entityLines).getBytes()).entity("");
     }
 
     static Status toStatus(String statusLine) {
