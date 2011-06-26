@@ -14,29 +14,33 @@ import static java.lang.Integer.parseInt;
 
 public class HttpMessageParser {
     public static Request parseRequest(String requestMessage) {
-        List<String> lines = lines(requestMessage);
+        Sequence<Sequence<String>> httpRequestLines = httpMessageLines(requestMessage);
 
-        String requestLine = first(lines);
-        Sequence<String> headerLines = headerLines(lines);
-        Sequence<String> entityLines = entityLines(lines);
-
-        RequestBuilder requestBuilder = new RequestBuilder(toMethod(requestLine), toPath(requestLine));
-        requestBuilder = headerLines.fold(requestBuilder, requestHeader());
-        String input = toInput(entityLines);
-        requestBuilder.withInput(input.getBytes());
-
-        return requestBuilder.build();
+        return buildRequest(httpRequestLines.first().first(), httpRequestLines.second(), httpRequestLines.last());
     }
 
     public static Response parseResponse(String responseMessage) {
-        List<String> lines = lines(responseMessage);
+        Sequence<Sequence<String>> httpResponseLines = httpMessageLines(responseMessage);
 
-        String statusLine = first(lines);
-        Sequence<String> headerLines = headerLines(lines);
-        Sequence<String> entityLines = entityLines(lines);
+        return buildResponse(httpResponseLines.first().first(), httpResponseLines.second(), httpResponseLines.last());
+    }
 
+    private static Request buildRequest(String requestLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
+        RequestBuilder requestBuilder = new RequestBuilder(toMethod(requestLine), toPath(requestLine));
+        requestBuilder = headerLines.fold(requestBuilder, requestHeader());
+        requestBuilder.withInput(toInput(messageBodyLines).getBytes());
+        return requestBuilder.build();
+    }
+
+    private static Response buildResponse(String statusLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
         Response response = Responses.response(toStatus(statusLine));
-        return headerLines.fold(response, responseHeader()).bytes(toInput(entityLines).getBytes()).entity("");
+        headerLines.fold(response, responseHeader());
+        return response.bytes(toInput(messageBodyLines).getBytes()).entity("");
+    }
+
+    private static Sequence<Sequence<String>> httpMessageLines(String requestMessage) {
+        List<String> lines = lines(requestMessage);
+        return sequence(first(lines), headerLines(lines), entityLines(lines));
     }
 
     static Status toStatus(String statusLine) {
@@ -88,12 +92,8 @@ public class HttpMessageParser {
         return Strings.lines(new StringReader(responseMessage)).toList();
     }
 
-    private static String first(List<String> lines) {
-        return lines.get(0);
-    }
-
-    private static String last(List<String> lines) {
-        return lines.get(lines.size() - 1);
+    private static Sequence<String> first(List<String> lines) {
+        return sequence(lines.get(0));
     }
 
     private static Callable2<StringBuilder, String, StringBuilder> addInputLine() {
