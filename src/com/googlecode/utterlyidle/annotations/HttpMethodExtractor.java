@@ -10,6 +10,10 @@ import java.lang.reflect.Method;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class HttpMethodExtractor implements Extractor<Method, Option<HttpMethod>> {
+    static Option<HttpMethod> httpMethod(Method method) {
+        return new HttpMethodExtractor().extract(method);
+    }
+
     public Option<HttpMethod> extract(Method method) {
         return sequence(method.getAnnotations()).tryPick(new Callable1<Annotation, Option<HttpMethod>>() {
             public Option<HttpMethod> call(Annotation annotation) throws Exception {
