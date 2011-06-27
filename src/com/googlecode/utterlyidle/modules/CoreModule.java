@@ -10,6 +10,7 @@ import com.googlecode.utterlyidle.ResourcePathActivator;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.StreamingWriter;
+import com.googlecode.utterlyidle.annotations.AnnotatedBindings;
 import com.googlecode.utterlyidle.handlers.Auditor;
 import com.googlecode.utterlyidle.handlers.ByteArrayHandler;
 import com.googlecode.utterlyidle.handlers.DoNothingAuditor;
@@ -24,11 +25,10 @@ import com.googlecode.utterlyidle.rendering.MatchFailureRenderer;
 import com.googlecode.utterlyidle.rendering.ObjectRenderer;
 import com.googlecode.yadic.Container;
 
-import static com.googlecode.totallylazy.Predicates.instanceOf;
-import static com.googlecode.totallylazy.Predicates.is;
-import static com.googlecode.totallylazy.Predicates.nullValue;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.Predicates.*;
+import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.getHandlerFromRule;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 
 public class CoreModule extends AbstractModule {
@@ -63,7 +63,7 @@ public class CoreModule extends AbstractModule {
 
     @Override
     public Module addResources(Resources resources) {
-        resources.add(BuiltInResources.class);
+        resources.add(annotatedClass(BuiltInResources.class));
         return this;
     }
 

@@ -24,6 +24,7 @@ import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.MediaType.TEXT_XML;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentType;
 import static com.googlecode.utterlyidle.sitemesh.MetaTagRule.metaTagRule;
@@ -136,7 +137,7 @@ public class SiteMeshHandlerTest {
         }
 
         public Module addResources(Resources resources) {
-            resources.add(resourceClass);
+            resources.add(annotatedClass(resourceClass));
             return this;
         }
     }
