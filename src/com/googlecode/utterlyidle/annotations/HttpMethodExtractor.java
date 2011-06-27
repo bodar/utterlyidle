@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class HttpMethodExtractor implements Extractor<Method, Option<HttpMethod>> {
-    static Option<HttpMethod> httpMethod(Method method) {
+    public static Option<HttpMethod> httpMethod(Method method) {
         return new HttpMethodExtractor().extract(method);
     }
 

@@ -1,12 +1,10 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
+import javax.xml.bind.Binder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -25,14 +23,11 @@ import static com.googlecode.utterlyidle.annotations.UriTemplateExtractor.uriTem
 
 public class AnnotatedBindings {
     public static Binding[] annotatedClass(Class<?> aClass) {
-        List<Binding> result = new ArrayList<Binding>();
-        for (final Method method : aClass.getMethods()) {
-            for (final Binding httpMethod : binding(method)) {
-                result.add(httpMethod);
+        return sequence(aClass.getMethods()).flatMap(new Callable1<Method, Iterable<Binding>>() {
+            public Iterable<Binding> call(Method method) throws Exception {
+                return binding(method);
             }
-        }
-
-        return result.toArray(new Binding[]{});
+        }).toArray(Binding.class);
     }
 
     public static Option<Binding> binding(final Method method) {
