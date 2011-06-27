@@ -2,6 +2,8 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.utterlyidle.Resources;
 
+import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
+
 public class SingleResourceModule implements ResourcesModule {
     private final Class<?> resource;
 
@@ -10,7 +12,7 @@ public class SingleResourceModule implements ResourcesModule {
     }
 
     public Module addResources(Resources resources) {
-        resources.add(resource);
+        resources.add(annotatedClass(resource));
         return this;
     }
 }
