@@ -15,6 +15,7 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
 import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
@@ -38,7 +39,22 @@ public class MemoryResponseTest {
 
     @Test
     public void shouldSupportEquals() {
-        assertEquals(response().status(OK), response().status(OK));
+        assertThat(response().status(OK), is(response().status(OK)));
     }
 
+    @Test
+    public void fieldNamesAreCaseInsensitive() {
+        assertThat(response().status(OK).header("Content-Type", "text/plain"), is(response().status(OK).header("content-type", "text/plain")));
+    }
+
+    @Test
+    public void fieldValuesAreCaseSensitive() {
+        assertThat(response().status(OK).header("Content-Type", "TEXT/PLAIN"), is(not(response().status(OK).header("Content-Type", "text/plain"))));
+    }
+
+    @Test
+    public void orderOfHeadersDoesNotMatter() {
+        assertThat(response().status(OK).header("name1", "value1").header("name2", "value2"), is(response().status(OK).header("name2", "value2").header("name1", "value1")));
+    }
+    
 }

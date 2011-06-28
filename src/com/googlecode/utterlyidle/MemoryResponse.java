@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.googlecode.totallylazy.Bytes.write;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
@@ -89,13 +90,14 @@ public class MemoryResponse implements Response {
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return status.hashCode();
     }
 
     @Override
     public boolean equals(Object other) {
-        if(other != null) {
-            return other.toString().equals(toString());
+        if(other instanceof Response) {
+            Response response = (Response) other;
+            return status.equals(response.status()) && (entity != null ? entity.equals(response.entity()) : true) && headers.equals(response.headers());
         }
         return false;
     }
