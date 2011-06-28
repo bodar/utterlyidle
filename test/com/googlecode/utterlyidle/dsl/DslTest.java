@@ -28,6 +28,14 @@ public class DslTest {
     }
 
     @Test
+    public void supportsGetWithDefaultValue() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(get("/hello").resource(method(on(Foo.class).say(queryParam(String.class, "name", "Matt")))));
+        assertThat(application.responseAsString(RequestBuilder.get("/hello")), is("Hello Matt"));
+        assertThat(application.responseAsString(RequestBuilder.get("/hello").withQuery("name", "Dan")), is("Hello Dan"));
+    }
+
+    @Test
     public void supportsGetWithMultipleParameters() throws Exception {
         TestApplication application = new TestApplication();
         application.add(get("/bar").resource(method(on(Bob.class).say(queryParam(String.class, "firstName"), queryParam(String.class, "lastName")))));
