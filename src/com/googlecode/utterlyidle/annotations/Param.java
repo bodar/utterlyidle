@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -63,5 +64,13 @@ public class Param {
 
     public Annotation annotation() {
         return annotation;
+    }
+
+    public static <T> Callable1<? super Annotation, T> toValue() {
+        return new Callable1<Annotation, T>() {
+            public T call(Annotation annotation) throws Exception {
+                return (T) getValue(annotation);
+            }
+        };
     }
 }
