@@ -64,4 +64,12 @@ public class Param {
     public Annotation annotation() {
         return annotation;
     }
+
+    public static <T> Callable1<? super Annotation, T> toValue() {
+        return new Callable1<Annotation, T>() {
+            public T call(Annotation annotation) throws Exception {
+                return (T) getValue(annotation);
+            }
+        };
+    }
 }

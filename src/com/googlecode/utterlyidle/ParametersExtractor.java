@@ -1,10 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.*;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.ProgrammerErrorResolver;
@@ -19,7 +15,7 @@ import static com.googlecode.yadic.resolvers.Resolvers.create;
 public class ParametersExtractor implements RequestExtractor<Object[]> {
     private final UriTemplate uriTemplate;
     private final Application application;
-    private final Sequence<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter;
+    private final Sequence<Pair<Type, Option<NamedParameter>>> typesWithNamedParameter;
 
     public ParametersExtractor(UriTemplate uriTemplate, Application application, Sequence<Pair<Type, Option<NamedParameter>>> typesWithNamedParameter) {
         this.uriTemplate = uriTemplate;
@@ -52,17 +48,16 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
 
                 container.addInstance(UriTemplate.class, uriTemplate);
 
-                final Type iterableStringType = new TypeFor<Iterable<String>>() {
-                }.get();
 
                 for (NamedParameter namedParameter : optionalParameter) {
-                    container.add(String.class, namedParameter.extractValueFrom(container)).
-                            add(iterableStringType, namedParameter.extractValuesFrom(container));
+                    namedParameter.addTo(container);
                 }
 
                 if (!container.contains(String.class)) {
                     container.add(String.class, new ProgrammerErrorResolver(String.class));
                 }
+
+                final Type iterableStringType = new TypeFor<Iterable<String>>() {}.get();
                 if (!container.contains(iterableStringType)) {
                     container.add(iterableStringType, new ProgrammerErrorResolver(iterableStringType));
                 }

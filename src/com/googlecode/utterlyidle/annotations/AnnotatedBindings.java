@@ -4,20 +4,19 @@ import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
-import javax.xml.bind.Binder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
+import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.annotations.HttpMethodExtractor.httpMethod;
+import static com.googlecode.utterlyidle.annotations.Param.param;
 import static com.googlecode.utterlyidle.annotations.Param.toParam;
 import static com.googlecode.utterlyidle.annotations.UriTemplateExtractor.uriTemplate;
 
@@ -83,14 +82,19 @@ public class AnnotatedBindings {
     private static Sequence<Option<NamedParameter>> namedParameters(final Method method) {
         return sequence(method.getParameterAnnotations()).map(new Callable1<Annotation[], Option<NamedParameter>>() {
             public Option<NamedParameter> call(Annotation[] annotations) throws Exception {
-                for (final Param param : sequence(annotations).map(toParam())) {
-                    Class<? extends Annotation> key = param.annotation().annotationType();
+                for (final Annotation annotation : annotations) {
+                    Class<? extends Annotation> key = annotation.annotationType();
                     if (supportedAnnotations.containsKey(key)) {
-                        return some(new NamedParameter(param.<String>value(), supportedAnnotations.get(key)));
+                        Param param = param(annotation);
+                        return some(new NamedParameter(param.<String>value(), supportedAnnotations.get(key), defaultValue(annotations)));
                     }
                 }
                 return none();
             }
         });
+    }
+
+    private static Option<String> defaultValue(Annotation[] annotations) {
+        return sequence(annotations).find(instanceOf(DefaultValue.class)).map(Param.<String>toValue());
     }
 }
