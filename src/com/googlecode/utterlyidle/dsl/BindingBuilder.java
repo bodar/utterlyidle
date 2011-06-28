@@ -3,16 +3,10 @@ package com.googlecode.utterlyidle.dsl;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Some;
 import com.googlecode.totallylazy.proxy.CallOn;
 import com.googlecode.totallylazy.proxy.Invocation;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.FormParameters;
-import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.NamedParameter;
-import com.googlecode.utterlyidle.PathParameters;
-import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.UriTemplate;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
@@ -21,6 +15,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 
@@ -109,54 +104,89 @@ public class BindingBuilder {
 
     private static ThreadLocalParameters parameters = new ThreadLocalParameters();
 
-    public static <T> T queryParam(Type type, String value) {
-        Option<NamedParameter> some = Option.some(new NamedParameter(value, QueryParameters.class));
-        parameters.get().add(Pair.pair(type, some));
+    private static <T> T namedParameter(Type type, String name, final Class<? extends Parameters<String, String>> parametersClass, final Option<String> defaultValue) {
+        Option<NamedParameter> namedParameterSome = some(new NamedParameter(name, parametersClass, defaultValue));
+        parameters.get().add(Pair.pair(type, namedParameterSome));
         return null;
     }
 
-    public static <T> T queryParam(Class<T> aClass, String value) {
-        return BindingBuilder.<T>queryParam((Type) aClass, value);
+    public static <T> T queryParam(Type type, String name) {
+        return BindingBuilder.<T>namedParameter(type, name, QueryParameters.class, Option.<String>none());
     }
 
-    public static <T> T formParam(Type type, String value) {
-        Option<NamedParameter> some = Option.some(new NamedParameter(value, FormParameters.class));
-        parameters.get().add(Pair.pair(type, some));
-        return null;
+    public static <T> T queryParam(Type type, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(type, name, QueryParameters.class, some(defaultValue));
     }
 
-    public static <T> T formParam(Class<T> aClass, String value) {
-        return BindingBuilder.<T>formParam((Type) aClass, value);
+    public static <T> T queryParam(Class<T> aClass, String name) {
+        return BindingBuilder.<T>namedParameter((Type) aClass, name, QueryParameters.class, Option.<String>none());
     }
 
-    public static <T> T pathParam(Type type, String value) {
-        Option<NamedParameter> some = Option.some(new NamedParameter(value, PathParameters.class));
-        parameters.get().add(Pair.pair(type, some));
-        return null;
+    public static <T> T queryParam(Class<T> aClass, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(aClass, name, QueryParameters.class, some(defaultValue));
     }
 
-    public static <T> T pathParam(Class<T> aClass, String value) {
-        return BindingBuilder.<T>pathParam((Type) aClass, value);
+    public static <T> T formParam(Type type, String name) {
+        return BindingBuilder.<T>namedParameter(type, name, FormParameters.class, Option.<String>none());
     }
 
-    public static <T> T headerParam(Type type, String value) {
-        Option<NamedParameter> some = Option.some(new NamedParameter(value, HeaderParameters.class));
-        parameters.get().add(Pair.pair(type, some));
-        return null;
+    public static <T> T formParam(Type type, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(type, name, FormParameters.class, some(defaultValue));
     }
 
-    public static <T> T headerParam(Class<T> aClass, String value) {
-        return BindingBuilder.<T>headerParam((Type) aClass, value);
+    public static <T> T formParam(Class<T> aClass, String name) {
+        return BindingBuilder.<T>namedParameter((Type) aClass, name, FormParameters.class, Option.<String>none());
     }
 
-    public static <T> T cookieParam(Type type, String value) {
-        Option<NamedParameter> some = Option.some(new NamedParameter(value, CookieParameters.class));
-        parameters.get().add(Pair.pair(type, some));
-        return null;
+    public static <T> T formParam(Class<T> aClass, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(aClass, name, FormParameters.class, some(defaultValue));
     }
 
-    public static <T> T cookieParam(Class<T> aClass, String value) {
-        return BindingBuilder.<T>cookieParam((Type) aClass, value);
+    public static <T> T pathParam(Type type, String name) {
+        return BindingBuilder.<T>namedParameter(type, name, PathParameters.class, Option.<String>none());
     }
 
+    public static <T> T pathParam(Type type, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(type, name, PathParameters.class, some(defaultValue));
+    }
+
+    public static <T> T pathParam(Class<T> aClass, String name) {
+        return BindingBuilder.<T>namedParameter((Type) aClass, name, PathParameters.class, Option.<String>none());
+    }
+
+    public static <T> T pathParam(Class<T> aClass, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(aClass, name, PathParameters.class, some(defaultValue));
+    }
+
+    public static <T> T headerParam(Type type, String name) {
+        return BindingBuilder.<T>namedParameter(type, name, HeaderParameters.class, Option.<String>none());
+    }
+
+    public static <T> T headerParam(Type type, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(type, name, HeaderParameters.class, some(defaultValue));
+    }
+
+    public static <T> T headerParam(Class<T> aClass, String name) {
+        return BindingBuilder.<T>namedParameter((Type) aClass, name, HeaderParameters.class, Option.<String>none());
+    }
+
+    public static <T> T headerParam(Class<T> aClass, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(aClass, name, HeaderParameters.class, some(defaultValue));
+    }
+
+    public static <T> T cookieParam(Type type, String name) {
+        return BindingBuilder.<T>namedParameter(type, name, CookieParameters.class, Option.<String>none());
+    }
+
+    public static <T> T cookieParam(Type type, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(type, name, CookieParameters.class, some(defaultValue));
+    }
+
+    public static <T> T cookieParam(Class<T> aClass, String name) {
+        return BindingBuilder.<T>namedParameter((Type) aClass, name, CookieParameters.class, Option.<String>none());
+    }
+
+    public static <T> T cookieParam(Class<T> aClass, String name, String defaultValue) {
+        return BindingBuilder.<T>namedParameter(aClass, name, CookieParameters.class, some(defaultValue));
+    }
 }
