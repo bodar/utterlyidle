@@ -13,11 +13,11 @@ public class Binding {
     private final UriTemplate uriTemplate;
     private final Sequence<String> consumes;
     private final Sequence<String> produces;
-    private final Sequence<Pair<Type, Option<NamedParameter>>> parameters;
+    private final Sequence<Pair<Type, Option<Parameter>>> parameters;
     private final int priority;
     private final boolean hidden;
 
-    public Binding(Method method, UriTemplate uriTemplate, String httpMethod, Sequence<String> consumes, Sequence<String> produces, Sequence<Pair<Type, Option<NamedParameter>>> parameters, int priority, boolean hidden) {
+    public Binding(Method method, UriTemplate uriTemplate, String httpMethod, Sequence<String> consumes, Sequence<String> produces, Sequence<Pair<Type, Option<Parameter>>> parameters, int priority, boolean hidden) {
         this.method = method;
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
@@ -48,7 +48,7 @@ public class Binding {
         return produces;
     }
 
-    public Sequence<Pair<Type, Option<NamedParameter>>> parameters() {
+    public Sequence<Pair<Type, Option<Parameter>>> parameters() {
         return parameters;
     }
 

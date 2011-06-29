@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.dsl;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Some;
 import com.googlecode.totallylazy.proxy.CallOn;
 import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.utterlyidle.*;
@@ -26,11 +25,11 @@ public class BindingBuilder {
     private Sequence<String> consumes = sequence(WILDCARD);
     private Sequence<String> produces = sequence(WILDCARD);
     private int priority = 0;
-    private List<Pair<Type,Option<NamedParameter>>> typesWithNamedParameter = Collections.emptyList();
+    private List<Pair<Type,Option<Parameter>>> typesWithParameter = Collections.emptyList();
     private boolean hidden = false;
 
     public Binding build() {
-        return new Binding(method, uriTemplate, httpMethod, consumes, produces, sequence(typesWithNamedParameter), priority, hidden);
+        return new Binding(method, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden);
     }
 
     public BindingBuilder path(String value) {
@@ -72,7 +71,7 @@ public class BindingBuilder {
     }
 
     public BindingBuilder resource(Invocation invocation) {
-        typesWithNamedParameter = parameters.get();
+        typesWithParameter = parameters.get();
         parameters.remove();
         return method(invocation.method());
     }
@@ -105,8 +104,19 @@ public class BindingBuilder {
     private static ThreadLocalParameters parameters = new ThreadLocalParameters();
 
     private static <T> T namedParameter(Type type, String name, final Class<? extends Parameters<String, String>> parametersClass, final Option<String> defaultValue) {
-        Option<NamedParameter> namedParameterSome = some(new NamedParameter(name, parametersClass, defaultValue));
+        Option<Parameter> namedParameterSome = Option.<Parameter>some(new NamedParameter(name, parametersClass, defaultValue));
         parameters.get().add(Pair.pair(type, namedParameterSome));
+        return null;
+    }
+
+    public static <T> T definedParam(final T value) {
+        return definedParam(value.getClass(), value);
+    }
+
+    public static <T> T definedParam(final Type type, final T value) {
+        Option<Parameter> some = Option.<Parameter>some(new DefinedParameter<T>(type, value));
+        Pair<Type,Option<Parameter>> pair = Pair.pair(type, some);
+        parameters.get().add(pair);
         return null;
     }
 

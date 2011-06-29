@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Option;
+import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.TypeMap;
 import com.googlecode.yadic.generics.TypeFor;
@@ -10,7 +11,7 @@ import java.lang.reflect.Type;
 import static com.googlecode.totallylazy.Callables.callThrows;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class NamedParameter  {
+public class NamedParameter implements Parameter {
     private final String name;
     private final Option<String> defaultValue;
     private final Class<? extends Parameters<String, String>> parametersClass;
@@ -25,8 +26,8 @@ public class NamedParameter  {
         return name;
     }
 
-    public String defaultValue() {
-        return defaultValue.getOrElse(callThrows(new IllegalArgumentException(), String.class));
+    public Option<String> defaultValue() {
+        return defaultValue;
     }
 
     public Class<? extends Parameters<String, String>> parametersClass() {
@@ -37,29 +38,32 @@ public class NamedParameter  {
         return new Resolver<String>() {
             public String resolve(Type type) throws Exception {
                 Parameters<String, String> parameters = (Parameters<String, String>) typeMap.resolve(parametersClass());
-                if(!parameters.contains(name())){
-                    return defaultValue();
+                if (!parameters.contains(name())) {
+                    return defaultValueOrThrow();
                 }
                 return parameters.getValue(name());
             }
         };
     }
 
+    private String defaultValueOrThrow() {
+        return defaultValue.getOrElse(callThrows(new IllegalArgumentException(), String.class));
+    }
+
     public Resolver<Iterable<String>> extractValuesFrom(final TypeMap typeMap) {
         return new Resolver<Iterable<String>>() {
             public Iterable<String> resolve(Type type) throws Exception {
                 Parameters<String, String> parameters = (Parameters<String, String>) typeMap.resolve(parametersClass());
-                if(!parameters.contains(name())){
-                    return sequence(defaultValue());
+                if (!parameters.contains(name())) {
+                    return sequence(defaultValueOrThrow());
                 }
                 return parameters.getValues(name());
             }
         };
     }
 
-    public TypeMap addTo(TypeMap typeMap) {
-        return typeMap.add(String.class, extractValueFrom(typeMap)).
-                add(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(typeMap));
-
+    public void addTo(Container container) {
+        container.add(String.class, extractValueFrom(container)).
+                add(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(container));
     }
 }
