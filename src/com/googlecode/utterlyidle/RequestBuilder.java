@@ -8,6 +8,7 @@ import com.googlecode.utterlyidle.io.Url;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -21,7 +22,7 @@ import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static com.googlecode.utterlyidle.io.Url.url;
 
-public class RequestBuilder {
+public class RequestBuilder implements Callable<Request> {
     private final List<Pair<String, String>> headers = new ArrayList<Pair<String, String>>();
     private final List<Pair<String, String>> query = new ArrayList<Pair<String, String>>();
     private final List<Pair<String, String>> form = new ArrayList<Pair<String, String>>();
@@ -87,6 +88,10 @@ public class RequestBuilder {
     public RequestBuilder withInput(byte[] input) {
         this.input = input;
         return this;
+    }
+
+    public Request call() throws Exception {
+        return build();
     }
 
     public Request build() {

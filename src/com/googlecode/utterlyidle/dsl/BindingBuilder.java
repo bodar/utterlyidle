@@ -13,12 +13,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 
-public class BindingBuilder {
+public class BindingBuilder implements Callable<Binding> {
     private Method method;
     private UriTemplate uriTemplate;
     private String httpMethod = HttpMethod.GET;
@@ -27,6 +28,10 @@ public class BindingBuilder {
     private int priority = 0;
     private List<Pair<Type,Option<Parameter>>> typesWithParameter = Collections.emptyList();
     private boolean hidden = false;
+
+    public Binding call() throws Exception {
+        return build();
+    }
 
     public Binding build() {
         return new Binding(method, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden);
