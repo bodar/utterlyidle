@@ -15,9 +15,9 @@ import static com.googlecode.yadic.resolvers.Resolvers.create;
 public class ParametersExtractor implements RequestExtractor<Object[]> {
     private final UriTemplate uriTemplate;
     private final Application application;
-    private final Sequence<Pair<Type, Option<NamedParameter>>> typesWithNamedParameter;
+    private final Sequence<Pair<Type, Option<Parameter>>> typesWithNamedParameter;
 
-    public ParametersExtractor(UriTemplate uriTemplate, Application application, Sequence<Pair<Type, Option<NamedParameter>>> typesWithNamedParameter) {
+    public ParametersExtractor(UriTemplate uriTemplate, Application application, Sequence<Pair<Type, Option<Parameter>>> typesWithNamedParameter) {
         this.uriTemplate = uriTemplate;
         this.application = application;
         this.typesWithNamedParameter = typesWithNamedParameter;
@@ -33,24 +33,24 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
     }
 
     public Object[] extract(final Request request) {
-        return typesWithNamedParameter.map(new Callable1<Pair<Type, Option<NamedParameter>>, Object>() {
-            public Object call(Pair<Type, Option<NamedParameter>> pair) throws Exception {
+        return typesWithNamedParameter.map(new Callable1<Pair<Type, Option<Parameter>>, Object>() {
+            public Object call(Pair<Type, Option<Parameter>> pair) throws Exception {
                 return application.usingParameterScope(request, resolveParameter(pair));
             }
         }).toArray(Object.class);
     }
 
-    private Callable1<Container, Object> resolveParameter(final Pair<Type, Option<NamedParameter>> pair) {
+    private Callable1<Container, Object> resolveParameter(final Pair<Type, Option<Parameter>> pair) {
         return new Callable1<Container, Object>() {
             public Object call(Container container) throws Exception {
                 final Type type = pair.first();
-                final Option<NamedParameter> optionalParameter = pair.second();
+                final Option<Parameter> optionalParameter = pair.second();
 
                 container.addInstance(UriTemplate.class, uriTemplate);
 
 
-                for (NamedParameter namedParameter : optionalParameter) {
-                    namedParameter.addTo(container);
+                for (Parameter parameter : optionalParameter) {
+                    parameter.addTo(container);
                 }
 
                 if (!container.contains(String.class)) {
