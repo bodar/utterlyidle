@@ -8,15 +8,8 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.FormParameters;
-import com.googlecode.utterlyidle.MatchFailure;
-import com.googlecode.utterlyidle.NamedParameter;
-import com.googlecode.utterlyidle.Parameters;
-import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.Renderer;
-import com.googlecode.utterlyidle.UriTemplate;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
@@ -27,6 +20,7 @@ import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.Strings.EMPTY;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static com.googlecode.utterlyidle.rendering.Model.model;
 
@@ -64,7 +58,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         return Predicates.is(aClass);
     }
 
-    private Callable1<? super NamedParameter, Class<? extends Parameters<String, String>>> parametersClass() {
+    private Callable1<NamedParameter, Class<? extends Parameters<String, String>>> parametersClass() {
         return new Callable1<NamedParameter, Class<? extends Parameters<String, String>>>() {
             public Class<? extends Parameters<String, String>> call(NamedParameter namedParameter) throws Exception {
                  return namedParameter.parametersClass();
@@ -73,14 +67,16 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     }
 
     @SuppressWarnings("unchecked")
-    private Sequence<NamedParameter> extractNamedParameters(Sequence<Pair<Type, Option<NamedParameter>>> parameters) {
-        return parameters.map(Callables.<Option<NamedParameter>>second()).filter(Predicates.<NamedParameter>some()).map(Callables.<NamedParameter>value());
+    private Sequence<NamedParameter> extractNamedParameters(Sequence<Pair<Type, Option<Parameter>>> parameters) {
+        return parameters.map(Callables.<Option<Parameter>>second()).
+                filter(Predicates.<Parameter>some()).
+                map(Callables.<Parameter>value()).safeCast(NamedParameter.class);
     }
 
     private Model asModel(Sequence<NamedParameter> parameters) {
         Model result = model();
         for (NamedParameter parameter : parameters) {
-            result.add(parameter.name(), Strings.EMPTY);
+            result.add(parameter.name(), parameter.defaultValue().getOrElse(EMPTY));
         }
         return result;
     }

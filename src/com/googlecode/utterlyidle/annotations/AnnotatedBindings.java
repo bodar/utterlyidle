@@ -67,7 +67,7 @@ public class AnnotatedBindings {
         return method.getAnnotation(Hidden.class) != null;
     }
 
-    private static Sequence<Pair<Type, Option<NamedParameter>>> extractTypesAndNames(Method method) {
+    private static Sequence<Pair<Type, Option<Parameter>>> extractTypesAndNames(Method method) {
         return sequence(method.getGenericParameterTypes()).zip(namedParameters(method));
     }
 
@@ -79,14 +79,14 @@ public class AnnotatedBindings {
         put(CookieParam.class, CookieParameters.class);
     }};
 
-    private static Sequence<Option<NamedParameter>> namedParameters(final Method method) {
-        return sequence(method.getParameterAnnotations()).map(new Callable1<Annotation[], Option<NamedParameter>>() {
-            public Option<NamedParameter> call(Annotation[] annotations) throws Exception {
+    private static Sequence<Option<Parameter>> namedParameters(final Method method) {
+        return sequence(method.getParameterAnnotations()).map(new Callable1<Annotation[], Option<Parameter>>() {
+            public Option<Parameter> call(Annotation[] annotations) throws Exception {
                 for (final Annotation annotation : annotations) {
                     Class<? extends Annotation> key = annotation.annotationType();
                     if (supportedAnnotations.containsKey(key)) {
                         Param param = param(annotation);
-                        return some(new NamedParameter(param.<String>value(), supportedAnnotations.get(key), defaultValue(annotations)));
+                        return Option.<Parameter>some(new NamedParameter(param.<String>value(), supportedAnnotations.get(key), defaultValue(annotations)));
                     }
                 }
                 return none();

@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,6 +34,14 @@ public class DslTest {
         application.add(get("/hello").resource(method(on(Foo.class).say(queryParam(String.class, "name", "Matt")))));
         assertThat(application.responseAsString(RequestBuilder.get("/hello")), is("Hello Matt"));
         assertThat(application.responseAsString(RequestBuilder.get("/hello").withQuery("name", "Dan")), is("Hello Dan"));
+    }
+
+    @Test
+    public void supportsDefinedParameter() throws Exception {
+        TestApplication application = new TestApplication();
+        application.add(get("/hello").resource(method(on(Foo.class).say(definedParam("Matt")))));
+        assertThat(application.responseAsString(RequestBuilder.get("/hello")), is("Hello Matt"));
+        assertThat(application.responseAsString(RequestBuilder.get("/hello").withQuery("name", "Dan")), is("Hello Matt"));
     }
 
     @Test
