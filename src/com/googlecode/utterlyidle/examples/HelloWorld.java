@@ -6,13 +6,7 @@ import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.annotations.FormParam;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.HeaderParam;
-import com.googlecode.utterlyidle.annotations.POST;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.Produces;
-import com.googlecode.utterlyidle.annotations.QueryParam;
+import com.googlecode.utterlyidle.annotations.*;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
@@ -34,7 +28,7 @@ public class HelloWorld {
 
     @GET
     @Path("helloworld/queryparam")
-    public String get(@QueryParam("name") String name){
+    public String get(@QueryParam("name") @DefaultValue("Matt") String name){
         return hello(name);
     }
 
@@ -52,7 +46,7 @@ public class HelloWorld {
 
     @POST
     @Path("helloworld/formparam")
-    public String post(@FormParam("name") String name){
+    public String post(@FormParam("name") @DefaultValue("Dan") String name){
         return hello(name);
     }
 
