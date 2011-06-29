@@ -15,12 +15,6 @@ public class NamedParameter  {
     private final Option<String> defaultValue;
     private final Class<? extends Parameters<String, String>> parametersClass;
 
-    public NamedParameter(String name, Class<? extends Parameters<String, String>> parametersClass) {
-        this.name = name;
-        this.parametersClass = parametersClass;
-        this.defaultValue = Option.none();
-    }
-
     public NamedParameter(String name, Class<? extends Parameters<String, String>> parametersClass, Option<String> defaultValue) {
         this.name = name;
         this.parametersClass = parametersClass;
@@ -64,9 +58,8 @@ public class NamedParameter  {
     }
 
     public TypeMap addTo(TypeMap typeMap) {
-        final Type iterableString = new TypeFor<Iterable<String>>() {}.get();
         return typeMap.add(String.class, extractValueFrom(typeMap)).
-                add(iterableString, extractValuesFrom(typeMap));
+                add(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(typeMap));
 
     }
 }
