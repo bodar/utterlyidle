@@ -14,6 +14,7 @@ import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class HttpMessageParserTest {
@@ -116,7 +117,12 @@ public class HttpMessageParserTest {
 
     @Test
     public void reasonPhaseIsOptional() {
-        assertThat(parseResponse("Http/1.1 200").status().code(), is(200));
+        assertThat(parseResponse("HTTP/1.1 200").status().code(), is(200));
+    }
+
+    @Test
+    public void preserveSpacesWhenParsingResponse() {
+        assertEquals(parseResponse("HTTP/1.1 200 OK").toString(), response(OK).toString());
     }
 
     private void invalidRequestWithError(String request, String exceptionMessage) {
