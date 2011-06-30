@@ -4,6 +4,8 @@ import com.googlecode.totallylazy.*;
 
 import java.io.StringReader;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.Callable;
 import java.util.regex.MatchResult;
 
 import static com.googlecode.totallylazy.Pair.pair;
@@ -40,12 +42,17 @@ public class HttpMessageParser {
 
     private static Sequence<Sequence<String>> httpMessageLines(String requestMessage) {
         List<String> lines = lines(requestMessage);
+        if (lines.size() == 0) throw new IllegalArgumentException("Http Message without a start line");
         return sequence(first(lines), headerLines(lines), entityLines(lines));
     }
 
     static Status toStatus(String statusLine) {
-        MatchResult matchResult = regex("(\\d\\d\\d) (.*)").findMatches(statusLine).first();
-        return status(parseInt(matchResult.group(1)), matchResult.group(2));
+        try {
+            MatchResult matchResult = regex("(\\d\\d\\d)( .*)?").findMatches(statusLine).first();
+            return status(parseInt(matchResult.group(1)), matchResult.group(2));
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException("Response without a status code", e);
+        }
     }
 
     static Pair<String, String> toMethodAndPath(String requestLine) {
@@ -59,11 +66,19 @@ public class HttpMessageParser {
     }
 
     static String toPath(String requestLine) {
-        return regex(" (.+) ").findMatches(requestLine).first().group(1);
+        try {
+            return regex(" (.+) ").findMatches(requestLine).first().group(1);
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException("Request without a path", e);
+        }
     }
 
     static String toMethod(String requestLine) {
-        return regex("^(\\p{Upper})+").findMatches(requestLine).first().group();
+        try {
+            return regex("^(\\p{Upper})+").findMatches(requestLine).first().group();
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException("Request without a method", e);
+        }
     }
 
     private static boolean emptyValue(Sequence<String> fieldNameAndValue) {

@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpMessageParser.*;
@@ -13,6 +14,7 @@ import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class HttpMessageParserTest {
 
@@ -85,8 +87,8 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseResponseStatusLine() {
-        assertThat(toStatus("HTTP/1.1 Status: 404 Not Found"), is(NOT_FOUND));
-        assertThat(toStatus("HTTP/1.0 Status: 400 Bad Request"), is(BAD_REQUEST));
+        assertThat(toStatus("HTTP/1.1 404 Not Found"), is(NOT_FOUND));
+        assertThat(toStatus("HTTP/1.0 400 Bad Request"), is(BAD_REQUEST));
     }
 
     @Test
@@ -97,6 +99,42 @@ public class HttpMessageParserTest {
     @Test
     public void parseHeader() {
         assertThat(toFieldNameAndValue("Accept: text/xml"), is(Pair.<String, String>pair("Accept", "text/xml")));
+    }
+
+    @Test
+    public void invalidRequestParsingErrors() {
+        invalidRequestWithError("", "Http Message without a start line");
+        invalidRequestWithError("GET HTTP/1.1", "Request without a path");
+        invalidRequestWithError("/test HTTP/1.1", "Request without a method");
+    }
+
+    @Test
+    public void invalidResponseParsingErrors() {
+        invalidResponseWithError("HTTP/1.1 ", "Response without a status code");
+        invalidResponseWithError("HTTP/1.0 OK", "Response without a status code");
+    }
+
+    @Test
+    public void reasonPhaseIsOptional() {
+        assertThat(parseResponse("Http/1.1 200").status().code(), is(200));
+    }
+
+    private void invalidRequestWithError(String request, String exceptionMessage) {
+        try {
+            parseRequest(request);
+            fail("Should not parse invalid request");
+        } catch(IllegalArgumentException e) {
+            assertThat(e.getMessage(), is(exceptionMessage));
+        }
+    }
+
+    private void invalidResponseWithError(String response, String exceptionMessage) {
+        try {
+            parseResponse(response);
+            fail("Should not parse invalid response");
+        } catch(IllegalArgumentException e) {
+            assertThat(e.getMessage(), is(exceptionMessage));
+        }
     }
 
 }
