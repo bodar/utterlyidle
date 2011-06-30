@@ -22,7 +22,13 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
     private Map<String, String> extensionToMimeType = new HashMap<String, String>() {{
         put("js", "text/javascript");
         put("css", "text/css");
+        put("html", "text/html");
+        put("xml", "text/xml");
+        put("txt", "text/plain");
         put("png", "image/png");
+        put("gif", "image/gif");
+        put("jpeg", "image/jpeg");
+        put("ico", "image/x-icon");
     }};
 
     public StaticBindingBuilder(URL base) {
