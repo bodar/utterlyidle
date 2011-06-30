@@ -48,7 +48,7 @@ public class HttpMessageParser {
 
     static Status toStatus(String statusLine) {
         try {
-            MatchResult matchResult = regex("(\\d\\d\\d)( .*)?").findMatches(statusLine).first();
+            MatchResult matchResult = regex("(\\d\\d\\d)(?: )?(.*)?").findMatches(statusLine).first();
             return status(parseInt(matchResult.group(1)), matchResult.group(2));
         } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("Response without a status code", e);
