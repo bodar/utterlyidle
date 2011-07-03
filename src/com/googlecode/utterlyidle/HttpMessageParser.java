@@ -75,9 +75,9 @@ public class HttpMessageParser {
 
     static String toMethod(String requestLine) {
         try {
-            return regex("^(\\p{Upper})+").findMatches(requestLine).first().group();
+            return regex("^(\\p{Upper})+ ").findMatches(requestLine).first().group().trim();
         } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("Request without a method", e);
+            throw new IllegalArgumentException("Request without a valid method", e);
         }
     }
 

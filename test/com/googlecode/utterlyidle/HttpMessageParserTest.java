@@ -98,6 +98,11 @@ public class HttpMessageParserTest {
     }
 
     @Test
+    public void allowUpperCaseExtensionMethods() {
+        assertThat(toMethodAndPath("TEST http://localhost:8080/path/ HTTP/1.1"), is(Pair.<String, String>pair("TEST", "http://localhost:8080/path/")));
+    }
+
+    @Test
     public void parseHeader() {
         assertThat(toFieldNameAndValue("Accept: text/xml"), is(Pair.<String, String>pair("Accept", "text/xml")));
     }
@@ -106,7 +111,8 @@ public class HttpMessageParserTest {
     public void invalidRequestParsingErrors() {
         invalidRequestWithError("", "Http Message without a start line");
         invalidRequestWithError("GET HTTP/1.1", "Request without a path");
-        invalidRequestWithError("/test HTTP/1.1", "Request without a method");
+        invalidRequestWithError("/test HTTP/1.1", "Request without a valid method");
+        invalidRequestWithError("get /test HTTP/1.1", "Request without a valid method");
     }
 
     @Test
