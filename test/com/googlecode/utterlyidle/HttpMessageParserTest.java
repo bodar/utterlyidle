@@ -59,6 +59,17 @@ public class HttpMessageParserTest {
     }
 
     @Test
+    public void parseResponseWithoutBodyAndWithoutSeparatorLine() {
+        String response =
+                "HTTP/1.1 303 See Other\n" +
+                "Transfer-Encoding: chunked\n" +
+                "Content-Type: text/html\n" +
+                "Location: http://localhost:8899/waitrest/order";
+        HeaderParameters headers = HttpMessageParser.parseResponse(response).headers();
+        assertThat(headers.size(), is(3));
+    }
+
+    @Test
     public void parseResponseWithExtraSpaces() {
         Response response = HttpMessageParser.parseResponse(" HTTP/1.1  200  OK \r\n Content-Type: text/plain \r\n\r\n body ");
         assertThat(response.status(), is(OK));
@@ -120,6 +131,7 @@ public class HttpMessageParserTest {
     @Test
     public void parseHeader() {
         assertThat(toFieldNameAndValue("Accept: text/xml"), is(Pair.<String, String>pair("Accept", "text/xml")));
+        assertThat(toFieldNameAndValue("Location: http://localhost:8899/waitrest/order"), is(Pair.<String, String>pair("Location", "http://localhost:8899/waitrest/order")));
     }
 
     @Test

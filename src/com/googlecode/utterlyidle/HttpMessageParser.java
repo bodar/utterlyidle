@@ -61,7 +61,7 @@ public class HttpMessageParser {
     }
 
     static Pair<String, String> toFieldNameAndValue(String messageHeader) {
-        Sequence<String> fieldNameAndValue = trim(regex(":").split(messageHeader));
+        Sequence<String> fieldNameAndValue = trim(sequence(messageHeader.split(":", 2)));
         String value = emptyValue(fieldNameAndValue) ? "" : fieldNameAndValue.second();
         return pair(fieldNameAndValue.first(), value);
     }
@@ -88,7 +88,7 @@ public class HttpMessageParser {
 
     private static Sequence<String> headerLines(List<String> lines) {
         int index = separatorLineIndex(lines);
-        return sequence(lines.subList(1, index != -1 ? index : 1));
+        return sequence(lines.subList(1, index != -1 ? index : lines.size()));
     }
 
     private static String toInput(Sequence<String> entityLines) {
