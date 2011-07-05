@@ -111,14 +111,10 @@ public class HttpMessageParserTest {
         assertThat(toStatus("HTTP/1.0 400 Bad Request"), is(BAD_REQUEST));
     }
 
-//    @Test
-//    public void parseRequestLineWithLeadingAndTrailingSpace() {
-//        assertThat(toMethodAndPath(" GET http://localhost:8080/path/ HTTP/1.1     "), is(Pair.<String, String>pair("GET", "http://localhost:8080/path/")));
-//    }
-
     @Test
-    public void allowUpperCaseExtensionMethods() {
-        assertThat(toMethodAndPath("TEST http://localhost:8080/path/ HTTP/1.1"), is(Pair.<String, String>pair("TEST", "http://localhost:8080/path/")));
+    public void uppercaseLowercaseMethods() {
+        assertThat(toMethodAndPath("testExtensionMethod http://localhost:8080/path/ HTTP/1.1"), is(Pair.<String, String>pair("TESTEXTENSIONMETHOD", "http://localhost:8080/path/")));
+        assertThat(toMethodAndPath("get http://localhost:8080/path/ HTTP/1.1"), is(Pair.<String, String>pair("GET", "http://localhost:8080/path/")));
     }
 
     @Test
@@ -131,7 +127,6 @@ public class HttpMessageParserTest {
         invalidRequestWithError("", "Http Message without a start line");
         invalidRequestWithError("GET HTTP/1.1", "Request without a path");
         invalidRequestWithError("/test HTTP/1.1", "Request without a valid method");
-        invalidRequestWithError("get /test HTTP/1.1", "Request without a valid method");
     }
 
     @Test
