@@ -57,16 +57,16 @@ public class RestApplication implements Application {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.add(HttpHandler.class, BaseHandler.class);
         modules.activateRequestModules(requestScope);
-        addServerUrlIfNeeded(requestScope);
+        addBasePathIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, AbsoluteLocationHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, AuditHandler.class);
         return requestScope;
     }
 
-    private void addServerUrlIfNeeded(Container requestScope) {
-        if (!requestScope.contains(ServerUrl.class)) {
-            requestScope.addInstance(ServerUrl.class, ServerUrl.serverUrl("/")); // Ideally all RestServers should add a ServerUrl but for internal requests this is not required
+    private void addBasePathIfNeeded(Container requestScope) {
+        if (!requestScope.contains(BasePath.class)) {
+            requestScope.addInstance(BasePath.class, BasePath.basePath("/")); // Ideally all RestServers should add a ServerUrl but for internal requests this is not required
         }
     }
 

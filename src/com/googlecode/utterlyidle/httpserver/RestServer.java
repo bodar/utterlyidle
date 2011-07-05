@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
-import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -45,14 +45,14 @@ public class RestServer implements Server {
     }
 
     private HttpServer startUpServer(Application application, ServerConfiguration configuration) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.serverUrl().port()), 0);
-        server.createContext(configuration.serverUrl().path().toString(),
+        HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.port()), 0);
+        server.createContext(configuration.basePath().toString(),
                 new RestHandler(application));
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
         server.start();
         ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
-        application.add(new RequestInstanceModule(updatedConfiguration.serverUrl()));
-        url = updatedConfiguration.serverUrl();
+        application.add(new RequestInstanceModule(updatedConfiguration.basePath()));
+        url = updatedConfiguration.toUrl();
         return server;
     }
 

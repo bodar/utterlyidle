@@ -3,10 +3,10 @@ package com.googlecode.utterlyidle;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import static com.googlecode.utterlyidle.HttpHeaders.HOST;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.seeOther;
-import static com.googlecode.utterlyidle.ServerUrl.serverUrl;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -24,8 +24,8 @@ public class AbsoluteLocationHandlerTest {
     }
 
     private void assertLocationIsCorrectlyModified(final String originalLocation, final String finalLocation) throws Exception {
-        Response response = new AbsoluteLocationHandler(returnResponse(seeOther(originalLocation)), serverUrl("http://mayhost:8080/")).
-                handle(get("").build());
+        Response response = new AbsoluteLocationHandler(returnResponse(seeOther(originalLocation)), BasePath.basePath("/")).
+                handle(get("").withHeader(HOST, "mayhost:8080").build());
         assertThat(response.header(LOCATION), is(finalLocation));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }

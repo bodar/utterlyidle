@@ -48,19 +48,19 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
 
     private Server startUpServer(Application application, ServerConfiguration serverConfig) throws Exception {
         Server server = createServer(serverConfig);
-        Context context = new Context(server, serverConfig.serverUrl().path().toString(), NO_SESSIONS);
+        Context context = new Context(server, serverConfig.basePath().toString(), NO_SESSIONS);
         application.add(new ServletModule(context.getServletContext()));
         context.setAttribute(Application.class.getCanonicalName(), application);
         context.addServlet(ApplicationServlet.class, "/*");
         server.start();
-        url = serverConfig.port(getPortNumber(server)).serverUrl();
+        url = serverConfig.port(getPortNumber(server)).toUrl();
         return server;
     }
 
     private Server createServer(ServerConfiguration serverConfig) {
         Server server = new Server();
         SocketConnector socketConnector = new SocketConnector();
-        socketConnector.setPort(serverConfig.serverUrl().port());
+        socketConnector.setPort(serverConfig.port());
         socketConnector.setHost(serverConfig.bindAddress().getHostAddress());
         server.addConnector(socketConnector);
         server.setThreadPool(new QueuedThreadPool(serverConfig.maxThreadNumber()));

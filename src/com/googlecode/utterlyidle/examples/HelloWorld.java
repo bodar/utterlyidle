@@ -17,7 +17,7 @@ public class HelloWorld {
     @GET
     @Path("helloworld/redirect")
     public Response redirect(){
-        return Responses.seeOther("relative");
+        return Responses.seeOther("helloworld/queryparam");
     }
 
     @GET

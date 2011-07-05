@@ -2,13 +2,7 @@ package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Requests;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ServerUrl;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,6 +15,7 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.RestApplication.handleRequest;
@@ -41,8 +36,8 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(final HttpServletRequest httpServletRequest, HttpServletResponse resp) throws ServletException {
         try {
-            ServerUrl serverUrl = extractUrl(httpServletRequest);
-            Response response = application.usingRequestScope(inject(serverUrl, handleRequest(request(httpServletRequest))));
+            BasePath basePath = extractUrl(httpServletRequest);
+            Response response = application.usingRequestScope(inject(basePath, handleRequest(request(httpServletRequest))));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
@@ -88,8 +83,8 @@ public class ApplicationServlet extends HttpServlet {
         return result;
     }
 
-    private static ServerUrl extractUrl(HttpServletRequest request) {
-        return ServerUrl.serverUrl(format("%s://%s:%s%s%s", request.getScheme(), request.getServerName(), request.getServerPort(), context(request.getContextPath()), request.getServletPath()));
+    private static BasePath extractUrl(HttpServletRequest request) {
+        return basePath(context(request.getContextPath()) + request.getServletPath());
     }
 
     private static String context(String contextPath) {
