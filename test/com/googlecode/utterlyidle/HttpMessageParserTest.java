@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,6 +11,7 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,6 +33,15 @@ public class HttpMessageParserTest {
         canParseRequest(new RequestBuilder(GET, "/test").withHeader("name", "value").build());
     }
 
+    @Test
+    public void parseRequestWithExtraSpaces() {
+        Request request = HttpMessageParser.parseRequest(" PUT  /path  HTTP/1.1   \r\n  Content-Type :  text/plain \r\n\r\n body ");
+        assertThat(request.method(), is(PUT));
+        assertThat(request.url().path().toString(), is("/path"));
+        assertThat(request.headers().getValue("Content-Type"), is("text/plain"));
+        assertThat(new String(request.input()), is(" body "));
+    }
+
     private void canParseRequest(Request request) {
         assertThat(request, is(HttpMessageParser.parseRequest(request.toString())));
     }
@@ -43,8 +54,16 @@ public class HttpMessageParserTest {
     @Test
     public void parseResponses() {
         canParseResponse(response(OK).header("header name", "header value").bytes("entity".getBytes()));
-        canParseResponse(Responses.response(Status.OK).bytes("response".getBytes()));
-        canParseResponse(Responses.response(Status.OK));
+        canParseResponse(Responses.response(OK).bytes("response".getBytes()));
+        canParseResponse(Responses.response(OK));
+    }
+
+    @Test
+    public void parseResponseWithExtraSpaces() {
+        Response response = HttpMessageParser.parseResponse(" HTTP/1.1  200  OK \r\n Content-Type: text/plain \r\n\r\n body ");
+        assertThat(response.status(), is(OK));
+        assertThat(response.header("Content-Type"), is("text/plain"));
+        assertThat(new String(response.bytes()), is(" body "));
     }
 
     private void canParseResponse(Response response) {
@@ -92,10 +111,10 @@ public class HttpMessageParserTest {
         assertThat(toStatus("HTTP/1.0 400 Bad Request"), is(BAD_REQUEST));
     }
 
-    @Test
-    public void parseRequestLine() {
-        assertThat(toMethodAndPath("GET http://localhost:8080/path/ HTTP/1.1"), is(Pair.<String, String>pair("GET", "http://localhost:8080/path/")));
-    }
+//    @Test
+//    public void parseRequestLineWithLeadingAndTrailingSpace() {
+//        assertThat(toMethodAndPath(" GET http://localhost:8080/path/ HTTP/1.1     "), is(Pair.<String, String>pair("GET", "http://localhost:8080/path/")));
+//    }
 
     @Test
     public void allowUpperCaseExtensionMethods() {
