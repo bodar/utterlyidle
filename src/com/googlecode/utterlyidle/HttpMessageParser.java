@@ -61,7 +61,7 @@ public class HttpMessageParser {
     }
 
     static Pair<String, String> toFieldNameAndValue(String messageHeader) {
-        Sequence<String> fieldNameAndValue = trim(regex(":").split(messageHeader));
+        Sequence<String> fieldNameAndValue = trim(sequence(messageHeader.split(":", 2)));
         String value = emptyValue(fieldNameAndValue) ? "" : fieldNameAndValue.second();
         return pair(fieldNameAndValue.first(), value);
     }
