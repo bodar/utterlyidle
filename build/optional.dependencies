@@ -1,0 +1,8 @@
+mvn:cglib:cglib-nodep:jar:2.2
+mvn:org.objenesis:objenesis:jar:1.2
+
+mvn:org.simpleframework:simple:jar:4.1.21
+
+mvn:org.mortbay.jetty:jetty-util:jar:6.1.26
+mvn:org.mortbay.jetty:jetty:jar:6.1.26
+
