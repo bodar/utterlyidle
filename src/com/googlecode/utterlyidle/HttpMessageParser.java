@@ -25,15 +25,7 @@ public class HttpMessageParser {
     public static Response parseResponse(String responseMessage) {
         Sequence<Sequence<String>> httpResponseLines = httpMessageLines(responseMessage);
 
-        return buildResponse(httpResponseLines.first().first(), httpResponseLines.second(), httpResponseLines.last());
-    }
-
-    private static Sequence<String> trim(Sequence<String> linesToTrim) {
-        return linesToTrim.map(new Callable1<String, String>() {
-            public String call(String s) throws Exception {
-                return s.trim();
-            }
-        });
+        return buildResponse(trim(httpResponseLines.first()).first(), trim(httpResponseLines.second()), httpResponseLines.last());
     }
 
     private static Request buildRequest(String requestLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
@@ -84,7 +76,7 @@ public class HttpMessageParser {
 
     static String toMethod(String requestLine) {
         try {
-            return regex("^(\\p{Upper})+ ").findMatches(requestLine).first().group().trim();
+            return regex("^(\\p{Alpha})+ ").findMatches(requestLine).first().group().trim().toUpperCase();
         } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("Request without a valid method", e);
         }
@@ -144,5 +136,13 @@ public class HttpMessageParser {
                 return response.header(fieldNameAndValue.first(), fieldNameAndValue.second());
             }
         };
+    }
+
+    private static Sequence<String> trim(Sequence<String> linesToTrim) {
+        return linesToTrim.map(new Callable1<String, String>() {
+            public String call(String s) throws Exception {
+                return s.trim();
+            }
+        });
     }
 }
