@@ -13,18 +13,27 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.Status.status;
 import static java.lang.Integer.parseInt;
+import static java.lang.Integer.reverse;
 
 public class HttpMessageParser {
     public static Request parseRequest(String requestMessage) {
         Sequence<Sequence<String>> httpRequestLines = httpMessageLines(requestMessage);
 
-        return buildRequest(httpRequestLines.first().first(), httpRequestLines.second(), httpRequestLines.last());
+        return buildRequest(trim(httpRequestLines.first()).first(), trim(httpRequestLines.second()), httpRequestLines.last());
     }
 
     public static Response parseResponse(String responseMessage) {
         Sequence<Sequence<String>> httpResponseLines = httpMessageLines(responseMessage);
 
         return buildResponse(httpResponseLines.first().first(), httpResponseLines.second(), httpResponseLines.last());
+    }
+
+    private static Sequence<String> trim(Sequence<String> linesToTrim) {
+        return linesToTrim.map(new Callable1<String, String>() {
+            public String call(String s) throws Exception {
+                return s.trim();
+            }
+        });
     }
 
     private static Request buildRequest(String requestLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
@@ -60,14 +69,14 @@ public class HttpMessageParser {
     }
 
     static Pair<String, String> toFieldNameAndValue(String messageHeader) {
-        Sequence<String> fieldNameAndValue = regex(": ").split(messageHeader);
+        Sequence<String> fieldNameAndValue = trim(regex(":").split(messageHeader));
         String value = emptyValue(fieldNameAndValue) ? "" : fieldNameAndValue.second();
         return pair(fieldNameAndValue.first(), value);
     }
 
     static String toPath(String requestLine) {
         try {
-            return regex(" (.+) ").findMatches(requestLine).first().group(1);
+            return regex(" (.+) ").findMatches(requestLine).first().group(1).trim();
         } catch (NoSuchElementException e) {
             throw new IllegalArgumentException("Request without a path", e);
         }
