@@ -65,7 +65,8 @@ public class HttpMessageParserTest {
                 "Transfer-Encoding: chunked\n" +
                 "Content-Type: text/html\n" +
                 "Location: http://localhost:8899/waitrest/order";
-        assertThat(HttpMessageParser.parseResponse(response).headers().size(), is(3));
+        HeaderParameters headers = HttpMessageParser.parseResponse(response).headers();
+        assertThat(headers.size(), is(3));
     }
 
     @Test
@@ -130,6 +131,7 @@ public class HttpMessageParserTest {
     @Test
     public void parseHeader() {
         assertThat(toFieldNameAndValue("Accept: text/xml"), is(Pair.<String, String>pair("Accept", "text/xml")));
+        assertThat(toFieldNameAndValue("Location: http://localhost:8899/waitrest/order"), is(Pair.<String, String>pair("Location", "http://localhost:8899/waitrest/order")));
     }
 
     @Test
