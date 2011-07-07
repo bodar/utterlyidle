@@ -2,8 +2,8 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.handlers.Auditor;
+import com.googlecode.utterlyidle.handlers.Auditors;
 import com.googlecode.utterlyidle.handlers.ByteArrayHandler;
-import com.googlecode.utterlyidle.handlers.DoNothingAuditor;
 import com.googlecode.utterlyidle.handlers.NoContentHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
@@ -28,6 +28,7 @@ public class CoreModule extends AbstractModule {
         moduleDefinitions.addApplicationModule(ResourcesModule.class);
         moduleDefinitions.addApplicationModule(ResponseHandlersModule.class);
         moduleDefinitions.addRequestModule(RequestScopedModule.class);
+        moduleDefinitions.addRequestModule(AuditModule.class);
         moduleDefinitions.addArgumentModule(ArgumentScopedModule.class);
         return this;
     }
@@ -36,7 +37,8 @@ public class CoreModule extends AbstractModule {
     public Module addPerRequestObjects(Container container) {
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.add(ResponseHandlersFinder.class);
-        container.add(Auditor.class, DoNothingAuditor.class);
+        container.add(Auditors.class, Auditors.class);
+        container.addActivator(Auditor.class, container.getActivator(Auditors.class));
 
         return this;
     }
