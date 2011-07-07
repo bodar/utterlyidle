@@ -7,5 +7,5 @@ import com.googlecode.utterlyidle.Response;
 import java.util.Date;
 
 public interface Auditor {
-    void audit(Pair<Request, Date> request, Pair<Response, Date> response);
+    void audit(Pair<Request, Date> request, Pair<Response, Date> response) throws Exception;
 }
