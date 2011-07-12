@@ -44,4 +44,12 @@ public class Requests {
             }
         };
     }
+
+    public static Callable1<Request, byte[]> input() {
+        return new Callable1<Request, byte[]>() {
+            public byte[] call(Request request) throws Exception {
+                return request.input();
+            }
+        };
+    }
 }
