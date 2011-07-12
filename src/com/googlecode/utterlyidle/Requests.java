@@ -29,6 +29,14 @@ public class Requests {
         };
     }
 
+    private Callable1<Request, FormParameters> form() {
+        return new Callable1<Request, FormParameters>() {
+            public FormParameters call(Request request) throws Exception {
+                return request.form();
+            }
+        };
+    }
+
     public static Callable1<Request, HierarchicalPath> path() {
         return new Callable1<Request, HierarchicalPath>() {
             public HierarchicalPath call(Request request) throws Exception {
