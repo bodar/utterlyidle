@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.*;
 import java.io.StringReader;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Callable;
 import java.util.regex.MatchResult;
 
 import static com.googlecode.totallylazy.Pair.pair;
@@ -13,7 +12,6 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.Status.status;
 import static java.lang.Integer.parseInt;
-import static java.lang.Integer.reverse;
 
 public class HttpMessageParser {
     public static Request parseRequest(String requestMessage) {
