@@ -29,7 +29,7 @@ public class Requests {
         };
     }
 
-    public Callable1<Request, FormParameters> form() {
+    public static Callable1<Request, FormParameters> form() {
         return new Callable1<Request, FormParameters>() {
             public FormParameters call(Request request) throws Exception {
                 return request.form();
