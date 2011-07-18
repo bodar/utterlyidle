@@ -60,10 +60,6 @@ public class Requests {
         };
     }
 
-    public static LogicalPredicate<Pair<Request, Response>> status(final Status status) {
-        return where(second(Response.class), where(Responses.status(), is(status)));
-    }
-
     public static LogicalPredicate<Pair<Request, Response>> method(final String method) {
         return where(first(Request.class), where(Requests.method(), is(method)));
     }
