@@ -71,7 +71,7 @@ public class MemoryRequest implements Request {
     public FormParameters form() {
         if (form == null) {
             String contentType = headers().getValue(HttpHeaders.CONTENT_TYPE);
-            if (contentType != null && contentType.startsWith("application/x-www-form-urlencoded")) {
+            if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
                 form = FormParameters.parse(new String(input()));
             } else {
                 form = FormParameters.formParameters();

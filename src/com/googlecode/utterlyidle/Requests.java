@@ -1,8 +1,15 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.io.Url;
+
+import static com.googlecode.totallylazy.Callables.first;
+import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.where;
 
 public class Requests {
     public static MemoryRequest request(String method, Url requestUri, HeaderParameters headers, byte[] input) {
@@ -51,5 +58,13 @@ public class Requests {
                 return request.input();
             }
         };
+    }
+
+    public static LogicalPredicate<Pair<Request, Response>> status(final Status status) {
+        return where(second(Response.class), where(Responses.status(), is(status)));
+    }
+
+    public static LogicalPredicate<Pair<Request, Response>> method(final String method) {
+        return where(first(Request.class), where(Requests.method(), is(method)));
     }
 }
