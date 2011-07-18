@@ -1,6 +1,12 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
+
+import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.where;
 
 public class Responses {
     public static Response response() {
@@ -25,6 +31,10 @@ public class Responses {
                 return response.status();
             }
         };
+    }
+
+    public static LogicalPredicate<Pair<Request, Response>> status(final Status status) {
+        return where(second(Response.class), where(Responses.status(), is(status)));
     }
 
 }
