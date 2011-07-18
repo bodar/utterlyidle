@@ -1,7 +1,10 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
@@ -10,16 +13,16 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.TestApplication;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.yadic.Container;
 import org.junit.Test;
 
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.Produces;
-
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.MediaType.TEXT_XML;
 import static com.googlecode.utterlyidle.PathMatcher.path;
@@ -41,84 +44,106 @@ public class SiteMeshHandlerTest {
     @Test
     public void shouldAllowAccessToMetaProperties() throws Exception {
         assertDecorationResultsInResponse(
-                decorators().add(staticRule(Predicates.<Pair<Request, Response>>always(), templateName("metadecorator"))),
+                sequence(staticRule(Predicates.<Pair<Request, Response>>always(), templateName("metadecorator"))),
                 "Decorator is world");
     }
 
     @Test
     public void shouldSupportSelectingDecoratorByMetaTag() throws Exception {
-        assertDecorationResultsInResponse(decorators().add(metaTagRule("decorator")), DECORATED_CONTENT);
+        assertDecorationResultsInResponse(sequence(metaTagRule("decorator")), DECORATED_CONTENT);
     }
 
     @Test
     public void shouldNotDecorateHtmlWhenNoDecorators() throws Exception {
-        assertDecorationResultsInResponse(decorators(), ORIGINAL_CONTENT);
+        assertDecorationResultsInResponse(Sequences.<DecoratorRule>empty(), ORIGINAL_CONTENT);
     }
 
     @Test
     public void shouldOnlyDecorateHtml() throws Exception {
         assertDecorationResultsInResponse(
-                decorators().add(staticRule(contentType(TEXT_XML).and(Predicates.<Pair<Request, Response>>always()), templateName(VALID_TEMPLATE_NAME))),
+                sequence(staticRule(contentType(TEXT_XML).and(Predicates.<Pair<Request, Response>>always()), templateName(VALID_TEMPLATE_NAME))),
                 ORIGINAL_CONTENT);
     }
 
     @Test
     public void shouldBeAbleToSelectBasedOnPath() throws Exception {
         assertDecorationResultsInResponse(
-                decorators().add(staticRule(path(BasePath.basePath("/"), "foo"), templateName("neverGetsHere"))).
-                        add(staticRule(path(BasePath.basePath("/"), "bar"), templateName(VALID_TEMPLATE_NAME))),
-                DECORATED_CONTENT,
-                "bar");
+                sequence(staticRule(path(BasePath.basePath("/"), "foo"), templateName("neverGetsHere")),
+                        staticRule(path(BasePath.basePath("/"), "bar"), templateName(VALID_TEMPLATE_NAME))),
+                DECORATED_CONTENT);
     }
 
 
     @Test
     public void shouldDecorateHtml() throws Exception {
         assertDecorationResultsInResponse(
-                decorators().add(staticRule(Predicates.<Pair<Request, Response>>always(), templateName(VALID_TEMPLATE_NAME))),
+                sequence(staticRule(Predicates.<Pair<Request, Response>>always(), templateName(VALID_TEMPLATE_NAME))),
                 DECORATED_CONTENT);
     }
 
     @Test
     public void shouldChooseFirstAppropriateDecorator() throws Exception {
-        assertDecorationResultsInResponse(decorators().
-                add(staticRule(Predicates.<Pair<Request, Response>>never(), templateName("shouldNeverSeeMe!"))).
-                add(staticRule(Predicates.<Pair<Request, Response>>always(), templateName(VALID_TEMPLATE_NAME))),
+        assertDecorationResultsInResponse(sequence(
+                staticRule(Predicates.<Pair<Request, Response>>never(), templateName("shouldNeverSeeMe!")),
+                staticRule(Predicates.<Pair<Request, Response>>always(), templateName(VALID_TEMPLATE_NAME))),
                 DECORATED_CONTENT);
     }
 
-    private void assertDecorationResultsInResponse(final Decorators decorators, final String result) throws Exception {
-        assertDecorationResultsInResponse(decorators, result, "bar");
+    @Test
+    public void shouldPerformServerSideIncludes() throws Exception {
+
+        assertDecorationResultsInResponse(
+                sequence(staticRule(onlyMatchRequestTo("hello"), templateName("templateWithServerSideInclude"))),
+                "My name is fred", "hello" ,ServerSideIncludeResource.class);
     }
 
-    private void assertDecorationResultsInResponse(final Decorators decorators, final String result, final String path) throws Exception {
-        Response response = createApplication(decorators).handle(get(path));
+    private Predicate<Pair<Request, Response>> onlyMatchRequestTo(final String path) {
+        return new Predicate<Pair<Request, Response>>() {
+            public boolean matches(Pair<Request, Response> other) {
+                return other.first().url().toString().equals(path);
+            }
+        };
+    }
+
+    private void assertDecorationResultsInResponse(final Sequence<DecoratorRule> decorators, final String result) throws Exception {
+        assertDecorationResultsInResponse(decorators, result, "bar", SomeResource.class);
+    }
+
+    private void assertDecorationResultsInResponse(Sequence<DecoratorRule> decoratorRules, final String result, final String path, final Class resourceClass) throws Exception {
+        TestApplication application = new TestApplication();
+        Decorators decorators = new StringTemplateDecorators(url(getClass().getResource("world.st")).parent(), basePath("/"), application);
+        for (DecoratorRule decoratorRule : decoratorRules) {
+            decorators.add(decoratorRule);
+        }
+        application.add(new SiteMeshTestModule(decorators, resourceClass));
+        Response response = application.handle(get(path));
         assertThat(Strings.toString(response.bytes()), is(result));
     }
 
-    private TestApplication createApplication(Decorators decorators) {
-        TestApplication application = new TestApplication();
-        application.add(new SiteMeshTestModule(decorators, SomeResource.class));
-        return application;
-    }
-
-    private Decorators decorators() {
-        return new StringTemplateDecorators(url(getClass().getResource("world.st")).parent(), basePath("/"));
-    }
-
-    public static class SomeResource{
+    public static class SomeResource {
         @GET
         @Path("bar")
         @Produces(MediaType.TEXT_HTML)
-        public String html(){
+        public String html() {
             return ORIGINAL_CONTENT;
         }
+    }
 
-//        @GET
-//        @Path("redirect")
-//        public Response redirect(){
-//            return Responses.seeOther("foo");
-//        }
+    public static class ServerSideIncludeResource {
+
+        @GET
+        @Path("hello")
+        @Produces(MediaType.TEXT_HTML)
+        public String get() {
+            return "My name is";
+        }
+
+        @GET
+        @Path("world")
+        @Produces(MediaType.TEXT_HTML)
+        public String include() {
+            return "fred";
+        }
     }
 
     public static class SiteMeshTestModule implements RequestScopedModule, ResourcesModule {
