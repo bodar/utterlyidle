@@ -35,8 +35,8 @@
         <path path="${test.jar.path}"/>
     </path>
 
-    <target name="update">
-        <!--<install version="36"/>-->
+    <target name="update" description="Update library dependencies">
+        <!--install version="40"/-->
         <parallel>
             <update dependencies="build/build.dependencies"
                     directory="${build.dependencies.dir}"/>
