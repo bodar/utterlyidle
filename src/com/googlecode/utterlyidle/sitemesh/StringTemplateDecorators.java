@@ -1,7 +1,9 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
@@ -15,11 +17,12 @@ import java.util.List;
 public class StringTemplateDecorators implements Decorators {
     private final StringTemplateGroup group;
     private final List<DecoratorRule> rules = new ArrayList<DecoratorRule>();
-    private final Includer include = new Includer();
     private final BasePath basePath;
+    private final HttpHandler handler;
 
-    public StringTemplateDecorators(Url url, BasePath basePath) {
+    public StringTemplateDecorators(Url url, BasePath basePath, Application application) {
         this.basePath = basePath;
+        this.handler = application;
         group = new UrlStringTemplateGroup(url);
     }
 
@@ -42,6 +45,6 @@ public class StringTemplateDecorators implements Decorators {
             return new NoneDecorator();
         }
         StringTemplate template = group.getInstanceOf(templateName.name());
-        return new StringTemplateDecorator(template, include, basePath, request.query());
+        return new StringTemplateDecorator(template, handler, basePath, request.query());
     }
 }
