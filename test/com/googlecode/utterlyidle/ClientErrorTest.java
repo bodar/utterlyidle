@@ -8,6 +8,7 @@ import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static org.hamcrest.CoreMatchers.is;
@@ -17,9 +18,7 @@ import static org.junit.Assert.fail;
 public class ClientErrorTest {
     @Test
     public void shouldReturn404WhenPathNotFound() throws Exception {
-        TestApplication application = new TestApplication();
-        Response response = application.handle(get("invalidPath"));
-
+        Response response = application().handle(get("invalidPath"));
         assertThat(response.status(), is(Status.NOT_FOUND));
     }
 

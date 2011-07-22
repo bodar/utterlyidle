@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.utterlyidle.modules.ApplicationScopedModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.utterlyidle.modules.SingleResourceModule;
+import com.googlecode.utterlyidle.modules.BindingsModule;
 import com.googlecode.yadic.Container;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -44,7 +45,7 @@ public class RestApplicationTest {
                 container.add(CloseCounter.class);
                 return this;
             }
-        }).add(new SingleResourceModule(DependsOnCloseCounter.class));
+        }).add(new BindingsModule(annotatedClass(DependsOnCloseCounter.class)));
         assertThat(started[0], is(0));
         assertThat(stopped[0], is(0));
         application.handle(get("/foo").build());
