@@ -7,10 +7,8 @@ import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.io.Url;
-import com.googlecode.utterlyidle.modules.ApplicationScopedClass;
-import com.googlecode.utterlyidle.modules.BindingsModule;
 import com.googlecode.utterlyidle.modules.Module;
-import com.googlecode.utterlyidle.modules.RequestScopedClass;
+import com.googlecode.utterlyidle.modules.Modules;
 
 import java.net.URL;
 
@@ -19,6 +17,8 @@ import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotated
 import static com.googlecode.utterlyidle.dsl.DslBindings.binding;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
+import static com.googlecode.utterlyidle.modules.Modules.applicationScopedClass;
+import static com.googlecode.utterlyidle.modules.Modules.requestScopedClass;
 
 public class ApplicationBuilder {
     private final Application application;
@@ -48,7 +48,7 @@ public class ApplicationBuilder {
     }
 
     public ApplicationBuilder add(final Binding... bindings) {
-        return add(new BindingsModule(bindings));
+        return add(Modules.bindingsModule(bindings));
     }
 
     public ApplicationBuilder add(Module module) {
@@ -82,10 +82,10 @@ public class ApplicationBuilder {
     }
 
     public ApplicationBuilder addApplicationScopedClass(Class<?> aClass) {
-        return add(new ApplicationScopedClass(aClass));
+        return add(applicationScopedClass(aClass));
     }
 
     public ApplicationBuilder addRequestScopedClass(Class<?> aClass) {
-        return add(new RequestScopedClass(aClass));
+        return add(requestScopedClass(aClass));
     }
 }

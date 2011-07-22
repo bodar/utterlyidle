@@ -5,7 +5,7 @@ import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.io.Url;
-import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.utterlyidle.modules.Modules;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.connect.Connection;
@@ -51,7 +51,7 @@ public class RestServer implements Server {
         InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.port()));
 
         ServerConfiguration updatedConfiguration = configuration.port(socketAddress.getPort());
-        application.add(new RequestInstanceModule(updatedConfiguration.basePath()));
+        application.add(Modules.requestInstance(updatedConfiguration.basePath()));
         url = updatedConfiguration.toUrl();
         return connection;
     }

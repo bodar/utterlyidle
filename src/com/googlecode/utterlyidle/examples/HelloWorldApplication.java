@@ -1,8 +1,7 @@
 package com.googlecode.utterlyidle.examples;
 
 import com.googlecode.utterlyidle.RestApplication;
-import com.googlecode.utterlyidle.modules.BindingsModule;
-import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.utterlyidle.modules.Modules;
 
 import java.util.Properties;
 
@@ -12,12 +11,14 @@ import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotated
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static com.googlecode.utterlyidle.dsl.DslBindings.binding;
+import static com.googlecode.utterlyidle.modules.Modules.bindingsModule;
+import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
 
 public class HelloWorldApplication extends RestApplication {
     public HelloWorldApplication() {
-        add(new BindingsModule(annotatedClass(HelloWorld.class)));
-        add(new BindingsModule(binding(get("/dsl").
+        add(bindingsModule(annotatedClass(HelloWorld.class)));
+        add(bindingsModule(binding(get("/dsl").
                 resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))))));
-        add(new RequestInstanceModule(System.getProperties()));
+        add(requestInstance(System.getProperties()));
     }
 }
