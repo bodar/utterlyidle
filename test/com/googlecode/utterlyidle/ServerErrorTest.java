@@ -9,11 +9,10 @@ import org.junit.Test;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 
-import java.awt.*;
-
 import static com.googlecode.totallylazy.Predicates.always;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static org.hamcrest.CoreMatchers.is;
@@ -25,8 +24,7 @@ public class ServerErrorTest {
     @Test
     public void supportsInterceptingException() throws Exception {
         final String message = "Caught exception";
-        TestApplication application = new TestApplication();
-        application.add(ThrowingResource.class);
+        ApplicationBuilder application = application().addAnnotated(ThrowingResource.class);
         application.addResponseHandler(where(entity(), instanceOf(IllegalArgumentException.class)), new WriteMessageToResponseHandler(message));
 
         Response response = application.handle(get("exception"));
@@ -36,8 +34,7 @@ public class ServerErrorTest {
 
     @Test
     public void returns500WhenAnExceptionIsThrown() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(ThrowingResource.class);
+        ApplicationBuilder application = application().addAnnotated(ThrowingResource.class);
 
         Response response = application.handle(get("exception"));
 
@@ -46,8 +43,7 @@ public class ServerErrorTest {
 
     @Test
     public void returns500WhenAResourceCanNotBeCreatedByYadic() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(ResourceWithMissingDependency.class);
+        ApplicationBuilder application = application().addAnnotated(ResourceWithMissingDependency.class);
 
         Response response = application.handle(get("lazy"));
 
@@ -56,8 +52,7 @@ public class ServerErrorTest {
 
     @Test
     public void shouldReturn500whenARendererThrowsException() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(NoProblemsResource.class);
+        ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
         application.addResponseHandler(always(), throwOnRender(new RuntimeException("Boom")));
         Response response = application.handle(get("noProblems"));
         assertResponseContains(response, RuntimeException.class);
@@ -65,8 +60,7 @@ public class ServerErrorTest {
 
     @Test
     public void shouldReturn500whenARendererThrowsError() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(NoProblemsResource.class);
+        ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
         application.addResponseHandler(always(), throwError(new AssertionError()));
         Response response = application.handle(get("noProblems"));
         assertResponseContains(response, AssertionError.class);
@@ -74,8 +68,7 @@ public class ServerErrorTest {
 
      @Test
     public void shouldReturn500whenAResponseMatcherThrowsException() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(NoProblemsResource.class);
+        ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
         application.addResponseHandler(alwaysThrows(), doNothingRenderer());
         Response response = application.handle(get("noProblems"));
         assertResponseContains(response, RuntimeException.class);
