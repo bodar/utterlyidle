@@ -5,19 +5,19 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
-import com.googlecode.utterlyidle.modules.RequestInstanceModule;
-import com.googlecode.utterlyidle.modules.SingleResourceActivator;
-import com.googlecode.utterlyidle.modules.SingleResourceModule;
+import com.googlecode.utterlyidle.modules.BindingsModule;
+
+import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 
 
 public class TestApplication extends RestApplication {
     public TestApplication add(final Class resource) {
-        add(new SingleResourceModule(resource));
+        add(new BindingsModule(annotatedClass(resource)));
         return this;
     }
 
     public TestApplication add(final BindingBuilder bindingBuilder) {
-        add(new SingleResourceActivator(bindingBuilder));
+        add(new BindingsModule(bindingBuilder.build()));
         return this;
     }
 

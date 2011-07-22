@@ -1,33 +1,63 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callers;
-import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.BindingsModule;
 import com.googlecode.utterlyidle.modules.Module;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
+import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 
 public class ApplicationBuilder {
-    private final List<Module> modules = new ArrayList<Module>();
+    private final Application application;
+
+    public static ApplicationBuilder application(Application application) {
+        return new ApplicationBuilder(application);
+    }
 
     public static ApplicationBuilder application() {
-        return new ApplicationBuilder();
+        return application(new RestApplication());
+    }
+
+    private ApplicationBuilder(Application application) {
+        this.application = application;
     }
 
     public ApplicationBuilder content(final URL baseUrl, final String path) {
-        modules.add(new BindingsModule(bindings(in(baseUrl).path(path))));
+        return add(bindings(in(baseUrl).path(path)));
+    }
+
+    public ApplicationBuilder annotated(Class<?> resource) {
+        return add(annotatedClass(resource));
+    }
+
+    public ApplicationBuilder add(final Binding... bindings) {
+        return add(new BindingsModule(bindings));
+    }
+
+    public ApplicationBuilder add(Module module) {
+        application.add(module);
         return this;
     }
 
+    public <T> ApplicationBuilder responseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
+        application.applicationScope().get(ResponseHandlers.class).add(predicate, responseHandler);
+        return this;
+    }
+
+    public Response handle(RequestBuilder request) throws Exception {
+        return build().handle(request.build());
+    }
+
     public Application build() {
-        return new RestApplication(Sequences.sequence(modules).toArray(Module.class));
+        return application;
     }
 
     public Url start(ServerConfiguration configuration) {
