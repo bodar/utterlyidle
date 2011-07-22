@@ -351,9 +351,8 @@ public class RestTest {
 
     @Test
     public void supportsCustomRenderer() throws Exception {
-        TestApplication application = new TestApplication();
+        ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
         application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
-        application.add(GetReturningMyCustomClass.class);
         assertThat(application.responseAsString(get("path")), is("foo"));
     }
 

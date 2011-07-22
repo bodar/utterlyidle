@@ -7,8 +7,10 @@ import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.io.Url;
+import com.googlecode.utterlyidle.modules.ApplicationScopedClass;
 import com.googlecode.utterlyidle.modules.BindingsModule;
 import com.googlecode.utterlyidle.modules.Module;
+import com.googlecode.utterlyidle.modules.RequestScopedClass;
 
 import java.net.URL;
 
@@ -77,5 +79,13 @@ public class ApplicationBuilder {
 
     public Url start() {
         return start(defaultConfiguration());
+    }
+
+    public ApplicationBuilder addApplicationScopedClass(Class<?> aClass) {
+        return add(new ApplicationScopedClass(aClass));
+    }
+
+    public ApplicationBuilder addRequestScopedClass(Class<?> aClass) {
+        return add(new RequestScopedClass(aClass));
     }
 }
