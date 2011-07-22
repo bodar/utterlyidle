@@ -6,13 +6,7 @@ import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.MediaType;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Resources;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.TestApplication;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
@@ -23,6 +17,7 @@ import com.googlecode.yadic.Container;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.MediaType.TEXT_XML;
 import static com.googlecode.utterlyidle.PathMatcher.path;
@@ -110,8 +105,8 @@ public class SiteMeshHandlerTest {
     }
 
     private void assertDecorationResultsInResponse(Sequence<DecoratorRule> decoratorRules, final String result, final String path, final Class resourceClass) throws Exception {
-        TestApplication application = new TestApplication();
-        Decorators decorators = new StringTemplateDecorators(url(getClass().getResource("world.st")).parent(), basePath("/"), application);
+        ApplicationBuilder application = application();
+        Decorators decorators = new StringTemplateDecorators(url(getClass().getResource("world.st")).parent(), basePath("/"), application.build());
         for (DecoratorRule decoratorRule : decoratorRules) {
             decorators.add(decoratorRule);
         }
