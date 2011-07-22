@@ -33,6 +33,7 @@ import java.util.concurrent.Callable;
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
@@ -56,8 +57,7 @@ import static org.hamcrest.Matchers.is;
 public class RestTest {
     @Test
     public void supportDefaultValue() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(UsesDefaultValue.class);
+        ApplicationBuilder application = application().addAnnotated(UsesDefaultValue.class);
         assertThat(application.responseAsString(get("hello").withQuery("name", "Matt")), is("Matt"));
         assertThat(application.responseAsString(get("hello")), is("Dan"));
     }
@@ -66,8 +66,7 @@ public class RestTest {
     public void supportCustomArgumentActivation() throws Exception {
         final String SOME_CUSTOM_VALUE = "some custom value";
 
-        TestApplication application = new TestApplication();
-        application.add(UsesCustomValue.class).add(new ArgumentScopedModule() {
+        ApplicationBuilder application = application().addAnnotated(UsesCustomValue.class).add(new ArgumentScopedModule() {
             public Module addPerArgumentObjects(Container container) {
                 container.addInstance(CustomValueWithoutPublicContructor.class, new CustomValueWithoutPublicContructor(SOME_CUSTOM_VALUE));
                 return this;
@@ -78,8 +77,7 @@ public class RestTest {
 
     @Test
     public void supportCustomArgumentActivationWithOption() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(UsesCustomValueWithOption.class).add(new ArgumentScopedModule() {
+        ApplicationBuilder application = application().addAnnotated(UsesCustomValueWithOption.class).add(new ArgumentScopedModule() {
             public Module addPerArgumentObjects(Container container) {
                 container.addActivator(CustomValueWithoutPublicContructor.class, CustomValueWithoutPublicContructorActivator.class);
                 return this;
@@ -90,112 +88,92 @@ public class RestTest {
 
     @Test
     public void whenReturningAResponseUseTheProducesContentTypeIfNoneExplicitlySet() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(ReturnsResponseWithContentType.class);
+        ApplicationBuilder application = application().addAnnotated(ReturnsResponseWithContentType.class);
         assertThat(application.handle(get("path").withQuery("override", String.valueOf(false))).header(CONTENT_TYPE), is(MediaType.APPLICATION_ATOM_XML));
         assertThat(application.handle(get("path").withQuery("override", String.valueOf(true))).header(CONTENT_TYPE), is(MediaType.APPLICATION_JSON));
     }
 
     @Test
     public void supportReturningResponse() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(ReturnsResponse.class);
-        assertThat(application.handle(get("path")).status(), is(SEE_OTHER));
+        assertThat(application().addAnnotated(ReturnsResponse.class).handle(get("path")).status(), is(SEE_OTHER));
     }
 
     @Test
     public void supportReturningEither() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(ReturnsEither.class);
-        assertThat(application.responseAsString(get("path")), is("Hello"));
+        assertThat(application().addAnnotated(ReturnsEither.class).responseAsString(get("path")), is("Hello"));
     }
 
     @Test
     public void canHandleCookies() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GettableWithCookies.class);
-        Request request = get("foo").withHeader("cookie", "name=value").build();
-        Response response = application.handle(request);
+        ApplicationBuilder application = application().addAnnotated(GettableWithCookies.class);
+        Response response = application.handle(get("foo").withHeader("cookie", "name=value"));
         assertThat(response.output().toString(), is("value"));
         assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
 
     @Test
     public void canHandleQuotedCookies() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GettableWithCookies.class);
-        assertThat(application.responseAsString(get("foo").withHeader("cookie", "name=\"value\"")), is("value"));
+        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("foo").withHeader("cookie", "name=\"value\"")), is("value"));
     }
 
     @Test
     public void canHandleCookieParams() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GettableWithCookies.class);
-        assertThat(application.responseAsString(get("bar").withHeader("cookie", "name=bob")), is("bob"));
+        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("bar").withHeader("cookie", "name=bob")), is("bob"));
     }
 
     @Test
     public void canGet() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(Gettable.class);
+        ApplicationBuilder application = application().addAnnotated(Gettable.class);
         assertThat(application.responseAsString(get("foo")), is("bar"));
     }
 
     @Test
     public void leadingSlashInPathShouldNotChangeMatch() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(Gettable.class);
+        ApplicationBuilder application = application().addAnnotated(Gettable.class);
         assertThat(application.responseAsString(get("/foo")), is("bar"));
     }
 
     @Test
     public void canGetWithQueryParameter() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GettableWithQuery.class);
+        ApplicationBuilder application = application().addAnnotated(GettableWithQuery.class);
         assertThat(application.responseAsString(get("foo").withQuery("name", "value")), is("value"));
     }
 
     @Test
     public void canPostWithFormParameter() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(Postable.class);
+        ApplicationBuilder application = application().addAnnotated(Postable.class);
         assertThat(application.responseAsString(post("foo").withForm("name", "value")), is("value"));
     }
 
     @Test
     public void canHandlePathsOnMethodAsWellAsClass() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(MutlilplePaths.class);
+        ApplicationBuilder application = application().addAnnotated(MutlilplePaths.class);
         assertThat(application.responseAsString(get("foo/bar")), is("found"));
     }
 
     @Test
     public void canDetermineMethodWhenThereIsAChoice() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(MultipleGets.class);
+        ApplicationBuilder application = application().addAnnotated(MultipleGets.class);
         assertThat(application.responseAsString(get("foo")), is("no parameters"));
         assertThat(application.responseAsString(get("foo").withQuery("arg", "match")), is("match"));
     }
 
     @Test
     public void whenThereIsAChoiceOfMatchingMethodsTakesPriorityIntoConsideration() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(PrioritisedGets.class);
+        ApplicationBuilder application = application().addAnnotated(PrioritisedGets.class);
         assertThat(application.responseAsString(get("foo")), is("highPriority"));
     }
 
     @Test
     public void canDetermineGetMethodBasedOnMimeType() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetsWithMimeTypes.class);
+        ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
         assertThat(application.responseAsString(get("text").accepting("text/plain")), is("plain"));
         assertThat(application.responseAsString(get("text").accepting("text/html")), is("html"));
     }
 
     @Test
     public void setsResponseMimeType() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetsWithMimeTypes.class);
+        ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
 
         Response response = application.handle(get("text").accepting("text/plain"));
         assertThat(response.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
@@ -203,8 +181,7 @@ public class RestTest {
 
     @Test
     public void setsResponseMimeTypeWhenThereAreMultiplePossibleTypes() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetsWithMultipleMimeTypes.class);
+        ApplicationBuilder application = application().addAnnotated(GetsWithMultipleMimeTypes.class);
 
         Response plainResponse = application.handle(get("text").accepting("text/plain"));
         assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
@@ -217,8 +194,7 @@ public class RestTest {
 
     @Test
     public void setsContentTypeCorrectlyEvenWhenNoAcceptHeaderIsPresent() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetsWithSingleMime.class);
+        ApplicationBuilder application = application().addAnnotated(GetsWithSingleMime.class);
 
         Response plainResponse = application.handle(get("text"));
         assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
@@ -227,8 +203,7 @@ public class RestTest {
 
     @Test
     public void aSingleResouceMethodCanAcceptsMultiplePossibleMimeTypes() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(PutWithMultipleMimeTypes.class);
+        ApplicationBuilder application = application().addAnnotated(PutWithMultipleMimeTypes.class);
 
         Response plainResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/plain").withInput("<xml/>".getBytes()));
         assertThat(plainResponse.status(), is(NO_CONTENT));
@@ -239,65 +214,57 @@ public class RestTest {
 
     @Test
     public void canHandleRealWorldAcceptsHeader() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetsWithMimeTypes.class);
+        ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
         String mimeTypes = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
         assertThat(application.responseAsString(get("text").accepting(mimeTypes)), is("xml"));
 
-        application.add(PutContent.class);
+        application.addAnnotated(PutContent.class);
         mimeTypes = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
         assertThat(application.responseAsString(put("path/foo").accepting(mimeTypes).withInput("input".getBytes())), is("input"));
     }
 
     @Test
     public void canStreamOutput() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(StreamOutput.class);
+        ApplicationBuilder application = application().addAnnotated(StreamOutput.class);
         assertThat(application.responseAsString(get("foo")), is("stream"));
     }
 
     @Test
     public void canHandleStreamingWriter() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(StreamWriter.class);
+        ApplicationBuilder application = application().addAnnotated(StreamWriter.class);
         assertThat(application.responseAsString(get("foo")), is("writer"));
     }
 
     @Test
     public void supportsNoContent() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(NoContent.class);
+        ApplicationBuilder application = application().addAnnotated(NoContent.class);
         Response response = application.handle(post("foo"));
         assertThat(response.status(), is(Status.NO_CONTENT));
     }
 
     @Test
     public void supportsPathParameter() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(PathParameter.class);
+        ApplicationBuilder application = application().addAnnotated(PathParameter.class);
         assertThat(application.responseAsString(get("path/bar")), is("bar"));
     }
 
     @Test
     public void supportsDelete() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(DeleteContent.class);
+        ApplicationBuilder application = application().addAnnotated(DeleteContent.class);
         Response response = application.handle(delete("path/bar"));
         assertThat(response.status(), is(Status.NO_CONTENT));
     }
 
     @Test
     public void supportsPut() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(PutContent.class);
+        ApplicationBuilder application = application().addAnnotated(PutContent.class);
 
         assertThat(application.responseAsString(put("path/bar").withInput("input".getBytes())), is("input"));
     }
 
     @Test
     public void canDetermineInputHandlerByMimeType() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(MultiplePutContent.class);
+        ApplicationBuilder application = application().addAnnotated(MultiplePutContent.class);
 
         assertThat(application.responseAsString(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/plain")), is("plain"));
         assertThat(application.responseAsString(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/html")), is("html"));
@@ -305,8 +272,7 @@ public class RestTest {
 
     @Test
     public void canPostRedirectGet() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(PostRedirectGet.class);
+        ApplicationBuilder application = application().addAnnotated(PostRedirectGet.class);
         Response response = application.handle(post("path/bob"));
         assertThat(response.status(), is(SEE_OTHER));
         assertThat(response.header(LOCATION), is(Matchers.<Object>notNullValue()));
@@ -315,22 +281,19 @@ public class RestTest {
 
     @Test
     public void canCoerceTypes() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithStrongType.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithStrongType.class);
         assertThat(application.responseAsString(get("path/4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
     @Test
     public void canCoerceInvalidEithers() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithEither.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithEither.class);
         assertThat(application.responseAsString(get("path").withQuery("layout", "invalidValue")), is("layout:left(invalidValue)"));
     }
 
     @Test
     public void canCoerceValidEithers() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithEither.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
         assertThat(application.responseAsString(get("path").withQuery("layout", value)), is("layout:right(" + value + ")"));
     }
@@ -338,59 +301,51 @@ public class RestTest {
 
     @Test
     public void canCoerceEithersThatContainAValidOption() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalEither.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
         assertThat(application.responseAsString(get("path").withQuery("optionalLayout", value)), is("optionalLayout:right(some(" + value + "))"));
     }
 
     @Test
     public void canCoerceEithersThatContainAnInvalidOption() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalEither.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         final String value = "rubbish";
         assertThat(application.responseAsString(get("path").withQuery("optionalLayout", value)), is("optionalLayout:left(" + value + ")"));
     }
 
     @Test
     public void canCoerceEithersThatContainAnNone() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalEither.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         assertThat(application.responseAsString(get("path")), is("optionalLayout:right(none())"));
     }
 
     @Test
     public void canCoerceEithersThatContainNone() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalEither.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         assertThat(application.responseAsString(get("path")), is("optionalLayout:right(none())"));
     }
 
     @Test
     public void canCoerceOptionalTypes() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalStrongTypeWithFactoryMethod.class);
         assertThat(application.responseAsString(get("path").withQuery("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
     @Test
     public void canCoerceOptionalTypesEvenWhenNoValueIsPresent() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalStrongTypeWithFactoryMethod.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalStrongTypeWithFactoryMethod.class);
         assertThat(application.responseAsString(get("path/")), is("default"));
     }
 
     @Test
     public void canCoerceOptionalTypesEvenWhenNoValueIsPresentForATypeWithConstructor() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalStrongTypeWithConstructor.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalStrongTypeWithConstructor.class);
         assertThat(application.responseAsString(get("path")), is("default"));
     }
 
     @Test
     public void canCoerceOptionalStringEvenWhenNoValueIsPresent() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithOptionalString.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithOptionalString.class);
         assertThat(application.responseAsString(get("path")), is("some default"));
     }
 
@@ -404,8 +359,7 @@ public class RestTest {
 
     @Test
     public void shouldHandleResourceWithAParameterMissingAnAnnotation() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(GetWithParameterButNoAnnotation.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithParameterButNoAnnotation.class);
         assertThat(application.handle(get("path")).status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 

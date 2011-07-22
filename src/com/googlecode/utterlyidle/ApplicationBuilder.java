@@ -3,6 +3,8 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Strings;
+import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.BindingsModule;
@@ -12,6 +14,7 @@ import java.net.URL;
 
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
+import static com.googlecode.utterlyidle.dsl.DslBindings.binding;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 
@@ -34,8 +37,12 @@ public class ApplicationBuilder {
         return add(bindings(in(baseUrl).path(path)));
     }
 
-    public ApplicationBuilder annotated(Class<?> resource) {
+    public ApplicationBuilder addAnnotated(Class<?> resource) {
         return add(annotatedClass(resource));
+    }
+
+    public ApplicationBuilder add(BindingBuilder builder) {
+        return add(binding(builder));
     }
 
     public ApplicationBuilder add(final Binding... bindings) {
@@ -47,13 +54,17 @@ public class ApplicationBuilder {
         return this;
     }
 
-    public <T> ApplicationBuilder responseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
+    public <T> ApplicationBuilder addResponseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
         application.applicationScope().get(ResponseHandlers.class).add(predicate, responseHandler);
         return this;
     }
 
     public Response handle(RequestBuilder request) throws Exception {
         return build().handle(request.build());
+    }
+
+    public String responseAsString(RequestBuilder request) throws Exception {
+        return Strings.toString(handle(request).bytes());
     }
 
     public Application build() {
