@@ -1,21 +1,22 @@
 package com.googlecode.utterlyidle.proxy;
 
 import com.googlecode.totallylazy.Option;
+import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.CustomType;
 import com.googlecode.utterlyidle.Id;
 import com.googlecode.utterlyidle.NoDefaultConstructor;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.SomeResource;
-import com.googlecode.utterlyidle.TestApplication;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.PathParam;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 import java.io.IOException;
 
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
@@ -28,8 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class RedirectToTest {
        @Test
     public void canPostRedirectGet() throws Exception {
-        TestApplication application = new TestApplication();
-        application.add(PostRedirectGet.class);
+        ApplicationBuilder application = application().addAnnotated(PostRedirectGet.class);
         Response response = application.handle(post("path/bob"));
         assertThat(response.status(), Matchers.is(SEE_OTHER));
         assertThat(response.header(LOCATION), Matchers.is(Matchers.<Object>notNullValue()));
