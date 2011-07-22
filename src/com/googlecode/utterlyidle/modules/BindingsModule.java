@@ -6,7 +6,7 @@ import com.googlecode.utterlyidle.Resources;
 public class BindingsModule implements ResourcesModule {
     private final Binding[] bindings;
 
-    public BindingsModule(Binding[] bindings) {
+    public BindingsModule(Binding... bindings) {
         this.bindings = bindings;
     }
 
