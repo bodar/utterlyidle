@@ -1,12 +1,11 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.io.Url;
-import com.googlecode.utterlyidle.modules.RequestInstanceModule;
+import com.googlecode.utterlyidle.modules.Modules;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -51,7 +50,7 @@ public class RestServer implements Server {
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
         server.start();
         ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
-        application.add(new RequestInstanceModule(updatedConfiguration.basePath()));
+        application.add(Modules.requestInstance(updatedConfiguration.basePath()));
         url = updatedConfiguration.toUrl();
         return server;
     }

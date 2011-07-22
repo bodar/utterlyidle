@@ -2,6 +2,8 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.Resources;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 
@@ -96,4 +98,41 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         container.addActivator(Resolver.class, container.getActivator(Container.class));
     }
 
+
+    public static Module applicationScopedClass(final Class<?> aClass) {
+        return new ApplicationScopedModule() {
+            public Module addPerApplicationObjects(Container container) {
+                container.add(aClass);
+                return this;
+            }
+        };
+    }
+
+    public static Module bindingsModule(final Binding... bindings) {
+        return new ResourcesModule() {
+            public Module addResources(Resources resources) {
+                resources.add(bindings);
+                return this;
+            }
+        };
+    }
+
+    public static Module requestInstance(final Object instance) {
+        return new RequestScopedModule() {
+            public Module addPerRequestObjects(Container container) {
+                Class aClass = instance.getClass();
+                container.addInstance(aClass, instance);
+                return this;
+            }
+        };
+    }
+
+    public static Module requestScopedClass(final Class<?> aClass) {
+        return new RequestScopedModule() {
+            public Module addPerRequestObjects(Container container) {
+                container.add(aClass);
+                return this;
+            }
+        };
+    }
 }
