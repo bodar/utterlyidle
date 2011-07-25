@@ -12,6 +12,10 @@ public class ApplicationContext {
         context.setAttribute(KEY, application);
     }
 
+    public static synchronized void removeApplication(ServletContext context) {
+        context.setAttribute(KEY, null);
+    }
+
     public static synchronized Application getApplication(final ServletContext servletContext, final String className) {
         if (servletContext.getAttribute(KEY) == null) {
             Application application = createApplication(servletContext, getClass(className));
