@@ -6,7 +6,6 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
-import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
 
@@ -73,11 +72,11 @@ public class ApplicationBuilder {
         return application;
     }
 
-    public Url start(ServerConfiguration configuration) {
-        return Callers.call(new ServerActivator(build(), configuration)).getUrl();
+    public Server start(ServerConfiguration configuration) {
+        return Callers.call(new ServerActivator(build(), configuration));
     }
 
-    public Url start() {
+    public Server start() {
         return start(defaultConfiguration());
     }
 
