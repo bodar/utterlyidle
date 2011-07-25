@@ -8,27 +8,27 @@ import com.googlecode.yadic.Container;
 public abstract class AbstractModule implements
         ApplicationScopedModule, RequestScopedModule, ResourcesModule, ResponseHandlersModule, ModuleDefiner, AuditModule {
 
-    public Module defineModules(ModuleDefinitions moduleDefinitions) {
+    public Module defineModules(ModuleDefinitions moduleDefinitions) throws Exception {
         return this;
     }
 
-    public Module addPerRequestObjects(Container container) {
+    public Module addPerRequestObjects(Container container) throws Exception {
         return this;
     }
 
-    public Module addPerApplicationObjects(Container container) {
+    public Module addPerApplicationObjects(Container container) throws Exception {
         return this;
     }
 
-    public Module addResources(Resources resources) {
+    public Module addResources(Resources resources) throws Exception {
         return this;
     }
 
-    public Module addResponseHandlers(ResponseHandlers handlers) {
+    public Module addResponseHandlers(ResponseHandlers handlers) throws Exception {
         return this;
     }
 
-    public Auditors addAuditors(Auditors auditors) {
+    public Auditors addAuditors(Auditors auditors) throws Exception {
         return auditors;
     }
 }
