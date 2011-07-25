@@ -1,8 +1,15 @@
 package com.googlecode.utterlyidle.servlet;
 
+import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,15 +29,26 @@ import static com.googlecode.utterlyidle.RestApplication.handleRequest;
 import static com.googlecode.utterlyidle.RestApplication.inject;
 import static com.googlecode.utterlyidle.io.Url.url;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
-import static java.lang.String.format;
+import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplication;
 
 public class ApplicationServlet extends HttpServlet {
     public static final String KEY = "application";
     private Application application = null;
 
     @Override
-    public void init(ServletConfig config) {
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         application = getApplication(config.getServletContext(), config.getInitParameter(KEY));
+    }
+
+    @Override
+    public void destroy() {
+        try {
+            application.close();
+            removeApplication(getServletContext());
+        } catch (IOException e) {
+            throw new LazyException(e);
+        }
     }
 
     @Override
