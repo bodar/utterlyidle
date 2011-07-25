@@ -6,6 +6,7 @@ import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Request;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -22,11 +23,15 @@ public class StringTemplateDecorator implements Decorator {
     private final BasePath base;
     private final QueryParameters queryParameters;
 
-    public StringTemplateDecorator(StringTemplate template, HttpHandler httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
+    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
         this.template = template;
         this.httpHandlerForIncludes = httpHandlerForIncludes;
         this.base = base;
         this.queryParameters = queryParameters;
+    }
+
+    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, Request request) {
+        this(template, httpHandlerForIncludes, base, request.query());
     }
 
     public Decorator setContent(PropertyMap content) throws IOException {

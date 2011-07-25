@@ -1,13 +1,11 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 public class SiteMeshHandler implements HttpHandler {
@@ -23,9 +21,8 @@ public class SiteMeshHandler implements HttpHandler {
         Response response = httpHandler.handle(request);
         if (shouldDecorate(response)) {
             return decorate(request, response);
-        } else {
-            return response;
         }
+        return response;
     }
 
     private boolean shouldDecorate(Response response) {
@@ -36,7 +33,7 @@ public class SiteMeshHandler implements HttpHandler {
 
     private Response decorate(Request request, Response response) throws IOException {
         Decorator decorator = decorators.getDecoratorFor(request, response);
-        String result = decorator.decorate(Strings.toString(new ByteArrayInputStream(response.bytes())));
+        String result = decorator.decorate(new String(response.bytes()));
         return response.bytes(result.getBytes());
     }
 }

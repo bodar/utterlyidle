@@ -1,50 +1,58 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
+import com.googlecode.yadic.Container;
+import com.googlecode.yadic.Resolver;
+import com.googlecode.yadic.SimpleContainer;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
 
-public class StringTemplateDecorators implements Decorators {
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.sitemesh.Decorators.add;
+
+public class StringTemplateDecorators implements DecoratorProvider {
     private final StringTemplateGroup group;
-    private final List<DecoratorRule> rules = new ArrayList<DecoratorRule>();
-    private final BasePath basePath;
-    private final HttpHandler handler;
+    private final Resolver resolver;
 
-    public StringTemplateDecorators(Url url, BasePath basePath, Application application) {
-        this.basePath = basePath;
-        this.handler = application;
-        group = new UrlStringTemplateGroup(url);
+    public StringTemplateDecorators(final StringTemplateGroup group, final Resolver resolver) {
+        this.group = group;
+        this.resolver = resolver;
     }
 
-    public Decorators add(DecoratorRule rule) {
-        rules.add(rule);
-        return this;
+    public StringTemplateDecorators(final URL templatesUrl, final Resolver resolver) {
+        this(new UrlStringTemplateGroup(Url.url(templatesUrl)), resolver);
     }
 
-    public Decorator getDecoratorFor(Request request, Response response) {
-        for (DecoratorRule rule : rules) {
-            if (rule.matches(Pair.pair(request, response))) {
-                return getDecoratorFor(request, rule.templateName());
-            }
-        }
-        return new NoneDecorator();
-    }
-
-    private Decorator getDecoratorFor(Request request, TemplateName templateName) {
+    public Decorator get(TemplateName templateName) {
         if (templateName.equals(TemplateName.NONE)) {
             return new NoneDecorator();
         }
-        StringTemplate template = group.getInstanceOf(templateName.name());
-        return new StringTemplateDecorator(template, handler, basePath, request.query());
+        return new SimpleContainer(resolver).
+                addInstance(StringTemplate.class, group.getInstanceOf(templateName.value())).
+                add(StringTemplateDecorator.class).get(StringTemplateDecorator.class);
     }
+
+    public static ActivateSiteMeshModule stringTemplateDecorators(final URL templatesUrl, final DecoratorRule... decoratorRules) {
+        return stringTemplateDecorators(templatesUrl, sequence(decoratorRules));
+    }
+
+    public static ActivateSiteMeshModule stringTemplateDecorators(final URL templatesUrl, final Sequence<DecoratorRule> sequence) {
+        return new ActivateSiteMeshModule() {
+            @Override
+            public Decorators addDecorators(Decorators decorators) {
+                return sequence.fold(decorators, add());
+            }
+
+            @Override
+            protected DecoratorProvider provider(Container container) {
+                return new StringTemplateDecorators(templatesUrl, container);
+            }
+        };
+    }
+
+
 }
