@@ -1,6 +1,9 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-public class TemplateName {
+
+import com.googlecode.totallylazy.Value;
+
+public class TemplateName implements Value<String> {
     private String templateName;
     public static final TemplateName NONE = templateName("none");
 
@@ -12,7 +15,7 @@ public class TemplateName {
         return new TemplateName(templateName);
     }
 
-    public String name() {
+    public String value() {
         return templateName;
     }
 }
