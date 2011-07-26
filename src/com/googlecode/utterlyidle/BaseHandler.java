@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
@@ -47,26 +48,29 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Response getResponse(final Request request) throws Exception {
-        final Either<MatchFailure, Sequence<Binding>> failureOrBindings = filter(
+        Either<MatchFailure, Sequence<Binding>> failureOrBindings = filter(
                 pair(pathMatches(container.get(BasePath.class), request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
                 pair(producesMatches(request), Status.NOT_ACCEPTABLE),
                 pair(parametersMatches(request, application), Status.UNSATISFIABLE_PARAMETERS)
         );
+        return failureOrBindings.map(failure(), success(request));
+    }
 
-        if (failureOrBindings.isLeft()) {
-            return response(
-                    failureOrBindings.left().status(),
-                    headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
-                    failureOrBindings.left());
-        }
-
-        Binding binding = findBestMatch(request, failureOrBindings.right());
+    private Response success(final Request request, final Sequence<Binding> matchedBindings) throws Exception {
+        Binding binding = findBestMatch(request, matchedBindings);
         return setContentType(accept(request).bestMatch(binding.produces()),
                 wrapInResponse(
                         unwrapEither(
                                 invokeMethod(binding, request))));
+    }
+
+    private Response failure(final MatchFailure matchFailure) {
+        return response(
+                matchFailure.status(),
+                headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
+                matchFailure);
     }
 
     private Response setContentType(String mimeType, Response response) {
@@ -133,5 +137,23 @@ public class BaseHandler implements HttpHandler {
                 return container;
             }
         });
+    }
+
+    private Callable1<? super Sequence<Binding>, Response> success(final Request request) {
+        return new Callable1<Sequence<Binding>, Response>() {
+            @Override
+            public Response call(Sequence<Binding> bindingSequence) throws Exception {
+                return success(request, bindingSequence);
+            }
+        };
+    }
+
+    private Callable1<? super MatchFailure, Response> failure() {
+        return new Callable1<MatchFailure, Response>() {
+            @Override
+            public Response call(MatchFailure matchFailure) throws Exception {
+                return failure(matchFailure);
+            }
+        };
     }
 }
