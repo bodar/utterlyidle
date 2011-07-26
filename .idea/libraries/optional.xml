@@ -5,29 +5,9 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/jetty/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/jetty/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/annotations/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/jetty/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/html/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/jsp-api-2.0/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/plus/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/util/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/maven-plugin/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/management/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/util5/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/util5/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/naming/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/management/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/annotations/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/util/src/test/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/jsp-2.1/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/jspc-maven-plugin/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/naming/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/plus/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/start/src/main/java" />
-      <root url="file://$USER_HOME$/jetty-6.1.26/modules/html/src/main/java" />
+      <root url="file://$PROJECT_DIR$/lib/optional" />
     </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/lib/optional" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/optional" recursive="false" type="SOURCES" />
   </library>
 </component>
