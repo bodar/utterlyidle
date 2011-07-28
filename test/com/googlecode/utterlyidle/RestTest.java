@@ -53,6 +53,7 @@ import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 
 public class RestTest {
     @Test
@@ -89,8 +90,8 @@ public class RestTest {
     @Test
     public void whenReturningAResponseUseTheProducesContentTypeIfNoneExplicitlySet() throws Exception {
         ApplicationBuilder application = application().addAnnotated(ReturnsResponseWithContentType.class);
-        assertThat(application.handle(get("path").withQuery("override", String.valueOf(false))).header(CONTENT_TYPE), is(MediaType.APPLICATION_ATOM_XML));
-        assertThat(application.handle(get("path").withQuery("override", String.valueOf(true))).header(CONTENT_TYPE), is(MediaType.APPLICATION_JSON));
+        assertThat(application.handle(get("path").withQuery("override", String.valueOf(false))).header(CONTENT_TYPE), startsWith(MediaType.APPLICATION_ATOM_XML));
+        assertThat(application.handle(get("path").withQuery("override", String.valueOf(true))).header(CONTENT_TYPE), startsWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -176,7 +177,7 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
 
         Response response = application.handle(get("text").accepting("text/plain"));
-        assertThat(response.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
+        assertThat(response.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
     }
 
     @Test
@@ -184,11 +185,11 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetsWithMultipleMimeTypes.class);
 
         Response plainResponse = application.handle(get("text").accepting("text/plain"));
-        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
+        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
         assertThat(new String(plainResponse.bytes()), is("<xml/>"));
 
         Response xmlResponse = application.handle(get("text").accepting("text/xml"));
-        assertThat(xmlResponse.header(HttpHeaders.CONTENT_TYPE), is("text/xml"));
+        assertThat(xmlResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/xml"));
         assertThat(new String(xmlResponse.bytes()), is("<xml/>"));
     }
 
@@ -197,7 +198,7 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetsWithSingleMime.class);
 
         Response plainResponse = application.handle(get("text"));
-        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), is("text/plain"));
+        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
         assertThat(new String(plainResponse.bytes()), is("Hello"));
     }
 
