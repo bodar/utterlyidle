@@ -28,6 +28,7 @@ import static com.googlecode.utterlyidle.ParametersExtractor.parametersMatches;
 import static com.googlecode.utterlyidle.PathMatcher.pathMatches;
 import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.UrlEncodedMessage.DEFAULT_CHARSET;
 
 public class BaseHandler implements HttpHandler {
     private final Bindings bindings;
@@ -75,9 +76,16 @@ public class BaseHandler implements HttpHandler {
 
     private Response setContentType(String mimeType, Response response) {
         if (response.header(HttpHeaders.CONTENT_TYPE) == null) {
-            return response.header(HttpHeaders.CONTENT_TYPE, mimeType);
+            return response.header(HttpHeaders.CONTENT_TYPE, defaultIfCharsetNotSpecified(mimeType));
         }
         return response;
+    }
+
+    private String defaultIfCharsetNotSpecified(String mimeType) {
+        if (!mimeType.contains("charset")) {
+            return mimeType + "; charset=\"" + DEFAULT_CHARSET + "\"";
+        }
+        return mimeType;
     }
 
     private Binding findBestMatch(Request request, final Sequence<Binding> bindings) {

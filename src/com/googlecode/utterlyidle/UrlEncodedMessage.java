@@ -11,7 +11,7 @@ import java.util.List;
 import static com.googlecode.totallylazy.Pair.pair;
 
 public class UrlEncodedMessage {
-    private static final String charSet = "UTF-8";
+    public static final String DEFAULT_CHARSET = "UTF-8";
 
     public static List<Pair<String, String>> parse(String value) {
         List<Pair<String, String>> result = new ArrayList<Pair<String, String>>();
@@ -48,7 +48,7 @@ public class UrlEncodedMessage {
 
     public static String decode(String value) {
         try {
-            return URLDecoder.decode(value, charSet);
+            return URLDecoder.decode(value, DEFAULT_CHARSET);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +57,7 @@ public class UrlEncodedMessage {
     public static String encode(String value) {
         if (value == null) return null;
         try {
-            return URLEncoder.encode(value, charSet);
+            return URLEncoder.encode(value, DEFAULT_CHARSET);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
