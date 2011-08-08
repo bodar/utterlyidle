@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Exceptions;
+import com.googlecode.totallylazy.LazyException;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -27,6 +29,8 @@ public class ExceptionHandler implements HttpHandler {
         try {
             return httpHandler.handle(request);
         } catch (InvocationTargetException e) {
+            return findAndHandle(request, e.getCause());
+        } catch (LazyException e) {
             return findAndHandle(request, e.getCause());
         } catch (Throwable e) {
             return findAndHandle(request, e);

@@ -9,6 +9,8 @@ import org.junit.Test;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 
+import java.io.IOException;
+
 import static com.googlecode.totallylazy.Predicates.always;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
@@ -22,9 +24,9 @@ import static org.junit.Assert.fail;
 
 public class ServerErrorTest {
     @Test
-    public void supportsInterceptingException() throws Exception {
+    public void supportsInterceptingRuntimeException() throws Exception {
         final String message = "Caught exception";
-        ApplicationBuilder application = application().addAnnotated(ThrowingResource.class);
+        ApplicationBuilder application = application().addAnnotated(ThrowingRuntimeResource.class);
         application.addResponseHandler(where(entity(), instanceOf(IllegalArgumentException.class)), new WriteMessageToResponseHandler(message));
 
         Response response = application.handle(get("exception"));
@@ -33,8 +35,19 @@ public class ServerErrorTest {
     }
 
     @Test
+    public void supportsInterceptingCheckedException() throws Exception {
+        final String message = "Caught exception";
+        ApplicationBuilder application = application().addAnnotated(ThrowingCheckedResource.class);
+        application.addResponseHandler(where(entity(), instanceOf(IOException.class)), new WriteMessageToResponseHandler(message));
+
+        Response response = application.handle(get("exception"));
+
+        assertThat(response.output().toString(), containsString(message));
+    }
+
+    @Test
     public void returns500WhenAnExceptionIsThrown() throws Exception {
-        ApplicationBuilder application = application().addAnnotated(ThrowingResource.class);
+        ApplicationBuilder application = application().addAnnotated(ThrowingRuntimeResource.class);
 
         Response response = application.handle(get("exception"));
 
@@ -112,7 +125,7 @@ public class ServerErrorTest {
         assertThat(response.output().toString(), containsString(exceptionClass.getName()));
     }
 
-    public static class ThrowingResource {
+    public static class ThrowingRuntimeResource {
         @GET
         @Path("exception")
         public String get() throws Exception {
@@ -120,8 +133,16 @@ public class ServerErrorTest {
         }
     }
 
+    public static class ThrowingCheckedResource {
+        @GET
+        @Path("exception")
+        public String get() throws Exception {
+            throw new IOException();
+        }
+    }
+
     public static class ResourceWithMissingDependency {
-        public ResourceWithMissingDependency(ThrowingResource missing) {
+        public ResourceWithMissingDependency(ThrowingRuntimeResource missing) {
         }
 
         @GET
