@@ -36,13 +36,16 @@ public class AbsoluteLocationHandler implements HttpHandler{
         return url(format("http://%s%s", host, basePath));
     }
 
-    public static Callable1<? super String, String> changeToAbsoluteUrl(final Url Url) {
+    public static Callable1<? super String, String> changeToAbsoluteUrl(final Url url) {
         return new Callable1<String, String>() {
             public String call(String path) throws Exception {
                 if (url(path).isAbsolute()) {
                     return path;
                 }
-                return Url.replacePath(Url.path().file(path)).toString();
+                if (path.startsWith("/")) {
+                    return url.toURI().resolve(path).toString();
+                }
+                return url.replacePath(url.path().file(path)).toString();
             }
         };
     }
