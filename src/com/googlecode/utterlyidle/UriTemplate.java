@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.regex.Matches;
 import com.googlecode.totallylazy.regex.Regex;
 
@@ -84,4 +85,15 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     public String toString() {
         return template;
     }
+
+    @Override
+    public int hashCode() {
+        return template.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof UriTemplate && template.equals(((UriTemplate) obj).template);
+    }
+
 }
