@@ -4,11 +4,11 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.totallylazy.Value;
 
 public class TemplateName implements Value<String> {
-    private String templateName;
+    private String value;
     public static final TemplateName NONE = templateName("none");
 
-    private TemplateName(String templateName) {
-        this.templateName = templateName;
+    private TemplateName(String value) {
+        this.value = value;
     }
 
     public static TemplateName templateName(String templateName) {
@@ -16,6 +16,22 @@ public class TemplateName implements Value<String> {
     }
 
     public String value() {
-        return templateName;
+        return value;
     }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof TemplateName && value.equals(((TemplateName) obj).value);
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
+
 }
