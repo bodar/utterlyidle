@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -64,4 +65,24 @@ public class Binding {
     public boolean hidden() {
         return hidden;
     }
+
+    @Override
+    public int hashCode() {
+        return myFields().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Binding && myFields().equals(((Binding) obj).myFields());
+    }
+
+    protected Sequence myFields() {
+        return Sequences.sequence(method, httpMethod, uriTemplate, consumes, produces, parameters, priority);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s -> %s", httpMethod, uriTemplate, method);
+    }
+
 }

@@ -4,5 +4,5 @@ mvn:org.antlr:stringtemplate:jar:3.2.1
 mvn:cglib:cglib-nodep:jar:2.2
 mvn:org.objenesis:objenesis:jar:1.2
 
-mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:jar|sources:370
+mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:jar|sources:442
 mvn://repo.bodar.com/com.googlecode.yadic:yadic:jar|sources:127
