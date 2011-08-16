@@ -5,8 +5,8 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
-import com.googlecode.utterlyidle.modules.DependsOnResolver;
-import com.googlecode.yadic.Resolver;
+import com.googlecode.utterlyidle.modules.DependsOnContainer;
+import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.handlers.HandlerRule.getHandlerFromRule;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.matches;
@@ -15,11 +15,11 @@ import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 
 public class ResponseHandlersFinder{
     private final ResponseHandlers registry;
-    private final Resolver resolver;
+    private final Container container;
 
-    public ResponseHandlersFinder(ResponseHandlers registry, Resolver resolver) {
+    public ResponseHandlersFinder(ResponseHandlers registry, Container container) {
         this.registry = registry;
-        this.resolver = resolver;
+        this.container = container;
     }
 
     private Option<ResponseHandler> find(final Request request, final Response response){
@@ -34,8 +34,8 @@ public class ResponseHandlersFinder{
     private Callable1<? super ResponseHandler, ResponseHandler> injectResolverIfNeeded() {
         return new Callable1<ResponseHandler, ResponseHandler>() {
             public ResponseHandler call(ResponseHandler handler) throws Exception {
-                if(handler instanceof DependsOnResolver){
-                    ((DependsOnResolver) handler).setResolver(resolver);
+                if(handler instanceof DependsOnContainer){
+                    ((DependsOnContainer) handler).setContainer(container);
                 }
                 return handler;
             }
@@ -47,7 +47,7 @@ public class ResponseHandlersFinder{
             public ResponseHandler call(Object handler) throws Exception {
                 if (handler instanceof Class) {
                     Class handlerClass = (Class) handler;
-                    return (ResponseHandler) resolve(create(handlerClass, resolver), handlerClass);
+                    return (ResponseHandler) resolve(create(handlerClass, container), handlerClass);
                 }
                 return (ResponseHandler) handler;
             }

@@ -18,6 +18,7 @@ import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.Module;
+import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -352,6 +353,28 @@ public class RestTest {
 
     @Test
     public void supportsCustomRenderer() throws Exception {
+        final boolean[] called = {false};
+        ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
+        application.add(new RequestScopedModule() {
+            @Override
+            public Module addPerRequestObjects(Container container) throws Exception {
+                container.addActivator(MyCustomClassRenderer.class, new Callable<MyCustomClassRenderer>() {
+                    @Override
+                    public MyCustomClassRenderer call() throws Exception {
+                        called[0] = true;
+                        return new MyCustomClassRenderer();
+                    }
+                });
+                return this;
+            }
+        });
+        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
+        assertThat(application.responseAsString(get("path")), is("foo"));
+        assertThat(called[0], is(true));
+    }
+
+    @Test
+    public void supportsCustomRendererWithActivator() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
         application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
         assertThat(application.responseAsString(get("path")), is("foo"));
