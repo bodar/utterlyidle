@@ -24,7 +24,7 @@ public class Decorators {
     public Decorator getDecoratorFor(Request request, Response response) {
         for (DecoratorRule rule : rules) {
             if (rule.matches(Pair.pair(request, response))) {
-                return provider.get(rule.templateName());
+                return provider.get(rule.templateName(), request);
             }
         }
         return new NoneDecorator();
