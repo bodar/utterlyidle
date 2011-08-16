@@ -3,8 +3,10 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
-import com.googlecode.utterlyidle.modules.DependsOnResolver;
+import com.googlecode.utterlyidle.modules.DependsOnContainer;
+import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
+import com.googlecode.yadic.SimpleContainer;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -31,22 +33,26 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
 
     protected abstract Renderer<T> getRenderer();
 
-    private static class ClassRenderingResponseHandler<T> extends RenderingResponseHandler<T> implements DependsOnResolver{
+    private static class ClassRenderingResponseHandler<T> extends RenderingResponseHandler<T> implements DependsOnContainer {
         private final Class<? extends Renderer<T>> renderer;
-        private Resolver resolver;
+        private Container container;
 
         public ClassRenderingResponseHandler(Class<? extends Renderer<T>> renderer) {
             this.renderer = renderer;
         }
 
         protected Renderer<T> getRenderer() {
-            return (Renderer<T>) resolve(create(renderer, resolver), renderer);
+            if(!container.contains(renderer)){
+                return new SimpleContainer(container).add(renderer).get(renderer);
+
+            }
+            return container.get(renderer);
         }
 
-        public void setResolver(Resolver resolver) {
-            this.resolver = resolver;
+        @Override
+        public void setContainer(Container container) throws Exception {
+            this.container = container;
         }
-
     }
 
     private static class InstanceRenderingResponseHandler<T> extends RenderingResponseHandler<T> {
