@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.yadic.Container;
@@ -27,11 +28,12 @@ public class StringTemplateDecorators implements DecoratorProvider {
         this(new UrlStringTemplateGroup(Url.url(templatesUrl)), resolver);
     }
 
-    public Decorator get(TemplateName templateName) {
+    public Decorator get(TemplateName templateName, Request request) {
         if (templateName.equals(TemplateName.NONE)) {
             return new NoneDecorator();
         }
         return new SimpleContainer(resolver).
+                addInstance(Request.class, request).
                 addInstance(StringTemplate.class, group.getInstanceOf(templateName.value())).
                 add(StringTemplateDecorator.class).get(StringTemplateDecorator.class);
     }
