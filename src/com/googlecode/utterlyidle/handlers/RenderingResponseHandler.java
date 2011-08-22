@@ -44,7 +44,6 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
         protected Renderer<T> getRenderer() {
             if(!container.contains(renderer)){
                 return new SimpleContainer(container).add(renderer).get(renderer);
-
             }
             return container.get(renderer);
         }
