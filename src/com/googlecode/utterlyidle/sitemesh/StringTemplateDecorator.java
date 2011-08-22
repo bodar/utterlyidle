@@ -13,9 +13,6 @@ import org.antlr.stringtemplate.StringTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
-
-import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class StringTemplateDecorator implements Decorator {
     private final StringTemplate template;
@@ -37,7 +34,7 @@ public class StringTemplateDecorator implements Decorator {
     public Decorator setContent(PropertyMap content) throws IOException {
         template.setAttribute("include", new PageMap(httpHandlerForIncludes));
         template.setAttribute("base", base);
-        template.setAttribute("query", sequence(queryParameters).fold(Maps.<String, List<String>>map(), Maps.<String, String>asMultiValuedMap()));
+        template.setAttribute("query", Maps.multiMap(queryParameters));
         template.setAttribute("properties", content);
         template.setAttribute("meta", content.getPropertyMap("meta"));
         template.setAttribute("head", content.get("head"));
