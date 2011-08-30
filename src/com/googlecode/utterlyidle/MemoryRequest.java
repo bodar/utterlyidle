@@ -13,9 +13,6 @@ public class MemoryRequest implements Request {
     private Uri uri;
     private final byte[] input;
     private final HeaderParameters headers;
-    private QueryParameters query;
-    private FormParameters form;
-    private CookieParameters cookies;
 
     protected MemoryRequest(String method, Uri uri, HeaderParameters headers, byte[] input) {
         this.method = method;
@@ -42,7 +39,6 @@ public class MemoryRequest implements Request {
 
     public Request uri(Uri uri) {
         this.uri = uri;
-        this.query = null;
         return this;
     }
 
@@ -52,32 +48,6 @@ public class MemoryRequest implements Request {
 
     public HeaderParameters headers() {
         return headers;
-    }
-
-    public QueryParameters query() {
-        if (query == null) {
-            query = QueryParameters.parse(uri().query());
-        }
-        return query;
-    }
-
-    public CookieParameters cookies() {
-        if(cookies==null){
-            cookies = CookieParameters.cookies(this.headers());
-        }
-        return cookies;
-    }
-
-    public FormParameters form() {
-        if (form == null) {
-            String contentType = headers().getValue(HttpHeaders.CONTENT_TYPE);
-            if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
-                form = FormParameters.parse(new String(input()));
-            } else {
-                form = FormParameters.formParameters();
-            }
-        }
-        return form;
     }
 
     @Override

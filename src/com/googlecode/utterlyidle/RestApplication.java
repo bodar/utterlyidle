@@ -82,9 +82,9 @@ public class RestApplication implements Application {
         argumentScope.addInstance(HierarchicalPath.class, hierarchicalPath(request.uri().path()));
         argumentScope.addActivator(PathParameters.class, PathParametersActivator.class);
         argumentScope.addInstance(HeaderParameters.class, request.headers());
-        argumentScope.addInstance(QueryParameters.class, request.query());
-        argumentScope.addInstance(FormParameters.class, request.form());
-        argumentScope.addInstance(CookieParameters.class, request.cookies());
+        argumentScope.addInstance(QueryParameters.class, Requests.query(request));
+        argumentScope.addInstance(FormParameters.class, Requests.form(request));
+        argumentScope.addInstance(CookieParameters.class, Requests.cookies(request));
         argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.input()));
         argumentScope.add(new TypeFor<Option<?>>() {
         }.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));

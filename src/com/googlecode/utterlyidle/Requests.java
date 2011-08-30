@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
 
 import static com.googlecode.totallylazy.Callables.first;
@@ -30,17 +31,34 @@ public class Requests {
     public static Callable1<Request, QueryParameters> query() {
         return new Callable1<Request, QueryParameters>() {
             public QueryParameters call(Request request) throws Exception {
-                return request.query();
+                return query(request);
             }
         };
+    }
+
+    public static QueryParameters query(Request request) {
+        return QueryParameters.parse(request.uri().query());
     }
 
     public static Callable1<Request, FormParameters> form() {
         return new Callable1<Request, FormParameters>() {
             public FormParameters call(Request request) throws Exception {
-                return request.form();
+                return form(request);
             }
         };
+    }
+
+    public static FormParameters form(Request request) {
+        String contentType = request.headers().getValue(HttpHeaders.CONTENT_TYPE);
+        if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
+            return FormParameters.parse(new String(request.input()));
+        } else {
+            return FormParameters.formParameters();
+        }
+    }
+
+    public static CookieParameters cookies(Request request){
+        return CookieParameters.cookies(request.headers());
     }
 
     public static Callable1<Request, HierarchicalPath> path() {
