@@ -29,7 +29,7 @@ import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
 import static com.googlecode.utterlyidle.io.Url.inputStream;
 
-public class ClientHttpHandler implements HttpHandler {
+public class ClientHttpHandler implements HttpClient {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.url().toString());
         URLConnection connection = url.openConnection();
