@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Sequences;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -21,11 +22,9 @@ public class RequestBuilderTest {
         Request clonedRequest = new RequestBuilder(originalRequest).build();
 
         assertThat(clonedRequest.method(), is(equalTo(originalRequest.method())));
-        assertThat(clonedRequest.form().toString(), is(equalTo(originalRequest.form().toString())));
-        assertThat(clonedRequest.headers().toString(), is(equalTo(originalRequest.headers().toString())));
-        assertThat(clonedRequest.query().toString(), is(equalTo(originalRequest.query().toString())));
         assertThat(clonedRequest.uri(), is(equalTo(originalRequest.uri())));
-        assertThat(clonedRequest.cookies().toString(), is(equalTo(originalRequest.cookies().toString())));
+        assertThat(clonedRequest.headers().toString(), is(equalTo(originalRequest.headers().toString())));
+        assertThat(new String(clonedRequest.input()), is(equalTo(new String(originalRequest.input()))));
 
     }
 }

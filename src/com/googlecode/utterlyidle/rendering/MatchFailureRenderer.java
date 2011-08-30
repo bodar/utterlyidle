@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.rendering;
 
+import com.googlecode.funclate.stringtemplate.EnhancedStringTemplateGroup;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Option;
@@ -7,11 +8,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Strings;
-import com.googlecode.totallylazy.Uri;
-import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
@@ -32,7 +29,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     }
 
     public String render(MatchFailure value) throws IOException {
-        StringTemplateGroup group = new UrlStringTemplateGroup(packageUrl(getClass()));
+        StringTemplateGroup group = new EnhancedStringTemplateGroup(packageUrl(getClass()));
         Model model = model();
         StringTemplate template = group.getInstanceOf("matchFailure", model);
         model.add("base", basePath);

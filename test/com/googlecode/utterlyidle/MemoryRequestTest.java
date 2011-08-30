@@ -50,11 +50,11 @@ public class MemoryRequestTest {
     public void shouldNotHoldOnToOldQueryParametersAfterUrlIsChanged() {
         Request request = get("http://www.google.com?q=handies+that+look+like+gandhis").build();
 
-        assertThat(request.query().getValue("q"), is("handies that look like gandhis"));
+        assertThat(Requests.query(request).getValue("q"), is("handies that look like gandhis"));
 
         request.uri(uri("http://www.google.com?q=cheeses+that+look+like+jesus"));
         
-        assertThat(request.query().getValue("q"), is("cheeses that look like jesus"));
+        assertThat(Requests.query(request).getValue("q"), is("cheeses that look like jesus"));
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -28,7 +29,7 @@ public class StringTemplateDecorator implements Decorator {
     }
 
     public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, Request request) {
-        this(template, httpHandlerForIncludes, base, request.query());
+        this(template, httpHandlerForIncludes, base, Requests.query(request));
     }
 
     public Decorator setContent(PropertyMap content) throws IOException {

@@ -43,7 +43,7 @@ public class RequestBuilder implements Callable<Request> {
                 return requestBuilder;
             }
         });
-        sequence(request.form()).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
+        sequence(Requests.form(request)).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
                 requestBuilder.withForm(nameAndValue.first(), nameAndValue.second());
                 return requestBuilder;

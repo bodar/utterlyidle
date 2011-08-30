@@ -100,7 +100,7 @@ public class HttpMessageParserTest {
 
         Request parsed = HttpMessageParser.parseRequest(input);
 
-        assertThat(parsed.form().getValue("form"), is(equalTo("")));
+        assertThat(Requests.form(parsed).getValue("form"), is(equalTo("")));
     }
 
     @Test

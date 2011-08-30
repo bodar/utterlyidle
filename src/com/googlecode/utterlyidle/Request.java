@@ -13,10 +13,4 @@ public interface Request {
     public byte[] input();
 
     public HeaderParameters headers();
-
-    public QueryParameters query();
-
-    public CookieParameters cookies();
-
-    public FormParameters form();
 }
