@@ -92,7 +92,7 @@ public class SiteMeshHandlerTest {
     private Predicate<Pair<Request, Response>> onlyMatchRequestTo(final String path) {
         return new Predicate<Pair<Request, Response>>() {
             public boolean matches(Pair<Request, Response> other) {
-                return other.first().url().toString().equals(path);
+                return other.first().uri().toString().equals(path);
             }
         };
     }

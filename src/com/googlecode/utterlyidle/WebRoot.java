@@ -1,20 +1,21 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.io.Url;
+
+import com.googlecode.totallylazy.Uri;
 
 public class WebRoot {
-    private final Url url;
+    private final Uri uri;
 
-    private WebRoot(Url url) {
-        this.url = url;
+    private WebRoot(Uri uri) {
+        this.uri = uri;
     }
 
-    public Url getUrl() {
-        return url;
+    public Uri uri() {
+        return uri;
     }
 
-    public static WebRoot webRoot(Url url) {
-        return new WebRoot(url);
+    public static WebRoot webRoot(Uri uri) {
+        return new WebRoot(uri);
     }
 }
 

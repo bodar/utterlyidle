@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
-import com.googlecode.utterlyidle.io.Url;
 
 public class ResourcePath extends HierarchicalPath {
     private ResourcePath(String value) {
@@ -13,11 +13,11 @@ public class ResourcePath extends HierarchicalPath {
     }
 
     public static ResourcePath resourcePathOf(Request request, BasePath basePath) {
-        return resourcePathOf(request.url(), basePath);
+        return resourcePathOf(request.uri(), basePath);
     }
 
-    public static ResourcePath resourcePathOf(Url url, BasePath basePath) {
-        final HierarchicalPath path = url.path();
+    public static ResourcePath resourcePathOf(Uri uri, BasePath basePath) {
+        final HierarchicalPath path = hierarchicalPath(uri.path());
         if (path.containedBy(basePath)) {
             return new ResourcePath(path.remove(basePath).toString());
         }

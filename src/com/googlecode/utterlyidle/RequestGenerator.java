@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.HeaderParam;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
@@ -18,7 +19,6 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Requests.request;
-import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RequestGenerator {
     private final Method method;
@@ -41,6 +41,6 @@ public class RequestGenerator {
         final FormParameters forms = parametersExtractor.extract(formParameters(), FormParam.class);
         final QueryParameters queries = parametersExtractor.extract(queryParameters(), QueryParam.class);
 
-        return request(httpMethod.value(), url(uriTemplate.generate(paths) + queries.toString()), headers, RequestBuilder.input(forms, null));
+        return request(httpMethod.value(), Uri.uri(uriTemplate.generate(paths) + queries.toString()), headers, RequestBuilder.input(forms, null));
     }
 }

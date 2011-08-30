@@ -21,6 +21,7 @@ import static com.googlecode.totallylazy.Exceptions.printStackTrace;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
@@ -28,7 +29,6 @@ import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
-import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RestContainer implements Container {
     private final Application applcation;
@@ -94,6 +94,6 @@ public class RestContainer implements Container {
     }
 
     private QueryParameters query(Request request) {
-        return QueryParameters.parse(url(request.getTarget()).getQuery());
+        return QueryParameters.parse(uri(request.getTarget()).query());
     }
 }

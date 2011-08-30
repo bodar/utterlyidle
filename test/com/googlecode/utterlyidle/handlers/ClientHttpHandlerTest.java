@@ -54,7 +54,7 @@ public class ClientHttpHandlerTest {
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {
         HttpHandler urlHandler = new ClientHttpHandler();
-        return urlHandler.handle(request.withPath(server.getUrl().toString() + request.path()).build());
+        return urlHandler.handle(request.withPath(server.uri().toString() + request.path()).build());
     }
 
     private Server server;

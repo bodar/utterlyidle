@@ -7,12 +7,12 @@ import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.handlers.ConvertExtensionToAcceptHeader.Replacements.replacements;
-import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -88,11 +88,11 @@ public class ConvertExtensionToAcceptHeaderTest {
         Request request = get(original).build();
         converter.handle(request);
 
-        assertThat(request.url(), is(url(expectedAfterConversion)));
+        assertThat(request.uri(), is(uri(expectedAfterConversion)));
     }
 
     private String extensionOf(String url) {
-        return ConvertExtensionToAcceptHeader.fileExtension(url(url)).getOrNull();
+        return ConvertExtensionToAcceptHeader.fileExtension(uri(url)).getOrNull();
     }
 
     private static class StubHttpHandler implements HttpHandler {
