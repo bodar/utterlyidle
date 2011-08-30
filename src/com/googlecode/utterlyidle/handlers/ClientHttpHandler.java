@@ -11,35 +11,57 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.Status.NOT_FOUND;
+import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
 import static com.googlecode.utterlyidle.io.Url.inputStream;
 
 public class ClientHttpHandler implements HttpHandler {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.url().toString());
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setInstanceFollowRedirects(false);
-        connection.setRequestMethod(request.method());
+        URLConnection connection = url.openConnection();
+        if (connection instanceof HttpURLConnection) {
+            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+            httpURLConnection.setInstanceFollowRedirects(false);
+            httpURLConnection.setRequestMethod(request.method());
+        }
         sequence(request.headers()).fold(connection, requestHeaders());
         if (Integer.valueOf(request.headers().getValue(HttpHeaders.CONTENT_LENGTH)) > 0) {
             connection.setDoOutput(true);
             using(connection.getOutputStream(), copyRequestEntity(request));
         }
 
-        Status status = status(connection.getResponseCode(), connection.getResponseMessage());
+        Status status = OK;
+        byte[] bytes;
+        if (connection instanceof HttpURLConnection) {
+            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+            status = status(httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage());
+            bytes = using(inputStream(httpURLConnection), bytes());
+        } else {
+            try {
+                bytes = using(connection.getInputStream(), bytes());
+            } catch (FileNotFoundException e) {
+                status = NOT_FOUND;
+                bytes = new byte[0];
+            }
+        }
+
         return sequence(connection.getHeaderFields().entrySet()).
                 fold(response(status).
-                        bytes(using(inputStream(connection), bytes())),
+                        bytes(bytes),
                         responseHeaders());
     }
 
@@ -52,9 +74,9 @@ public class ClientHttpHandler implements HttpHandler {
         };
     }
 
-    private static Callable2<? super HttpURLConnection, ? super Pair<String, String>, HttpURLConnection> requestHeaders() {
-        return new Callable2<HttpURLConnection, Pair<String, String>, HttpURLConnection>() {
-            public HttpURLConnection call(HttpURLConnection connection, Pair<String, String> header) throws Exception {
+    private static Callable2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {
+        return new Callable2<URLConnection, Pair<String, String>, URLConnection>() {
+            public URLConnection call(URLConnection connection, Pair<String, String> header) throws Exception {
                 connection.setRequestProperty(header.first(), header.second());
                 return connection;
             }

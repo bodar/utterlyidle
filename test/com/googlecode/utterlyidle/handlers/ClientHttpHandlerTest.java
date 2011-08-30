@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.URLs;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
@@ -11,6 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.URL;
+
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
@@ -18,6 +21,23 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
+    @Test
+    public void correctlyHandlesANotFoundFileUrl() throws Exception {
+        URL resource = URLs.url("file:///bob");
+        HttpHandler urlHandler = new ClientHttpHandler();
+        Response response = urlHandler.handle(get(resource.toString()).build());
+        assertThat(response.status(), is(Status.NOT_FOUND));
+    }
+
+    @Test
+    public void canGetANonHttpUrl() throws Exception {
+        URL resource = getClass().getResource("test.txt");
+        HttpHandler urlHandler = new ClientHttpHandler();
+        Response response = urlHandler.handle(get(resource.toString()).build());
+        assertThat(response.status(), is(Status.OK));
+        assertThat(new String(response.bytes()), is("This is a test file"));
+    }
+
     @Test
     public void canGetAResource() throws Exception {
         Response response = handle(get("helloworld/queryparam?name=foo"), server);
