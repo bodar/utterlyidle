@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Runnables;
-import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -33,36 +32,44 @@ public class ClientHttpHandler implements HttpClient {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.url().toString());
         URLConnection connection = url.openConnection();
+
         if (connection instanceof HttpURLConnection) {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
-            httpURLConnection.setInstanceFollowRedirects(false);
-            httpURLConnection.setRequestMethod(request.method());
+            return handle(request, (HttpURLConnection) connection);
         }
+        return handle(request, connection);
+    }
+
+    private Response handle(Request request, URLConnection connection) throws IOException {
+        sendRequest(request, connection);
+        try {
+            return createResponse(connection, OK, using(connection.getInputStream(), bytes()));
+        } catch (FileNotFoundException e) {
+            return createResponse(connection, NOT_FOUND, new byte[0]);
+        }
+    }
+
+    private Response handle(Request request, HttpURLConnection connection) throws IOException {
+        connection.setInstanceFollowRedirects(false);
+        connection.setRequestMethod(request.method());
+        sendRequest(request, connection);
+        Status status = status(connection.getResponseCode(), connection.getResponseMessage());
+        byte[] bytes = using(inputStream(connection), bytes());
+        return createResponse(connection, status, bytes);
+    }
+
+    private Response createResponse(URLConnection connection, Status status, byte[] bytes) {
+        return sequence(connection.getHeaderFields().entrySet()).
+                fold(response(status).
+                        bytes(bytes),
+                        responseHeaders());
+    }
+
+    private void sendRequest(Request request, URLConnection connection) throws IOException {
         sequence(request.headers()).fold(connection, requestHeaders());
         if (Integer.valueOf(request.headers().getValue(HttpHeaders.CONTENT_LENGTH)) > 0) {
             connection.setDoOutput(true);
             using(connection.getOutputStream(), copyRequestEntity(request));
         }
-
-        Status status = OK;
-        byte[] bytes;
-        if (connection instanceof HttpURLConnection) {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
-            status = status(httpURLConnection.getResponseCode(), httpURLConnection.getResponseMessage());
-            bytes = using(inputStream(httpURLConnection), bytes());
-        } else {
-            try {
-                bytes = using(connection.getInputStream(), bytes());
-            } catch (FileNotFoundException e) {
-                status = NOT_FOUND;
-                bytes = new byte[0];
-            }
-        }
-
-        return sequence(connection.getHeaderFields().entrySet()).
-                fold(response(status).
-                        bytes(bytes),
-                        responseHeaders());
     }
 
     private Callable1<OutputStream, Void> copyRequestEntity(final Request request) {
