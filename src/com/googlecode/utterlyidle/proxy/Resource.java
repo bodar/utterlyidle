@@ -37,6 +37,6 @@ public class Resource implements InvocationHandler {
     }
 
     public static String getUrl(Method method, Object[] arguments) {
-        return new RequestGenerator(method).generate(arguments).url().toString();
+        return new RequestGenerator(method).generate(arguments).uri().toString();
     }
 }

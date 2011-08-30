@@ -2,22 +2,21 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
-import com.googlecode.utterlyidle.io.Url;
 
 import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 
 public class Requests {
-    public static MemoryRequest request(String method, Url requestUri, HeaderParameters headers, byte[] input) {
+    public static MemoryRequest request(String method, Uri requestUri, HeaderParameters headers, byte[] input) {
         return new MemoryRequest(method, requestUri, headers, input);
     }
 
     public static Request request(String method, String path, QueryParameters query, HeaderParameters headers, byte[] input) {
-        return request(method, Url.url(path + query.toString()), headers, input);
+        return request(method, Uri.uri(path + query.toString()), headers, input);
     }
 
     public static Callable1<Request, String> method() {
@@ -47,7 +46,7 @@ public class Requests {
     public static Callable1<Request, HierarchicalPath> path() {
         return new Callable1<Request, HierarchicalPath>() {
             public HierarchicalPath call(Request request) throws Exception {
-                return request.url().path();
+                return HierarchicalPath.hierarchicalPath(request.uri().path());
             }
         };
     }

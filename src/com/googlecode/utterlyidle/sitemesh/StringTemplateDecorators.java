@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
-import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
@@ -25,7 +25,7 @@ public class StringTemplateDecorators implements DecoratorProvider {
     }
 
     public StringTemplateDecorators(final URL templatesUrl, final Resolver resolver) {
-        this(new UrlStringTemplateGroup(Url.url(templatesUrl)), resolver);
+        this(new UrlStringTemplateGroup(templatesUrl), resolver);
     }
 
     public Decorator get(TemplateName templateName, Request request) {

@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle.jetty;
 
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
-import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
 import org.mortbay.jetty.Server;
@@ -21,7 +21,7 @@ import static org.mortbay.jetty.servlet.Context.NO_SESSIONS;
 
 public class RestServer implements com.googlecode.utterlyidle.Server {
     private final Server server;
-    private Url url;
+    private Uri uri;
 
     public RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
         server = startApp(application, configuration);
@@ -42,7 +42,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private Server startApp(Application application, final ServerConfiguration serverConfig) throws Exception {
         long start = nanoTime();
         Server server = startUpServer(application, serverConfig);
-        System.out.println(format("Listening on %s, started Jetty in %s msecs", url, calculateMilliseconds(start, nanoTime())));
+        System.out.println(format("Listening on %s, started Jetty in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
         return server;
     }
 
@@ -53,7 +53,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         context.setAttribute(Application.class.getCanonicalName(), application);
         context.addServlet(ApplicationServlet.class, "/*");
         server.start();
-        url = serverConfig.port(getPortNumber(server)).toUrl();
+        uri = serverConfig.port(getPortNumber(server)).toUrl();
         return server;
     }
 
@@ -71,7 +71,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return sequence(server.getConnectors()).head().getLocalPort();
     }
 
-    public Url getUrl() {
-        return url;
+    public Uri uri() {
+        return uri;
     }
 }

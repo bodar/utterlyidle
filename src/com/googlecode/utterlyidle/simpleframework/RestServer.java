@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle.simpleframework;
 
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
-import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.Modules;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
@@ -20,7 +20,7 @@ import static java.lang.System.nanoTime;
 
 public class RestServer implements Server {
     private final Connection connection;
-    private Url url;
+    private Uri uri;
 
     public RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
         connection = startApp(application, configuration);
@@ -34,14 +34,14 @@ public class RestServer implements Server {
         new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8000));
     }
 
-    public Url getUrl() {
-        return url;
+    public Uri uri() {
+        return uri;
     }
 
     private Connection startApp(Application application, ServerConfiguration configuration) throws Exception {
         long start = nanoTime();
         SocketConnection connection1 = startUpApp(application, configuration);
-        System.out.println(format("Listening on %s, started SimpleWeb in %s msecs", url, calculateMilliseconds(start, nanoTime())));
+        System.out.println(format("Listening on %s, started SimpleWeb in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
         return connection1;
     }
 
@@ -52,7 +52,7 @@ public class RestServer implements Server {
 
         ServerConfiguration updatedConfiguration = configuration.port(socketAddress.getPort());
         application.add(Modules.requestInstance(updatedConfiguration.basePath()));
-        url = updatedConfiguration.toUrl();
+        uri = updatedConfiguration.toUrl();
         return connection;
     }
 

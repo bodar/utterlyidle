@@ -8,10 +8,10 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.handlers.UrlStringTemplateGroup;
-import com.googlecode.utterlyidle.io.Url;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Strings.EMPTY;
-import static com.googlecode.utterlyidle.io.Url.url;
+import static com.googlecode.totallylazy.URLs.packageUrl;
 import static com.googlecode.utterlyidle.rendering.Model.model;
 
 public class MatchFailureRenderer implements Renderer<MatchFailure> {
@@ -32,8 +32,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     }
 
     public String render(MatchFailure value) throws IOException {
-        Url baseUrl = url(getClass().getResource("matchFailure.st")).parent();
-        StringTemplateGroup group = new UrlStringTemplateGroup(baseUrl);
+        StringTemplateGroup group = new UrlStringTemplateGroup(packageUrl(getClass()));
         Model model = model();
         StringTemplate template = group.getInstanceOf("matchFailure", model);
         model.add("base", basePath);

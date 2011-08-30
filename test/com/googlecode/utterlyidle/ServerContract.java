@@ -40,7 +40,7 @@ public abstract class ServerContract {
         Response response = handle(get("helloworld/redirect"), server);
 
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
-        assertThat(response.header(LOCATION), CoreMatchers.startsWith(server.getUrl().toString()));
+        assertThat(response.header(LOCATION), CoreMatchers.startsWith(server.uri().toString()));
     }
 
     @Test

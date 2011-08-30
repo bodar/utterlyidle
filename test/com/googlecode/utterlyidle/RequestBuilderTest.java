@@ -24,7 +24,7 @@ public class RequestBuilderTest {
         assertThat(clonedRequest.form().toString(), is(equalTo(originalRequest.form().toString())));
         assertThat(clonedRequest.headers().toString(), is(equalTo(originalRequest.headers().toString())));
         assertThat(clonedRequest.query().toString(), is(equalTo(originalRequest.query().toString())));
-        assertThat(clonedRequest.url(), is(equalTo(originalRequest.url())));
+        assertThat(clonedRequest.uri(), is(equalTo(originalRequest.uri())));
         assertThat(clonedRequest.cookies().toString(), is(equalTo(originalRequest.cookies().toString())));
 
     }

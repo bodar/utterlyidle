@@ -1,25 +1,22 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
-import com.googlecode.utterlyidle.io.Url;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;
-import static com.googlecode.utterlyidle.io.Url.url;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 public class MemoryRequestTest {
-
-
-
     @Test
     public void shouldBeReversibleToRawMessage() {
         assertThat(post("http://www.youtube.com/watch?v=606eK4abteQ")
@@ -43,7 +40,7 @@ public class MemoryRequestTest {
 
     @Test
     public void toStringCanBeCalledMultipleTimes() throws Exception {
-        Request request = request("GET", url("smoosh"), HeaderParameters.headerParameters(), "some input".getBytes());
+        Request request = request("GET", uri("smoosh"), HeaderParameters.headerParameters(), "some input".getBytes());
 
         assertThat(request.toString(), containsString("some input"));
         assertThat(request.toString(), containsString("some input"));
@@ -55,7 +52,7 @@ public class MemoryRequestTest {
 
         assertThat(request.query().getValue("q"), is("handies that look like gandhis"));
 
-        request.url(url("http://www.google.com?q=cheeses+that+look+like+jesus"));
+        request.uri(uri("http://www.google.com?q=cheeses+that+look+like+jesus"));
         
         assertThat(request.query().getValue("q"), is("cheeses that look like jesus"));
     }
@@ -77,8 +74,8 @@ public class MemoryRequestTest {
         assertEquals(get("http://www.google.com").build(), get("http://www.google.com").build());
     }
 
-    private Request createRequestWith(Url url) {
-        return new MemoryRequest(HttpMethod.GET, url, HeaderParameters.headerParameters(), "foo".getBytes());
+    private Request createRequestWith(Uri uri) {
+        return new MemoryRequest(HttpMethod.GET, uri, HeaderParameters.headerParameters(), "foo".getBytes());
     }
 
 }

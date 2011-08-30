@@ -2,9 +2,9 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
-import com.googlecode.utterlyidle.io.Url;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
-import static com.googlecode.utterlyidle.io.Url.url;
 
 public class RequestBuilder implements Callable<Request> {
     private final List<Pair<String, String>> headers = new ArrayList<Pair<String, String>>();
@@ -36,7 +35,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder(Request request) {
-        this(request.method(), request.url().toString());
+        this(request.method(), request.uri().toString());
 
         sequence(request.headers()).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
@@ -98,9 +97,9 @@ public class RequestBuilder implements Callable<Request> {
         return request(method, buildUrl(), headerParameters(headers), input(formParameters(form), input));
     }
 
-    private Url buildUrl() {
+    private Uri buildUrl() {
         String queryString = query.isEmpty() ? "" : "?" + UrlEncodedMessage.toString(query);
-        return url(path + queryString);
+        return Uri.uri(path + queryString);
     }
 
     public static byte[] input(FormParameters form, byte[] input) {
