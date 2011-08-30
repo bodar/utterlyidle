@@ -26,11 +26,10 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
-import static com.googlecode.utterlyidle.io.Url.inputStream;
 
 public class ClientHttpHandler implements HttpClient {
     public Response handle(final Request request) throws Exception {
-        URL url = new URL(request.url().toString());
+        URL url = new URL(request.uri().toString());
         URLConnection connection = url.openConnection();
 
         if (connection instanceof HttpURLConnection) {
@@ -55,6 +54,14 @@ public class ClientHttpHandler implements HttpClient {
         Status status = status(connection.getResponseCode(), connection.getResponseMessage());
         byte[] bytes = using(inputStream(connection), bytes());
         return createResponse(connection, status, bytes);
+    }
+
+    public static InputStream inputStream(HttpURLConnection urlConnection) throws IOException {
+        if (urlConnection.getResponseCode() >= 400) {
+            return urlConnection.getErrorStream();
+        } else {
+            return urlConnection.getInputStream();
+        }
     }
 
     private Response createResponse(URLConnection connection, Status status, byte[] bytes) {

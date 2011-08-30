@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import com.googlecode.utterlyidle.io.Url;
 
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
@@ -10,16 +10,16 @@ import static java.lang.String.format;
 
 public class MemoryRequest implements Request {
     private final String method;
-    private Url url;
+    private Uri uri;
     private final byte[] input;
     private final HeaderParameters headers;
     private QueryParameters query;
     private FormParameters form;
     private CookieParameters cookies;
 
-    protected MemoryRequest(String method, Url url, HeaderParameters headers, byte[] input) {
+    protected MemoryRequest(String method, Uri uri, HeaderParameters headers, byte[] input) {
         this.method = method;
-        this.url = url;
+        this.uri = uri;
         this.headers = headers;
         this.input = input == null ? new byte[0] : input;
         setContentLength();
@@ -36,12 +36,12 @@ public class MemoryRequest implements Request {
         return method;
     }
 
-    public Url url() {
-        return url;
+    public Uri uri() {
+        return uri;
     }
 
-    public Request url(Url url) {
-        this.url= url;
+    public Request uri(Uri uri) {
+        this.uri = uri;
         this.query = null;
         return this;
     }
@@ -56,7 +56,7 @@ public class MemoryRequest implements Request {
 
     public QueryParameters query() {
         if (query == null) {
-            query = QueryParameters.parse(url().getQuery());
+            query = QueryParameters.parse(uri().query());
         }
         return query;
     }
@@ -82,7 +82,7 @@ public class MemoryRequest implements Request {
 
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer(format("%s %s HTTP/1.1%s", method, url, HTTP_LINE_SEPARATOR));
+        StringBuffer result = new StringBuffer(format("%s %s HTTP/1.1%s", method, uri, HTTP_LINE_SEPARATOR));
         result.append(headers());
         result.append(HTTP_BODY_SEPARATOR);
         result.append(new String(input()));

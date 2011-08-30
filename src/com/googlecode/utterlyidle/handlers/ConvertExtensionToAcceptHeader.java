@@ -5,11 +5,11 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.io.Url;
 
 import java.util.Iterator;
 
@@ -64,19 +64,19 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     public static Option<String> fileExtension(Request request) {
-        return fileExtension(request.url());
+        return fileExtension(request.uri());
     }
 
-    public static Option<String> fileExtension(Url url) {
-        String file = url.path().file();
+    public static Option<String> fileExtension(Uri url) {
+        String file = hierarchicalPath(url.path()).file();
         return file.indexOf(".") < 0 ? none(String.class) : some(file.substring(file.lastIndexOf(".")));
     }
 
-    private Url removeExtension(Url url) {
-        if(fileExtension(url).isEmpty()) return url;
-        String file = url.path().file();
+    private Uri removeExtension(Uri uri) {
+        if(fileExtension(uri).isEmpty()) return uri;
+        String file = hierarchicalPath(uri.path()).file();
         String fileWithoutExtension = file.substring(0, file.lastIndexOf("."));
-        return url.replacePath(hierarchicalPath(url.path().segments().reverse().drop(1).reverse().add(fileWithoutExtension).toString("/")));
+        return uri.path(hierarchicalPath(uri.path()).segments().init().add(fileWithoutExtension).toString("/"));
     }
 
     private Callable2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
@@ -84,7 +84,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
             public Request call(Request request, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
                 request.headers().remove(HttpHeaders.ACCEPT);
                 request.headers().add(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second());
-                request.url(removeExtension(request.url()));
+                request.uri(removeExtension(request.uri()));
                 return request;
             }
         };

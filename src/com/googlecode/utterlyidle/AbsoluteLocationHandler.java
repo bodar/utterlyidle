@@ -2,11 +2,11 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.io.Url;
+import com.googlecode.totallylazy.Uri;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.io.Url.url;
 import static java.lang.String.format;
 
 public class AbsoluteLocationHandler implements HttpHandler{
@@ -20,32 +20,38 @@ public class AbsoluteLocationHandler implements HttpHandler{
 
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        Sequence<String> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(changeToAbsoluteUrl(createUrl(request)));
+        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(asUri()).map(changeToAbsoluteUrl(baseUri(request)));
         response.headers().remove(LOCATION);
-        for (String absoluteLocation : absoluteLocations) {
-            response.header(LOCATION, absoluteLocation);
+        for (Uri absoluteLocation : absoluteLocations) {
+            response.header(LOCATION, absoluteLocation.toString());
         }
         return response;
     }
 
-    private Url createUrl(Request request) {
-        String host = request.headers().getValue(HttpHeaders.HOST);
-        if(host == null){
-            return url(basePath.toString());
-        }
-        return url(format("http://%s%s", host, basePath));
+    public static Callable1<? super String, Uri> asUri() {
+        return new Callable1<String, Uri>() {
+            @Override
+            public Uri call(String value) throws Exception {
+                return Uri.uri(value);
+            }
+        };
     }
 
-    public static Callable1<? super String, String> changeToAbsoluteUrl(final Url url) {
-        return new Callable1<String, String>() {
-            public String call(String path) throws Exception {
-                if (url(path).isAbsolute()) {
-                    return path;
+    private Uri baseUri(Request request) {
+        String host = request.headers().getValue(HttpHeaders.HOST);
+        if(host == null){
+            return uri(basePath.toString());
+        }
+        return uri(format("http://%s%s", host, basePath));
+    }
+
+    public static Callable1<? super Uri, Uri> changeToAbsoluteUrl(final Uri baseUri) {
+        return new Callable1<Uri, Uri>() {
+            public Uri call(Uri uri) throws Exception {
+                if(uri.authority() != null && uri.authority() != ""){
+                    return uri;
                 }
-                if (path.startsWith("/")) {
-                    return url.toURI().resolve(path).toString();
-                }
-                return url.replacePath(url.path().file(path)).toString();
+                return baseUri.path(uri.path()).query(uri.query()).fragment(uri.fragment());
             }
         };
     }

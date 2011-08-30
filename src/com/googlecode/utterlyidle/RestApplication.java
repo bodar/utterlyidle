@@ -3,11 +3,11 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
-import com.googlecode.utterlyidle.io.Url;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
@@ -22,6 +22,7 @@ import java.io.InputStream;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
@@ -77,8 +78,8 @@ public class RestApplication implements Application {
     private Container createArgumentScope(Request request) {
         final Container argumentScope = new SimpleContainer();
         argumentScope.addInstance(Request.class, request);
-        argumentScope.addInstance(Url.class, request.url());
-        argumentScope.addInstance(HierarchicalPath.class, request.url().path());
+        argumentScope.addInstance(Uri.class, request.uri());
+        argumentScope.addInstance(HierarchicalPath.class, hierarchicalPath(request.uri().path()));
         argumentScope.addActivator(PathParameters.class, PathParametersActivator.class);
         argumentScope.addInstance(HeaderParameters.class, request.headers());
         argumentScope.addInstance(QueryParameters.class, request.query());

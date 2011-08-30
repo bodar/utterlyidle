@@ -1,10 +1,9 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.utterlyidle.annotations.HttpMethod;
-import org.junit.Assert;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HttpMessageParser.*;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.response;
@@ -12,7 +11,6 @@ import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
-import static com.googlecode.utterlyidle.io.Url.url;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,7 +35,7 @@ public class HttpMessageParserTest {
     public void parseRequestWithExtraSpaces() {
         Request request = HttpMessageParser.parseRequest(" PUT  /path  HTTP/1.1   \r\n  Content-Type :  text/plain \r\n\r\n body ");
         assertThat(request.method(), is(PUT));
-        assertThat(request.url().path().toString(), is("/path"));
+        assertThat(request.uri().path().toString(), is("/path"));
         assertThat(request.headers().getValue("Content-Type"), is("text/plain"));
         assertThat(new String(request.input()), is(" body "));
     }
@@ -113,7 +111,7 @@ public class HttpMessageParserTest {
         Request parsedRequest = HttpMessageParser.parseRequest(originalRequest.toString());
 
         assertThat(parsedRequest.method(), is(equalTo("GET")));
-        assertThat(parsedRequest.url(), is(equalTo(url("/my/path"))));
+        assertThat(parsedRequest.uri(), is(equalTo(uri("/my/path"))));
     }
 
     @Test

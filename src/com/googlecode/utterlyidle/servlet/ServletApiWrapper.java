@@ -1,15 +1,15 @@
 package com.googlecode.utterlyidle.servlet;
 
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.AttributeMap;
 import com.googlecode.utterlyidle.WebRoot;
-import com.googlecode.utterlyidle.io.Url;
 
 import javax.servlet.ServletContext;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.utterlyidle.io.Url.url;
+import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class ServletApiWrapper {
 
@@ -17,8 +17,8 @@ public class ServletApiWrapper {
         return new Callable<WebRoot>() {
             public WebRoot call() throws Exception {
                 try {
-                    final URL url1 = context.getResource("/WEB-INF/web.xml");
-                    Url url = url(url1).parent().parent();
+                    Uri webXml = uri(context.getResource("/WEB-INF/web.xml"));
+                    Uri url = webXml.path(hierarchicalPath(webXml.path()).parent().parent().toString());
                     return WebRoot.webRoot(url);
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);

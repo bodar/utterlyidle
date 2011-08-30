@@ -1,26 +1,23 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.io.Url;
+import com.googlecode.utterlyidle.RequestBuilder;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import java.io.BufferedReader;
-import java.io.Reader;
-
-import static com.googlecode.utterlyidle.io.Url.url;
+import java.io.StringReader;
+import java.net.URL;
 
 public class UrlStringTemplateGroup extends StringTemplateGroup {
-    public UrlStringTemplateGroup(Url baseUrl) {
+    public UrlStringTemplateGroup(URL baseUrl) {
         super(baseUrl.toString(), baseUrl.toString());
     }
 
     @Override
     protected StringTemplate loadTemplate(String name, String fileName) {
         try {
-            Reader reader = url(fileName).reader();
-            StringTemplate template = loadTemplate(name, new BufferedReader(reader));
-            reader.close();
-            return template;
+            String response = new String(new ClientHttpHandler().handle(RequestBuilder.get(fileName).build()).bytes());
+            return loadTemplate(name, new BufferedReader(new StringReader(response)));
         } catch (Exception e) {
             return null;
         }

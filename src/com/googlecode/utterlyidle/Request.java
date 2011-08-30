@@ -1,14 +1,14 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import com.googlecode.utterlyidle.io.Url;
 
 public interface Request {
     public String method();
 
-    public Url url();
+    public Uri uri();
 
-    public Request url(Url url);
+    public Request uri(Uri uri);
 
     public byte[] input();
 

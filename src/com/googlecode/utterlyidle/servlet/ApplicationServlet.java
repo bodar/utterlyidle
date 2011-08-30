@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.servlet;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -27,7 +28,6 @@ import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.RestApplication.handleRequest;
 import static com.googlecode.utterlyidle.RestApplication.inject;
-import static com.googlecode.utterlyidle.io.Url.url;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplication;
 
@@ -78,7 +78,7 @@ public class ApplicationServlet extends HttpServlet {
         try {
             return Requests.request(
                     request.getMethod(),
-                    url(request.getRequestURI() + queryString(request.getQueryString())),
+                    Uri.uri(request.getRequestURI() + queryString(request.getQueryString())),
                     withXForwardedFor(clientAddress(request.getRemoteAddr()), convertToHeaderParameters(request)),
                     bytes(request.getInputStream())
             );
