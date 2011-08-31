@@ -39,15 +39,15 @@ public class ConvertExtensionToAcceptHeaderTest {
                 replacements(pair("properties", "text/plain"), pair("html", "text/html")),
                 httpHandler);
 
-        assertUrlConversion(converter, "resource.properties?twigs=berries", "resource?twigs=berries");
-        assertUrlConversion(converter, "resource.html?twigs=berries", "resource?twigs=berries");
-        assertUrlConversion(converter, ".html?twigs=berries", "?twigs=berries");
+        assertUrlConversion(converter, "/resource.properties?twigs=berries", "/resource?twigs=berries");
+        assertUrlConversion(converter, "/resource.html?twigs=berries", "/resource?twigs=berries");
+        assertUrlConversion(converter, "/.html?twigs=berries", "/?twigs=berries");
 
         assertUrlConversion(converter,
                 "/something.html?getUrl=/something_else.xml",
                 "/something?getUrl=/something_else.xml");
 
-        assertUrlConversion(converter, "resource.notmapped?twigs=berries", "resource.notmapped?twigs=berries");
+        assertUrlConversion(converter, "/resource.notmapped?twigs=berries", "/resource.notmapped?twigs=berries");
     }
 
     @Test

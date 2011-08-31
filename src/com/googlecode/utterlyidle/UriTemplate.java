@@ -16,7 +16,7 @@ import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 
 public class UriTemplate implements Extractor<String, PathParameters>, Predicate<String> {
-    Regex pathParameters = regex("\\{([^\\}]+?)(?:\\:([^\\}]+))?\\}");
+    private static final Regex pathParameters = regex("\\{([^\\}]+?)(?:\\:([^\\}]+))?\\}");
     private final String template;
     private final Matches matches;
     private final Sequence<String> names;

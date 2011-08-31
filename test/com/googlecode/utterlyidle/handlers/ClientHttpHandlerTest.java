@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.URLs;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
@@ -54,7 +55,9 @@ public class ClientHttpHandlerTest {
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {
         HttpHandler urlHandler = new ClientHttpHandler();
-        return urlHandler.handle(request.withPath(server.uri().toString() + request.path()).build());
+        Uri uri = request.uri();
+        Uri path = server.uri().path(uri.path()).query(uri.query()).fragment(uri.fragment());
+        return urlHandler.handle(request.withUri(path).build());
     }
 
     private Server server;
