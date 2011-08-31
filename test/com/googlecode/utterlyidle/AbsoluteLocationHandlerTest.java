@@ -17,7 +17,6 @@ public class AbsoluteLocationHandlerTest {
     @Test
     public void removesBasePathFromRequestUri() throws Exception {
         HttpHandler handler = new AbsoluteLocationHandler(returnsRequestUri(), BasePath.basePath("basePath"));
-        assertThat((Uri) handler.handle(get("basePath/foo").build()).entity(), is(uri("/foo")));
         assertThat((Uri) handler.handle(get("/basePath/foo").build()).entity(), is(uri("/foo")));
     }
 

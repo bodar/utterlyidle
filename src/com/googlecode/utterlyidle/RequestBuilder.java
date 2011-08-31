@@ -30,7 +30,7 @@ public class RequestBuilder implements Callable<Request> {
 
     public RequestBuilder(String method, Uri uri) {
         this.method = method;
-        this.uri = uri.isRelative() ? uri.path("/" + uri.path()) : uri;
+        this.uri = uri;
     }
 
     public RequestBuilder(String method, String uri) {

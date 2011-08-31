@@ -51,7 +51,6 @@ public class RedirectToTest {
         }
     }
 
-
     @Test
     public void supportsSome() throws Exception {
         RedirectTo redirect = new RedirectTo<SomeResource>() {{
