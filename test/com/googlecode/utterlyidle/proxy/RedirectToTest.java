@@ -27,7 +27,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RedirectToTest {
-       @Test
+    @Test
     public void canPostRedirectGet() throws Exception {
         ApplicationBuilder application = application().addAnnotated(PostRedirectGet.class);
         Response response = application.handle(post("path/bob"));
@@ -40,7 +40,9 @@ public class RedirectToTest {
     public static class PostRedirectGet {
         @POST
         public Response post(@PathParam("id") final String id) {
-            return new RedirectTo<PostRedirectGet>(){{ call.get(id); }}.response();
+            return new RedirectTo<PostRedirectGet>() {{
+                call.get(id);
+            }}.response();
         }
 
         @GET
@@ -52,64 +54,72 @@ public class RedirectToTest {
 
     @Test
     public void supportsSome() throws Exception {
-        RedirectTo redirect = new RedirectTo<SomeResource>() {{ call.getHtml(Option.some("foo")); }};
-        assertThat(redirect.location(), is("path/foo"));
+        RedirectTo redirect = new RedirectTo<SomeResource>() {{
+            call.getHtml(Option.some("foo"));
+        }};
+        assertThat(redirect.location(), is("/path/foo"));
     }
 
     @Test
     public void supportsNone() throws Exception {
-        RedirectTo redirect = new RedirectTo<SomeResource>() {{ call.getOptional("id", Option.none(String.class)); }};
-        assertThat(redirect.location(), is("path/id"));
+        RedirectTo redirect = new RedirectTo<SomeResource>() {{
+            call.getOptional("id", Option.none(String.class));
+        }};
+        assertThat(redirect.location(), is("/path/id"));
     }
 
     @Test
     public void supportsAlternativeStyle() throws Exception {
-        RedirectTo redirect = new RedirectTo<SomeResource>() {{ call.getHtml("foo"); }};
-        assertThat(redirect.location(), is("path/foo"));
+        RedirectTo redirect = new RedirectTo<SomeResource>() {{
+            call.getHtml("foo");
+        }};
+        assertThat(redirect.location(), is("/path/foo"));
     }
 
     @Test
     public void supportsQueryParameters() throws Exception {
-        RedirectTo redirect = new RedirectTo<SomeResource>() {{ call.getHtmlWithQuery("foo", "bar"); }};
-        assertThat(redirect.location(), is("path/foo?foo=bar"));
+        RedirectTo redirect = new RedirectTo<SomeResource>() {{
+            call.getHtmlWithQuery("foo", "bar");
+        }};
+        assertThat(redirect.location(), is("/path/foo?foo=bar"));
     }
 
     @Test
     public void supportsConvenienceMethodToGetLocation() throws Exception {
         String location = urlOf(resource(SomeResource.class).getHtml("foo"));
-        assertThat(location, is("path/foo"));
+        assertThat(location, is("/path/foo"));
     }
 
     @Test
     public void supportsPathParamtersWithThreadLocalVersion() throws Exception {
-        assertThat(urlOf(resource(SomeResource.class).getHtml("foo")), is("path/foo"));
+        assertThat(urlOf(resource(SomeResource.class).getHtml("foo")), is("/path/foo"));
     }
 
     @Test
-      public void canExtractPath() {
-          assertThat(urlOf(resource(SomeResource.class).getHtml("foo")), Matchers.is("path/foo"));
-      }
+    public void canExtractPath() {
+        assertThat(urlOf(resource(SomeResource.class).getHtml("foo")), Matchers.is("/path/foo"));
+    }
 
-      @Test
-      public void canExtractPathWithStreamingOutput() throws IOException {
-          assertThat(urlOf(resource(SomeResource.class).getStreamingHtml("foo")), Matchers.is("path/foo"));
-      }
+    @Test
+    public void canExtractPathWithStreamingOutput() throws IOException {
+        assertThat(urlOf(resource(SomeResource.class).getStreamingHtml("foo")), Matchers.is("/path/foo"));
+    }
 
-      @Test
-      public void canExtractPathWithStreamingWriter() {
-          assertThat(urlOf(resource(SomeResource.class).getStreamingWriter("foo")), Matchers.is("path/foo"));
-      }
+    @Test
+    public void canExtractPathWithStreamingWriter() {
+        assertThat(urlOf(resource(SomeResource.class).getStreamingWriter("foo")), Matchers.is("/path/foo"));
+    }
 
-      @Test
-      public void canHandleClassWithNoDefaultConstructor() throws IOException {
-          assertThat(urlOf(resource(NoDefaultConstructor.class).getStreamingHtml("foo")), Matchers.is("path/foo"));
-      }
+    @Test
+    public void canHandleClassWithNoDefaultConstructor() throws IOException {
+        assertThat(urlOf(resource(NoDefaultConstructor.class).getStreamingHtml("foo")), Matchers.is("/path/foo"));
+    }
 
-      @Test
-      public void canHandleCustomTypeWithSimpleToString() {
-          Id id = Id.id("foo");
-          assertThat(urlOf(resource(CustomType.class).getHtml(id)), Matchers.is("path/" + id.toString()));
-      }
+    @Test
+    public void canHandleCustomTypeWithSimpleToString() {
+        Id id = Id.id("foo");
+        assertThat(urlOf(resource(CustomType.class).getHtml(id)), Matchers.is("/path/" + id.toString()));
+    }
 
 
 }

@@ -13,7 +13,7 @@ public class BindingTest {
     @Test
     public void supportsToString() throws Exception {
         Binding binding = get("/bar").resource(method(on(DslTest.Bar.class).hello())).build();
-        assertThat(binding.toString(), is("GET bar -> public java.lang.String com.googlecode.utterlyidle.dsl.DslTest$Bar.hello()"));
+        assertThat(binding.toString(), is("GET /bar -> public java.lang.String com.googlecode.utterlyidle.dsl.DslTest$Bar.hello()"));
     }
 
     @Test

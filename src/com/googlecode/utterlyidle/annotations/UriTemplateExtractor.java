@@ -17,7 +17,7 @@ public class UriTemplateExtractor implements Extractor<Method, UriTemplate> {
 
     public UriTemplate extract(Method method) {
         Sequence<Path> paths = sequence(method.getDeclaringClass().getAnnotation(Path.class), method.getAnnotation(Path.class));
-        return UriTemplate.uriTemplate(paths.filter(notNullValue()).map(getValue()).toString("/"));
+        return UriTemplate.uriTemplate(paths.filter(notNullValue()).map(getValue()).toString("/", "/", ""));
     }
 
     public static Callable1<? super Path, String> getValue() {

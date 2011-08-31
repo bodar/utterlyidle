@@ -12,15 +12,11 @@ public class ResourcePath extends HierarchicalPath {
         return new ResourcePath(value);
     }
 
-    public static ResourcePath resourcePathOf(Request request, BasePath basePath) {
-        return resourcePathOf(request.uri(), basePath);
+    public static ResourcePath resourcePathOf(Request request) {
+        return resourcePathOf(request.uri());
     }
 
-    public static ResourcePath resourcePathOf(Uri uri, BasePath basePath) {
-        final HierarchicalPath path = hierarchicalPath(uri.path());
-        if (path.containedBy(basePath)) {
-            return new ResourcePath(path.remove(basePath).toString());
-        }
-        return new ResourcePath(path.toString());
+    public static ResourcePath resourcePathOf(Uri uri) {
+        return new ResourcePath(uri.path());
     }
 }

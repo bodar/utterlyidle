@@ -42,16 +42,8 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public static UriTemplate uriTemplate(String template) {
-        return new UriTemplate(removeLeadingSlash(template));
+        return new UriTemplate(template);
     }
-
-    private static String removeLeadingSlash(String path) {
-        if(path.startsWith("/")){
-            return path.substring(1);
-        }
-        return path;
-    }
-
 
     public boolean matches(final String uri) {
         return templateRegex.matches(uri);

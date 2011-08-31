@@ -6,7 +6,6 @@ import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -61,8 +60,8 @@ public class SiteMeshHandlerTest {
     @Test
     public void shouldBeAbleToSelectBasedOnPath() throws Exception {
         assertDecorationResultsInResponse(
-                sequence(staticRule(path(BasePath.basePath("/"), "foo"), templateName("neverGetsHere")),
-                        staticRule(path(BasePath.basePath("/"), "bar"), templateName(VALID_TEMPLATE_NAME))),
+                sequence(staticRule(path("/foo"), templateName("neverGetsHere")),
+                        staticRule(path("/bar"), templateName(VALID_TEMPLATE_NAME))),
                 DECORATED_CONTENT);
     }
 

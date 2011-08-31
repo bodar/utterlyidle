@@ -54,8 +54,8 @@ public class UriTemplateTest {
 
     @Test
     public void canMatch() {
-        UriTemplate template = uriTemplate("path/{id}");
-        assertThat(template.matches("path/foo"), is(true));
+        assertThat(uriTemplate("path/{id}").matches("path/foo"), is(true));
+        assertThat(uriTemplate("/path/{id}").matches("/path/foo"), is(true));
     }
 
     @Test
