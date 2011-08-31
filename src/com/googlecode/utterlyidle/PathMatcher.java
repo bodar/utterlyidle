@@ -8,26 +8,24 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;
 
 public class PathMatcher implements Predicate<Request> {
-    private final BasePath basePath;
     private final UriTemplate uriTemplate;
 
-    public PathMatcher(BasePath basePath, UriTemplate uriTemplate) {
-        this.basePath = basePath;
+    public PathMatcher(UriTemplate uriTemplate) {
         this.uriTemplate = uriTemplate;
     }
 
     public boolean matches(Request request) {
-        return uriTemplate.matches(resourcePathOf(request, basePath).toString());
+        return uriTemplate.matches(request.uri().path());
     }
 
-    public static Predicate<? super Pair<Request, Response>> path(BasePath basePath, String path) {
-        return where(first(Request.class), new PathMatcher(basePath, UriTemplate.uriTemplate(path)));
+    public static Predicate<? super Pair<Request, Response>> path(String path) {
+        return where(first(Request.class), new PathMatcher(UriTemplate.uriTemplate(path)));
     }
 
-    public static Predicate<Binding> pathMatches(final BasePath basePath, final Request request) {
+    public static Predicate<Binding> pathMatches(final Request request) {
         return new Predicate<Binding>() {
             public boolean matches(Binding binding) {
-                return new PathMatcher(basePath, binding.uriTemplate()).matches(request);
+                return new PathMatcher(binding.uriTemplate()).matches(request);
             }
         };
     }

@@ -50,7 +50,7 @@ public class BaseHandler implements HttpHandler {
 
     private Response getResponse(final Request request) throws Exception {
         Either<MatchFailure, Sequence<Binding>> failureOrBindings = filter(
-                pair(pathMatches(container.get(BasePath.class), request), Status.NOT_FOUND),
+                pair(pathMatches(request), Status.NOT_FOUND),
                 pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                 pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
                 pair(producesMatches(request), Status.NOT_ACCEPTABLE),

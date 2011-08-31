@@ -59,14 +59,7 @@ public class MemoryRequestTest {
 
     @Test
     public void shouldSupportRetrievingResourcePath() throws Exception {
-        BasePath basePath = basePath("/foobar/");
-        Request request = get("http://www.myserver.com/foobar/spaz").build();
-
-        assertThat(resourcePathOf(request, basePath), is(resourcePath("spaz")));
-
-        Request anotherRequest = get("http://www.myserver.com/foobar").build();
-        assertThat(resourcePathOf(anotherRequest, basePath), is(resourcePath("")));
-
+        assertThat(resourcePathOf(get("http://www.myserver.com/foobar/spaz").build()), is(resourcePath("/foobar/spaz")));
     }
 
     @Test
