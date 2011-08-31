@@ -3,11 +3,15 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.utterlyidle.io.HierarchicalPath;
+
+import java.util.regex.Pattern;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static java.lang.String.format;
+import static java.util.regex.Pattern.quote;
 
 public class AbsoluteLocationHandler implements HttpHandler{
     private final HttpHandler httpHandler;
@@ -19,13 +23,20 @@ public class AbsoluteLocationHandler implements HttpHandler{
     }
 
     public Response handle(Request request) throws Exception {
-        Response response = httpHandler.handle(request);
-        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(asUri()).map(changeToAbsoluteUrl(baseUri(request)));
+        Uri uri = request.uri().path(removeBasePath(request.uri().path()));
+        Request newRequest = request.uri(uri);
+        Response response = httpHandler.handle(newRequest);
+        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(asUri()).map(changeToAbsoluteUrl(baseUri(newRequest)));
         response.headers().remove(LOCATION);
         for (Uri absoluteLocation : absoluteLocations) {
             response.header(LOCATION, absoluteLocation.toString());
         }
         return response;
+    }
+
+    private String removeBasePath(String path) {
+        String regex = "(" + quote(basePath.toString()) + ")";
+        return path.replaceFirst(regex, "/");
     }
 
     public static Callable1<? super String, Uri> asUri() {

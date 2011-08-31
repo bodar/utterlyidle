@@ -85,7 +85,7 @@ public class SiteMeshHandlerTest {
     @Test
     public void shouldPerformServerSideIncludes() throws Exception {
         assertDecorationResultsInResponse(
-                sequence(staticRule(onlyMatchRequestTo("hello"), templateName("templateWithServerSideInclude"))),
+                sequence(staticRule(onlyMatchRequestTo("/hello"), templateName("templateWithServerSideInclude"))),
                 "My name is fred", "hello", ServerSideIncludeResource.class);
     }
 
