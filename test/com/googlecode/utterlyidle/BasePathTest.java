@@ -9,8 +9,15 @@ import static org.hamcrest.Matchers.is;
 
 public class BasePathTest {
     @Test
-    public void shouldAlwaysEndInSlash() throws Exception {
-        assertThat(basePath(""), is(equalTo(basePath("/"))));
+    public void isAbsoluteFolder() throws Exception {
+        assertThat(basePath("foo"), is(equalTo(basePath("/foo/"))));
+        assertThat(basePath("/foo/"), is(equalTo(basePath("/foo/"))));
+        assertThat(basePath("/foo"), is(equalTo(basePath("/foo/"))));
+        assertThat(basePath("foo/"), is(equalTo(basePath("/foo/"))));
+        assertThat(basePath("foo/bar"), is(equalTo(basePath("/foo/bar/"))));
+        assertThat(basePath("/foo/bar"), is(equalTo(basePath("/foo/bar/"))));
+        assertThat(basePath("foo/bar"), is(equalTo(basePath("/foo/bar/"))));
+        assertThat(basePath("foo/bar/"), is(equalTo(basePath("/foo/bar/"))));
     }
 
 }

@@ -23,19 +23,22 @@ import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class RequestBuilder implements Callable<Request> {
     private final List<Pair<String, String>> headers = new ArrayList<Pair<String, String>>();
-    private final List<Pair<String, String>> query = new ArrayList<Pair<String, String>>();
     private final List<Pair<String, String>> form = new ArrayList<Pair<String, String>>();
     private byte[] input;
     private final String method;
-    private String path;
+    private Uri uri;
 
-    public RequestBuilder(String method, String path) {
+    public RequestBuilder(String method, Uri uri) {
         this.method = method;
-        this.path = path;
+        this.uri = uri.isRelative() ? uri.path("/" + uri.path()) : uri;
+    }
+
+    public RequestBuilder(String method, String uri) {
+        this(method, Uri.uri(uri));
     }
 
     public RequestBuilder(Request request) {
-        this(request.method(), request.uri().toString());
+        this(request.method(), request.uri());
 
         sequence(request.headers()).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
@@ -51,8 +54,8 @@ public class RequestBuilder implements Callable<Request> {
         });
     }
 
-    public RequestBuilder withPath(String value) {
-        path = value;
+    public RequestBuilder withUri(Uri value) {
+        uri = value;
         return this;
     }
     
@@ -72,7 +75,7 @@ public class RequestBuilder implements Callable<Request> {
 
 
     public RequestBuilder withQuery(String name, String value) {
-        query.add(pair(name, value));
+        uri = uri.query(UrlEncodedMessage.toString(QueryParameters.parse(uri.query()).add(name, value)));
         return this;
     }
 
@@ -94,12 +97,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public Request build() {
-        return request(method, buildUrl(), headerParameters(headers), input(formParameters(form), input));
-    }
-
-    private Uri buildUrl() {
-        String queryString = query.isEmpty() ? "" : "?" + UrlEncodedMessage.toString(query);
-        return Uri.uri(path + queryString);
+        return request(method, uri, headerParameters(headers), input(formParameters(form), input));
     }
 
     public static byte[] input(FormParameters form, byte[] input) {
@@ -130,7 +128,7 @@ public class RequestBuilder implements Callable<Request> {
         return new RequestBuilder(HttpMethod.DELETE, path);
     }
 
-    public String path() {
-        return path;
+    public Uri uri() {
+        return uri;
     }
 }
