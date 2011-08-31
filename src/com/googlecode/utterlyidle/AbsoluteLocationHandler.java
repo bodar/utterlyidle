@@ -3,9 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.io.HierarchicalPath;
-
-import java.util.regex.Pattern;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
@@ -23,15 +20,21 @@ public class AbsoluteLocationHandler implements HttpHandler{
     }
 
     public Response handle(Request request) throws Exception {
-        Uri uri = request.uri().path(removeBasePath(request.uri().path()));
-        Request newRequest = request.uri(uri);
-        Response response = httpHandler.handle(newRequest);
-        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(asUri()).map(changeToAbsoluteUrl(baseUri(newRequest)));
+        Response response = httpHandler.handle(removeBasePathFromUri(request));
+        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(asUri()).map(changeToAbsoluteUrl(baseUri(removeBasePathFromUri(request))));
         response.headers().remove(LOCATION);
         for (Uri absoluteLocation : absoluteLocations) {
             response.header(LOCATION, absoluteLocation.toString());
         }
         return response;
+    }
+
+    private Request removeBasePathFromUri(Request request) {
+        return request.uri(replacePath(request.uri(), removeBasePath(request.uri().path())));
+    }
+
+    private Uri replacePath(Uri uri, String value) {
+        return uri.path(value);
     }
 
     private String removeBasePath(String path) {
@@ -59,7 +62,7 @@ public class AbsoluteLocationHandler implements HttpHandler{
     public static Callable1<? super Uri, Uri> changeToAbsoluteUrl(final Uri baseUri) {
         return new Callable1<Uri, Uri>() {
             public Uri call(Uri uri) throws Exception {
-                if(uri.authority() != null && uri.authority() != ""){
+                if(uri.isFullyQualified()){
                     return uri;
                 }
                 return baseUri.path(uri.path()).query(uri.query()).fragment(uri.fragment());
