@@ -2,6 +2,11 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
 import static com.googlecode.totallylazy.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
@@ -23,11 +28,13 @@ import static org.hamcrest.Matchers.is;
 public class MemoryResponseTest {
     @Test
     public void shouldSupportSettingCookieAttributes() throws Exception {
-        Response response = response().cookie("a", cookie("1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(date(2010, 12, 26, 13, 16, 59))));
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Australia/Sydney"));
+        calendar.set(2011, 8, 4, 16, 15, 36);
+        Response response = response().cookie("a", cookie("1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(calendar.getTime())));;
 
         assertThat(
                 response.header(HttpHeaders.SET_COOKIE),
-                is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Sun, 26-Dec-2010 13:16:59 GMT\""));
+                is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Sun, 04-Sep-2011 06:15:36 GMT\""));
     }
 
     @Test
