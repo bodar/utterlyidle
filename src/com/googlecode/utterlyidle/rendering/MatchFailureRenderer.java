@@ -8,6 +8,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.*;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
@@ -42,7 +43,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
 
             model.add("resources", model().
                     add("method", httpMethod).
-                    add("uriTemplate", uriTemplate).
+                    add("uriTemplate", Strings.substring(basePath.toString(), 0, -1) + uriTemplate).
                     add("query", asModel(parameters.filter(where(parametersClass(), matches(QueryParameters.class))))).
                     add("form", asModel(parameters.filter(where(parametersClass(), matches(FormParameters.class))))));
         }
