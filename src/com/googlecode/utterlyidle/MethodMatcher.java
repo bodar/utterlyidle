@@ -10,7 +10,7 @@ public class MethodMatcher implements Predicate<Request> {
     }
 
     public boolean matches(Request request) {
-        return method.equals(request.method());
+        return method.equalsIgnoreCase(request.method());
     }
 
     public static Predicate<Binding> methodMatches(final Request request) {
