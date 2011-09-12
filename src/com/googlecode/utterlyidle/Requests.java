@@ -20,6 +20,14 @@ public class Requests {
         return request(method, Uri.uri(path + query.toString()), headers, input);
     }
 
+    public static Callable1<Request, Uri> uri() {
+        return new Callable1<Request, Uri>() {
+            public Uri call(Request request) throws Exception {
+                return request.uri();
+            }
+        };
+    }
+
     public static Callable1<Request, String> method() {
         return new Callable1<Request, String>() {
             public String call(Request request) throws Exception {
@@ -57,7 +65,7 @@ public class Requests {
         }
     }
 
-    public static CookieParameters cookies(Request request){
+    public static CookieParameters cookies(Request request) {
         return CookieParameters.cookies(request.headers());
     }
 
