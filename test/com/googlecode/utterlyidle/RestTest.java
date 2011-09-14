@@ -251,6 +251,13 @@ public class RestTest {
     }
 
     @Test
+    public void supportsPathParameterWithSpaces() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(PathParameter.class);
+        assertThat(application.responseAsString(get("path/bar%20test")), is("bar test"));
+        assertThat(application.responseAsString(get("path/bar+test")), is("bar test"));
+    }
+
+    @Test
     public void supportsDelete() throws Exception {
         ApplicationBuilder application = application().addAnnotated(DeleteContent.class);
         Response response = application.handle(delete("path/bar"));
