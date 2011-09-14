@@ -57,7 +57,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public PathParameters extract(String uri) {
-        List<String> values = groupValues(templateRegex.findMatches(uri).head());
+        List<String> values = groupValues(templateRegex.findMatches(UrlEncodedMessage.decode(uri)).head());
         return pathParameters(names.zip(values));
     }
 

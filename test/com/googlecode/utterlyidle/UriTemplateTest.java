@@ -68,6 +68,12 @@ public class UriTemplateTest {
     }
 
     @Test
+    public void canExtractFromUriWithEncodedSpace() {
+        UriTemplate template = uriTemplate("path/{id1}");
+        assertThat(template.extract("path/foo+bar").getValue("id1"), is("foo bar"));
+    }
+
+    @Test
     public void canGenerateUri() {
         UriTemplate template = uriTemplate("path/{id}");
         assertThat(template.generate(pathParameters(pair("id","foo"))), is("path/foo"));
