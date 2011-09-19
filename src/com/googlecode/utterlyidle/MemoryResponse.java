@@ -48,7 +48,7 @@ public class MemoryResponse implements Response {
     }
 
     public Response header(String name, Object value) {
-        headers.add(name, value.toString());
+        headers.add(name, value == null ? null : value.toString());
         return this;
     }
 
