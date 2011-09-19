@@ -657,7 +657,7 @@ public class RestTest {
         @GET
         @Path("bar")
         public Response redirect() {
-            return response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, baseUri.value().path("baz"));
+            return response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, baseUri.value().mergePath("baz"));
         }
     }
 
