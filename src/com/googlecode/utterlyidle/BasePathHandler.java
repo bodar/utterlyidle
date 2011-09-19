@@ -34,7 +34,7 @@ public class BasePathHandler implements HttpHandler {
         if (uri.isFullyQualified()) {
             return uri;
         }
-        return baseUri.value().path(stripLeadingSlash(uri.path())).query(uri.query()).fragment(uri.fragment());
+        return baseUri.value().mergePath(stripLeadingSlash(uri.path())).query(uri.query()).fragment(uri.fragment());
     }
 
     public Callable1<String, Uri> asAbsoluteUri(final BaseUri baseUri) {
@@ -51,11 +51,7 @@ public class BasePathHandler implements HttpHandler {
     }
 
     private Request removeBasePathFromUri(Request request) {
-        return request.uri(replacePath(request.uri(), removeBasePath(request.uri().path())));
-    }
-
-    private static Uri replacePath(Uri uri, String value) {
-        return uri.path(value);
+        return request.uri(request.uri().path(removeBasePath(request.uri().path())));
     }
 
     private String removeBasePath(String path) {
