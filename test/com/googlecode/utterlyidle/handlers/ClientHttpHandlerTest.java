@@ -56,7 +56,7 @@ public class ClientHttpHandlerTest {
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {
         HttpHandler urlHandler = new ClientHttpHandler();
         Uri uri = request.uri();
-        Uri path = server.uri().path(uri.path()).query(uri.query()).fragment(uri.fragment());
+        Uri path = server.uri().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
         return urlHandler.handle(request.withUri(path).build());
     }
 
