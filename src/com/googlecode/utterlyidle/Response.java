@@ -15,7 +15,7 @@ public interface Response {
 
     HeaderParameters headers();
 
-    Response header(String name, String value);
+    Response header(String name, Object value);
 
     Response cookie(String name, Cookie value);
 

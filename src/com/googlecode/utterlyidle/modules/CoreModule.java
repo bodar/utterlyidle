@@ -36,6 +36,7 @@ public class CoreModule extends AbstractModule {
     @Override
     public Module addPerRequestObjects(Container container) {
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
+        container.addActivator(BaseUri.class, BaseUriActivator.class);
         container.add(ResponseHandlersFinder.class);
         container.add(Auditors.class, Auditors.class);
         container.addActivator(Auditor.class, container.getActivator(Auditors.class));
