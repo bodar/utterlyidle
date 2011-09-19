@@ -59,7 +59,7 @@ public class RestApplication implements Application {
         requestScope.add(HttpHandler.class, BaseHandler.class);
         modules.activateRequestModules(requestScope);
         addBasePathIfNeeded(requestScope);
-        requestScope.decorate(HttpHandler.class, AbsoluteLocationHandler.class);
+        requestScope.decorate(HttpHandler.class, BasePathHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, AuditHandler.class);
         return requestScope;
