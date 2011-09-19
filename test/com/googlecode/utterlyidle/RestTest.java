@@ -50,6 +50,7 @@ import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 import static com.googlecode.utterlyidle.io.Converter.asString;
+import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
 import static com.googlecode.utterlyidle.proxy.Resource.redirect;
 import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -286,6 +287,20 @@ public class RestTest {
         assertThat(response.status(), is(SEE_OTHER));
         assertThat(response.header(LOCATION), is(Matchers.<Object>notNullValue()));
         assertThat(application.responseAsString(get(response.header(LOCATION))), is("bob"));
+    }
+
+    @Test
+    public void canRedirectWithBasePath() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(RedirectGet.class).add(requestInstance(BasePath.basePath("base")));
+        Response response = application.handle(get("/base/foo/bar"));
+        assertThat(response.header(LOCATION), is("/base/foo/baz"));
+    }
+
+    @Test
+    public void canRedirectWithBaseUri() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(BaseUriResource.class);
+        Response response = application.handle(get("/foo/bar").withHeader(HttpHeaders.HOST, "localhost:8080"));
+        assertThat(response.header(LOCATION), is("http://localhost:8080/baz"));
     }
 
     @Test
@@ -611,6 +626,38 @@ public class RestTest {
         @GET
         public String get(@PathParam("id") String id) {
             return id;
+        }
+    }
+
+    @Path("foo")
+    public static class RedirectGet {
+        @GET
+        @Path("bar")
+        public Response redirectSource() {
+            return redirect(resource(RedirectGet.class).get());
+        }
+
+        @GET
+        @Path("baz")
+        public String get() {
+            return "redirected";
+        }
+
+    }
+
+    @Path("foo")
+    public static class BaseUriResource {
+
+        private final BaseUri baseUri;
+
+        public BaseUriResource(BaseUri baseUri) {
+            this.baseUri = baseUri;
+        }
+
+        @GET
+        @Path("bar")
+        public Response redirect() {
+            return response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, baseUri.value().path("baz"));
         }
     }
 
