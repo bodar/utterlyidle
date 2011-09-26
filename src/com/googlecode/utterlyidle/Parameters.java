@@ -58,7 +58,7 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
     }
 
     private Sequence<Pair<K, V>> filterByKey(K key) {
-        return sequence(values).filter(by(Callables.<K>first(), is(call(predicate, key))));
+        return sequence(values).filter(by(Callables.<K>first(), is(call(predicate, key)))).realise();
     }
 
     public static <K, V> Callable2<Parameters<K, V>, Pair<K, V>, Parameters<K, V>> pairIntoParameters() {

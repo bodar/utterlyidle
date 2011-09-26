@@ -54,7 +54,7 @@ public class ParametersExtractor {
         };
     }
 
-    private static String convertToString(Object value) {
+    public static String convertToString(Object value) {
         if(value == null){
             return null;
         }

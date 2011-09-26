@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.proxy.Call;
 import com.googlecode.utterlyidle.annotations.Consumes;
 import com.googlecode.utterlyidle.annotations.CookieParam;
 import com.googlecode.utterlyidle.annotations.DELETE;
@@ -34,6 +35,8 @@ import java.util.concurrent.Callable;
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.proxy.Call.method;
+import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
@@ -51,8 +54,6 @@ import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 import static com.googlecode.utterlyidle.io.Converter.asString;
 import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
-import static com.googlecode.utterlyidle.proxy.Resource.redirect;
-import static com.googlecode.utterlyidle.proxy.Resource.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
@@ -618,9 +619,15 @@ public class RestTest {
 
     @Path("path/{id}")
     public static class PostRedirectGet {
+        private final Redirector redirector;
+
+        public PostRedirectGet(Redirector redirector) {
+            this.redirector = redirector;
+        }
+
         @POST
         public Response post(@PathParam("id") String id) {
-            return redirect(resource(PostRedirectGet.class).get(id));
+            return redirector.redirectTo(method(on(PostRedirectGet.class).get(id)));
         }
 
         @GET
@@ -631,10 +638,16 @@ public class RestTest {
 
     @Path("foo")
     public static class RedirectGet {
+        private final Redirector redirector;
+
+        public RedirectGet(Redirector redirector) {
+            this.redirector = redirector;
+        }
+
         @GET
         @Path("bar")
         public Response redirectSource() {
-            return redirect(resource(RedirectGet.class).get());
+            return redirector.redirectTo(method(on(RedirectGet.class).get()));
         }
 
         @GET

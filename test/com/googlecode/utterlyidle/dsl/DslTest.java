@@ -1,7 +1,11 @@
 package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
@@ -15,6 +19,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class DslTest {
+    @Test
+    public void supportsRedirection() throws Exception {
+        ApplicationBuilder application = application().
+                add(get("redirect").resource(method(on(Redirect.class).redirect()))).
+                add(get("target").resource(method(on(Redirect.class).target())));
+        Response response = application.handle(RequestBuilder.get("/redirect"));
+        assertThat(response.status(), is(Status.SEE_OTHER));
+        assertThat(response.header(HttpHeaders.LOCATION), is("/target"));
+    }
+
     @Test
     public void supportsGet() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Bar.class).hello())));
@@ -71,6 +85,26 @@ public class DslTest {
     public static class Bob {
         public String say(String first, String last) {
             return "Hello " + first + " " + last;
+        }
+    }
+
+    public static class Redirect {
+        private final Redirector redirector;
+
+        public Redirect(Redirector redirector) {
+            this.redirector = redirector;
+        }
+
+        public Response redirect() {
+            return redirector.redirectTo(method(on(Redirect.class).target()));
+        }
+
+        public Response redirect(String foo) {
+            return redirector.redirectTo(method(on(Redirect.class).target()));
+        }
+
+        public Response target() {
+            return Responses.response(Status.NO_CONTENT);
         }
     }
 

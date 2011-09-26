@@ -1,5 +1,5 @@
-<form action="$resource.uriTemplate$" method="$resource.method$">
-    <p><span class="method">$resource.method$</span> $resource.uriTemplate$</p>
+<form action="$resource.path$" method="$resource.method$">
+    <p><span class="method">$resource.method$</span> $resource.path$</p>
     $resource.form:{ form |
         $form.keys:{ key |
             $form.(key):{ values |
