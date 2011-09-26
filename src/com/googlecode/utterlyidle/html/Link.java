@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.records.xml.Xml;
+import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import org.w3c.dom.Element;

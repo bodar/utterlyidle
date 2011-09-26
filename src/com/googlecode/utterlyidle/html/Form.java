@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.records.xml.Xml;
+import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
