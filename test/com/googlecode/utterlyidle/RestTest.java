@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
-import com.googlecode.totallylazy.proxy.Call;
 import com.googlecode.utterlyidle.annotations.Consumes;
 import com.googlecode.utterlyidle.annotations.CookieParam;
 import com.googlecode.utterlyidle.annotations.DELETE;
@@ -627,7 +626,7 @@ public class RestTest {
 
         @POST
         public Response post(@PathParam("id") String id) {
-            return redirector.redirectTo(method(on(PostRedirectGet.class).get(id)));
+            return redirector.seeOther(method(on(PostRedirectGet.class).get(id)));
         }
 
         @GET
@@ -647,7 +646,7 @@ public class RestTest {
         @GET
         @Path("bar")
         public Response redirectSource() {
-            return redirector.redirectTo(method(on(RedirectGet.class).get()));
+            return redirector.seeOther(method(on(RedirectGet.class).get()));
         }
 
         @GET
