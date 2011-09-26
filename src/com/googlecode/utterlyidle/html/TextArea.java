@@ -2,7 +2,8 @@ package com.googlecode.utterlyidle.html;
 
 import org.w3c.dom.Element;
 
-import static com.googlecode.totallylazy.records.xml.Xml.selectContents;
+import static com.googlecode.totallylazy.Xml.selectContents;
+
 
 public class TextArea implements NameValue{
     public static final String NAME = "@name";

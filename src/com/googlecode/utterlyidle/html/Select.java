@@ -3,10 +3,10 @@ package com.googlecode.utterlyidle.html;
 import com.googlecode.totallylazy.Strings;
 import org.w3c.dom.Element;
 
-import static com.googlecode.totallylazy.records.xml.Xml.removeAttribute;
-import static com.googlecode.totallylazy.records.xml.Xml.selectContents;
-import static com.googlecode.totallylazy.records.xml.Xml.selectElement;
-import static com.googlecode.totallylazy.records.xml.Xml.selectElements;
+import static com.googlecode.totallylazy.Xml.removeAttribute;
+import static com.googlecode.totallylazy.Xml.selectContents;
+import static com.googlecode.totallylazy.Xml.selectElement;
+import static com.googlecode.totallylazy.Xml.selectElements;
 
 public class Select implements NameValue {
     public static final String SELECTED = "selected";
