@@ -16,50 +16,48 @@ import static org.hamcrest.Matchers.is;
 public class BaseUriRedirectorTest {
     @Test
     public void extractsUrlFromABinding() throws Exception {
-        RegisteredResources bindings = new RegisteredResources();
-        bindings.add(get("/redirect").resource(method(on(DslTest.Redirect.class).redirect())).build());
-
-        Redirector redirector = new BaseUriRedirector(baseUri("http://test/path/"), bindings);
-
-        Response response = redirector.redirectTo(method(on(DslTest.Redirect.class).redirect()));
-        assertThat(response.status(), is(Status.SEE_OTHER));
-        assertThat(response.header(HttpHeaders.LOCATION), is("http://test/path/redirect"));
+        Redirector redirector = redirector(get("/redirect").resource(method(on(DslTest.Redirect.class).redirect())).build());
+        Response response = redirector.seeOther(method(on(DslTest.Redirect.class).redirect()));
+        assertLocation(response, "http://server/base/redirect");
     }
 
     @Test
     public void supportsPathParameters() throws Exception {
-        RegisteredResources bindings = new RegisteredResources();
-        bindings.add(get("/redirect/{foo}").resource(method(on(DslTest.Redirect.class).redirect(pathParam(String.class, "foo")))).build());
-
-        Redirector redirector = new BaseUriRedirector(baseUri("http://test/path/"), bindings);
-
-        Response response = redirector.redirectTo(method(on(DslTest.Redirect.class).redirect("bar")));
-        assertThat(response.status(), is(Status.SEE_OTHER));
-        assertThat(response.header(HttpHeaders.LOCATION), is("http://test/path/redirect/bar"));
+        Redirector redirector = redirector(get("/redirect/{foo}").resource(method(on(DslTest.Redirect.class).redirect(pathParam(String.class, "foo")))).build());
+        Response response = redirector.seeOther(method(on(DslTest.Redirect.class).redirect("bar")));
+        assertLocation(response, "http://server/base/redirect/bar");
     }
 
     @Test
     public void supportsQueryParameters() throws Exception {
-        RegisteredResources bindings = new RegisteredResources();
-        bindings.add(get("/redirect").resource(method(on(DslTest.Redirect.class).redirect(queryParam(String.class, "foo")))).build());
-
-        Redirector redirector = new BaseUriRedirector(baseUri("http://test/path/"), bindings);
-
-        Response response = redirector.redirectTo(method(on(DslTest.Redirect.class).redirect("bar")));
-        assertThat(response.status(), is(Status.SEE_OTHER));
-        assertThat(response.header(HttpHeaders.LOCATION), is("http://test/path/redirect?foo=bar"));
+        Redirector redirector = redirector(get("/redirect").resource(method(on(DslTest.Redirect.class).redirect(queryParam(String.class, "foo")))).build());
+        Response response = redirector.seeOther(method(on(DslTest.Redirect.class).redirect("bar")));
+        assertLocation(response, "http://server/base/redirect?foo=bar");
     }
     
     @Test
+    public void supportsDefaultValue() throws Exception {
+        Redirector redirector = redirector(get("/redirect").resource(method(on(DslTest.Redirect.class).redirect(queryParam(String.class, "foo", "Dan")))).build());
+        Response response = redirector.seeOther(method(on(DslTest.Redirect.class).redirect(null)));
+        assertLocation(response, "http://server/base/redirect?foo=Dan");
+    }
+
+    @Test
     public void canExtractPathWithStreamingWriter() {
-        RegisteredResources bindings = new RegisteredResources();
-        bindings.add(annotatedClass(SomeResource.class));
+        Redirector redirector = redirector(annotatedClass(SomeResource.class));
+        Response response = redirector.seeOther(method(on(SomeResource.class).getStreamingWriter("foo")));
+        assertLocation(response, "http://server/base/path/foo");
+    }
 
-        Redirector redirector = new BaseUriRedirector(baseUri("http://server/base/"), bindings);
-
-        Response response = redirector.redirectTo(method(on(SomeResource.class).getStreamingWriter("foo")));
+    private void assertLocation(Response response, String location) {
         assertThat(response.status(), is(Status.SEE_OTHER));
-        assertThat(response.header(HttpHeaders.LOCATION), is("http://server/base/path/foo"));
+        assertThat(response.header(HttpHeaders.LOCATION), is(location));
+    }
+
+    private Redirector redirector(Binding... values) {
+        RegisteredResources bindings = new RegisteredResources();
+        bindings.add(values);
+        return new BaseUriRedirector(baseUri("http://server/base/"), bindings);
     }
 
 }

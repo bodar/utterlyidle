@@ -15,9 +15,7 @@ import static com.googlecode.totallylazy.Predicates.some;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Sequences.unzip;
-import static com.googlecode.utterlyidle.BasePathHandler.asAbsolute;
 import static com.googlecode.utterlyidle.BasePathHandler.toAbsolute;
-import static com.googlecode.utterlyidle.Responses.seeOther;
 
 public class BaseUriRedirector implements Redirector {
     private final BaseUri baseUri;
@@ -29,8 +27,8 @@ public class BaseUriRedirector implements Redirector {
     }
 
     @Override
-    public Response redirectTo(final Invocation invocation) {
-        return seeOther(uriOf(invocation));
+    public Response seeOther(final Invocation invocation) {
+        return Responses.seeOther(uriOf(invocation));
     }
 
     @Override
@@ -68,11 +66,18 @@ public class BaseUriRedirector implements Redirector {
             if (pair.first() instanceof NamedParameter) {
                 NamedParameter parameter = (NamedParameter) pair.first();
                 if (parameter.parametersClass().equals(result.getClass())) {
-                    result.add(parameter.name(), com.googlecode.utterlyidle.annotations.ParametersExtractor.convertToString(pair.second()));
+                    result.add(parameter.name(), getValue(pair, parameter));
                 }
             }
         }
         return result;
+    }
+
+    private String getValue(Pair<Parameter, Object> pair, NamedParameter parameter) {
+        if (pair.second() == null) {
+            return parameter.defaultValue().get();
+        }
+        return com.googlecode.utterlyidle.annotations.ParametersExtractor.convertToString(pair.second());
     }
 
     private Sequence<Pair<Parameter, Object>> getParameterAndValue(final Sequence<Option<Parameter>> parameters, final Sequence<Object> arguments) {

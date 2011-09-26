@@ -96,11 +96,11 @@ public class DslTest {
         }
 
         public Response redirect() {
-            return redirector.redirectTo(method(on(Redirect.class).target()));
+            return redirector.seeOther(method(on(Redirect.class).target()));
         }
 
         public Response redirect(String foo) {
-            return redirector.redirectTo(method(on(Redirect.class).target()));
+            return redirector.seeOther(method(on(Redirect.class).target()));
         }
 
         public Response target() {
