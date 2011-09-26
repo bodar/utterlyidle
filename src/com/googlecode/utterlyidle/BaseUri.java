@@ -33,4 +33,9 @@ public class BaseUri implements Value<Uri> {
     public Uri value() {
         return uri;
     }
+
+    @Override
+    public String toString() {
+        return uri.toString();
+    }
 }

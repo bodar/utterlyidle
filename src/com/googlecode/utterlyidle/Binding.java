@@ -1,7 +1,9 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 
@@ -51,6 +53,13 @@ public class Binding {
 
     public Sequence<Pair<Type, Option<Parameter>>> parameters() {
         return parameters;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Sequence<NamedParameter> namedParameters() {
+        return parameters.map(Callables.<Option<Parameter>>second()).
+                filter(Predicates.<Parameter>some()).
+                map(Callables.<Parameter>value()).safeCast(NamedParameter.class);
     }
 
     public Number numberOfArguments() {

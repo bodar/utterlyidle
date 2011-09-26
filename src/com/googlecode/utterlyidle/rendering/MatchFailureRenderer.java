@@ -2,9 +2,6 @@ package com.googlecode.utterlyidle.rendering;
 
 import com.googlecode.funclate.stringtemplate.EnhancedStringTemplateGroup;
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
@@ -14,7 +11,6 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
@@ -24,9 +20,11 @@ import static com.googlecode.utterlyidle.rendering.Model.model;
 
 public class MatchFailureRenderer implements Renderer<MatchFailure> {
     private final BasePath basePath;
+    private final Redirector redirector;
 
-    public MatchFailureRenderer(BasePath basePath) {
+    public MatchFailureRenderer(BasePath basePath, final Redirector redirector) {
         this.basePath = basePath;
+        this.redirector = redirector;
     }
 
     public String render(MatchFailure value) throws IOException {
@@ -38,12 +36,11 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
 
         for (Binding binding : value.matchesSoFar().filter(not(hidden()))) {
             final String httpMethod = binding.httpMethod();
-            final UriTemplate uriTemplate = binding.uriTemplate();
-            Sequence<NamedParameter> parameters = extractNamedParameters(binding.parameters());
+            Sequence<NamedParameter> parameters = binding.namedParameters();
 
             model.add("resources", model().
                     add("method", httpMethod).
-                    add("uriTemplate", Strings.substring(basePath.toString(), 0, -1) + uriTemplate).
+                    add("path",  redirector.uriOf(binding).path()).
                     add("query", asModel(parameters.filter(where(parametersClass(), matches(QueryParameters.class))))).
                     add("form", asModel(parameters.filter(where(parametersClass(), matches(FormParameters.class))))));
         }
@@ -51,23 +48,16 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         return template.toString();
     }
 
-    private Predicate<? super Class> matches(Class aClass) {
+    public static Predicate<? super Class> matches(Class aClass) {
         return Predicates.is(aClass);
     }
 
-    private Callable1<NamedParameter, Class<? extends Parameters<String, String>>> parametersClass() {
+    public static Callable1<NamedParameter, Class<? extends Parameters<String, String>>> parametersClass() {
         return new Callable1<NamedParameter, Class<? extends Parameters<String, String>>>() {
             public Class<? extends Parameters<String, String>> call(NamedParameter namedParameter) throws Exception {
                  return namedParameter.parametersClass();
             }
         };
-    }
-
-    @SuppressWarnings("unchecked")
-    private Sequence<NamedParameter> extractNamedParameters(Sequence<Pair<Type, Option<Parameter>>> parameters) {
-        return parameters.map(Callables.<Option<Parameter>>second()).
-                filter(Predicates.<Parameter>some()).
-                map(Callables.<Parameter>value()).safeCast(NamedParameter.class);
     }
 
     private Model asModel(Sequence<NamedParameter> parameters) {

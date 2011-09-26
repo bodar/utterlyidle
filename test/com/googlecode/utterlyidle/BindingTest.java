@@ -12,15 +12,15 @@ import static org.hamcrest.Matchers.is;
 public class BindingTest {
     @Test
     public void supportsToString() throws Exception {
-        Binding binding = get("/bar").resource(method(on(DslTest.Bar.class).hello())).build();
-        assertThat(binding.toString(), is("GET /bar -> public java.lang.String com.googlecode.utterlyidle.dsl.DslTest$Bar.hello()"));
+        Binding binding = get("bar").resource(method(on(DslTest.Bar.class).hello())).build();
+        assertThat(binding.toString(), is("GET bar -> public java.lang.String com.googlecode.utterlyidle.dsl.DslTest$Bar.hello()"));
     }
 
     @Test
     public void supportsEquality() throws Exception {
-        Binding binding1 = get("/bar").resource(method(on(DslTest.Bar.class).hello())).build();
-        Binding binding2 = get("/bar").resource(method(on(DslTest.Bar.class).hello())).build();
-        Binding binding3 = get("/foo").resource(method(on(DslTest.Bar.class).hello())).build();
+        Binding binding1 = get("bar").resource(method(on(DslTest.Bar.class).hello())).build();
+        Binding binding2 = get("bar").resource(method(on(DslTest.Bar.class).hello())).build();
+        Binding binding3 = get("foo").resource(method(on(DslTest.Bar.class).hello())).build();
 
         assertThat(binding1.equals(binding2), is(true));
         assertThat(binding1.hashCode() == binding2.hashCode(), is(true));

@@ -93,7 +93,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Either<MatchFailure, Sequence<Binding>> filter(Pair<Predicate<Binding>, Status>... filterAndResult) {
-        Sequence<Binding> activators = bindings();
+        Sequence<Binding> activators = sequence(bindings);
         for (Pair<Predicate<Binding>, Status> pair : filterAndResult) {
             Sequence<Binding> matchesSoFar = activators;
             activators = activators.filter(pair.first());
@@ -102,10 +102,6 @@ public class BaseHandler implements HttpHandler {
             }
         }
         return right(activators);
-    }
-
-    private Sequence<Binding> bindings() {
-        return sequence(this.bindings.bindings());
     }
 
     private Object invokeMethod(Binding binding, Request request) throws Exception {
@@ -136,7 +132,7 @@ public class BaseHandler implements HttpHandler {
 
     private void setupContainer(Request request) {
         container.addInstance(Request.class, request);
-        bindings().fold(container, new Callable2<Container, Binding, Container>() {
+        sequence(bindings).fold(container, new Callable2<Container, Binding, Container>() {
             public Container call(Container container, Binding binding) throws Exception {
                 Class<?> aClass = binding.method().getDeclaringClass();
                 if (!container.contains(aClass)) {

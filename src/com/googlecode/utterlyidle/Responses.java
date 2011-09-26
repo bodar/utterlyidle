@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import static com.googlecode.totallylazy.Callables.second;
@@ -19,6 +20,10 @@ public class Responses {
 
     public static Response response(Status status, HeaderParameters headers, Object entity) {
         return new MemoryResponse(status, headers, entity);
+    }
+
+    public static Response seeOther(Uri location) {
+        return seeOther(location.toString());
     }
 
     public static Response seeOther(String location) {
