@@ -1,6 +1,10 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class RegisteredResources implements Resources {
@@ -12,7 +16,8 @@ public class RegisteredResources implements Resources {
         }
     }
 
-    public Iterable<Binding> bindings() {
-        return bindings;
+    @Override
+    public Iterator<Binding> iterator() {
+        return bindings.iterator();
     }
 }

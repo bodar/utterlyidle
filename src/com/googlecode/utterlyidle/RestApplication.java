@@ -67,7 +67,7 @@ public class RestApplication implements Application {
 
     private void addBasePathIfNeeded(Container requestScope) {
         if (!requestScope.contains(BasePath.class)) {
-            requestScope.addInstance(BasePath.class, BasePath.basePath("/")); // Ideally all RestServers should add a ServerUrl but for internal requests this is not required
+            requestScope.addInstance(BasePath.class, BasePath.basePath("/"));
         }
     }
 

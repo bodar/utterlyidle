@@ -17,14 +17,12 @@ import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 
 public class UriTemplate implements Extractor<String, PathParameters>, Predicate<String> {
     private static final Regex pathParameters = regex("\\{([^\\}]+?)(?:\\:([^\\}]+))?\\}");
-    private final boolean absolute;
     private final String template;
     private final Matches matches;
     private final Sequence<String> names;
     private final Regex templateRegex;
 
     private UriTemplate(String template) {
-        absolute = template.startsWith("/");
         this.template = trimSlashes(template);
         matches = pathParameters.findMatches(this.template + "{$:(/.*)?}");
         names = matches.map(new Callable1<MatchResult, String>() {
@@ -70,7 +68,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public String generate(final PathParameters parameters) {
-        return prefix() + matches.replace(new Callable1<MatchResult, CharSequence>() {
+        return matches.replace(new Callable1<MatchResult, CharSequence>() {
             public CharSequence call(MatchResult matchResult) throws Exception {
                 String paramValue = parameters.getValue(matchResult.group(1));
                 if(paramValue==null)return null;
@@ -80,13 +78,9 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
         });
     }
 
-    private String prefix() {
-        return (absolute ? "/" : "");
-    }
-
     @Override
     public String toString() {
-        return prefix() + template;
+        return template;
     }
 
     @Override

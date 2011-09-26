@@ -21,7 +21,9 @@ public class BasePathHandler implements HttpHandler {
 
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(removeBasePathFromUri(request));
-        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).realise().map(asAbsoluteUri(baseUri(request, basePath)));
+        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).
+                map(uri()).
+                map(asAbsolute(baseUri(request, basePath)));
         response.headers().remove(LOCATION);
         for (Uri absoluteLocation : absoluteLocations) {
             response.header(LOCATION, absoluteLocation.toString());
@@ -29,25 +31,29 @@ public class BasePathHandler implements HttpHandler {
         return response;
     }
 
-    public Uri toAbsoluteUri(String absolutePath, BaseUri baseUri) {
-        Uri uri = uri(absolutePath);
-        if (uri.isFullyQualified()) {
-            return uri;
-        }
-        return baseUri.value().mergePath(stripLeadingSlash(uri.path())).query(uri.query()).fragment(uri.fragment());
-    }
-
-    public Callable1<String, Uri> asAbsoluteUri(final BaseUri baseUri) {
+    private Callable1<? super String, Uri> uri() {
         return new Callable1<String, Uri>() {
             @Override
             public Uri call(String value) throws Exception {
-                return toAbsoluteUri(value, baseUri);
+                return Uri.uri(value);
             }
         };
     }
 
-    private static String stripLeadingSlash(String path) {
-        return path.startsWith("/") ? path.substring(1) : path;
+    public static Uri toAbsolute(Uri uri, BaseUri baseUri) {
+        if (uri.isFullyQualified()) {
+            return uri;
+        }
+        return baseUri.value().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
+    }
+
+    public static Callable1<Uri, Uri> asAbsolute(final BaseUri baseUri) {
+        return new Callable1<Uri, Uri>() {
+            @Override
+            public Uri call(Uri value) throws Exception {
+                return toAbsolute(value, baseUri);
+            }
+        };
     }
 
     private Request removeBasePathFromUri(Request request) {
