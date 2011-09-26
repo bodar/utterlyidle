@@ -2,8 +2,9 @@ package com.googlecode.utterlyidle.html;
 
 import org.w3c.dom.Element;
 
-import static com.googlecode.totallylazy.records.xml.Xml.selectContents;
-import static com.googlecode.totallylazy.records.xml.Xml.selectNode;
+import static com.googlecode.totallylazy.Xml.selectContents;
+import static com.googlecode.totallylazy.Xml.selectNode;
+
 
 public class Input implements NameValue{
     public static final String NAME = "@name";

@@ -1,18 +1,17 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.records.xml.Xml;
+import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Response;
 import org.w3c.dom.Document;
 
-import static com.googlecode.totallylazy.records.xml.Xml.document;
-import static com.googlecode.totallylazy.records.xml.Xml.selectContents;
-import static com.googlecode.totallylazy.records.xml.Xml.selectElement;
+import static com.googlecode.totallylazy.Xml.selectContents;
+import static com.googlecode.totallylazy.Xml.selectElement;
 
 public class Html {
     private final Document document;
 
     public Html(String document) {
-        this.document = document(document);
+        this.document = Xml.document(document);
     }
 
     public static Html html(Response response) throws Exception {
@@ -20,7 +19,7 @@ public class Html {
     }
 
     public String title() {
-        return selectContents(document, "/html/head/title");
+        return Xml.selectContents(document, "/html/head/title");
     }
 
     public Form form(String xpath) {

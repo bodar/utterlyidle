@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.records.xml.Xml;
+import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
 public class Checkbox extends Input{
