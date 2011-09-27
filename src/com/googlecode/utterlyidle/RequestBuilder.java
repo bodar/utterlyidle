@@ -112,16 +112,32 @@ public class RequestBuilder implements Callable<Request> {
         return input;
     }
 
+    public static RequestBuilder get(Uri uri) {
+        return new RequestBuilder(HttpMethod.GET, uri);
+    }
+
     public static RequestBuilder get(String path) {
         return new RequestBuilder(HttpMethod.GET, path);
+    }
+
+    public static RequestBuilder post(Uri uri) {
+        return new RequestBuilder(HttpMethod.POST, uri);
     }
 
     public static RequestBuilder post(String path) {
         return new RequestBuilder(HttpMethod.POST, path);
     }
 
+    public static RequestBuilder put(Uri uri) {
+        return new RequestBuilder(HttpMethod.PUT, uri);
+    }
+
     public static RequestBuilder put(String path) {
         return new RequestBuilder(HttpMethod.PUT, path);
+    }
+
+    public static RequestBuilder delete(Uri uri) {
+        return new RequestBuilder(HttpMethod.DELETE, uri);
     }
 
     public static RequestBuilder delete(String path) {
