@@ -2,9 +2,13 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Left;
+import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Right;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Some;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.proxy.Invocation;
 
@@ -66,19 +70,42 @@ public class BaseUriRedirector implements Redirector {
             if (pair.first() instanceof NamedParameter) {
                 NamedParameter parameter = (NamedParameter) pair.first();
                 if (parameter.parametersClass().equals(result.getClass())) {
-                    result.add(parameter.name(), getValue(pair, parameter));
+                    String value = getValue(parameter, pair.second());
+                    if(value != null) {
+                        result.add(parameter.name(), value);
+                    }
                 }
             }
         }
         return result;
     }
 
-    private String getValue(Pair<Parameter, Object> pair, NamedParameter parameter) {
-        if (pair.second() == null) {
+    private String getValue(NamedParameter parameter, Object value) {
+        if (value == null) {
             return parameter.defaultValue().get();
         }
-        return com.googlecode.utterlyidle.annotations.ParametersExtractor.convertToString(pair.second());
+        return convertToString(value);
     }
+
+    public static String convertToString(Object value) {
+        if(value == null){
+            return null;
+        }
+        if(value instanceof Left){
+            return convertToString(((Left) value).left());
+        }
+        if(value instanceof Right){
+            return convertToString(((Right) value).right());
+        }
+        if(value instanceof Some){
+            return convertToString(((Some) value).get());
+        }
+        if(value instanceof None){
+            return null;
+        }
+        return value.toString();
+    }
+
 
     private Sequence<Pair<Parameter, Object>> getParameterAndValue(final Sequence<Option<Parameter>> parameters, final Sequence<Object> arguments) {
         return parameters.zip(arguments).
