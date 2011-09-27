@@ -97,7 +97,8 @@ public class RestApplication implements Application {
     public static Callable1<Container, Response> handleRequest(final Request request) {
         return new Callable1<Container, Response>() {
             public Response call(Container container) throws Exception {
-                return container.get(HttpHandler.class).handle(request);
+                return container.addInstance(Request.class, request).
+                        get(HttpHandler.class).handle(request);
             }
         };
     }
