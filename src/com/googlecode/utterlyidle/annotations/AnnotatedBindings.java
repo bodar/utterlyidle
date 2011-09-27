@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
@@ -31,6 +32,10 @@ public class AnnotatedBindings {
 
     public static Option<Binding> binding(final Method method) {
         return httpMethod(method).map(asBinding(method));
+    }
+
+    public static Uri relativeUriOf(final Invocation invocation) {
+        return RelativeUriExtractor.relativeUriOf(binding(invocation.method()).get(), invocation.arguments());
     }
 
     private static Callable1<HttpMethod, Binding> asBinding(final Method method) {
