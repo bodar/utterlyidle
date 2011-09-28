@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Predicates.where;
@@ -18,12 +19,12 @@ public class PathMatcher implements Predicate<Request> {
         return uriTemplate.matches(request.uri().path());
     }
 
-    public static Predicate<? super Pair<Request, Response>> path(String path) {
+    public static LogicalPredicate<? super Pair<Request, Response>> path(String path) {
         return where(first(Request.class), new PathMatcher(UriTemplate.uriTemplate(path)));
     }
 
-    public static Predicate<Binding> pathMatches(final Request request) {
-        return new Predicate<Binding>() {
+    public static LogicalPredicate<Binding> pathMatches(final Request request) {
+        return new LogicalPredicate<Binding>() {
             public boolean matches(Binding binding) {
                 return new PathMatcher(binding.uriTemplate()).matches(request);
             }

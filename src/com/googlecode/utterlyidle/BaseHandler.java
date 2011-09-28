@@ -92,9 +92,9 @@ public class BaseHandler implements HttpHandler {
         return bindings.sortBy(matchQuality(request)).head();
     }
 
-    private Either<MatchFailure, Sequence<Binding>> filter(Pair<Predicate<Binding>, Status>... filterAndResult) {
+    private Either<MatchFailure, Sequence<Binding>> filter(Pair<? extends Predicate<Binding>, Status>... filterAndResult) {
         Sequence<Binding> activators = sequence(bindings);
-        for (Pair<Predicate<Binding>, Status> pair : filterAndResult) {
+        for (Pair<? extends Predicate<Binding>, Status> pair : filterAndResult) {
             Sequence<Binding> matchesSoFar = activators;
             activators = activators.filter(pair.first());
             if (activators.isEmpty()) {
