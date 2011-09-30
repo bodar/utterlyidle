@@ -1,17 +1,23 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Response;
 import org.w3c.dom.Document;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
 import static com.googlecode.totallylazy.Xml.selectElement;
+import static java.lang.String.format;
 
 public class Html {
     private final Document document;
 
     public Html(String document) {
-        this.document = Xml.document(document);
+        try {
+            this.document = Xml.document(document);
+        } catch (LazyException e){
+            throw new IllegalArgumentException(format("Could not parse html: %s", document));
+        }
     }
 
     public static Html html(Response response) throws Exception {
