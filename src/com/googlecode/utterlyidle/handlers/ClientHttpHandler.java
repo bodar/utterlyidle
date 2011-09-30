@@ -31,17 +31,6 @@ public class ClientHttpHandler implements HttpClient {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.uri().toString());
         URLConnection connection = url.openConnection();
-
-        if (connection instanceof HttpURLConnection) {
-            return handle(request, (HttpURLConnection) connection);
-        }
-        return handle(request, connection);
-    }
-
-    public Response handle(Request request, int timeout) throws Exception {
-        URL url = new URL(request.uri().toString());
-        URLConnection connection = url.openConnection();
-
         if (connection instanceof HttpURLConnection) {
             return handle(request, (HttpURLConnection) connection);
         }
