@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
@@ -22,6 +23,7 @@ import java.io.InputStream;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class RestApplication implements Application {
@@ -63,7 +65,21 @@ public class RestApplication implements Application {
         requestScope.decorate(HttpHandler.class, BasePathHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, AuditHandler.class);
+        addResourcesIfNeeded(requestScope);
         return requestScope;
+    }
+
+    private void addResourcesIfNeeded(Container requestScope) {
+        Bindings bindings = requestScope.get(Bindings.class);
+        sequence(bindings).fold(requestScope, new Callable2<Container, Binding, Container>() {
+            public Container call(Container container, Binding binding) throws Exception {
+                Class<?> aClass = binding.method().getDeclaringClass();
+                if (!container.contains(aClass)) {
+                    container.add(aClass);
+                }
+                return container;
+            }
+        });
     }
 
     private void addBasePathIfNeeded(Container requestScope) {
