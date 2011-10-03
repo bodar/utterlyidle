@@ -133,15 +133,6 @@ public class BaseHandler implements HttpHandler {
     private void setupContainer(Request request) {
         container.remove(Request.class);
         container.addInstance(Request.class, request);
-        sequence(bindings).fold(container, new Callable2<Container, Binding, Container>() {
-            public Container call(Container container, Binding binding) throws Exception {
-                Class<?> aClass = binding.method().getDeclaringClass();
-                if (!container.contains(aClass)) {
-                    container.add(aClass);
-                }
-                return container;
-            }
-        });
     }
 
     private Callable1<? super Sequence<Binding>, Response> success(final Request request) {
