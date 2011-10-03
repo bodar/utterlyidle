@@ -63,8 +63,12 @@ public class RequestBuilder implements Callable<Request> {
         return withHeader(HttpHeaders.ACCEPT, value);
     }
 
-    public RequestBuilder withHeader(String name, String value) {
-        headers.add(pair(name, value));
+    public RequestBuilder withHeader(String name, Object value) {
+        if(value == null) {
+            return this;
+        }
+
+        headers.add(pair(name, value.toString()));
         return this;
     }
 
@@ -74,16 +78,22 @@ public class RequestBuilder implements Callable<Request> {
     }
 
 
-    public RequestBuilder withQuery(String name, String value) {
-        uri = uri.query(UrlEncodedMessage.toString(QueryParameters.parse(uri.query()).add(name, value)));
+    public RequestBuilder withQuery(String name, Object value) {
+        if(value != null) {
+            uri = uri.query(UrlEncodedMessage.toString(QueryParameters.parse(uri.query()).add(name, value.toString())));
+        }
         return this;
     }
 
-    public RequestBuilder withForm(String name, String value) {
+    public RequestBuilder withForm(String name, Object value) {
+        if(value == null) {
+            return this;
+        }
+
         if (sequence(headers).filter(by(first(String.class), is(equalIgnoringCase(HttpHeaders.CONTENT_TYPE)))).isEmpty()) {
             withHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
         }
-        form.add(pair(name, value));
+        form.add(pair(name, value.toString()));
         return this;
     }
 
