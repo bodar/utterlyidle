@@ -25,8 +25,8 @@ public class Auditors implements Auditor{
 
     public void audit(Pair<Request, Date> request, Pair<Response, Date> response) {
         for (Callable<Auditor> callable : auditors) {
-            Auditor auditor = call(callable);
             try {
+                Auditor auditor = callable.call();
                 auditor.audit(request, response);
             } catch (Exception e) {
                 // continue auditing with other auditors

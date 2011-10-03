@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Resources;
@@ -64,7 +65,12 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         return this;
     }
 
-    public static Callable1<Module, Void> activate(final Container container, final Iterable<Class<? extends Module>> modules) {
+    public void activateStartupModule(Module module, Container requestScope) {
+        activate(module, requestScope, sequence(StartupModule.class));
+    }
+
+
+    public static <M extends Iterable<? extends Class<? extends Module>>> Callable1<Module, Void> activate(final Container container, final M modules) {
         return new Callable1<Module, Void>() {
             public Void call(Module module) throws Exception {
                 activate(module, container, modules);
@@ -73,7 +79,7 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         };
     }
 
-    public static void activate(Module module, Resolver resolver, final Iterable<Class<? extends Module>> classes) {
+    public static <M extends Iterable<? extends Class<? extends Module>>> void activate(Module module, Resolver resolver, final M classes) {
         sequence(classes).
                 filter(isInstance(module)).
                 flatMap(methods()).
@@ -135,4 +141,5 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
             }
         };
     }
+
 }
