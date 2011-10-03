@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Formatter;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Left.left;
@@ -58,6 +59,13 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
 public class RestTest {
+    @Test
+    public void supportUUIDConversion() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(UsesUUID.class);
+        String uuid = UUID.randomUUID().toString();
+        assertThat(application.responseAsString(get("hello").withQuery("name", uuid)), is(uuid));
+    }
+
     @Test
     public void supportDefaultValue() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesDefaultValue.class);
@@ -839,6 +847,14 @@ public class RestTest {
     public static class UsesDefaultValue {
         @GET
         public String get(@QueryParam("name") @DefaultValue("Dan") String name) {
+            return name;
+        }
+    }
+
+    @Path("hello")
+    public static class UsesUUID {
+        @GET
+        public UUID get(@QueryParam("name") UUID name) {
             return name;
         }
     }

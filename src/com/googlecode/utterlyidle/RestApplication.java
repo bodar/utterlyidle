@@ -98,18 +98,6 @@ public class RestApplication implements Application {
     private Container createArgumentScope(Request request) {
         final Container argumentScope = new SimpleContainer();
         argumentScope.addInstance(Request.class, request);
-        argumentScope.addInstance(Uri.class, request.uri());
-        argumentScope.addInstance(HierarchicalPath.class, hierarchicalPath(request.uri().path()));
-        argumentScope.addActivator(PathParameters.class, PathParametersActivator.class);
-        argumentScope.addInstance(HeaderParameters.class, request.headers());
-        argumentScope.addInstance(QueryParameters.class, Requests.query(request));
-        argumentScope.addInstance(FormParameters.class, Requests.form(request));
-        argumentScope.addInstance(CookieParameters.class, Requests.cookies(request));
-        argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.input()));
-        argumentScope.add(new TypeFor<Option<?>>() {
-        }.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
-        argumentScope.add(new TypeFor<Either<?, ?>>() {
-        }.get(), new EitherResolver(argumentScope));
         modules.activateArgumentModules(argumentScope);
         return argumentScope;
     }

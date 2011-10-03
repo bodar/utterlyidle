@@ -6,7 +6,7 @@ import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.yadic.Container;
 
 public abstract class AbstractModule implements
-        ApplicationScopedModule, RequestScopedModule, ResourcesModule, ResponseHandlersModule, ModuleDefiner, AuditModule {
+        ApplicationScopedModule, RequestScopedModule, ResourcesModule, ResponseHandlersModule, ModuleDefiner, AuditModule, ArgumentScopedModule {
 
     public Module defineModules(ModuleDefinitions moduleDefinitions) throws Exception {
         return this;
@@ -30,5 +30,10 @@ public abstract class AbstractModule implements
 
     public Auditors addAuditors(Auditors auditors) throws Exception {
         return auditors;
+    }
+
+    @Override
+    public Module addPerArgumentObjects(Container container) throws Exception {
+        return this;
     }
 }
