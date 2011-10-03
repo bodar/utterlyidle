@@ -5,20 +5,26 @@ import com.googlecode.yadic.Container;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
+import static com.googlecode.utterlyidle.modules.Modules.requestScopedClass;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class StartupModuleTest {
     @Test
+    public void supportStartingEvenIfHasDependencyOnRequest() throws Exception {
+        new RestApplication().add(requestScopedClass(StartableThing.class)).add(start());
+    }
+
+    @Test
     public void supportStartingViaAddMethod() throws Exception {
-        StartableThing startable = new StartableThing();
+        StartableThing startable = new StartableThing(null);
         new RestApplication().add(requestInstance(startable)).add(start());
         assertThat(startable.count, is(1));
     }
 
     @Test
     public void supportStartingViaConstructor() throws Exception {
-        StartableThing startable = new StartableThing();
+        StartableThing startable = new StartableThing(null);
         new RestApplication(requestInstance(startable), start());
         assertThat(startable.count, is(1));
     }
@@ -33,6 +39,12 @@ public class StartupModuleTest {
     }
 
     public static class StartableThing {
+        private final Request request;
+
+        public StartableThing(Request request) {
+            this.request = request;
+        }
+
         public int count = 0;
 
         public void start() {

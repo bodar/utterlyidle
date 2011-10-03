@@ -24,6 +24,7 @@ import java.io.InputStream;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class RestApplication implements Application {
@@ -41,7 +42,9 @@ public class RestApplication implements Application {
 
     public Application add(Module module) {
         modules.activateApplicationModule(module, applicationScope);
-        modules.activateStartupModule(module, createRequestScope());
+        Container requestScope = createRequestScope();
+        requestScope.addInstance(Request.class, get("/dummy/request/to/allow/starting/application").build());
+        modules.activateStartupModule(module, requestScope);
         return this;
     }
 
