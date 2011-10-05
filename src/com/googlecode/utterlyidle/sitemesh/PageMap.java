@@ -18,11 +18,11 @@ public class PageMap extends UnsupportedMap {
 
     @Override
     public boolean containsKey(Object url) {
-        if (!(url instanceof String)) {
+        if (url == null) {
             return false;
         }
 
-        String path = (String) url;
+        String path = url.toString();
 
         if (!cache.containsKey(path)) {
             getAndCache(path);
@@ -33,9 +33,8 @@ public class PageMap extends UnsupportedMap {
 
     @Override
     public Object get(Object url) {
-        String path = (String) url;
+        String path = url.toString();
         return cache.get(path);
-
     }
 
     private void getAndCache(String url) {
