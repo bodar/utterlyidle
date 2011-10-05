@@ -88,6 +88,13 @@ public class SiteMeshHandlerTest {
                 "My name is fred", "hello", ServerSideIncludeResource.class);
     }
 
+    @Test
+    public void shouldPerformServerSideIncludesEvenWhenUrlParameterIsATemplate() throws Exception {
+        assertDecorationResultsInResponse(
+                sequence(staticRule(onlyMatchRequestTo("hello"), templateName("templateWithServerSideIncludeWithTemplate"))),
+                "My name is fred", "hello", ServerSideIncludeResource.class);
+    }
+
     private Predicate<Pair<Request, Response>> onlyMatchRequestTo(final String path) {
         return new Predicate<Pair<Request, Response>>() {
             public boolean matches(Pair<Request, Response> other) {
