@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -18,7 +17,6 @@ import static com.googlecode.totallylazy.Right.right;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Accept.accept;
 import static com.googlecode.utterlyidle.ConsumesMimeMatcher.contentMatches;
-import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MatchFailure.matchFailure;
 import static com.googlecode.utterlyidle.MatchQuality.matchQuality;
@@ -68,10 +66,9 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Response failure(final MatchFailure matchFailure) {
-        return response(
-                matchFailure.status(),
-                headerParameters(pair(CONTENT_TYPE, TEXT_HTML)),
-                matchFailure);
+        return response(matchFailure.status()).
+                header(CONTENT_TYPE, TEXT_HTML).
+                entity(matchFailure);
     }
 
     private Response setContentType(String mimeType, Response response) {

@@ -3,7 +3,30 @@ package com.googlecode.utterlyidle.modules;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.totallylazy.time.Clock;
+import com.googlecode.totallylazy.time.SystemClock;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BaseUri;
+import com.googlecode.utterlyidle.BaseUriActivator;
+import com.googlecode.utterlyidle.BaseUriRedirector;
+import com.googlecode.utterlyidle.Bindings;
+import com.googlecode.utterlyidle.EitherResolver;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.PathParameters;
+import com.googlecode.utterlyidle.PathParametersActivator;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Redirector;
+import com.googlecode.utterlyidle.RegisteredResources;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.ResourcePath;
+import com.googlecode.utterlyidle.ResourcePathActivator;
+import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.StreamingOutput;
+import com.googlecode.utterlyidle.StreamingWriter;
+import com.googlecode.utterlyidle.UUIDActivator;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.Auditor;
 import com.googlecode.utterlyidle.handlers.Auditors;
@@ -25,7 +48,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.UUID;
 
-import static com.googlecode.totallylazy.Predicates.*;
+import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.nullValue;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
@@ -53,12 +79,13 @@ public class CoreModule extends AbstractModule {
         container.add(ResponseHandlersFinder.class);
         container.add(Auditors.class, Auditors.class);
         container.addActivator(Auditor.class, container.getActivator(Auditors.class));
-
+        
         return this;
     }
 
     @Override
     public Module addPerApplicationObjects(Container container) {
+        container.add(Clock.class, SystemClock.class);
         container.add(Resources.class, RegisteredResources.class);
         container.addActivator(Bindings.class, container.getActivator(Resources.class));
         container.add(ResponseHandlers.class);

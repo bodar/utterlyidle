@@ -7,23 +7,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.googlecode.totallylazy.Bytes.write;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
-    private Status status = Status.OK;
-    private HeaderParameters headers = headerParameters();
+    private final HeaderParameters headers = headerParameters();
+    private Status status;
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
     private Object entity;
 
-    public MemoryResponse() {
-    }
-
-    public MemoryResponse(Status status, HeaderParameters headers, Object entity) {
+    public MemoryResponse(Status status) {
         this.status = status;
-        this.headers = headers;
-        this.entity = entity;
     }
 
     public Status status() {

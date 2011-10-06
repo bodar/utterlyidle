@@ -2,30 +2,20 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
+import com.googlecode.utterlyidle.handlers.DateHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
-import com.googlecode.utterlyidle.io.HierarchicalPath;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
-import com.googlecode.yadic.generics.TypeFor;
-import com.googlecode.yadic.resolvers.OptionResolver;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
@@ -63,6 +53,7 @@ public class RestApplication implements Application {
     private Container createRequestScope() {
         final Container requestScope = new SimpleContainer(applicationScope);
         requestScope.add(HttpHandler.class, BaseHandler.class);
+        requestScope.decorate(HttpHandler.class, DateHandler.class);
         modules.activateRequestModules(requestScope);
         addBasePathIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, BasePathHandler.class);

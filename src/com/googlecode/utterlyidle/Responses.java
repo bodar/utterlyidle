@@ -11,15 +11,11 @@ import static com.googlecode.totallylazy.Predicates.where;
 
 public class Responses {
     public static Response response() {
-        return new MemoryResponse();
+        return response(Status.OK);
     }
 
     public static Response response(Status status) {
-        return new MemoryResponse().status(status);
-    }
-
-    public static Response response(Status status, HeaderParameters headers, Object entity) {
-        return new MemoryResponse(status, headers, entity);
+        return new MemoryResponse(status);
     }
 
     public static Response seeOther(Uri location) {
