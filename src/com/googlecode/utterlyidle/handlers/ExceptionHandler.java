@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
@@ -9,8 +8,6 @@ import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.Responses.response;
@@ -38,10 +35,9 @@ public class ExceptionHandler implements HttpHandler {
     }
 
     private Response findAndHandle(Request request, Throwable throwable) {
-        Response response = response(
-                INTERNAL_SERVER_ERROR,
-                headerParameters(pair(CONTENT_TYPE, TEXT_PLAIN)),
-                throwable);
+        Response response = response(INTERNAL_SERVER_ERROR).
+                header(CONTENT_TYPE, TEXT_PLAIN).
+                entity(throwable);
         try {
             return handlers.findAndHandle(request, response);
         } catch (Throwable t) {

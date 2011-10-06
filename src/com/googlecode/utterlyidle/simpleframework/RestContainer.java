@@ -53,7 +53,9 @@ public class RestContainer implements Container {
         } catch (Throwable e) {
             StringWriter stringWriter = new StringWriter();
             using(new PrintWriter(stringWriter), printStackTrace(e));
-            return response(INTERNAL_SERVER_ERROR, headerParameters(pair(CONTENT_TYPE, TEXT_PLAIN)), stringWriter.toString());
+            return response(INTERNAL_SERVER_ERROR).
+                    header(CONTENT_TYPE, TEXT_PLAIN).
+                    entity(stringWriter.toString());
         }
     }
 

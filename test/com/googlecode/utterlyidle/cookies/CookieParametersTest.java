@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.MemoryResponse;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import org.junit.Test;
@@ -16,8 +15,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 public class CookieParametersTest {
-    private MemoryResponse response = new MemoryResponse();
-
     @Test
     public void shouldHandleTrailingSpaces() throws Exception {
         CookieParameters cookies = cookies(request(headerParameters(pair("Cookie", "a=1; ; ;"))).headers());

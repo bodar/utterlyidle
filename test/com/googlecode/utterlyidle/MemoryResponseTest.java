@@ -3,15 +3,11 @@ package com.googlecode.utterlyidle;
 import org.junit.Test;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import static com.googlecode.totallylazy.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.domain;
@@ -19,7 +15,6 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
-import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
