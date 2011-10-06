@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.MediaType;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -20,15 +21,16 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
     private final URL base;
     private String path;
     private Map<String, String> extensionToMimeType = new HashMap<String, String>() {{
-        put("js", "text/javascript");
-        put("css", "text/css");
-        put("html", "text/html");
-        put("xml", "text/xml");
-        put("txt", "text/plain");
-        put("png", "image/png");
-        put("gif", "image/gif");
-        put("jpeg", "image/jpeg");
-        put("ico", "image/x-icon");
+        put("png", MediaType.IMAGE_PNG);
+        put("gif", MediaType.IMAGE_GIF);
+        put("jpeg", MediaType.IMAGE_JPEG);
+        put("ico", MediaType.IMAGE_X_ICON);
+        put("js", MediaType.TEXT_JAVASCRIPT);
+        put("css", MediaType.TEXT_CSS);
+        put("less", MediaType.TEXT_CSS);
+        put("html", MediaType.TEXT_HTML);
+        put("xml", MediaType.TEXT_XML);
+        put("txt", MediaType.TEXT_PLAIN);
     }};
 
     public StaticBindingBuilder(URL base) {
@@ -43,7 +45,7 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
         return sequence(extensionToMimeType.entrySet()).map(asBinding()).toArray(Binding.class);
     }
 
-    public StaticBindingBuilder set(String extension, String mimeType){
+    public StaticBindingBuilder set(String extension, String mimeType) {
         extensionToMimeType.put(extension, mimeType);
         return this;
     }
