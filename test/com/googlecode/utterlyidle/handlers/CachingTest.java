@@ -18,6 +18,7 @@ import static com.googlecode.utterlyidle.MediaType.TEXT_CSS;
 import static com.googlecode.utterlyidle.MediaType.TEXT_JAVASCRIPT;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.handlers.CachePolicy.cachePolicy;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
@@ -67,6 +68,14 @@ public class CachingTest {
                 matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, TEXT_JAVASCRIPT))), is(true));
         assertThat(cachePolicy(60, contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
                 matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML))), is(false));
+    }
+
+    @Test
+    public void onlyAppliesForGetRequests() throws Exception {
+        HttpHandler handler = new CacheControlHandler(returnsResponse(response().header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
+        Response response = handler.handle(post("/").build());
+        assertThat(response.headers().contains(CACHE_CONTROL), is(false));
+        assertThat(response.headers().contains(EXPIRES), is(false));
     }
 
 }
