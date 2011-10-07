@@ -118,7 +118,7 @@ public class RestTest {
     public void canHandleCookies() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GettableWithCookies.class);
         Response response = application.handle(get("foo").withHeader("cookie", "name=value"));
-        assertThat(response.output().toString(), is("value"));
+        assertThat(new String(response.bytes()), is("value"));
         assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
 

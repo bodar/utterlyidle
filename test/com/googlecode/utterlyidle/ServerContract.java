@@ -7,6 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
@@ -33,6 +35,15 @@ public abstract class ServerContract {
     @After
     public void stop() throws Exception {
         server.close();
+    }
+
+    @Test
+    public void shouldCorrectlyHandlerEtagsAndNotModified() throws Exception {
+        Response response = handle(get("etag"), server);
+
+        assertThat(response.status(), Matchers.is(Status.OK));
+        assertThat(response.header(ETAG), CoreMatchers.is("\"900150983cd24fb0d6963f7d28e17f72\""));
+        assertThat(response.header(CONTENT_LENGTH), CoreMatchers.is("3"));
     }
 
     @Test

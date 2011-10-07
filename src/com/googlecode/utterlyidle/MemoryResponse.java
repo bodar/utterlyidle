@@ -3,19 +3,15 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 
-import static com.googlecode.totallylazy.Bytes.write;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
     private final HeaderParameters headers = headerParameters();
     private Status status;
-    private ByteArrayOutputStream output = new ByteArrayOutputStream();
+    private byte[] bytes = new byte[0];
     private Object entity;
 
     public MemoryResponse(Status status) {
@@ -59,16 +55,12 @@ public class MemoryResponse implements Response {
         return this;
     }
 
-    public OutputStream output() {
-        return output;
-    }
-
     public byte[] bytes() {
-        return output.toByteArray();
+        return bytes;
     }
 
     public Response bytes(byte[] value) {
-        this.output = write(value, new ByteArrayOutputStream());
+        this.bytes = value;
         return this;
     }
 
@@ -79,10 +71,6 @@ public class MemoryResponse implements Response {
     public Response entity(Object value) {
         entity = value;
         return this;
-    }
-
-    public void close() throws IOException {
-        output.close();
     }
 
     @Override

@@ -5,14 +5,7 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.modules.DependsOnContainer;
 import com.googlecode.yadic.Container;
-import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
-
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-
-import static com.googlecode.yadic.resolvers.Resolvers.create;
-import static com.googlecode.yadic.resolvers.Resolvers.resolve;
 
 
 public abstract class RenderingResponseHandler<T> implements ResponseHandler {
@@ -25,10 +18,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     }
 
     public Response handle(Response response) throws Exception {
-        Writer writer = new OutputStreamWriter(response.output());
-        writer.write(getRenderer().render((T) response.entity()));
-        writer.flush();
-        return response;
+        return response.bytes(getRenderer().render((T) response.entity()).getBytes("UTF-8"));
     }
 
     protected abstract Renderer<T> getRenderer();
