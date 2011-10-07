@@ -77,5 +77,4 @@ public class CachingTest {
         assertThat(response.headers().contains(CACHE_CONTROL), is(false));
         assertThat(response.headers().contains(EXPIRES), is(false));
     }
-
 }
