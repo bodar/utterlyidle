@@ -10,7 +10,7 @@ import static com.googlecode.totallylazy.Predicates.or;
 import static com.googlecode.utterlyidle.handlers.CachePolicy.cachePolicy;
 import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentType;
 
-public class CachingModule implements RequestScopedModule {
+public class PerformanceModule implements RequestScopedModule {
     @Override
     public Module addPerRequestObjects(Container container) throws Exception {
         container.addInstance(CachePolicy.class, cachePolicy(60, or(
@@ -21,6 +21,7 @@ public class CachingModule implements RequestScopedModule {
                 contentType(MediaType.TEXT_JAVASCRIPT),
                 contentType(MediaType.TEXT_CSS)
         )));
+        container.decorate(HttpHandler.class, EtagHandler.class);
         container.decorate(HttpHandler.class, CacheControlHandler.class);
         return this;
     }

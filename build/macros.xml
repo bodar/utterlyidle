@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
+    <macrodef name="embed.libs">
+        <sequential>
+            <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+                     classpathref="all.dependancies"/>
+            <property name="release.no.libs.jar" value="${artifacts}/${release.name}-nolibs.jar"/>
+            <jarjar jarfile="${release.no.libs.jar}">
+                <zipfileset src="${release.jar.path}"/>
+                <zipgroupfileset dir="${build.dependencies.dir}" includes="commons-codec-*.jar" />
+                <rule pattern="org.apache.commons.codec.**" result="com.googlecode.utterlyidle.internal.codec.@1"/>
+            </jarjar>
+            <delete file="${release.jar.path}"/>
+            <move file="${release.no.libs.jar}" tofile="${release.jar.path}"/>
+        </sequential>
+    </macrodef>
+
 	<macrodef name="compile.and.jar">
         <attribute name="src"/>
         <attribute name="jar"/>
