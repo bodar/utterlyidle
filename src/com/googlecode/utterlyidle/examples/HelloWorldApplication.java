@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.examples;
 
 import com.googlecode.utterlyidle.RestApplication;
-import com.googlecode.utterlyidle.modules.Modules;
+import com.googlecode.utterlyidle.modules.PerformanceModule;
 
 import java.util.Properties;
 
@@ -20,5 +20,6 @@ public class HelloWorldApplication extends RestApplication {
         add(bindingsModule(binding(get("/dsl").
                 resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))))));
         add(requestInstance(System.getProperties()));
+        add(new PerformanceModule());
     }
 }

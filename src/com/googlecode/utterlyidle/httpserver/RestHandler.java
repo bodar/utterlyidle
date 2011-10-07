@@ -11,14 +11,14 @@ import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.totallylazy.Exceptions.printStackTrace;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
@@ -75,8 +75,9 @@ public class RestHandler implements HttpHandler {
         System.err.println(String.format("%s %s -> %s", request.method(), request.uri(), e));
         e.printStackTrace(System.err);
         Response response = response().status(Status.INTERNAL_SERVER_ERROR);
-        using(new PrintWriter(response.output()), printStackTrace(e));
-        return response;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(stream));
+        return response.bytes(stream.toByteArray());
     }
 
     public static HeaderParameters convert(Map<String, List<String>> requestHeaders) {

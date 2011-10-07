@@ -2,8 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.cookies.Cookie;
 
-import java.io.OutputStream;
-
 public interface Response {
     Status status();
 
@@ -18,8 +16,6 @@ public interface Response {
     Response header(String name, Object value);
 
     Response cookie(String name, Cookie value);
-
-    OutputStream output();
 
     byte[] bytes();
 

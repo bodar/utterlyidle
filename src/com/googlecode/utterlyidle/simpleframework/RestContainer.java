@@ -62,7 +62,9 @@ public class RestContainer implements Container {
     private void mapTo(com.googlecode.utterlyidle.Response applicationResponse, Response response) throws IOException {
         response.setCode(applicationResponse.status().code());
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
-        using(response.getOutputStream(), write(applicationResponse.bytes()));
+        byte[] bytes = applicationResponse.bytes();
+        response.setContentLength(bytes.length);
+        using(response.getOutputStream(), write(bytes));
     }
 
     private Callable2<Response, Pair<String, String>, Response> mapHeaders() {
