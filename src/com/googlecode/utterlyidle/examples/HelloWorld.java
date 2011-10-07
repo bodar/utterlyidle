@@ -20,6 +20,12 @@ import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
     @GET
+    @Path("etag")
+    public String etag() {
+        return "abc";
+    }
+
+    @GET
     @Path("helloworld/redirect")
     public Response redirect() {
         return Responses.seeOther("helloworld/queryparam");
