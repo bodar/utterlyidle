@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
+import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
@@ -39,11 +40,17 @@ public abstract class ServerContract {
 
     @Test
     public void shouldCorrectlyHandlerEtagsAndNotModified() throws Exception {
-        Response response = handle(get("etag"), server);
+        Response responseWithEtag = handle(get("etag"), server);
 
-        assertThat(response.status(), Matchers.is(Status.OK));
-        assertThat(response.header(ETAG), CoreMatchers.is("\"900150983cd24fb0d6963f7d28e17f72\""));
-        assertThat(response.header(CONTENT_LENGTH), CoreMatchers.is("3"));
+        assertThat(responseWithEtag.status(), Matchers.is(Status.OK));
+        assertThat(responseWithEtag.header(ETAG), CoreMatchers.is("\"900150983cd24fb0d6963f7d28e17f72\""));
+        assertThat(responseWithEtag.header(CONTENT_LENGTH), CoreMatchers.is("3"));
+
+        Response response = handle(get("etag").header(IF_NONE_MATCH, responseWithEtag.header(ETAG)), server);
+
+        assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
+        assertThat(response.header(CONTENT_LENGTH), CoreMatchers.is("0"));
+        assertThat(response.bytes().length, CoreMatchers.is(0));
     }
 
     @Test
