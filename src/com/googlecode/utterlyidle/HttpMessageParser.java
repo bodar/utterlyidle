@@ -36,7 +36,8 @@ public class HttpMessageParser {
     private static Response buildResponse(String statusLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
         Response response = Responses.response(toStatus(statusLine));
         headerLines.fold(response, responseHeader());
-        return response.bytes(toInput(messageBodyLines).getBytes()).entity("");
+        byte[] bytes = toInput(messageBodyLines).getBytes();
+        return response.bytes(bytes).entity(bytes);
     }
 
     private static Sequence<Sequence<String>> httpMessageLines(String requestMessage) {
