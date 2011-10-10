@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
@@ -18,6 +19,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class EtagHandlerTest {
+    @Test
+    public void onlyPassesThroughSafeHeaders() throws Exception{
+        HttpHandler handler = new EtagHandler(returnsResponse(response().bytes("abc".getBytes("UTF-8")).header(HttpHeaders.DATE, "passesThrough").header("X-foo", "doesntPassThrough")));
+        Response response = handler.handle(get("/").header(IF_NONE_MATCH, "\"900150983cd24fb0d6963f7d28e17f72\"").build());
+
+        assertThat(response.headers().contains("X-foo"), is(false));
+        assertThat(response.header(HttpHeaders.DATE), is("passesThrough"));
+    }
+
     @Test
     public void calculatesStrongEtagWhichMustBeQuoted() throws Exception{
         HttpHandler handler = new EtagHandler(returnsResponse(response().bytes("abc".getBytes("UTF-8"))));
@@ -48,7 +58,7 @@ public class EtagHandlerTest {
     @Test
     public void returnsNotModifiedIfEtagMatches() throws Exception{
         HttpHandler handler = new EtagHandler(returnsResponse(response().bytes("abc".getBytes("UTF-8"))));
-        Response response = handler.handle(get("/").withHeader(IF_NONE_MATCH, "\"900150983cd24fb0d6963f7d28e17f72\"").build());
+        Response response = handler.handle(get("/").header(IF_NONE_MATCH, "\"900150983cd24fb0d6963f7d28e17f72\"").build());
         assertThat(response.status(), is(Status.NOT_MODIFIED));
         assertThat(response.bytes().length, is(0));
     }
