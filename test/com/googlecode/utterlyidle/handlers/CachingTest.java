@@ -77,10 +77,5 @@ public class CachingTest {
         Response response = handler.handle(post("/").build());
         assertThat(response.headers().contains(CACHE_CONTROL), is(false));
         assertThat(response.headers().contains(EXPIRES), is(false));
-
-        HttpHandler handler1 = new CacheControlHandler(returnsResponse(response(Status.SEE_OTHER).header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
-        Response response1 = handler1.handle(get("/").build());
-        assertThat(response1.headers().contains(CACHE_CONTROL), is(false));
-        assertThat(response1.headers().contains(EXPIRES), is(false));
     }
 }
