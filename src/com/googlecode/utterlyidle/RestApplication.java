@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
+import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 import com.googlecode.utterlyidle.handlers.DateHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.modules.CoreModule;
@@ -58,6 +59,7 @@ public class RestApplication implements Application {
         addBasePathIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, BasePathHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
+        requestScope.decorate(HttpHandler.class, ContentLengthHandler.class);
         requestScope.decorate(HttpHandler.class, AuditHandler.class);
         addResourcesIfNeeded(requestScope);
         return requestScope;

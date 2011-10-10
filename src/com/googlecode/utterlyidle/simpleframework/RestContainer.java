@@ -25,10 +25,12 @@ import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
+import static java.lang.Integer.parseInt;
 
 public class RestContainer implements Container {
     private final Application applcation;
@@ -62,9 +64,8 @@ public class RestContainer implements Container {
     private void mapTo(com.googlecode.utterlyidle.Response applicationResponse, Response response) throws IOException {
         response.setCode(applicationResponse.status().code());
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
-        byte[] bytes = applicationResponse.bytes();
-        response.setContentLength(bytes.length);
-        using(response.getOutputStream(), write(bytes));
+        response.setContentLength(parseInt(applicationResponse.header(CONTENT_LENGTH)));
+        using(response.getOutputStream(), write(applicationResponse.bytes()));
     }
 
     private Callable2<Response, Pair<String, String>, Response> mapHeaders() {

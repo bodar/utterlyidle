@@ -26,10 +26,12 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.RestApplication.handleRequest;
 import static com.googlecode.utterlyidle.RestApplication.inject;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplication;
+import static java.lang.Integer.parseInt;
 
 public class ApplicationServlet extends HttpServlet {
     public static final String KEY = "application";
@@ -69,9 +71,8 @@ public class ApplicationServlet extends HttpServlet {
         for (Pair<String, String> pair : response.headers()) {
             resp.setHeader(pair.first(), pair.second());
         }
-        byte[] bytes = response.bytes();
-        resp.setContentLength(bytes.length);
-        using(resp.getOutputStream(), write(bytes));
+        resp.setContentLength(parseInt(response.header(CONTENT_LENGTH)));
+        using(resp.getOutputStream(), write(response.bytes()));
     }
 
     private Request request(HttpServletRequest request) {
