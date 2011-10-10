@@ -22,6 +22,11 @@ public class Select implements NameValue {
         return selected.equals(Strings.EMPTY) ? selectContents(select, "option[1]/@value") : selected;
     }
 
+    public String text() {
+        String text = selectContents(select, SELECTED_OPTION + "/text()");
+        return text.equals(Strings.EMPTY) ? selectContents(select, "option[1]/text()") : text;
+    }
+
     public Select value(String value){
         selectElements(select, SELECTED_OPTION).each(removeAttribute(SELECTED));
         selectElement(select, "option[@value='" + value + "']").setAttribute(SELECTED, SELECTED);
