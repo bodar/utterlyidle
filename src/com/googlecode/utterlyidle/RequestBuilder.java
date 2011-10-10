@@ -63,7 +63,7 @@ public class RequestBuilder implements Callable<Request> {
         return withHeader(HttpHeaders.ACCEPT, value);
     }
 
-    public RequestBuilder withHeader(String name, Object value) {
+    public RequestBuilder header(String name, Object value) {
         if(value == null) {
             return this;
         }
@@ -72,13 +72,25 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
+    public RequestBuilder withHeader(String name, Object value) {
+        return header(name, value);
+    }
+
     public RequestBuilder withCookie(String name, Cookie cookie) {
+        return cookie(name, cookie);
+    }
+
+    public RequestBuilder cookie(String name, Cookie cookie) {
         headers.add(pair(HttpHeaders.COOKIE, toHttpHeader(name, cookie)));
         return this;
     }
 
 
     public RequestBuilder withQuery(String name, Object value) {
+        return query(name, value);
+    }
+
+    public RequestBuilder query(String name, Object value) {
         if(value != null) {
             uri = uri.query(UrlEncodedMessage.toString(QueryParameters.parse(uri.query()).add(name, value.toString())));
         }
@@ -86,6 +98,10 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder withForm(String name, Object value) {
+        return form(name, value);
+    }
+
+    public RequestBuilder form(String name, Object value) {
         if(value == null) {
             return this;
         }
@@ -98,6 +114,10 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder withInput(byte[] input) {
+        return input(input);
+    }
+
+    public RequestBuilder input(byte[] input) {
         this.input = input;
         return this;
     }
