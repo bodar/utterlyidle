@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.modules;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.utterlyidle.HttpHeaders.Content_MD5;
 import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
@@ -21,7 +22,7 @@ public class EtagHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        if (!request.method().equals(GET)) {
+        if (!request.method().equals(GET) || !response.status().equals(Status.OK)) {
             return response;
         }
 

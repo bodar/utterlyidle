@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Responses;
+import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Predicates.never;
@@ -39,7 +40,7 @@ public class CachingTest {
     public void disablesCachingWhenItDoesNotMatch() throws Exception {
         HttpHandler handler = new CacheControlHandler(returnsResponse(response()), cachePolicy(60, never()));
         Response response = handler.handle(get("/").build());
-        assertThat(response.header(CACHE_CONTROL), is("no-cache"));
+        assertThat(response.header(CACHE_CONTROL), is("private, must-revalidate"));
         assertThat(response.header(EXPIRES), is("0"));
     }
 
@@ -71,10 +72,15 @@ public class CachingTest {
     }
 
     @Test
-    public void onlyAppliesForGetRequests() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response().header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
+    public void onlyAppliesForGetRequestsAndResponseIsOk() throws Exception {
+        HttpHandler handler = new CacheControlHandler(returnsResponse(response(Status.OK).header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
         Response response = handler.handle(post("/").build());
         assertThat(response.headers().contains(CACHE_CONTROL), is(false));
         assertThat(response.headers().contains(EXPIRES), is(false));
+
+        HttpHandler handler1 = new CacheControlHandler(returnsResponse(response(Status.SEE_OTHER).header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
+        Response response1 = handler1.handle(get("/").build());
+        assertThat(response1.headers().contains(CACHE_CONTROL), is(false));
+        assertThat(response1.headers().contains(EXPIRES), is(false));
     }
 }
