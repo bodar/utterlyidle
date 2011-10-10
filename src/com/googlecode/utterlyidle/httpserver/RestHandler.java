@@ -25,6 +25,7 @@ import static com.googlecode.totallylazy.callables.TimeCallable.calculateMillise
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.Responses.response;
 import static java.lang.System.nanoTime;
 
@@ -55,9 +56,9 @@ public class RestHandler implements HttpHandler {
         for (Pair<String, String> pair : response.headers()) {
             httpExchange.getResponseHeaders().add(pair.first(), pair.second());
         }
-        byte[] bytes = response.bytes();
-        httpExchange.sendResponseHeaders(response.status().code(), bytes.length == 0 ? -1 : bytes.length);
-        using(httpExchange.getResponseBody(), write(bytes));
+        long length = Long.parseLong(response.header(CONTENT_LENGTH));
+        httpExchange.sendResponseHeaders(response.status().code(), length == 0 ? -1 : length);
+        using(httpExchange.getResponseBody(), write(response.bytes()));
         httpExchange.close();
     }
 
