@@ -21,8 +21,8 @@ public class PerformanceModule implements RequestScopedModule {
                 contentType(MediaType.TEXT_JAVASCRIPT),
                 contentType(MediaType.TEXT_CSS)
         )));
-        container.decorate(HttpHandler.class, EtagHandler.class);
         container.decorate(HttpHandler.class, CacheControlHandler.class);
+        container.decorate(HttpHandler.class, EtagHandler.class);
         return this;
     }
 }
