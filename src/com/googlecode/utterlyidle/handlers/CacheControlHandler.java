@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 
 import java.util.Date;
@@ -29,7 +28,7 @@ public class CacheControlHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        if(!request.method().equals(HttpMethod.GET) || !response.status().equals(Status.OK) || response.headers().contains(CACHE_CONTROL) || response.headers().contains(EXPIRES)){
+        if(!request.method().equals(HttpMethod.GET) || response.headers().contains(CACHE_CONTROL) || response.headers().contains(EXPIRES)){
             return response;
         }
 
