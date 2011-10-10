@@ -6,8 +6,10 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.utterlyidle.HttpHeaders.Content_MD5;
+import static com.googlecode.utterlyidle.HttpHeaders.DATE;
 import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
+import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_MODIFIED;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.modules.Digest.md5;
@@ -29,7 +31,7 @@ public class EtagHandler implements HttpHandler {
         Digest digest = md5(response.bytes());
         String etag = strongEtag(digest);
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
-            return response.status(NOT_MODIFIED).bytes(new byte[0]);
+            return response(NOT_MODIFIED).header(DATE, response.header(DATE));
         }
         return response.header(ETAG, etag).header(Content_MD5, digest.asBase64());
     }
