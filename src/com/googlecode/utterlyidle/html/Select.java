@@ -7,6 +7,7 @@ import static com.googlecode.totallylazy.Xml.removeAttribute;
 import static com.googlecode.totallylazy.Xml.selectContents;
 import static com.googlecode.totallylazy.Xml.selectElement;
 import static com.googlecode.totallylazy.Xml.selectElements;
+import static java.lang.String.format;
 
 public class Select implements NameValue {
     public static final String SELECTED = "selected";
@@ -27,13 +28,17 @@ public class Select implements NameValue {
         return text.equals(Strings.EMPTY) ? selectContents(select, "option[1]/text()") : text;
     }
 
-    public Select value(String value){
+    public Select value(String value) {
         selectElements(select, SELECTED_OPTION).each(removeAttribute(SELECTED));
         selectElement(select, "option[@value='" + value + "']").setAttribute(SELECTED, SELECTED);
         return this;
     }
 
     public String name() {
-        return selectContents(select, "@name");
+        return attribute("name");
+    }
+
+    public String attribute(String attributeName) {
+        return selectContents(select, format("@%s", attributeName));
     }
 }
