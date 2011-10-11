@@ -4,6 +4,7 @@ import org.w3c.dom.Element;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
 import static com.googlecode.totallylazy.Xml.selectNode;
+import static java.lang.String.format;
 
 
 public class Input implements NameValue{
@@ -16,7 +17,7 @@ public class Input implements NameValue{
     }
 
     public String value() {
-        return selectContents(input, VALUE);
+        return attribute(VALUE);
     }
 
     public Input value(String value) {
@@ -25,6 +26,10 @@ public class Input implements NameValue{
     }
 
     public String name() {
-        return selectContents(input, NAME);
+        return attribute(NAME);
+    }
+
+    public String attribute(String attributeName) {
+        return selectContents(input, format("@%s", attributeName));
     }
 }
