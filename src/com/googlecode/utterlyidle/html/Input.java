@@ -17,7 +17,7 @@ public class Input implements NameValue{
     }
 
     public String value() {
-        return attribute(VALUE);
+        return selectContents(input, VALUE);
     }
 
     public Input value(String value) {
@@ -26,7 +26,7 @@ public class Input implements NameValue{
     }
 
     public String name() {
-        return attribute(NAME);
+        return selectContents(input, NAME);
     }
 
     public String attribute(String attributeName) {
