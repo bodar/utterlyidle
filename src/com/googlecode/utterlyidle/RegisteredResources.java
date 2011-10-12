@@ -1,14 +1,11 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
-
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RegisteredResources implements Resources {
-    private final List<Binding> bindings = new ArrayList<Binding>();
+    private final List<Binding> bindings = new CopyOnWriteArrayList<Binding>();
 
     public void add(Binding ... bindings) {
         for (Binding binding : bindings) {
