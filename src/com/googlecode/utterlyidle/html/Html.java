@@ -1,9 +1,11 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.LazyException;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Response;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
 import static com.googlecode.totallylazy.Xml.selectElement;
@@ -54,5 +56,9 @@ public class Html {
 
     public Link link(String xpath) {
         return new Link(selectElement(document, xpath));
+    }
+
+    public Sequence<Node> nodes(String xpath) {
+        return Xml.selectNodes(document, xpath);
     }
 }
