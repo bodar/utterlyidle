@@ -11,6 +11,7 @@ import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Predicates.never;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;

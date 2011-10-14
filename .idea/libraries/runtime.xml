@@ -6,6 +6,7 @@
     <JAVADOC />
     <SOURCES>
       <root url="file://$PROJECT_DIR$/lib/runtime" />
+      <root url="jar://$PROJECT_DIR$/lib/runtime/totallylazy-510-sources.jar!/" />
     </SOURCES>
     <jarDirectory url="file://$PROJECT_DIR$/lib/runtime" recursive="false" />
   </library>
