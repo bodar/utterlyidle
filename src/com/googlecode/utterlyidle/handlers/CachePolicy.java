@@ -9,10 +9,12 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Predicates.always;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static java.util.Arrays.asList;
 
 public class CachePolicy implements Value<Integer>, Predicate<Pair<Request, Response>> {
     private final int seconds;
@@ -31,8 +33,8 @@ public class CachePolicy implements Value<Integer>, Predicate<Pair<Request, Resp
         return new CachePolicy(seconds, always());
     }
 
-    public void add(Predicate<? super Pair<Request, Response>> predicate) {
-        predicates.add(predicate);
+    public void add(Predicate<? super Pair<Request, Response>>... predicate) {
+        predicates.addAll(asList(predicate));
     }
 
     @Override
