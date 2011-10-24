@@ -31,23 +31,23 @@ public class Html {
     }
 
     public Form form(String xpath) {
-        return new Form(selectElement(document, xpath));
+        return new Form(selectElement(document, xpath).get());
     }
 
     public Input input(String xpath) {
-        return new Input(selectElement(document, xpath));
+        return new Input(selectElement(document, xpath).get());
     }
 
     public TextArea textarea(String xpath) {
-        return new TextArea(selectElement(document, xpath));
+        return new TextArea(selectElement(document, xpath).get());
     }
 
     public Select select(String xpath) {
-        return new Select(selectElement(document, xpath));
+        return new Select(selectElement(document, xpath).get());
     }
 
     public Checkbox checkbox(String xpath) {
-        return new Checkbox(selectElement(document, xpath));
+        return new Checkbox(selectElement(document, xpath).get());
     }
 
     public String selectContent(String xpath) {
@@ -55,7 +55,7 @@ public class Html {
     }
 
     public Link link(String xpath) {
-        return new Link(selectElement(document, xpath));
+        return new Link(selectElement(document, xpath).get());
     }
 
     public Sequence<Node> nodes(String xpath) {

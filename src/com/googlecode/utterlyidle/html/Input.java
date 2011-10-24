@@ -21,7 +21,7 @@ public class Input implements NameValue{
     }
 
     public Input value(String value) {
-        selectNode(input, VALUE).setTextContent(value);
+        selectNode(input, VALUE).get().setTextContent(value);
         return this;
     }
 
