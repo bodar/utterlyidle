@@ -30,7 +30,7 @@ public class Select implements NameValue {
 
     public Select value(String value) {
         selectElements(select, SELECTED_OPTION).each(removeAttribute(SELECTED));
-        selectElement(select, "option[@value='" + value + "']").setAttribute(SELECTED, SELECTED);
+        selectElement(select, "option[@value='" + value + "']").get().setAttribute(SELECTED, SELECTED);
         return this;
     }
 
