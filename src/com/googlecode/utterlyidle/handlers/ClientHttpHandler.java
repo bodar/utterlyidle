@@ -28,9 +28,21 @@ import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
 
 public class ClientHttpHandler implements HttpClient {
+    private final int milliseconds;
+
+    public ClientHttpHandler() {
+        this(0);
+    }
+
+    public ClientHttpHandler(int milliseconds) {
+        this.milliseconds = milliseconds;
+    }
+
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.uri().toString());
         URLConnection connection = url.openConnection();
+        connection.setConnectTimeout(milliseconds);
+        connection.setReadTimeout(milliseconds);
         if (connection instanceof HttpURLConnection) {
             return handle(request, (HttpURLConnection) connection);
         }
