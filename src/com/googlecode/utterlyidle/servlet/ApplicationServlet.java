@@ -75,7 +75,7 @@ public class ApplicationServlet extends HttpServlet {
         using(resp.getOutputStream(), write(response.bytes()));
     }
 
-    private Request request(HttpServletRequest request) {
+    public static Request request(HttpServletRequest request) {
         try {
             return Requests.request(
                     request.getMethod(),
