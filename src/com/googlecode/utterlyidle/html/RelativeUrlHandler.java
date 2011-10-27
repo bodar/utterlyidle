@@ -4,8 +4,9 @@ import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.handlers.HttpClient;
 
-public class RelativeUrlHandler implements HttpHandler {
+public class RelativeUrlHandler implements HttpClient {
     private final HttpHandler httpHandler;
     private Uri currentUri;
 

@@ -31,7 +31,10 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.Auditor;
 import com.googlecode.utterlyidle.handlers.Auditors;
 import com.googlecode.utterlyidle.handlers.ByteArrayHandler;
+import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
+import com.googlecode.utterlyidle.handlers.HttpClient;
 import com.googlecode.utterlyidle.handlers.NoContentHandler;
+import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.utterlyidle.handlers.StreamingOutputHandler;
@@ -79,7 +82,9 @@ public class CoreModule extends AbstractModule {
         container.add(ResponseHandlersFinder.class);
         container.add(Auditors.class, Auditors.class);
         container.addActivator(Auditor.class, container.getActivator(Auditors.class));
-        
+        container.add(HttpClient.class, ClientHttpHandler.class);
+        container.decorate(HttpClient.class, RedirectHttpHandler.class);
+
         return this;
     }
 
