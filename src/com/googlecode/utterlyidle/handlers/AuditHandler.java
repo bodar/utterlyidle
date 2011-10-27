@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -9,7 +8,7 @@ import java.util.Date;
 
 import static com.googlecode.totallylazy.Pair.pair;
 
-public class AuditHandler implements HttpHandler {
+public class AuditHandler implements HttpClient {
 
     private final HttpHandler delegate;
     private final Auditor auditor;
