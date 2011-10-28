@@ -133,6 +133,16 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         };
     }
 
+    public static Module applicationInstance(final Object instance) {
+        return new ApplicationScopedModule() {
+            public Module addPerApplicationObjects(Container container) {
+                Class aClass = instance.getClass();
+                container.addInstance(aClass, instance);
+                return this;
+            }
+        };
+    }
+
     public static Module requestScopedClass(final Class<?> aClass) {
         return new RequestScopedModule() {
             public Module addPerRequestObjects(Container container) {
