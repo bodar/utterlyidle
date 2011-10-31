@@ -10,8 +10,7 @@ import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Predicates.never;
-import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Predicates.always;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
@@ -31,7 +30,7 @@ import static org.hamcrest.Matchers.is;
 public class CachingTest {
     @Test
     public void setsCacheControlHeaders() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response().header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
+        HttpHandler handler = new CacheControlHandler(returnsResponse(response().header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60).add(always()));
         Response response = handler.handle(get("/").build());
         assertThat(response.header(CACHE_CONTROL), is("public, max-age=60"));
         assertThat(response.header(EXPIRES), is("Sat, 01 Jan 2000 00:01:00 UTC"));
@@ -39,7 +38,7 @@ public class CachingTest {
 
     @Test
     public void disablesCachingWhenItDoesNotMatch() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response()), cachePolicy(60, never()));
+        HttpHandler handler = new CacheControlHandler(returnsResponse(response()), cachePolicy(60));
         Response response = handler.handle(get("/").build());
         assertThat(response.header(CACHE_CONTROL), is("private, must-revalidate"));
         assertThat(response.header(EXPIRES), is("0"));
@@ -60,15 +59,15 @@ public class CachingTest {
 
     @Test
     public void canControlPolicyBasedOnPath() throws Exception {
-        assertThat(cachePolicy(60, path("foo")).matches(Pair.pair(get("/foo").build(), Responses.response())), is(true));
-        assertThat(cachePolicy(60, path("bar")).matches(Pair.pair(get("/foo").build(), Responses.response())), is(false));
+        assertThat(cachePolicy(60).add(path("foo")).matches(Pair.pair(get("/foo").build(), Responses.response())), is(true));
+        assertThat(cachePolicy(60).add(path("bar")).matches(Pair.pair(get("/foo").build(), Responses.response())), is(false));
     }
 
     @Test
     public void canControlPolicyBasedOnContentType() throws Exception {
-        assertThat(cachePolicy(60, contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
+        assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
                 matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, TEXT_JAVASCRIPT))), is(true));
-        assertThat(cachePolicy(60, contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
+        assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
                 matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML))), is(false));
     }
 
