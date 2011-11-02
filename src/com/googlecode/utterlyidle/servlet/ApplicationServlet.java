@@ -56,8 +56,7 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(final HttpServletRequest httpServletRequest, HttpServletResponse resp) throws ServletException {
         try {
-            BasePath basePath = extractUrl(httpServletRequest);
-            Response response = application.usingRequestScope(inject(basePath, handleRequest(request(httpServletRequest))));
+            Response response = application.handle(request(httpServletRequest));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
@@ -101,14 +100,4 @@ public class ApplicationServlet extends HttpServlet {
         }
         return result;
     }
-
-    private static BasePath extractUrl(HttpServletRequest request) {
-        return basePath(context(request.getContextPath()) + request.getServletPath());
-    }
-
-    private static String context(String contextPath) {
-        return Strings.EMPTY.equals(contextPath) ? "/" : contextPath ;
-    }
-
-
 }

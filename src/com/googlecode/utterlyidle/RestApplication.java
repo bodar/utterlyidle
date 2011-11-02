@@ -44,6 +44,7 @@ public class RestApplication implements Application {
     }
 
     public Response handle(final Request request) throws Exception {
+        addBasePathIfNeeded(applicationScope);
         return usingRequestScope(handleRequest(request));
     }
 
@@ -56,7 +57,6 @@ public class RestApplication implements Application {
         requestScope.add(HttpHandler.class, BaseHandler.class);
         requestScope.decorate(HttpHandler.class, DateHandler.class);
         modules.activateRequestModules(requestScope);
-        addBasePathIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, BasePathHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, ContentLengthHandler.class);

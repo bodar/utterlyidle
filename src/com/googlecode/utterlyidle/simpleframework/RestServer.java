@@ -51,7 +51,7 @@ public class RestServer implements Server {
         InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.port()));
 
         ServerConfiguration updatedConfiguration = configuration.port(socketAddress.getPort());
-        application.add(Modules.requestInstance(updatedConfiguration.basePath()));
+        application.add(Modules.applicationInstance(updatedConfiguration.basePath()));
         uri = updatedConfiguration.toUrl();
         return connection;
     }

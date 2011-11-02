@@ -2,8 +2,10 @@ package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
 import org.mortbay.jetty.Server;
@@ -49,6 +51,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private Server startUpServer(Application application, ServerConfiguration serverConfig) throws Exception {
         Server server = createServer(serverConfig);
         Context context = new Context(server, serverConfig.basePath().toString(), NO_SESSIONS);
+        application.add(Modules.applicationInstance(serverConfig.basePath()));
         application.add(new ServletModule(context.getServletContext()));
         context.setAttribute(Application.class.getCanonicalName(), application);
         context.addServlet(ApplicationServlet.class, "/*");
