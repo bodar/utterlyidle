@@ -6,13 +6,14 @@ import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.modules.BasicAuditing;
-import com.googlecode.utterlyidle.modules.Modules;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -30,7 +31,7 @@ public class RestServer implements Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8001));
+        application(HelloWorldApplication.class).start(defaultConfiguration().port(8001));
     }
 
     public Uri uri() {
@@ -52,7 +53,6 @@ public class RestServer implements Server {
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
         server.start();
         ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
-        application.add(Modules.applicationInstance(updatedConfiguration.basePath()));
         uri = updatedConfiguration.toUrl();
         return server;
     }

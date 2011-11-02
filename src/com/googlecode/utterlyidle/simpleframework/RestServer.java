@@ -5,7 +5,6 @@ import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
-import com.googlecode.utterlyidle.modules.Modules;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.connect.Connection;
@@ -15,6 +14,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 
@@ -31,7 +32,7 @@ public class RestServer implements Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8000));
+        application(HelloWorldApplication.class).start(defaultConfiguration().port(8000));
     }
 
     public Uri uri() {
@@ -51,7 +52,6 @@ public class RestServer implements Server {
         InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.port()));
 
         ServerConfiguration updatedConfiguration = configuration.port(socketAddress.getPort());
-        application.add(Modules.applicationInstance(updatedConfiguration.basePath()));
         uri = updatedConfiguration.toUrl();
         return connection;
     }

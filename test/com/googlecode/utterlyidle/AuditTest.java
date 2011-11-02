@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.Date;
 
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -15,11 +16,10 @@ import static org.hamcrest.Matchers.is;
 public class AuditTest {
     @Test
     public void recordsRequestAndResponse() throws Exception {
-        RestApplication testApplication = new RestApplication();
-        testApplication.add(auditModule());
+        Application application = application().add(auditModule()).build();
 
         Request request = get("").build();
-        Response response = testApplication.handle(request);
+        Response response = application.handle(request);
 
         assertThat(TestAuditor.receivedRequest, is(request));
         assertThat(TestAuditor.receivedResponse, is(response));

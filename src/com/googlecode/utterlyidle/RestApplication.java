@@ -22,7 +22,12 @@ public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
     private final Modules modules = new Modules();
 
-    public RestApplication(Module... modules) {
+    public RestApplication(BasePath basePath) {
+        this(basePath, new Module[0]);
+    }
+
+    public RestApplication(BasePath basePath, Module... modules) {
+        applicationScope.addInstance(BasePath.class, basePath);
         applicationScope.addInstance(Application.class, this);
         this.modules.setupApplicationScope(applicationScope);
         add(new CoreModule());
@@ -44,7 +49,6 @@ public class RestApplication implements Application {
     }
 
     public Response handle(final Request request) throws Exception {
-        addBasePathIfNeeded(applicationScope);
         return usingRequestScope(handleRequest(request));
     }
 

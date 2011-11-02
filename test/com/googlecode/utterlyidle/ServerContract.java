@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
@@ -30,7 +31,7 @@ public abstract class ServerContract {
 
     @Before
     public void start() throws Exception {
-        server = new ServerActivator(new HelloWorldApplication(), defaultConfiguration().serverClass(server())).call();
+        server = application(HelloWorldApplication.class).start(defaultConfiguration().serverClass(server()));
     }
 
     @After

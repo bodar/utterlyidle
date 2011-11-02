@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.examples;
 
+import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.modules.PerformanceModule;
 
@@ -15,11 +16,12 @@ import static com.googlecode.utterlyidle.modules.Modules.bindingsModule;
 import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
 
 public class HelloWorldApplication extends RestApplication {
-    public HelloWorldApplication() {
-        add(bindingsModule(annotatedClass(HelloWorld.class)));
-        add(bindingsModule(binding(get("/dsl").
-                resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))))));
-        add(requestInstance(System.getProperties()));
-        add(new PerformanceModule());
+    public HelloWorldApplication(BasePath basePath) {
+        super(basePath,
+                bindingsModule(annotatedClass(HelloWorld.class)),
+                bindingsModule(binding(get("/dsl").
+                        resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))))),
+                requestInstance(System.getProperties()),
+                new PerformanceModule());
     }
 }
