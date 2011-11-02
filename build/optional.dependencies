@@ -1,0 +1,5 @@
+mvn:org.simpleframework:simple:jar:4.1.21
+mvn:org.sitemesh:sitemesh:jar:3.0-alpha-2
+mvn:org.mortbay.jetty:jetty-util:jar:6.1.26
+mvn:org.mortbay.jetty:jetty:jar:6.1.26
+
