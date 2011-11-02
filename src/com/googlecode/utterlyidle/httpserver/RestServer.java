@@ -52,7 +52,7 @@ public class RestServer implements Server {
         server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
         server.start();
         ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
-        application.add(Modules.requestInstance(updatedConfiguration.basePath()));
+        application.add(Modules.applicationInstance(updatedConfiguration.basePath()));
         uri = updatedConfiguration.toUrl();
         return server;
     }
