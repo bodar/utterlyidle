@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
@@ -31,5 +32,13 @@ public class Input implements NameValue{
 
     public String attribute(String attributeName) {
         return selectContents(input, format("@%s", attributeName));
+    }
+
+    public boolean enabled() {
+        return !disabled();
+    }
+
+    public boolean disabled() {
+        return Xml.matches(input, "boolean(@disabled='disabled')");
     }
 }

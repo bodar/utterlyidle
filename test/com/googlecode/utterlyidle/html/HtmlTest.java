@@ -21,6 +21,12 @@ public class HtmlTest {
     }
 
     @Test
+    public void toStringReturnsOriginalHtml() throws Exception{
+        Html html = html("   <html/>   ");
+        assertThat(html.toString(), is("   <html/>   "));
+    }
+
+    @Test
     public void supportsCount() throws Exception{
         Html html = html("<html/>");
         assertThat(html.count("//html"), NumberMatcher.is(1));
@@ -33,4 +39,5 @@ public class HtmlTest {
         assertThat(html.contains("//html"), is(true));
         assertThat(html.contains("//bob"), is(false));
     }
+
 }
