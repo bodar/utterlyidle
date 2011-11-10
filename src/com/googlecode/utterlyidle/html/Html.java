@@ -10,10 +10,12 @@ import static com.googlecode.totallylazy.Xml.selectElement;
 import static java.lang.String.format;
 
 public class Html {
+    private final String raw;
     private final Document document;
 
     public Html(String document) {
         try {
+            this.raw = document;
             this.document = Xml.document(document);
         } catch (LazyException e){
             throw new IllegalArgumentException(format("Could not parse html: %s", document));
@@ -66,5 +68,10 @@ public class Html {
 
     public boolean contains(String xpath) {
         return Xml.matches(document, xpath);
+    }
+
+    @Override
+    public String toString() {
+        return raw;
     }
 }
