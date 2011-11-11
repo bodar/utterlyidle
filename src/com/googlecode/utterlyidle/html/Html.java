@@ -74,7 +74,7 @@ public class Html {
     }
 
     public Html innerHtml(String xpath) throws Exception {
-        return new Html(Xml.format(Xml.selectElement(document, xpath).get()));
+        return new Html(selectContents(document, xpath));
     }
 
     @Override

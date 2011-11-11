@@ -43,7 +43,7 @@ public class HtmlTest {
     @Test
     public void supportsInnerHtml() throws Exception {
         Html html = html("<html><head><title>Oh Hello</title></head><body></body></html>");
-        assertThat(html.innerHtml("//head"), is(html("<head><title>Oh Hello</title></head>")));
+        assertThat(html.innerHtml("//head"), is(html("<title>Oh Hello</title>")));
     }
     
 }
