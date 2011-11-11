@@ -1,9 +1,12 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.LazyException;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Response;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
 import static com.googlecode.totallylazy.Xml.selectElement;
@@ -11,7 +14,7 @@ import static java.lang.String.format;
 
 public class Html {
     private final String raw;
-    private final Document document;
+    private final Node document;
 
     public Html(String document) {
         try {
@@ -70,8 +73,24 @@ public class Html {
         return Xml.matches(document, xpath);
     }
 
+    public Html innerHtml(String xpath) throws Exception {
+        return new Html(Xml.format(Xml.selectElement(document, xpath).get()));
+    }
+
     @Override
     public String toString() {
         return raw;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Html))
+            return false;
+        Html html = (Html)object;
+        try {
+            return Xml.format(this.document).equals(Xml.format(html.document));
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
