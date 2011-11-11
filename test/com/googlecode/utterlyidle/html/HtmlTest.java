@@ -40,4 +40,10 @@ public class HtmlTest {
         assertThat(html.contains("//bob"), is(false));
     }
 
+    @Test
+    public void supportsInnerHtml() throws Exception {
+        Html html = html("<html><head><title>Oh Hello</title></head><body></body></html>");
+        assertThat(html.innerHtml("//head"), is(html("<head><title>Oh Hello</title></head>")));
+    }
+    
 }
