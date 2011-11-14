@@ -20,6 +20,16 @@ public class Requests {
         return request(method, Uri.uri(path + query.toString()), headers, input);
     }
 
+
+    public static Callable1<Request, String> pathAsString() {
+        return new Callable1<Request, String>() {
+            @Override
+            public String call(Request request) throws Exception {
+                return request.uri().path();
+            }
+        };
+    }
+
     public static Callable1<Request, Uri> uri() {
         return new Callable1<Request, Uri>() {
             public Uri call(Request request) throws Exception {
