@@ -11,6 +11,9 @@ import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.yadic.Container;
+import org.antlr.stringtemplate.NoIndentWriter;
+
+import java.io.StringWriter;
 
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.URLs.packageUrl;
@@ -38,7 +41,9 @@ public class LastExceptionsModule implements ResourcesModule, ApplicationScopedM
             @Override
             public String render(Model model) throws Exception {
                 EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(packageUrl(LastExceptionsResource.class));
-                return group.getInstanceOf("lastExceptions", model.toMap()).toString();
+                StringWriter stringWriter = new StringWriter();
+                group.getInstanceOf("lastExceptions", model.toMap()).write(new NoIndentWriter(stringWriter));
+                return stringWriter.toString();
             }
         }));
 
