@@ -9,6 +9,7 @@ import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
+import com.googlecode.utterlyidle.rendering.exceptions.LastExceptionsModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 
@@ -31,6 +32,7 @@ public class RestApplication implements Application {
         applicationScope.addInstance(Application.class, this);
         this.modules.setupApplicationScope(applicationScope);
         add(new CoreModule());
+        add(new LastExceptionsModule());
         for (Module module : modules) {
             add(module);
         }
