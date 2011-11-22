@@ -9,6 +9,8 @@ import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
@@ -95,6 +97,13 @@ public class SiteMeshHandlerTest {
     }
 
     @Test
+    public void shouldNotPerformServerSideIncludeWhenResponseOtherThan200() throws Exception {
+        assertDecorationResultsInResponse(
+                sequence(staticRule(onlyMatchRequestTo("notFound"), templateName("templateWithServerSideIncludeNot200"))),
+                "", "not200", ServerSideIncludeResource.class);
+    }
+
+    @Test
     public void shouldPerformServerSideIncludesEvenWhenUrlParameterIsATemplate() throws Exception {
         assertDecorationResultsInResponse(
                 sequence(staticRule(onlyMatchRequestTo("hello"), templateName("templateWithServerSideIncludeWithTemplate"))),
@@ -137,6 +146,13 @@ public class SiteMeshHandlerTest {
         @Produces(MediaType.TEXT_HTML)
         public String get() {
             return "My name is";
+        }
+
+        @GET
+        @Path("not200")
+        @Produces(MediaType.TEXT_HTML)
+        public Response not200() {
+            return Responses.response(Status.UNAUTHORIZED);
         }
 
         @GET
