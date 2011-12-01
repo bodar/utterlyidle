@@ -14,6 +14,7 @@ import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -28,6 +29,7 @@ public class RestApplication implements Application {
     }
 
     public RestApplication(BasePath basePath, Module... modules) {
+        applicationScope.addInstance(InternalRequestMarker.class, new InternalRequestMarker(UUID.randomUUID().toString()));
         applicationScope.addInstance(BasePath.class, basePath);
         applicationScope.addInstance(Application.class, this);
         this.modules.setupApplicationScope(applicationScope);
