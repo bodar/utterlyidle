@@ -45,11 +45,11 @@ public class CoreModule extends AbstractModule {
         container.addActivator(ResourcePath.class, ResourcePathActivator.class);
         container.addActivator(BaseUri.class, BaseUriActivator.class);
         container.add(Redirector.class, BaseUriRedirector.class);
+        container.add(RequestGenerator.class, BindingsRequestGenerator.class);
         container.add(ResponseHandlersFinder.class);
         container.add(Auditors.class, Auditors.class);
         container.addActivator(Auditor.class, container.getActivator(Auditors.class));
         container.add(HttpClient.class, ClientHttpHandler.class);
-//        container.decorate(HttpClient.class, RedirectHttpHandler.class); FIX With Yadic change to allow decorators and resolvers
         return this;
     }
 

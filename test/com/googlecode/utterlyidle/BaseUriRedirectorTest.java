@@ -1,13 +1,14 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Left;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Right;
+import com.googlecode.totallylazy.*;
+import com.googlecode.utterlyidle.annotations.*;
 import com.googlecode.utterlyidle.dsl.DslTest;
 import org.junit.Test;
 
+import java.net.URL;
+
 import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
@@ -68,15 +69,20 @@ public class BaseUriRedirectorTest {
         assertLocation(response, "http://server/base/path/foo");
     }
 
+
     private void assertLocation(Response response, String location) {
         assertThat(response.status(), is(Status.SEE_OTHER));
         assertThat(response.header(HttpHeaders.LOCATION), is(location));
     }
 
-    private Redirector redirector(Binding... values) {
+    public static BaseUriRedirector redirector(Binding... values) {
+        return new BaseUriRedirector(baseUri("http://server/base/"), bindings(values));
+    }
+
+    public static Bindings bindings(Binding... values) {
         RegisteredResources bindings = new RegisteredResources();
         bindings.add(values);
-        return new BaseUriRedirector(baseUri("http://server/base/"), bindings);
+        return bindings;
     }
 
     public static class RedirectWithFunctionalTypes {
@@ -88,5 +94,6 @@ public class BaseUriRedirectorTest {
             return "either";
         }
     }
+
 
 }
