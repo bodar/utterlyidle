@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.examples;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.modules.PerformanceModule;
+import com.googlecode.utterlyidle.profiling.ProfilingModule;
 
 import java.util.Properties;
 
@@ -19,6 +20,7 @@ public class HelloWorldApplication extends RestApplication {
     public HelloWorldApplication(BasePath basePath) {
         super(basePath,
                 bindingsModule(annotatedClass(HelloWorld.class)),
+                new ProfilingModule(),
                 bindingsModule(binding(get("/dsl").
                         resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))))),
                 requestInstance(System.getProperties()),
