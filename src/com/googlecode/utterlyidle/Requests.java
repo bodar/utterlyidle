@@ -54,6 +54,24 @@ public class Requests {
         };
     }
 
+    public static Callable1<Request, String> queryParameter(final String name) {
+        return new Callable1<Request, String>() {
+            @Override
+            public String call(Request request) throws Exception {
+                return query(request).getValue(name);
+            }
+        };
+    }
+
+    public static LogicalPredicate<Request> hasQueryParameter(final String parameter) {
+        return new LogicalPredicate<Request>() {
+            @Override
+            public boolean matches(Request request) {
+                return query(request).contains(parameter);
+            }
+        };
+    }
+
     public static QueryParameters query(Request request) {
         return QueryParameters.parse(request.uri().query());
     }
