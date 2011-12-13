@@ -1,9 +1,11 @@
 package com.googlecode.utterlyidle.sitemesh;
 
+import com.googlecode.totallylazy.Iterators;
 import org.sitemesh.content.ContentProperty;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class PropertyMap extends UnsupportedMap<String, Object>{
     private final ContentProperty property;
@@ -34,6 +36,11 @@ public class PropertyMap extends UnsupportedMap<String, Object>{
 
     public PropertyMap getPropertyMap(String key) {
         return (PropertyMap) get(key);
+    }
+
+    @Override
+    public int size() {
+        return Iterators.size(property.getChildren().iterator()).intValue();
     }
 }
 
