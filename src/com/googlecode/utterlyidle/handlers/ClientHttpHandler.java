@@ -81,7 +81,7 @@ public class ClientHttpHandler implements HttpClient {
     private Callable1<OutputStream, Void> copyRequestEntity(final Request request) {
         return new Callable1<OutputStream, Void>() {
             public Void call(OutputStream outputStream) throws Exception {
-                outputStream.write(request.input());
+                outputStream.write(request.entity());
                 return Runnables.VOID;
             }
         };

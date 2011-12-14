@@ -14,6 +14,7 @@ import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.FormParameters.formParameters;
@@ -22,11 +23,10 @@ import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class RequestBuilder implements Callable<Request> {
-    private final List<Pair<String, String>> headers = new ArrayList<Pair<String, String>>();
-    private final List<Pair<String, String>> form = new ArrayList<Pair<String, String>>();
-    private byte[] input;
     private final String method;
     private Uri uri;
+    private final List<Pair<String, String>> headers = new ArrayList<Pair<String, String>>();
+    private byte[] entity = new byte[0];
 
     public RequestBuilder(String method, Uri uri) {
         this.method = method;
@@ -35,6 +35,10 @@ public class RequestBuilder implements Callable<Request> {
 
     public RequestBuilder(String method, String uri) {
         this(method, Uri.uri(uri));
+    }
+
+    public static RequestBuilder modify(Request request){
+        return new RequestBuilder(request);
     }
 
     public RequestBuilder(Request request) {
@@ -46,12 +50,7 @@ public class RequestBuilder implements Callable<Request> {
                 return requestBuilder;
             }
         });
-        sequence(Requests.form(request)).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
-            public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
-                requestBuilder.withForm(nameAndValue.first(), nameAndValue.second());
-                return requestBuilder;
-            }
-        });
+        this.entity = request.entity();
     }
 
     public RequestBuilder withUri(Uri value) {
@@ -109,7 +108,9 @@ public class RequestBuilder implements Callable<Request> {
         if (sequence(headers).filter(by(first(String.class), is(equalIgnoringCase(HttpHeaders.CONTENT_TYPE)))).isEmpty()) {
             withHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
         }
-        form.add(pair(name, value.toString()));
+        entity = FormParameters.parse(new String(entity)).
+                add(name, value.toString()).
+                toString().getBytes();
         return this;
     }
 
@@ -118,7 +119,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder input(byte[] input) {
-        this.input = input;
+        this.entity = input;
         return this;
     }
 
@@ -127,19 +128,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public Request build() {
-        return request(method, uri, headerParameters(headers), input(formParameters(form), input));
-    }
-
-    public static byte[] input(FormParameters form, byte[] input) {
-        if (form.size() > 0) {
-            if (input != null)
-                throw new IllegalStateException("Please specify either form parameters or an input stream- not both.");
-            return form.toString().getBytes();
-        }
-        if (input == null) {
-            return new byte[0];
-        }
-        return input;
+        return request(method, uri, headerParameters(headers), entity);
     }
 
     public static RequestBuilder get(Uri uri) {
@@ -177,4 +166,18 @@ public class RequestBuilder implements Callable<Request> {
     public Uri uri() {
         return uri;
     }
+
+    public RequestBuilder uri(Uri uri) {
+        this.uri = uri;
+        return this;
+    }
+
+    public RequestBuilder replaceHeader(String name, Object value) {
+        for (Pair<String, String> header : sequence(headers).find(where(first(String.class), equalIgnoringCase(name)))) {
+            headers.remove(header);
+        }
+        headers.add(pair(name, value.toString()));
+        return this;
+    }
+
 }

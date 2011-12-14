@@ -6,10 +6,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.*;
 
 import java.util.Iterator;
 
@@ -17,6 +14,7 @@ import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class ConvertExtensionToAcceptHeader implements HttpHandler {
@@ -82,10 +80,10 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     private Callable2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
         return new Callable2<Request, Pair<String, String>, Request>() {
             public Request call(Request request, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
-                request.headers().remove(HttpHeaders.ACCEPT);
-                request.headers().add(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second());
-                request.uri(removeExtension(request.uri()));
-                return request;
+                return modify(request).
+                        replaceHeader(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()).
+                        uri(removeExtension(request.uri())).
+                        build();
             }
         };
     }

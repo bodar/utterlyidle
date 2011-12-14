@@ -120,7 +120,7 @@ public class CoreModule extends AbstractModule {
         argumentScope.addInstance(QueryParameters.class, Requests.query(request));
         argumentScope.addInstance(FormParameters.class, Requests.form(request));
         argumentScope.addInstance(CookieParameters.class, Requests.cookies(request));
-        argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.input()));
+        argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.entity()));
         argumentScope.add(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
         argumentScope.add(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentScope));
         argumentScope.addActivator(UUID.class, UUIDActivator.class);

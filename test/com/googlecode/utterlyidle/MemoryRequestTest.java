@@ -47,17 +47,6 @@ public class MemoryRequestTest {
     }
 
     @Test
-    public void shouldNotHoldOnToOldQueryParametersAfterUrlIsChanged() {
-        Request request = get("http://www.google.com?q=handies+that+look+like+gandhis").build();
-
-        assertThat(Requests.query(request).getValue("q"), is("handies that look like gandhis"));
-
-        request.uri(uri("http://www.google.com?q=cheeses+that+look+like+jesus"));
-        
-        assertThat(Requests.query(request).getValue("q"), is("cheeses that look like jesus"));
-    }
-
-    @Test
     public void shouldSupportRetrievingResourcePath() throws Exception {
         assertThat(resourcePathOf(get("http://www.myserver.com/foobar/spaz").build()), is(resourcePath("/foobar/spaz")));
     }

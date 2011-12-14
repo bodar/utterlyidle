@@ -8,6 +8,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static java.util.regex.Pattern.quote;
 
 public class BasePathHandler implements HttpHandler {
@@ -57,7 +58,9 @@ public class BasePathHandler implements HttpHandler {
     }
 
     private Request removeBasePathFromUri(Request request) {
-        return request.uri(request.uri().path(removeBasePath(request.uri().path())));
+        return modify(request).
+                uri(request.uri().path(removeBasePath(request.uri().path()))).
+                build();
     }
 
     private String removeBasePath(String path) {

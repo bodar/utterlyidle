@@ -81,14 +81,14 @@ public class ConvertExtensionToAcceptHeaderTest {
         Request request = get(url).build();
         converter.handle(request);
 
-        assertThat(request.headers().getValue(HttpHeaders.ACCEPT), is(expectedMimeType));
+        assertThat(httpHandler.request.headers().getValue(HttpHeaders.ACCEPT), is(expectedMimeType));
     }
 
     private void assertUrlConversion(ConvertExtensionToAcceptHeader converter, String original, String expectedAfterConversion) throws Exception {
         Request request = get(original).build();
         converter.handle(request);
 
-        assertThat(request.uri(), is(uri(expectedAfterConversion)));
+        assertThat(httpHandler.request.uri(), is(uri(expectedAfterConversion)));
     }
 
     private String extensionOf(String url) {
@@ -96,9 +96,11 @@ public class ConvertExtensionToAcceptHeaderTest {
     }
 
     private static class StubHttpHandler implements HttpHandler {
+        public Request request;
         public Response response = response();
 
         public Response handle(Request request) throws Exception {
+            this.request = request;
             return response;
         }
 

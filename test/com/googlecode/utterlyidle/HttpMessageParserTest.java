@@ -37,7 +37,7 @@ public class HttpMessageParserTest {
         assertThat(request.method(), is(PUT));
         assertThat(request.uri().path().toString(), is("/path"));
         assertThat(request.headers().getValue("Content-Type"), is("text/plain"));
-        assertThat(new String(request.input()), is(" body "));
+        assertThat(new String(request.entity()), is(" body "));
     }
 
     private void canParseRequest(Request request) {

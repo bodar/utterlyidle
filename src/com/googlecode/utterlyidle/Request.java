@@ -8,9 +8,7 @@ public interface Request {
 
     public Uri uri();
 
-    public Request uri(Uri uri);
-
-    public byte[] input();
-
     public HeaderParameters headers();
+
+    public byte[] entity();
 }

@@ -59,7 +59,7 @@ public class Requests {
     public static FormParameters form(Request request) {
         String contentType = request.headers().getValue(HttpHeaders.CONTENT_TYPE);
         if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
-            return FormParameters.parse(new String(request.input()));
+            return FormParameters.parse(new String(request.entity()));
         } else {
             return FormParameters.formParameters();
         }
@@ -80,7 +80,7 @@ public class Requests {
     public static Callable1<Request, byte[]> input() {
         return new Callable1<Request, byte[]>() {
             public byte[] call(Request request) throws Exception {
-                return request.input();
+                return request.entity();
             }
         };
     }
