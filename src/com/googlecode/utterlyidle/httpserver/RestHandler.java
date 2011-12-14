@@ -21,13 +21,11 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Uri.uri;
-import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.Responses.response;
-import static java.lang.System.nanoTime;
 
 public class RestHandler implements HttpHandler {
     private final Application application;
@@ -43,10 +41,7 @@ public class RestHandler implements HttpHandler {
 
     private Response handle(Request request) throws IOException {
         try {
-            long start = nanoTime();
-            Response response = application.handle(request);
-            System.out.println(String.format("%s %s -> %s in %s msecs", request.method(), request.uri(), response.status(), calculateMilliseconds(start, nanoTime())));
-            return response;
+            return application.handle(request);
         } catch (Exception e) {
             return exceptionResponse(request, e);
         }

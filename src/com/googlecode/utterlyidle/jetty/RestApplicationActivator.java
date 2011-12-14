@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.CloseableCallable;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.modules.Module;
@@ -14,8 +15,8 @@ public class RestApplicationActivator implements CloseableCallable<Application> 
     private final Application application;
     private final Module[] modules;
 
-    public RestApplicationActivator(Module... modules) {
-        this(new RestApplication(), modules);
+    public RestApplicationActivator(BasePath basePath, Module... modules) {
+        this(new RestApplication(basePath), modules);
     }
 
     public RestApplicationActivator(Application application, Module... modules) {

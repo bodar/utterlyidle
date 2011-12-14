@@ -20,6 +20,16 @@ public class Requests {
         return request(method, Uri.uri(path + query.toString()), headers, input);
     }
 
+
+    public static Callable1<Request, String> pathAsString() {
+        return new Callable1<Request, String>() {
+            @Override
+            public String call(Request request) throws Exception {
+                return request.uri().path();
+            }
+        };
+    }
+
     public static Callable1<Request, Uri> uri() {
         return new Callable1<Request, Uri>() {
             public Uri call(Request request) throws Exception {
@@ -40,6 +50,24 @@ public class Requests {
         return new Callable1<Request, QueryParameters>() {
             public QueryParameters call(Request request) throws Exception {
                 return query(request);
+            }
+        };
+    }
+
+    public static Callable1<Request, String> queryParameter(final String name) {
+        return new Callable1<Request, String>() {
+            @Override
+            public String call(Request request) throws Exception {
+                return query(request).getValue(name);
+            }
+        };
+    }
+
+    public static LogicalPredicate<Request> hasQueryParameter(final String parameter) {
+        return new LogicalPredicate<Request>() {
+            @Override
+            public boolean matches(Request request) {
+                return query(request).contains(parameter);
             }
         };
     }

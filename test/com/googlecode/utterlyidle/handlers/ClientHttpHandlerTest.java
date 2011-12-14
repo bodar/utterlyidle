@@ -8,13 +8,13 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
-import com.googlecode.utterlyidle.httpserver.RestServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URL;
 
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
@@ -64,7 +64,7 @@ public class ClientHttpHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        server = new RestServer(new HelloWorldApplication(), defaultConfiguration());
+        server = application(HelloWorldApplication.class).start(defaultConfiguration());
     }
 
     @After

@@ -100,6 +100,13 @@ public class RequestBuilder implements Callable<Request> {
         return form(name, value);
     }
 
+    public RequestBuilder withForms(FormParameters formParameters) {
+        for(Pair<String, String> param : formParameters) {
+            form(param.first(), param.second());
+        }
+        return this;
+    }
+
     public RequestBuilder form(String name, Object value) {
         if(value == null) {
             return this;

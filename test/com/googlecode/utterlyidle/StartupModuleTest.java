@@ -12,20 +12,20 @@ import static org.hamcrest.Matchers.is;
 public class StartupModuleTest {
     @Test
     public void supportStartingEvenIfHasDependencyOnRequest() throws Exception {
-        new RestApplication().add(requestScopedClass(StartableThing.class)).add(start());
+        new RestApplication(BasePath.basePath("/")).add(requestScopedClass(StartableThing.class)).add(start());
     }
 
     @Test
     public void supportStartingViaAddMethod() throws Exception {
         StartableThing startable = new StartableThing(null);
-        new RestApplication().add(requestInstance(startable)).add(start());
+        new RestApplication(BasePath.basePath("/")).add(requestInstance(startable)).add(start());
         assertThat(startable.count, is(1));
     }
 
     @Test
     public void supportStartingViaConstructor() throws Exception {
         StartableThing startable = new StartableThing(null);
-        new RestApplication(requestInstance(startable), start());
+        new RestApplication(BasePath.basePath("/"), requestInstance(startable), start());
         assertThat(startable.count, is(1));
     }
 

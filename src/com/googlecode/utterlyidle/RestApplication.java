@@ -9,10 +9,12 @@ import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
+import com.googlecode.utterlyidle.rendering.exceptions.LastExceptionsModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -22,10 +24,17 @@ public class RestApplication implements Application {
     private final Container applicationScope = new SimpleContainer();
     private final Modules modules = new Modules();
 
-    public RestApplication(Module... modules) {
+    public RestApplication(BasePath basePath) {
+        this(basePath, new Module[0]);
+    }
+
+    public RestApplication(BasePath basePath, Module... modules) {
+        applicationScope.addInstance(InternalRequestMarker.class, new InternalRequestMarker(UUID.randomUUID().toString()));
+        applicationScope.addInstance(BasePath.class, basePath);
         applicationScope.addInstance(Application.class, this);
         this.modules.setupApplicationScope(applicationScope);
         add(new CoreModule());
+        add(new LastExceptionsModule());
         for (Module module : modules) {
             add(module);
         }
@@ -56,7 +65,6 @@ public class RestApplication implements Application {
         requestScope.add(HttpHandler.class, BaseHandler.class);
         requestScope.decorate(HttpHandler.class, DateHandler.class);
         modules.activateRequestModules(requestScope);
-        addBasePathIfNeeded(requestScope);
         requestScope.decorate(HttpHandler.class, BasePathHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, ContentLengthHandler.class);

@@ -2,11 +2,13 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
@@ -16,10 +18,12 @@ import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 public class ExceptionHandler implements HttpHandler {
     private final HttpHandler httpHandler;
     private final ResponseHandlersFinder handlers;
+    private LastExceptions exceptions;
 
-    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlersFinder handlers) {
+    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlersFinder handlers, LastExceptions exceptions) {
         this.httpHandler = httpHandler;
         this.handlers = handlers;
+        this.exceptions = exceptions;
     }
 
     public Response handle(Request request) throws Exception {
@@ -35,6 +39,7 @@ public class ExceptionHandler implements HttpHandler {
     }
 
     private Response findAndHandle(Request request, Throwable throwable) {
+        exceptions.put(new Date(), request, ExceptionRenderer.toString(throwable));
         Response response = response(INTERNAL_SERVER_ERROR).
                 header(CONTENT_TYPE, TEXT_PLAIN).
                 entity(throwable);
