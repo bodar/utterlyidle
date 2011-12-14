@@ -15,6 +15,8 @@ import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 import static org.mortbay.jetty.servlet.Context.NO_SESSIONS;
@@ -36,7 +38,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     public static void main(String[] args) throws Exception {
-        new RestServer(new HelloWorldApplication(), ServerConfiguration.defaultConfiguration().port(8002));
+        application(HelloWorldApplication.class).start(defaultConfiguration().port(8002));
     }
 
     private Server startApp(Application application, final ServerConfiguration serverConfig) throws Exception {

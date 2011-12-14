@@ -1,11 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicates;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -66,10 +61,10 @@ public class Binding {
         return parameters.size();
     }
 
-
     public int priority() {
         return priority;
     }
+
 
     public boolean hidden() {
         return hidden;
@@ -92,6 +87,15 @@ public class Binding {
     @Override
     public String toString() {
         return String.format("%s %s -> %s", httpMethod, uriTemplate, method);
+    }
+
+    public static Callable1<Binding, Method> extractMethod() {
+        return new Callable1<Binding, Method>() {
+            @Override
+            public Method call(final Binding binding) throws Exception {
+                return binding.method();
+            }
+        };
     }
 
 }

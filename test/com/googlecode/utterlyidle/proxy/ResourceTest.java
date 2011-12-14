@@ -1,13 +1,7 @@
 package com.googlecode.utterlyidle.proxy;
 
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.BaseUriRedirector;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.RegisteredResources;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.dsl.DslTest;

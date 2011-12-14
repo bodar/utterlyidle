@@ -225,11 +225,10 @@ public class RestTest {
 
     @Test
     public void canHandleRealWorldAcceptsHeader() throws Exception {
-        ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
+        ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class).addAnnotated(PutContent.class);
         String mimeTypes = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
         assertThat(application.responseAsString(get("text").accepting(mimeTypes)), is("xml"));
 
-        application.addAnnotated(PutContent.class);
         mimeTypes = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
         assertThat(application.responseAsString(put("path/foo").accepting(mimeTypes).withInput("input".getBytes())), is("input"));
     }
