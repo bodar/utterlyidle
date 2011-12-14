@@ -4,16 +4,11 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.proxy.Invocation;
 
-import java.lang.reflect.Method;
-
-import static com.googlecode.totallylazy.Predicates.is;
-import static com.googlecode.totallylazy.Predicates.where;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.BasePathHandler.toAbsolute;
 
 public class BaseUriRedirector implements Redirector {
     private final BaseUri baseUri;
-    private final Bindings bindings;
+    private Bindings bindings;
 
     public BaseUriRedirector(final BaseUri baseUri, final Bindings bindings) {
         this.baseUri = baseUri;
@@ -27,8 +22,7 @@ public class BaseUriRedirector implements Redirector {
 
     @Override
     public Uri uriOf(final Invocation invocation) {
-        return sequence(bindings).
-                find(where(method(), is(invocation.method()))).
+        return bindings.find(invocation.method()).
                 map(uri(invocation.arguments())).
                 get();
     }
@@ -48,12 +42,4 @@ public class BaseUriRedirector implements Redirector {
         };
     }
 
-    public static Callable1<Binding, Method> method() {
-        return new Callable1<Binding, Method>() {
-            @Override
-            public Method call(final Binding binding) throws Exception {
-                return binding.method();
-            }
-        };
-    }
 }

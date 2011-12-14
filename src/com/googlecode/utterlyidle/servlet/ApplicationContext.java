@@ -1,9 +1,14 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.yadic.SimpleContainer;
 
 import javax.servlet.ServletContext;
+
+import java.util.concurrent.Callable;
+
+import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.basePath;
 
 public class ApplicationContext {
     public static final String KEY = Application.class.getCanonicalName();
@@ -25,7 +30,7 @@ public class ApplicationContext {
     }
 
     private static Application createApplication(ServletContext servletContext, Class<? extends Application> aClass) {
-        Application application = constructApplication(aClass);
+        Application application = constructApplication(aClass, basePath(servletContext));
         application.add(new ServletModule(servletContext));
         return application;
     }
@@ -42,7 +47,7 @@ public class ApplicationContext {
         }
     }
 
-    private static Application constructApplication(Class<? extends Application> aClass) {
-        return new SimpleContainer().add(aClass).get(aClass);
+    private static Application constructApplication(Class<? extends Application> aClass, Callable<BasePath> basePathActivator) {
+        return new SimpleContainer().addActivator(BasePath.class, basePathActivator).add(aClass).get(aClass);
     }
 }

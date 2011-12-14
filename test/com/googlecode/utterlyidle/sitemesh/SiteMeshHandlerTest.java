@@ -9,6 +9,8 @@ import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
@@ -22,6 +24,7 @@ import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentType;
 import static com.googlecode.utterlyidle.sitemesh.MetaTagRule.metaTagRule;
+import static com.googlecode.utterlyidle.sitemesh.QueryParamRule.queryParamRule;
 import static com.googlecode.utterlyidle.sitemesh.StaticDecoratorRule.staticRule;
 import static com.googlecode.utterlyidle.sitemesh.StringTemplateDecorators.stringTemplateDecorators;
 import static com.googlecode.utterlyidle.sitemesh.TemplateName.templateName;
@@ -43,6 +46,11 @@ public class SiteMeshHandlerTest {
     @Test
     public void shouldSupportSelectingDecoratorByMetaTag() throws Exception {
         assertDecorationResultsInResponse(sequence(metaTagRule("decorator")), DECORATED_CONTENT);
+    }
+
+    @Test
+    public void shouldSupportSelectingDecoratorByQueryParameter() throws Exception {
+        assertDecorationResultsInResponse(sequence(queryParamRule("decorator")), DECORATED_CONTENT);
     }
 
     @Test
@@ -89,6 +97,13 @@ public class SiteMeshHandlerTest {
     }
 
     @Test
+    public void shouldNotPerformServerSideIncludeWhenResponseOtherThan200() throws Exception {
+        assertDecorationResultsInResponse(
+                sequence(staticRule(onlyMatchRequestTo("notFound"), templateName("templateWithServerSideIncludeNot200"))),
+                "", "not200", ServerSideIncludeResource.class);
+    }
+
+    @Test
     public void shouldPerformServerSideIncludesEvenWhenUrlParameterIsATemplate() throws Exception {
         assertDecorationResultsInResponse(
                 sequence(staticRule(onlyMatchRequestTo("hello"), templateName("templateWithServerSideIncludeWithTemplate"))),
@@ -98,7 +113,7 @@ public class SiteMeshHandlerTest {
     private Predicate<Pair<Request, Response>> onlyMatchRequestTo(final String path) {
         return new Predicate<Pair<Request, Response>>() {
             public boolean matches(Pair<Request, Response> other) {
-                return other.first().uri().toString().equals(path);
+                return other.first().uri().path().equals(path);
             }
         };
     }
@@ -111,7 +126,7 @@ public class SiteMeshHandlerTest {
         Response response = application().
                 addAnnotated(resourceClass).
                 add(stringTemplateDecorators(packageUrl(SiteMeshHandlerTest.class), decoratorRules)).
-                handle(get(path));
+                handle(get(path).query("decorator", VALID_TEMPLATE_NAME));
         assertThat(Strings.toString(response.bytes()), is(result));
     }
 
@@ -131,6 +146,13 @@ public class SiteMeshHandlerTest {
         @Produces(MediaType.TEXT_HTML)
         public String get() {
             return "My name is";
+        }
+
+        @GET
+        @Path("not200")
+        @Produces(MediaType.TEXT_HTML)
+        public Response not200() {
+            return Responses.response(Status.UNAUTHORIZED);
         }
 
         @GET

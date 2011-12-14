@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.QueryParameters;
@@ -20,20 +21,22 @@ public class StringTemplateDecorator implements Decorator {
     private final HttpHandler httpHandlerForIncludes;
     private final BasePath base;
     private final QueryParameters queryParameters;
+    private final InternalRequestMarker internalRequestMarker;
 
-    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
+    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, QueryParameters queryParameters, InternalRequestMarker internalRequestMarker) {
         this.template = template;
         this.httpHandlerForIncludes = httpHandlerForIncludes;
         this.base = base;
         this.queryParameters = queryParameters;
+        this.internalRequestMarker = internalRequestMarker;
     }
 
-    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, Request request) {
-        this(template, httpHandlerForIncludes, base, Requests.query(request));
+    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, Request request, InternalRequestMarker internalRequestMarker) {
+        this(template, httpHandlerForIncludes, base, Requests.query(request), internalRequestMarker);
     }
 
     public Decorator setContent(PropertyMap content) throws IOException {
-        template.setAttribute("include", new PageMap(httpHandlerForIncludes));
+        template.setAttribute("include", new PageMap(httpHandlerForIncludes, internalRequestMarker));
         template.setAttribute("base", base);
         template.setAttribute("query", Maps.multiMap(queryParameters));
         template.setAttribute("properties", content);
