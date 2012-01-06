@@ -19,6 +19,7 @@ public class ClientErrorTest {
     @Test
     public void shouldReturn404WhenPathNotFound() throws Exception {
         Response response = application().handle(get("invalidPath"));
+        System.out.println("response = " + new String(response.bytes()));
         assertThat(response.status(), is(Status.NOT_FOUND));
     }
 
