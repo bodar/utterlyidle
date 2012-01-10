@@ -21,25 +21,53 @@ public class BaseUriRedirector implements Redirector {
     }
 
     @Override
+    public Response seeOther(final Binding binding, final Object... arguments) {
+        return Responses.seeOther(uriOf(binding, arguments));
+    }
+
+    @Override
     public Uri uriOf(final Invocation invocation) {
-        return bindings.find(invocation.method()).
-                map(uri(invocation.arguments())).
-                get();
+        return toAbsolute(resourceUriOf(invocation), baseUri);
     }
 
     @Override
     public Uri uriOf(final Binding binding, final Object... arguments) {
-        Uri uri = RelativeUriExtractor.relativeUriOf(binding, arguments);
-        return toAbsolute(uri, baseUri);
+        return toAbsolute(resourceUriOf(binding, arguments), baseUri);
     }
 
-    private Callable1<? super Binding, Uri> uri(final Object... arguments) {
+    @Override
+    public Uri absoluteUriOf(Invocation invocation) {
+        return trim(uriOf(invocation));
+    }
+
+    @Override
+    public Uri absoluteUriOf(Binding binding, Object... arguments) {
+        return trim(uriOf(binding, arguments));
+    }
+
+    @Override
+    public Uri resourceUriOf(Invocation invocation) {
+        return bindings.find(invocation.method()).
+                map(resourceUriOf(invocation.arguments())).
+                get();
+    }
+
+    @Override
+    public Uri resourceUriOf(Binding binding, Object... arguments) {
+        return RelativeUriExtractor.relativeUriOf(binding, arguments);
+    }
+
+    private Callable1<? super Binding, Uri> resourceUriOf(final Object... arguments) {
         return new Callable1<Binding, Uri>() {
             @Override
             public Uri call(Binding binding) throws Exception {
-                return uriOf(binding, arguments);
+                return resourceUriOf(binding, arguments);
             }
         };
+    }
+
+    private Uri trim(Uri uri) {
+        return uri.dropScheme().dropAuthority();
     }
 
 }
