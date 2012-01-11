@@ -36,7 +36,7 @@ public class Digest implements Value<byte[]> {
         try {
             return MessageDigest.getInstance(md5);
         } catch (NoSuchAlgorithmException e) {
-            throw new LazyException(e);
+            throw LazyException.lazyException(e);
         }
     }
 }

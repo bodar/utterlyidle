@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.BasePath.basePath;
@@ -49,7 +50,7 @@ public class ApplicationServlet extends HttpServlet {
             application.close();
             removeApplication(getServletContext());
         } catch (IOException e) {
-            throw new LazyException(e);
+            throw lazyException(e);
         }
     }
 
