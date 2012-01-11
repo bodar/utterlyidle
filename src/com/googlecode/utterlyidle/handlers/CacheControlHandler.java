@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.totallylazy.time.Seconds;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -41,6 +42,6 @@ public class CacheControlHandler implements HttpHandler {
         Date now = Dates.RFC822().parse(response.header(DATE));
         return response.
                 header(CACHE_CONTROL, format("public, max-age=%s", cachePolicy.value())).
-                header(EXPIRES, RFC822().format(addSeconds(now, cachePolicy.value())));
+                header(EXPIRES, RFC822().format(Seconds.add(now, cachePolicy.value())));
     }
 }
