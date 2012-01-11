@@ -55,7 +55,7 @@ public class StringTemplateDecorator implements Decorator {
         try {
             template.write(new NoIndentWriter(writer));
         } catch (IOException e) {
-            throw new LazyException(e);
+            throw LazyException.lazyException(e);
         }
     }
 
