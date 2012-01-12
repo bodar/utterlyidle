@@ -38,4 +38,9 @@ public class SomeResource {
     @GET
     public void getOptional(@PathParam("id") String id, @QueryParam("foo") Option<String> value) {
     }
+
+    @GET
+    public String getWithQueryParameters(QueryParameters queryParameters) {
+        return "bob";
+    }
 }
