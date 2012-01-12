@@ -69,6 +69,16 @@ public class BaseUriRedirectorTest {
         assertLocation(response, "http://server/base/path/foo");
     }
 
+    @Test
+    public void canHandleMultipleParametersWithTheSameName() {
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.add("name", "name1");
+        queryParameters.add("name", "name2");
+        Redirector redirector = redirector(annotatedClass(SomeResource.class));
+        Response response = redirector.seeOther(method(on(SomeResource.class).getWithQueryParameters(queryParameters)));
+        assertLocation(response, "http://server/base/path/?name=name1&name=name2");
+    }
+
 
     private void assertLocation(Response response, String location) {
         assertThat(response.status(), is(Status.SEE_OTHER));
