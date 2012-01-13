@@ -4,7 +4,7 @@ mvn:org.antlr:stringtemplate:jar:3.2.1
 mvn:cglib:cglib-nodep:jar:2.2
 mvn:org.objenesis:objenesis:jar:1.2
 
-mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:jar|sources:592
-mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:jar|sources:1
-mvn://repo.bodar.com/com.googlecode.funclate:funclate:jar|sources:66
+mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:jar|sources:598
+mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:jar|sources:6
+mvn://repo.bodar.com/com.googlecode.funclate:funclate:jar|sources:67
 mvn://repo.bodar.com/com.googlecode.yadic:yadic:jar|sources:133
