@@ -21,7 +21,7 @@ public class LastExceptionsTest {
 
     @Test
     public void storesNItems() throws Exception {
-        Sequence<Number> numbers = Numbers.range(0, SIZE).memorise();
+        Sequence<Number> numbers = Numbers.range(1, SIZE).memorise();
 
         addNumbersToLastExceptions(numbers);
 
@@ -30,7 +30,7 @@ public class LastExceptionsTest {
 
     @Test
     public void storesLastNItems() throws Exception {
-        Sequence<Number> numbers = Numbers.range(0, SIZE * 2).memorise();
+        Sequence<Number> numbers = Numbers.range(1, SIZE * 2).memorise();
 
         addNumbersToLastExceptions(numbers);
 
