@@ -14,9 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +48,8 @@ public class ClientHttpHandler implements HttpClient {
     }
 
     private Response handle(Request request, URLConnection connection) throws IOException {
-        sendRequest(request, connection);
         try {
+            sendRequest(request, connection);
             return createResponse(connection, OK, using(connection.getInputStream(), bytes()));
         } catch (FileNotFoundException e) {
             return createResponse(connection, NOT_FOUND, new byte[0]);
@@ -59,12 +57,18 @@ public class ClientHttpHandler implements HttpClient {
     }
 
     private Response handle(Request request, HttpURLConnection connection) throws IOException {
-        connection.setInstanceFollowRedirects(false);
-        connection.setRequestMethod(request.method());
-        sendRequest(request, connection);
-        Status status = status(connection.getResponseCode(), connection.getResponseMessage());
-        byte[] bytes = using(inputStream(connection), bytes());
-        return createResponse(connection, status, bytes);
+        try {
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod(request.method());
+            sendRequest(request, connection);
+            Status status = status(connection.getResponseCode(), connection.getResponseMessage());
+            byte[] bytes = using(inputStream(connection), bytes());
+            return createResponse(connection, status, bytes);
+        } catch (ConnectException ex) {
+            return response(Status.CONNECTION_REFUSED);
+        } catch (SocketTimeoutException ex) {
+            return response(Status.CLIENT_TIMEOUT);
+        }
     }
 
     public static InputStream inputStream(HttpURLConnection urlConnection) throws IOException {
