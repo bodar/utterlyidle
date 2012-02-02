@@ -44,7 +44,9 @@ public class Status {
     public static Status NOT_IMPLEMENTED = status(501, "Not Implemented");
     public static Status BAD_GATEWAY = status(502, "Bad Gateway");
     public static Status SERVICE_UNAVAILABLE = status(503, "Service Unavailable");
+    public static Status CONNECTION_REFUSED = SERVICE_UNAVAILABLE.description("Connection Refused");
     public static Status GATEWAY_TIMEOUT = status(504, "Gateway Timeout");
+    public static Status CLIENT_TIMEOUT = GATEWAY_TIMEOUT.description("Client Timeout");
     public static Status HTTP_VERSION_NOT_SUPPORTED = status(505, "HTTP Version Not Supported");
 
     private final int code;
