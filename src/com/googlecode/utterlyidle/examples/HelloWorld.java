@@ -20,6 +20,13 @@ import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
     @GET
+    @Path("slow")
+    public String slow() throws InterruptedException {
+        Thread.sleep(50);
+        return "abc";
+    }
+
+    @GET
     @Path("etag")
     public String etag() {
         return "abc";

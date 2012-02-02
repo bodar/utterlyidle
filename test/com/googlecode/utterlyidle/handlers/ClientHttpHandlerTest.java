@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.net.URL;
 
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
@@ -22,6 +23,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
+    @Test
+    public void correctlyHandlesTimeouts() throws Exception {
+        Response response = handle(10,get("slow"), server);
+        assertThat(response.status(), is(Status.CLIENT_TIMEOUT));
+    }
+
+    @Test
+    public void correctlyHandlesConnectionRefused() throws Exception {
+        Response response = new ClientHttpHandler().handle(get(uri("http://127.0.0.1:0/")).build());
+        assertThat(response.status(), is(Status.CONNECTION_REFUSED));
+    }
     @Test
     public void correctlyHandlesANotFoundFileUrl() throws Exception {
         URL resource = URLs.url("file:///bob");
@@ -54,7 +66,11 @@ public class ClientHttpHandlerTest {
     }
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {
-        HttpHandler urlHandler = new ClientHttpHandler();
+        return handle(0, request, server);
+    }
+
+    public static Response handle(int timeout, final RequestBuilder request, final Server server) throws Exception {
+        HttpHandler urlHandler = new ClientHttpHandler(timeout);
         Uri uri = request.uri();
         Uri path = server.uri().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
         return urlHandler.handle(request.withUri(path).build());
@@ -64,7 +80,7 @@ public class ClientHttpHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        server = application(HelloWorldApplication.class).start(defaultConfiguration());
+        server = application(HelloWorldApplication.class).start();
     }
 
     @After
