@@ -2,14 +2,11 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Server;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URL;
@@ -23,6 +20,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
+    @Test
+    @Ignore("Manual test")
+    public void correctlyHandlesChunkedTransferEncoding() throws Exception {
+        Response response = new ClientHttpHandler().handle(get(uri("some url that supports chunking")).build());
+        assertThat(response.headers().contains(HttpHeaders.TRANSFER_ENCODING), is(false));
+        assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(true));
+    }
+
     @Test
     public void correctlyHandlesTimeouts() throws Exception {
         Response response = handle(10,get("slow"), server);
