@@ -1,10 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Bytes;
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Runnables;
+import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -18,8 +14,14 @@ import java.net.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Maps.pairs;
+import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.not;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -80,9 +82,9 @@ public class ClientHttpHandler implements HttpClient {
     }
 
     private Response createResponse(URLConnection connection, Status status, byte[] bytes) {
-        return sequence(connection.getHeaderFields().entrySet()).
-                fold(response(status).
-                        bytes(bytes),
+        return pairs(connection.getHeaderFields()).
+                filter(where(first(String.class), is(not(equalIgnoringCase(HttpHeaders.TRANSFER_ENCODING))))).
+                fold(response(status).bytes(bytes).header(HttpHeaders.CONTENT_LENGTH, bytes.length),
                         responseHeaders());
     }
 
@@ -112,19 +114,19 @@ public class ClientHttpHandler implements HttpClient {
         };
     }
 
-    private static Callable2<Response, Map.Entry<String, List<String>>, Response> responseHeaders() {
-        return new Callable2<Response, Map.Entry<String, List<String>>, Response>() {
-            public Response call(Response response, final Map.Entry<String, List<String>> entry) throws Exception {
-                return sequence(entry.getValue()).fold(response, responseHeader(entry));
+    private static Callable2<Response, Pair<String, List<String>>, Response> responseHeaders() {
+        return new Callable2<Response, Pair<String, List<String>>, Response>() {
+            public Response call(Response response, final Pair<String, List<String>> entry) throws Exception {
+                return sequence(entry.second()).fold(response, responseHeader(entry.first()));
             }
         };
     }
 
-    private static Callable2<Response, String, Response> responseHeader(final Map.Entry<String, List<String>> entry) {
+    private static Callable2<Response, String, Response> responseHeader(final String key) {
         return new Callable2<Response, String, Response>() {
             public Response call(Response response, String value) throws Exception {
-                if (entry.getKey() != null) {
-                    return response.header(entry.getKey(), value);
+                if (key != null) {
+                    return response.header(key, value);
                 }
                 return response;
             }
