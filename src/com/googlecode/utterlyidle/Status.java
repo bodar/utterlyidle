@@ -1,5 +1,8 @@
 package com.googlecode.utterlyidle;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
 public class Status {
     public static Status CONTINUE = status(100, "Continue");
     public static Status SWITCHING_PROTOCOLS = status(101, "Switching Protocols");
@@ -59,6 +62,10 @@ public class Status {
 
     public static Status status(int code, String description) {
         return new Status(code, description);
+    }
+
+    public static Status status(final HttpURLConnection connection) throws IOException {
+        return status(connection.getResponseCode(), connection.getResponseMessage());
     }
 
     public int code() {

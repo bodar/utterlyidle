@@ -9,13 +9,18 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
-    private final HeaderParameters headers = headerParameters();
+    private final HeaderParameters headers;
     private Status status;
     private byte[] bytes = new byte[0];
     private Object entity;
 
     public MemoryResponse(Status status) {
+        this(status, headerParameters());
+    }
+
+    public MemoryResponse(Status status, HeaderParameters headerParameters) {
         this.status = status;
+        this.headers = headerParameters;
     }
 
     public Status status() {

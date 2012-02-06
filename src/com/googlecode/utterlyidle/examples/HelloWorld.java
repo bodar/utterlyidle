@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.examples;
 
 import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Response;
@@ -16,9 +17,16 @@ import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
+import static com.googlecode.utterlyidle.Responses.response;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
+    @GET
+    @Path("cacheable")
+    public Response cacheable() {
+        return response(Status.OK).header(HttpHeaders.CACHE_CONTROL, "public, max-age=60").entity("cacheable");
+    }
+
     @GET
     @Path("slow")
     public String slow() throws InterruptedException {
@@ -41,7 +49,7 @@ public class HelloWorld {
     @GET
     @Path("helloworld/inresponseheaders")
     public Response getx(@QueryParam("name") String name) {
-        return Responses.response(Status.OK).header("greeting", hello(name)).entity("");
+        return response(Status.OK).header("greeting", hello(name)).entity("");
     }
 
     @GET

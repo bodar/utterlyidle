@@ -14,8 +14,6 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
-import java.util.Map;
 
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
@@ -62,7 +60,7 @@ public class RestHandler implements HttpHandler {
         return Requests.request(
                 httpExchange.getRequestMethod(),
                 uri(httpExchange.getRequestURI().toString()),
-                withXForwardedFor(clientAddress(httpExchange.getRemoteAddress().getAddress()), convert(httpExchange.getRequestHeaders())),
+                withXForwardedFor(clientAddress(httpExchange.getRemoteAddress().getAddress()), headerParameters(httpExchange.getRequestHeaders())),
                 bytes(httpExchange.getRequestBody())
         );
     }
@@ -76,13 +74,4 @@ public class RestHandler implements HttpHandler {
         return response.bytes(stream.toByteArray());
     }
 
-    public static HeaderParameters convert(Map<String, List<String>> requestHeaders) {
-        HeaderParameters result = headerParameters();
-        for (Map.Entry<String, List<String>> entry : requestHeaders.entrySet()) {
-            for (String value : entry.getValue()) {
-                result.add(entry.getKey(), value);
-            }
-        }
-        return result;
-    }
 }

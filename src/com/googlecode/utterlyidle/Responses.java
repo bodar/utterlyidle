@@ -18,6 +18,10 @@ public class Responses {
         return new MemoryResponse(status);
     }
 
+    public static Response response(Status status, HeaderParameters headerParameters) {
+        return new MemoryResponse(status, headerParameters);
+    }
+
     public static Response seeOther(Uri location) {
         return seeOther(location.toString());
     }
