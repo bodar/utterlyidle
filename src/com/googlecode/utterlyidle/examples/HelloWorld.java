@@ -23,7 +23,7 @@ public class HelloWorld {
     @Path("slow")
     public String slow() throws InterruptedException {
         Thread.sleep(50);
-        return "abc";
+        return "I took 50ms to run";
     }
 
     @GET
