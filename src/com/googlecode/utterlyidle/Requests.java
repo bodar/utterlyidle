@@ -20,7 +20,6 @@ public class Requests {
         return request(method, Uri.uri(path + query.toString()), headers, input);
     }
 
-
     public static Callable1<Request, String> pathAsString() {
         return new Callable1<Request, String>() {
             @Override

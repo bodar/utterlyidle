@@ -3,13 +3,16 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -98,5 +101,9 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
     @Override
     public String toString() {
         return sequence(values).toString();
+    }
+
+    public Map<K, List<V>> toMap() {
+        return Maps.multiMap(this);
     }
 }
