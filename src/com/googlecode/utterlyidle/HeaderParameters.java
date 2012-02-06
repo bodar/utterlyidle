@@ -39,6 +39,14 @@ public class HeaderParameters extends Parameters<String, String> {
     }
 
     @Override
+    public Parameters add(String name, String value) {
+        if(name == null) {
+            return this;
+        }
+        return super.add(name, value);
+    }
+
+    @Override
     public String toString() {
             return sequence(this).map(pairToString("", ": ", "")).toString(HTTP_LINE_SEPARATOR);
     }
