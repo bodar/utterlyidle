@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.caching;
 
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
@@ -21,7 +20,6 @@ import java.util.Map;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
-import static com.googlecode.utterlyidle.caching.CacheResponseAdapter.asCacheResponse;
 
 public class ResponseCacheAdapter extends ResponseCache {
     private final HttpCache cache;
@@ -33,7 +31,7 @@ public class ResponseCacheAdapter extends ResponseCache {
     @Override
     public CacheResponse get(URI uri, String method, Map<String, List<String>> headers) throws IOException {
         return cache.get(request(method, uri(uri), headerParameters(headers), new byte[0])).
-                map(asCacheResponse()).
+                map(CacheResponseAdapter.asCacheResponse()).
                 getOrNull();
     }
 
