@@ -21,6 +21,7 @@ import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -82,15 +83,19 @@ public class ClientHttpHandler implements HttpClient {
     }
 
     private Response createResponse(URLConnection connection, Status status, byte[] bytes) {
-        return pairs(connection.getHeaderFields()).
+        Response response = pairs(connection.getHeaderFields()).
                 filter(where(first(String.class), is(not(equalIgnoringCase(HttpHeaders.TRANSFER_ENCODING))))).
-                fold(response(status).bytes(bytes).header(HttpHeaders.CONTENT_LENGTH, bytes.length),
+                fold(response(status).bytes(bytes),
                         responseHeaders());
+        if(!response.headers().contains(CONTENT_LENGTH)){
+            response.header(CONTENT_LENGTH, bytes.length);
+        }
+        return response;
     }
 
     private void sendRequest(Request request, URLConnection connection) throws IOException {
         sequence(request.headers()).fold(connection, requestHeaders());
-        if (Integer.valueOf(request.headers().getValue(HttpHeaders.CONTENT_LENGTH)) > 0) {
+        if (Integer.valueOf(request.headers().getValue(CONTENT_LENGTH)) > 0) {
             connection.setDoOutput(true);
             using(connection.getOutputStream(), copyRequestEntity(request));
         }
