@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.List;
-import java.util.Map;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
@@ -42,6 +41,7 @@ public class ClientHttpHandler implements HttpClient {
         URL url = new URL(request.uri().toString());
         URLConnection connection = url.openConnection();
         connection.setConnectTimeout(milliseconds);
+        connection.setUseCaches(true);
         connection.setReadTimeout(milliseconds);
         if (connection instanceof HttpURLConnection) {
             return handle(request, (HttpURLConnection) connection);
@@ -63,7 +63,7 @@ public class ClientHttpHandler implements HttpClient {
             connection.setInstanceFollowRedirects(false);
             connection.setRequestMethod(request.method());
             sendRequest(request, connection);
-            Status status = status(connection.getResponseCode(), connection.getResponseMessage());
+            Status status = status(connection); // request is actually sent now
             byte[] bytes = using(inputStream(connection), bytes());
             return createResponse(connection, status, bytes);
         } catch (ConnectException ex) {

@@ -3,23 +3,38 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.caching.MemoryHttpCache;
+import com.googlecode.utterlyidle.caching.ResponseCacheAdapter;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.net.URL;
+import java.net.*;
 
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
-import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
+    @Test
+    public void canCacheAResponse() throws Exception {
+        MemoryHttpCache cache = new MemoryHttpCache();
+        ResponseCache.setDefault(new ResponseCacheAdapter(cache));
+        assertThat(cache.size(), is(0));
+        Response response = handle(get("cacheable"), server);
+        assertThat(cache.size(), is(1));
+        Response cachedResponse = handle(get("cacheable"), server);
+        assertThat(cache.size(), is(1));
+        assertThat(response, is(cachedResponse));
+    }
+
     @Test
     @Ignore("Manual test")
     public void correctlyHandlesChunkedTransferEncoding() throws Exception {
@@ -92,4 +107,5 @@ public class ClientHttpHandlerTest {
     public void tearDown() throws Exception {
         server.close();
     }
+
 }
