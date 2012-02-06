@@ -10,6 +10,9 @@ import java.net.CacheResponse;
 import java.util.List;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Arrays.list;
+import static java.lang.String.format;
+
 public class CacheResponseAdapter extends CacheResponse {
     private final Response response;
 
@@ -19,7 +22,9 @@ public class CacheResponseAdapter extends CacheResponse {
 
     @Override
     public Map<String, List<String>> getHeaders() throws IOException {
-        return response.headers().toMap();
+        Map<String, List<String>> map = response.headers().toMap();
+        map.put(null, list(format("HTTP/1.1 %s", response.status())));
+        return map;
     }
 
     @Override
