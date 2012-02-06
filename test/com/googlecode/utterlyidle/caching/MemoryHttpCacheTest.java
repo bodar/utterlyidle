@@ -18,6 +18,12 @@ import static org.hamcrest.Matchers.is;
 
 public class MemoryHttpCacheTest {
     @Test
+    public void doesNotNullPointerUpWhenNoCacheHeader() throws Exception {
+        HttpCache cache = new MemoryHttpCache();
+        assertThat(cache.isCacheable(get("/foo").build(), response(OK)), is(false));
+    }
+
+    @Test
     public void canGetAndPut() throws Exception {
         HttpCache cache = new MemoryHttpCache();
         Request request = get("/foo").build();
