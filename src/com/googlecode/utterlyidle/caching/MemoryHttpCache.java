@@ -19,12 +19,13 @@ public class MemoryHttpCache implements HttpCache {
     }
 
     @Override
-    public Option<Response> get(Request request) {
+
+    public synchronized Option<Response> get(Request request) {
         return Option.option(map.get(request));
     }
 
     @Override
-    public boolean isCacheable(Request request, Response response) {
+    public synchronized boolean isCacheable(Request request, Response response) {
         if (!request.method().equalsIgnoreCase(HttpMethod.GET)) {
             return false;
         }
@@ -40,7 +41,7 @@ public class MemoryHttpCache implements HttpCache {
     }
 
     @Override
-    public void put(Request request, Response response) {
+    public synchronized void put(Request request, Response response) {
         if (isCacheable(request, response)) {
             map.put(request, response);
         }
