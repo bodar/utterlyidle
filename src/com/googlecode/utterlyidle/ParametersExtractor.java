@@ -54,19 +54,19 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
                 }
 
                 if (!container.contains(String.class)) {
-                    container.addType(String.class, new ProgrammerErrorResolver(String.class));
+                    container.add(String.class, new ProgrammerErrorResolver(String.class));
                 }
 
                 final Type iterableStringType = new TypeFor<Iterable<String>>() {}.get();
                 if (!container.contains(iterableStringType)) {
-                    container.addType(iterableStringType, new ProgrammerErrorResolver(iterableStringType));
+                    container.add(iterableStringType, new ProgrammerErrorResolver(iterableStringType));
                 }
 
                 List<Type> types = typeArgumentsOf(type);
 
                 for (Type t : types) {
                     if (!container.contains(t)) {
-                        container.addType(t, create(t, container));
+                        container.add(t, create(t, container));
                     }
                 }
 
