@@ -11,6 +11,7 @@ import com.googlecode.yadic.TypeMap;
 import com.googlecode.yadic.generics.TypeFor;
 
 import java.lang.reflect.Type;
+import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Callables.callThrows;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -38,9 +39,9 @@ public class NamedParameter implements Parameter {
         return parametersClass;
     }
 
-    public Resolver<String> extractValueFrom(final TypeMap typeMap) {
-        return new Resolver<String>() {
-            public String resolve(Type type) throws Exception {
+    public Callable<String> extractValueFrom(final TypeMap typeMap) {
+        return new Callable<String>() {
+            public String call() throws Exception {
                 Parameters<String, String> parameters = (Parameters<String, String>) typeMap.resolve(parametersClass());
                 if (!parameters.contains(name())) {
                     return defaultValueOrThrow();
@@ -67,7 +68,7 @@ public class NamedParameter implements Parameter {
     }
 
     public void addTo(Container container) {
-        container.add(String.class, extractValueFrom(container)).
-                add(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(container));
+        container.addActivator(String.class, extractValueFrom(container)).
+                addType(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(container));
     }
 }
