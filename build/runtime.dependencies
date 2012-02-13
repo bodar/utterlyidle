@@ -7,4 +7,4 @@ mvn:org.objenesis:objenesis:jar:1.2
 mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:jar|sources:615
 mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:jar|sources:10
 mvn://repo.bodar.com/com.googlecode.funclate:funclate:jar|sources:69
-mvn://repo.bodar.com/com.googlecode.yadic:yadic:jar|sources:139
+mvn://repo.bodar.com/com.googlecode.yadic:yadic:jar|sources:134
