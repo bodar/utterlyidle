@@ -21,6 +21,17 @@ import static org.hamcrest.Matchers.is;
 
 public class BaseUriRedirectorTest {
     @Test
+    public void canRedirectToRelativeUri() throws Exception {
+        Response response = redirector().seeOther(uri("relative"));
+        assertLocation(response, "http://server/base/relative");
+    }
+
+    @Test
+    public void canConvertRelativeToFullyQualifiedUri() throws Exception {
+        assertThat(redirector().absoluteUriOf(uri("relative")), is(uri("/base/relative")));
+    }
+
+    @Test
     public void extractsUrlFromABinding() throws Exception {
         Redirector redirector = redirector(get("/redirect").resource(method(on(DslTest.Redirect.class).redirect())).build());
         Response response = redirector.seeOther(method(on(DslTest.Redirect.class).redirect()));
