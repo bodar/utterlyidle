@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.proxy.Invocation;
 
-import static com.googlecode.utterlyidle.BasePathHandler.toAbsolute;
+import static com.googlecode.utterlyidle.BasePathHandler.toFullyQualified;
 
 public class BaseUriRedirector implements Redirector {
     private final BaseUri baseUri;
@@ -13,6 +13,11 @@ public class BaseUriRedirector implements Redirector {
     public BaseUriRedirector(final BaseUri baseUri, final Bindings bindings) {
         this.baseUri = baseUri;
         this.bindings = bindings;
+    }
+
+    @Override
+    public Response seeOther(final Uri relativeUri) {
+        return Responses.seeOther(toFullyQualified(relativeUri, baseUri));
     }
 
     @Override
@@ -27,12 +32,17 @@ public class BaseUriRedirector implements Redirector {
 
     @Override
     public Uri uriOf(final Invocation invocation) {
-        return toAbsolute(resourceUriOf(invocation), baseUri);
+        return toFullyQualified(resourceUriOf(invocation), baseUri);
     }
 
     @Override
     public Uri uriOf(final Binding binding, final Object... arguments) {
-        return toAbsolute(resourceUriOf(binding, arguments), baseUri);
+        return toFullyQualified(resourceUriOf(binding, arguments), baseUri);
+    }
+
+    @Override
+    public Uri absoluteUriOf(Uri relativeUri) {
+        return trim(toFullyQualified(relativeUri, baseUri));
     }
 
     @Override
