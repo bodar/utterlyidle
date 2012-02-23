@@ -69,6 +69,6 @@ public class NamedParameter implements Parameter {
 
     public void addTo(Container container) {
         container.addActivator(String.class, extractValueFrom(container)).
-                add(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(container));
+                addType(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(container));
     }
 }

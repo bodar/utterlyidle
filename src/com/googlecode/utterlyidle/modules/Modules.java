@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.yadic.Container;
+import com.googlecode.yadic.Containers;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.Method;
@@ -17,6 +18,7 @@ import static com.googlecode.totallylazy.Classes.isInstance;
 import static com.googlecode.totallylazy.Methods.methods;
 import static com.googlecode.totallylazy.Runnables.VOID;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.yadic.Containers.selfRegister;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
 public class Modules implements ModuleDefinitions, ModuleActivator {
@@ -28,7 +30,7 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     public Modules setupApplicationScope(Container applicationScope) {
         applicationScope.addInstance(Modules.class, this);
         applicationScope.addActivator(ModuleDefinitions.class, applicationScope.getActivator(Modules.class));
-        setup(applicationScope);
+        selfRegister(applicationScope);
         return this;
     }
 
@@ -54,13 +56,13 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     }
 
     public ModuleActivator activateRequestModules(Container requestScope) {
-        setup(requestScope);
+        selfRegister(requestScope);
         sequence(modules).forEach(activate(requestScope, requestModuleClasses));
         return this;
     }
 
     public ModuleActivator activateArgumentModules(Container argumentScope) {
-        setup(argumentScope);
+        selfRegister(argumentScope);
         sequence(modules).forEach(activate(argumentScope, argumentModuleClasses));
         return this;
     }
@@ -98,12 +100,6 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     private static Object[] convertToInstances(Type[] genericParameterTypes, Resolver resolver) {
         return sequence(genericParameterTypes).map(asCallable1(resolver)).toArray(Object.class);
     }
-
-    private static void setup(Container container) {
-        container.addInstance(Container.class, container);
-        container.addActivator(Resolver.class, container.getActivator(Container.class));
-    }
-
 
     public static Module applicationScopedClass(final Class<?> aClass) {
         return new ApplicationScopedModule() {
