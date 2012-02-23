@@ -23,6 +23,6 @@ public class DefinedParameter<T> implements Value<T>, Parameter {
     }
 
     public void addTo(Container container) {
-        container.add(type, asResolver(returns(value)));
+        container.addType(type, asResolver(returns(value)));
     }
 }
