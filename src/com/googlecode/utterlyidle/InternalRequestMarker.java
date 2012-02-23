@@ -1,8 +1,6 @@
 package com.googlecode.utterlyidle;
 
 public class InternalRequestMarker {
-
-    private static final String FORWARDED_FOR_HEADER = "X-Forwarded-For";
     private final String applicationId;
 
     public InternalRequestMarker(String applicationId) {
@@ -10,11 +8,11 @@ public class InternalRequestMarker {
     }
 
     public Request markAsInternal(Request request) {
-        request.headers().add(FORWARDED_FOR_HEADER, applicationId);
+        request.headers().add(HttpHeaders.X_FORWARDED_FOR, applicationId);
         return request;
     }
 
     public Boolean isInternal(Request request) {
-        return request.headers().contains(FORWARDED_FOR_HEADER) && request.headers().getValue(FORWARDED_FOR_HEADER).equals(applicationId);
+        return request.headers().contains(HttpHeaders.X_FORWARDED_FOR) && request.headers().getValue(HttpHeaders.X_FORWARDED_FOR).equals(applicationId);
     }
 }
