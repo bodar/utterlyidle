@@ -30,7 +30,6 @@ public class RestApplication implements Application {
     }
 
     public RestApplication(BasePath basePath, Module... modules) {
-        applicationScope.addInstance(InternalRequestMarker.class, new InternalRequestMarker(UUID.randomUUID().toString()));
         applicationScope.addInstance(BasePath.class, basePath);
         applicationScope.addInstance(Application.class, this);
         applicationScope.removeCloseable(Application.class);

@@ -50,6 +50,8 @@ public class CoreModule extends AbstractModule {
         container.add(Auditors.class, Auditors.class);
         container.addActivator(Auditor.class, container.getActivator(Auditors.class));
         container.add(HttpClient.class, ClientHttpHandler.class);
+        container.add(InternalHttpHandler.class);
+        container.decorate(HttpClient.class, SmartHttpClient.class);
         return this;
     }
 
@@ -59,6 +61,8 @@ public class CoreModule extends AbstractModule {
         container.add(Resources.class, RegisteredResources.class);
         container.addActivator(Bindings.class, container.getActivator(Resources.class));
         container.add(ResponseHandlers.class);
+        container.add(ApplicationId.class);
+        container.add(InternalRequestMarker.class);
         return this;
     }
 
