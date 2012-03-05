@@ -2,13 +2,13 @@ package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Maps;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.InternalRequestMarker;
+import com.googlecode.utterlyidle.handlers.InternalHttpHandler;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.handlers.HttpClient;
 import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -21,22 +21,20 @@ public class StringTemplateDecorator implements Decorator {
     private final HttpHandler httpHandlerForIncludes;
     private final BasePath base;
     private final QueryParameters queryParameters;
-    private final InternalRequestMarker internalRequestMarker;
 
-    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, QueryParameters queryParameters, InternalRequestMarker internalRequestMarker) {
+    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
         this.template = template;
         this.httpHandlerForIncludes = httpHandlerForIncludes;
         this.base = base;
         this.queryParameters = queryParameters;
-        this.internalRequestMarker = internalRequestMarker;
     }
 
-    public StringTemplateDecorator(StringTemplate template, Application httpHandlerForIncludes, BasePath base, Request request, InternalRequestMarker internalRequestMarker) {
-        this(template, httpHandlerForIncludes, base, Requests.query(request), internalRequestMarker);
+    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, Request request) {
+        this(template, httpHandlerForIncludes, base, Requests.query(request));
     }
 
     public Decorator setContent(PropertyMap content) throws IOException {
-        template.setAttribute("include", new PageMap(httpHandlerForIncludes, internalRequestMarker));
+        template.setAttribute("include", new PageMap(httpHandlerForIncludes));
         template.setAttribute("base", base);
         template.setAttribute("query", Maps.multiMap(queryParameters));
         template.setAttribute("properties", content);

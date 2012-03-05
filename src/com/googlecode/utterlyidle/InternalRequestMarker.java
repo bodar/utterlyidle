@@ -1,18 +1,20 @@
 package com.googlecode.utterlyidle;
 
-public class InternalRequestMarker {
-    private final String applicationId;
+import com.googlecode.utterlyidle.handlers.ApplicationId;
 
-    public InternalRequestMarker(String applicationId) {
+public class InternalRequestMarker {
+    private final ApplicationId applicationId;
+
+    public InternalRequestMarker(ApplicationId applicationId) {
         this.applicationId = applicationId;
     }
 
     public Request markAsInternal(Request request) {
-        request.headers().add(HttpHeaders.X_FORWARDED_FOR, applicationId);
+        request.headers().add(HttpHeaders.X_FORWARDED_FOR, applicationId.toString());
         return request;
     }
 
     public Boolean isInternal(Request request) {
-        return request.headers().contains(HttpHeaders.X_FORWARDED_FOR) && request.headers().getValue(HttpHeaders.X_FORWARDED_FOR).equals(applicationId);
+        return request.headers().contains(HttpHeaders.X_FORWARDED_FOR) && request.headers().getValue(HttpHeaders.X_FORWARDED_FOR).equals(applicationId.toString());
     }
 }
