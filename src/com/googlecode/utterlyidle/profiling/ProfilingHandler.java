@@ -15,7 +15,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.profiling.FunclateModelRenderer.funclateModelRenderer;
 
 public class ProfilingHandler implements HttpHandler {
-    public static final String QUERY_PARAMERTER = "profile";
+    public static final String QUERY_PARAMETER = "profile";
     private Application application;
     private HttpHandler httpHandler;
 
@@ -28,13 +28,13 @@ public class ProfilingHandler implements HttpHandler {
     public Response handle(Request request) throws Exception {
         QueryParameters parameters = Requests.query(request);
 
-        if(!parameters.contains(QUERY_PARAMERTER)){
+        if(!parameters.contains(QUERY_PARAMETER)){
             return httpHandler.handle(request);
         }
 
         StatsCollector instance = StatsCollector.begin();
         try {
-            Parameters noProfile = parameters.remove(QUERY_PARAMERTER).remove("decorator");
+            Parameters noProfile = parameters.remove(QUERY_PARAMETER).remove("decorator");
             Uri noProfileUri = request.uri().query(noProfile.toString().replace("?", ""));
             Request newRequest = Requests.request(request.method(), noProfileUri, request.headers(), request.entity());
 
