@@ -15,7 +15,6 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.profiling.FunclateModelRenderer.funclateModelRenderer;
 
 public class ProfilingHandler implements HttpHandler {
-
     public static final String QUERY_PARAMERTER = "profile";
     private Application application;
     private HttpHandler httpHandler;
