@@ -30,7 +30,6 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     public String render(MatchFailure value) throws IOException {
         StringTemplateGroup group = new EnhancedStringTemplateGroup(packageUrl(getClass()));
         Model model = model();
-        StringTemplate template = group.getInstanceOf("matchFailure", model);
         model.add("base", basePath);
         model.add("status", value.status());
 
@@ -45,7 +44,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
                     add("form", asModel(parameters.filter(where(parametersClass(), matches(FormParameters.class))))));
         }
 
-        return template.toString();
+        return group.getInstanceOf("matchFailure", model).toString();
     }
 
     public static Predicate<? super Class> matches(Class aClass) {

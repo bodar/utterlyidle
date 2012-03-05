@@ -3,7 +3,10 @@ package com.googlecode.utterlyidle.profiling;
 import com.googlecode.funclate.Model;
 import com.googlecode.funclate.stringtemplate.EnhancedStringTemplateGroup;
 import com.googlecode.utterlyidle.Renderer;
+import org.antlr.stringtemplate.NoIndentWriter;
 import org.antlr.stringtemplate.StringTemplate;
+
+import java.io.StringWriter;
 
 import static com.googlecode.totallylazy.URLs.packageUrl;
 
@@ -31,8 +34,7 @@ public class FunclateModelRenderer implements Renderer<Model> {
     @Override
     public String render(Model model) throws Exception {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(packageUrl(resource));
-        StringTemplate template = group.getInstanceOf(fileName, model.toMap());
-        return template.toString();
+        return group.getInstanceOf(fileName, model.toMap()).toString();
 
     }
 }
