@@ -11,6 +11,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
@@ -25,21 +26,21 @@ public class EtagHandlerTest {
         Response response = handler.handle(get("/").header(IF_NONE_MATCH, "\"900150983cd24fb0d6963f7d28e17f72\"").build());
 
         assertThat(response.headers().contains("X-foo"), is(false));
-        assertThat(response.header(HttpHeaders.DATE), is("passesThrough"));
+        assertThat(header(response, HttpHeaders.DATE), is("passesThrough"));
     }
 
     @Test
     public void calculatesStrongEtagWhichMustBeQuoted() throws Exception{
         HttpHandler handler = new EtagHandler(returnsResponse(response().bytes("abc".getBytes("UTF-8"))));
         Response response = handler.handle(get("/").build());
-        assertThat(response.header(ETAG), is("\"900150983cd24fb0d6963f7d28e17f72\""));
+        assertThat(header(response, ETAG), is("\"900150983cd24fb0d6963f7d28e17f72\""));
     }
 
     @Test
     public void setsContentMD5ForGoodMeasure() throws Exception{
         HttpHandler handler = new EtagHandler(returnsResponse(response().bytes("abc".getBytes("UTF-8"))));
         Response response = handler.handle(get("/").build());
-        assertThat(response.header(Content_MD5), is("kAFQmDzST7DWlj99KOF/cg=="));
+        assertThat(header(response, Content_MD5), is("kAFQmDzST7DWlj99KOF/cg=="));
     }
 
     @Test

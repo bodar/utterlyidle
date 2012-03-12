@@ -28,6 +28,7 @@ import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 import static java.lang.Integer.parseInt;
@@ -64,7 +65,7 @@ public class RestContainer implements Container {
     private void mapTo(com.googlecode.utterlyidle.Response applicationResponse, Response response) throws IOException {
         response.setCode(applicationResponse.status().code());
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
-        response.setContentLength(parseInt(applicationResponse.header(CONTENT_LENGTH)));
+        response.setContentLength(parseInt(header(applicationResponse, CONTENT_LENGTH)));
         using(response.getOutputStream(), write(applicationResponse.bytes()));
     }
 

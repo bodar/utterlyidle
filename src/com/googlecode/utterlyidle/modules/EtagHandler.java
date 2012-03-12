@@ -18,6 +18,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_MODIFIED;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
@@ -54,7 +55,7 @@ public class EtagHandler implements HttpHandler {
         return new Callable2<Response, String, Response>() {
             @Override
             public Response call(Response destination, String header) throws Exception {
-                return destination.header(header, source.header(header));
+                return destination.header(header, header(source, header));
             }
         };
     }

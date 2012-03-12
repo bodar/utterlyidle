@@ -44,6 +44,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
@@ -100,8 +101,8 @@ public class RestTest {
     @Test
     public void whenReturningAResponseUseTheProducesContentTypeIfNoneExplicitlySet() throws Exception {
         ApplicationBuilder application = application().addAnnotated(ReturnsResponseWithContentType.class);
-        assertThat(application.handle(get("path").withQuery("override", String.valueOf(false))).header(CONTENT_TYPE), startsWith(MediaType.APPLICATION_ATOM_XML));
-        assertThat(application.handle(get("path").withQuery("override", String.valueOf(true))).header(CONTENT_TYPE), startsWith(MediaType.APPLICATION_JSON));
+        assertThat(header(application.handle(get("path").withQuery("override", String.valueOf(false))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_ATOM_XML));
+        assertThat(header(application.handle(get("path").withQuery("override", String.valueOf(true))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -119,7 +120,7 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GettableWithCookies.class);
         Response response = application.handle(get("foo").withHeader("cookie", "name=value"));
         assertThat(new String(response.bytes()), is("value"));
-        assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
+        assertThat(header(response, HttpHeaders.SET_COOKIE), is("anotherName=\"anotherValue\"; "));
     }
 
     @Test
@@ -187,7 +188,7 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
 
         Response response = application.handle(get("text").accepting("text/plain"));
-        assertThat(response.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
+        assertThat(header(response, HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
     }
 
     @Test
@@ -195,11 +196,11 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetsWithMultipleMimeTypes.class);
 
         Response plainResponse = application.handle(get("text").accepting("text/plain"));
-        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
+        assertThat(header(plainResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
         assertThat(new String(plainResponse.bytes()), is("<xml/>"));
 
         Response xmlResponse = application.handle(get("text").accepting("text/xml"));
-        assertThat(xmlResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/xml"));
+        assertThat(header(xmlResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/xml"));
         assertThat(new String(xmlResponse.bytes()), is("<xml/>"));
     }
 
@@ -208,7 +209,7 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetsWithSingleMime.class);
 
         Response plainResponse = application.handle(get("text"));
-        assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
+        assertThat(header(plainResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
         assertThat(new String(plainResponse.bytes()), is("Hello"));
     }
 
@@ -292,22 +293,22 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(PostRedirectGet.class);
         Response response = application.handle(post("path/bob"));
         assertThat(response.status(), is(SEE_OTHER));
-        assertThat(response.header(LOCATION), is(Matchers.<Object>notNullValue()));
-        assertThat(application.responseAsString(get(response.header(LOCATION))), is("bob"));
+        assertThat(header(response, LOCATION), is(Matchers.<Object>notNullValue()));
+        assertThat(application.responseAsString(get(header(response, LOCATION))), is("bob"));
     }
 
     @Test
     public void canRedirectWithBasePath() throws Exception {
         ApplicationBuilder application = application().addAnnotated(RedirectGet.class).add(requestInstance(BasePath.basePath("base")));
         Response response = application.handle(get("/base/foo/bar"));
-        assertThat(response.header(LOCATION), is("/base/foo/baz"));
+        assertThat(header(response, LOCATION), is("/base/foo/baz"));
     }
 
     @Test
     public void canRedirectWithBaseUri() throws Exception {
         ApplicationBuilder application = application().addAnnotated(BaseUriResource.class);
         Response response = application.handle(get("/foo/bar").withHeader(HttpHeaders.HOST, "localhost:8080"));
-        assertThat(response.header(LOCATION), is("http://localhost:8080/baz"));
+        assertThat(header(response, LOCATION), is("http://localhost:8080/baz"));
     }
 
     @Test

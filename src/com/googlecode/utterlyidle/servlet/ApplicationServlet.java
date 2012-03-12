@@ -28,6 +28,7 @@ import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.RestApplication.handleRequest;
 import static com.googlecode.utterlyidle.RestApplication.inject;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
@@ -71,7 +72,7 @@ public class ApplicationServlet extends HttpServlet {
         for (Pair<String, String> pair : response.headers()) {
             resp.setHeader(pair.first(), pair.second());
         }
-        resp.setContentLength(parseInt(response.header(CONTENT_LENGTH)));
+        resp.setContentLength(parseInt(header(response, CONTENT_LENGTH)));
         using(resp.getOutputStream(), write(response.bytes()));
     }
 
