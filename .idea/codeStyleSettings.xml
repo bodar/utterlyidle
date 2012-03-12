@@ -11,9 +11,6 @@
         <ADDITIONAL_INDENT_OPTIONS fileType="sass">
           <option name="INDENT_SIZE" value="2" />
         </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="sql">
-          <option name="INDENT_SIZE" value="2" />
-        </ADDITIONAL_INDENT_OPTIONS>
         <ADDITIONAL_INDENT_OPTIONS fileType="yml">
           <option name="INDENT_SIZE" value="2" />
         </ADDITIONAL_INDENT_OPTIONS>

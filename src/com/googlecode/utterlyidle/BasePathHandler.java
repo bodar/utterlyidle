@@ -25,7 +25,7 @@ public class BasePathHandler implements HttpHandler {
         Response response = httpHandler.handle(removeBasePathFromUri(request));
         Sequence<Uri> absoluteLocations = headers(response, LOCATION).
                 map(uri()).
-                map(asAbsolute(baseUri(request, basePath)));
+                map(asFullyQualified(baseUri(request, basePath)));
         response.headers().remove(LOCATION);
         for (Uri absoluteLocation : absoluteLocations) {
             response.header(LOCATION, absoluteLocation.toString());
@@ -42,18 +42,18 @@ public class BasePathHandler implements HttpHandler {
         };
     }
 
-    public static Uri toAbsolute(Uri uri, BaseUri baseUri) {
+    public static Uri toFullyQualified(Uri uri, BaseUri baseUri) {
         if (uri.isFullyQualified()) {
             return uri;
         }
         return baseUri.value().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
     }
 
-    public static Callable1<Uri, Uri> asAbsolute(final BaseUri baseUri) {
+    public static Callable1<Uri, Uri> asFullyQualified(final BaseUri baseUri) {
         return new Callable1<Uri, Uri>() {
             @Override
             public Uri call(Uri value) throws Exception {
-                return toAbsolute(value, baseUri);
+                return toFullyQualified(value, baseUri);
             }
         };
     }

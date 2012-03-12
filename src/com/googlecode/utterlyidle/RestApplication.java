@@ -12,6 +12,7 @@ import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptionsModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
+import com.googlecode.yadic.closeable.CloseableContainer;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -21,7 +22,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 
 public class RestApplication implements Application {
-    private final Container applicationScope = new SimpleContainer();
+    private final CloseableContainer applicationScope = CloseableContainer.closeableContainer();
     private final Modules modules = new Modules();
 
     public RestApplication(BasePath basePath) {
@@ -29,9 +30,9 @@ public class RestApplication implements Application {
     }
 
     public RestApplication(BasePath basePath, Module... modules) {
-        applicationScope.addInstance(InternalRequestMarker.class, new InternalRequestMarker(UUID.randomUUID().toString()));
         applicationScope.addInstance(BasePath.class, basePath);
         applicationScope.addInstance(Application.class, this);
+        applicationScope.removeCloseable(Application.class);
         this.modules.setupApplicationScope(applicationScope);
         add(new CoreModule());
         add(new LastExceptionsModule());
@@ -60,8 +61,8 @@ public class RestApplication implements Application {
         return using(createRequestScope(), callable);
     }
 
-    private Container createRequestScope() {
-        final Container requestScope = new SimpleContainer(applicationScope);
+    private CloseableContainer createRequestScope() {
+        final CloseableContainer requestScope = CloseableContainer.closeableContainer(applicationScope);
         requestScope.add(HttpHandler.class, BaseHandler.class);
         requestScope.decorate(HttpHandler.class, DateHandler.class);
         modules.activateRequestModules(requestScope);
@@ -124,6 +125,6 @@ public class RestApplication implements Application {
     }
 
     public void close() throws IOException {
-        applicationScope().close();
+        applicationScope.close();
     }
 }
