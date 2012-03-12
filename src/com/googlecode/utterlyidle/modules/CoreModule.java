@@ -50,6 +50,8 @@ public class CoreModule extends AbstractModule {
         container.add(Auditors.class, Auditors.class);
         container.addActivator(Auditor.class, container.getActivator(Auditors.class));
         container.add(HttpClient.class, ClientHttpHandler.class);
+        container.add(InternalHttpHandler.class);
+        container.decorate(HttpClient.class, SmartHttpClient.class);
         return this;
     }
 
@@ -59,6 +61,8 @@ public class CoreModule extends AbstractModule {
         container.add(Resources.class, RegisteredResources.class);
         container.addActivator(Bindings.class, container.getActivator(Resources.class));
         container.add(ResponseHandlers.class);
+        container.add(ApplicationId.class);
+        container.add(InternalRequestMarker.class);
         return this;
     }
 
@@ -91,8 +95,8 @@ public class CoreModule extends AbstractModule {
         argumentScope.addInstance(FormParameters.class, Requests.form(request));
         argumentScope.addInstance(CookieParameters.class, Requests.cookies(request));
         argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.entity()));
-        argumentScope.add(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
-        argumentScope.add(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentScope));
+        argumentScope.addType(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
+        argumentScope.addType(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentScope));
         argumentScope.addActivator(UUID.class, UUIDActivator.class);
         return this;
     }
