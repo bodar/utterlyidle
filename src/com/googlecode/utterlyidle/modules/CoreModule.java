@@ -63,6 +63,7 @@ public class CoreModule extends AbstractModule {
         container.add(ResponseHandlers.class);
         container.add(ApplicationId.class);
         container.add(InternalRequestMarker.class);
+        container.add(CompositeEntityWriter.class);
         return this;
     }
 

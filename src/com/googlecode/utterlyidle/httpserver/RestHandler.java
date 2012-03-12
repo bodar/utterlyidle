@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.EntityWriter;
 import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
@@ -21,7 +21,6 @@ import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
-import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
@@ -58,7 +57,8 @@ public class RestHandler implements HttpHandler {
         }
         long length = Long.parseLong(response.header(CONTENT_LENGTH));
         httpExchange.sendResponseHeaders(response.status().code(), length == 0 ? -1 : length);
-        using(httpExchange.getResponseBody(), write(response.bytes()));
+        CompositeEntityWriter entityWriter = application.applicationScope().get(CompositeEntityWriter.class);
+        using(httpExchange.getResponseBody(), EntityWriter.functions.writeWith(entityWriter, response.bytes()));
         httpExchange.close();
     }
 

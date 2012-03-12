@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.CompositeEntityWriter;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Requests;
@@ -19,10 +20,10 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Exceptions.printStackTrace;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Runnables.write;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
+import static com.googlecode.utterlyidle.EntityWriter.functions.writeWith;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
@@ -33,10 +34,10 @@ import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 import static java.lang.Integer.parseInt;
 
 public class RestContainer implements Container {
-    private final Application applcation;
+    private final Application application;
 
-    public RestContainer(Application applcation) {
-        this.applcation = applcation;
+    public RestContainer(Application application) {
+        this.application = application;
     }
 
     public void handle(Request request, Response response) {
@@ -51,7 +52,7 @@ public class RestContainer implements Container {
 
     private com.googlecode.utterlyidle.Response getResponse(Request request) throws Exception {
         try {
-            return applcation.handle(request(request));
+            return application.handle(request(request));
         } catch (Throwable e) {
             StringWriter stringWriter = new StringWriter();
             using(new PrintWriter(stringWriter), printStackTrace(e));
@@ -65,7 +66,8 @@ public class RestContainer implements Container {
         response.setCode(applicationResponse.status().code());
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
         response.setContentLength(parseInt(applicationResponse.header(CONTENT_LENGTH)));
-        using(response.getOutputStream(), write(applicationResponse.bytes()));
+        CompositeEntityWriter entityWriter = application.applicationScope().get(CompositeEntityWriter.class);
+        using(response.getOutputStream(), writeWith(entityWriter, applicationResponse.bytes()));
     }
 
     private Callable2<Response, Pair<String, String>, Response> mapHeaders() {

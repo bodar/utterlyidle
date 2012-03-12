@@ -17,6 +17,5 @@ public class StreamingWriterHandler implements ResponseHandler {
         streamingWriter.write(writer);
         writer.close();
         return response.bytes(stream.toByteArray());
-
     }
 }
