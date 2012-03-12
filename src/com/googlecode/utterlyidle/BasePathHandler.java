@@ -9,6 +9,7 @@ import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Response.methods.headers;
 import static java.util.regex.Pattern.quote;
 
 public class BasePathHandler implements HttpHandler {
@@ -22,7 +23,7 @@ public class BasePathHandler implements HttpHandler {
 
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(removeBasePathFromUri(request));
-        Sequence<Uri> absoluteLocations = sequence(response.headers(LOCATION)).
+        Sequence<Uri> absoluteLocations = headers(response, LOCATION).
                 map(uri()).
                 map(asAbsolute(baseUri(request, basePath)));
         response.headers().remove(LOCATION);
