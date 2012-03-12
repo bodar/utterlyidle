@@ -5,8 +5,6 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 public interface Response {
     Status status();
 
-    String header(String name);
-
     Iterable<String> headers(String name);
 
     HeaderParameters headers();
@@ -22,5 +20,13 @@ public interface Response {
     Object entity();
 
     Response entity(Object value);
+
+    public static class methods{
+        private methods() {}
+
+        public static String header(Response response, String name) {
+            return response.headers().getValue(name);
+        }
+    }
 
 }

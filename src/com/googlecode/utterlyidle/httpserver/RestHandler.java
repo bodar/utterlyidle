@@ -30,6 +30,7 @@ import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 
 public class RestHandler implements HttpHandler {
@@ -56,7 +57,7 @@ public class RestHandler implements HttpHandler {
         for (Pair<String, String> pair : response.headers()) {
             httpExchange.getResponseHeaders().add(pair.first(), pair.second());
         }
-        long length = Long.parseLong(response.header(CONTENT_LENGTH));
+        long length = Long.parseLong(header(response, CONTENT_LENGTH));
         httpExchange.sendResponseHeaders(response.status().code(), length == 0 ? -1 : length);
         using(httpExchange.getResponseBody(), write(response.bytes()));
         httpExchange.close();
