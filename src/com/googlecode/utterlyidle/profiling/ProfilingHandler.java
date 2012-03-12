@@ -4,7 +4,14 @@ import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Triple;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.sitemesh.PropertyMap;
 import com.googlecode.utterlyidle.sitemesh.PropertyMapParser;
 
@@ -15,8 +22,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.profiling.FunclateModelRenderer.funclateModelRenderer;
 
 public class ProfilingHandler implements HttpHandler {
-
-    public static final String QUERY_PARAMERTER = "profile";
+    public static final String QUERY_PARAMETER = "profile";
     private Application application;
     private HttpHandler httpHandler;
 
@@ -29,24 +35,23 @@ public class ProfilingHandler implements HttpHandler {
     public Response handle(Request request) throws Exception {
         QueryParameters parameters = Requests.query(request);
 
-        if(!parameters.contains(QUERY_PARAMERTER)){
+        if (!parameters.contains(QUERY_PARAMETER)) {
             return httpHandler.handle(request);
         }
 
-        StatsCollector instance = StatsCollector.begin();
+        StatsCollector stats = StatsCollector.begin();
         try {
-            Parameters noProfile = parameters.remove(QUERY_PARAMERTER).remove("decorator");
+            Parameters noProfile = parameters.remove(QUERY_PARAMETER).remove("decorator");
             Uri noProfileUri = request.uri().query(noProfile.toString().replace("?", ""));
             Request newRequest = Requests.request(request.method(), noProfileUri, request.headers(), request.entity());
 
             Response response = application.handle(newRequest);
 
-            PropertyMapParser parser = new PropertyMapParser();
-            PropertyMap map = parser.parse(new String(response.bytes(), "UTF-8"));
+            PropertyMap html = new PropertyMapParser().parse(new String(response.bytes(), "UTF-8"));
 
-            List<Triple<Request, Response, Long>> pairs = instance.executionTimes();
-             return render(Model.model().add("executionTimes", sequence(pairs).map(asModel()).toList()).
-                     add("response", map));
+            List<Triple<Request, Response, Long>> pairs = stats.executionTimes();
+            return render(Model.model().add("executionTimes", sequence(pairs).map(asModel()).toList()).
+                    add("response", html));
         } finally {
             StatsCollector.end();
         }
