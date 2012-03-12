@@ -30,10 +30,6 @@ public class MemoryResponse implements Response {
         return status;
     }
 
-    public String header(String name) {
-        return headers.getValue(name);
-    }
-
     public Iterable<String> headers(String name) {
         return headers.getValues(name);
     }

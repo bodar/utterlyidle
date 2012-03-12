@@ -7,6 +7,8 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.FOUND;
 import static com.googlecode.utterlyidle.Status.MOVED_PERMANENTLY;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
@@ -22,7 +24,7 @@ public class RedirectHttpHandler implements HttpClient {
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
         if(isRedirect(response)){
-           return handle(RequestBuilder.get(response.header(HttpHeaders.LOCATION)).build());
+           return handle(RequestBuilder.get(header(response, LOCATION)).build());
         }
         return response;
     }
