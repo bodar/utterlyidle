@@ -46,7 +46,7 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
         return filterByKey(key).headOption().map(Callables.<V>second()).getOrNull();
     }
 
-    public Iterable<V> getValues(K key) {
+    public Sequence<V> getValues(K key) {
         return filterByKey(key).map(Callables.<V>second());
     }
 
