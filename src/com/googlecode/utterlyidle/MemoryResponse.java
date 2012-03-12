@@ -1,35 +1,33 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
 import java.util.Date;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
-    private final HeaderParameters headers;
     private Status status;
+    private final HeaderParameters headers;
     private byte[] bytes = new byte[0];
     private Object entity;
 
-    public MemoryResponse(Status status) {
-        this(status, headerParameters());
+    private MemoryResponse(Status status, Iterable<? extends Pair<String, String>> headerParameters, Object entity) {
+        this.status = status;
+        this.headers = headerParameters(headerParameters);
+        this.entity = entity;
     }
 
-    public MemoryResponse(Status status, HeaderParameters headerParameters) {
-        this.status = status;
-        this.headers = headerParameters;
+    static MemoryResponse memoryResponse(final Status status, final Iterable<? extends Pair<String, String>> headerParameters, final Object entity) {
+        return new MemoryResponse(status, headerParameters, entity);
     }
 
     public Status status() {
         return status;
-    }
-
-    public Response status(Status value) {
-        this.status = value;
-        return this;
     }
 
     public String header(String name) {

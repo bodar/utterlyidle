@@ -41,22 +41,21 @@ public class MemoryResponseTest {
 
     @Test
     public void shouldSupportEquals() {
-        assertThat(response().status(OK), is(response().status(OK)));
+        assertThat(response(OK), is(response(OK)));
     }
 
     @Test
     public void fieldNamesAreCaseInsensitive() {
-        assertThat(response().status(OK).header("Content-Type", "text/plain"), is(response().status(OK).header("content-type", "text/plain")));
+        assertThat(response(OK).header("Content-Type", "text/plain"), is(response(OK).header("content-type", "text/plain")));
     }
 
     @Test
     public void fieldValuesAreCaseSensitive() {
-        assertThat(response().status(OK).header("Content-Type", "TEXT/PLAIN"), is(not(response().status(OK).header("Content-Type", "text/plain"))));
+        assertThat(response(OK).header("Content-Type", "TEXT/PLAIN"), is(not(response(OK).header("Content-Type", "text/plain"))));
     }
 
     @Test
     public void orderOfHeadersDoesNotMatter() {
-        assertThat(response().status(OK).header("name1", "value1").header("name2", "value2"), is(response().status(OK).header("name2", "value2").header("name1", "value1")));
+        assertThat(response(OK).header("name1", "value1").header("name2", "value2"), is(response(OK).header("name2", "value2").header("name1", "value1")));
     }
-    
 }

@@ -75,7 +75,7 @@ public class RestHandler implements HttpHandler {
     private Response exceptionResponse(Request request, final Exception e) throws IOException {
         System.err.println(String.format("%s %s -> %s", request.method(), request.uri(), e));
         e.printStackTrace(System.err);
-        Response response = response().status(Status.INTERNAL_SERVER_ERROR);
+        Response response = response(Status.INTERNAL_SERVER_ERROR);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stream));
         return response.bytes(stream.toByteArray());

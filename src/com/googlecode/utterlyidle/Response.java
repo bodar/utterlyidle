@@ -5,8 +5,6 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 public interface Response {
     Status status();
 
-    Response status(Status value);
-
     String header(String name);
 
     Iterable<String> headers(String name);
