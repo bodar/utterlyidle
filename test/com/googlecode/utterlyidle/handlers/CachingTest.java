@@ -6,8 +6,8 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Responses;
-import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Predicates.always;
@@ -21,7 +21,7 @@ import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.handlers.CachePolicy.cachePolicy;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
 import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentType;
@@ -67,14 +67,14 @@ public class CachingTest {
     @Test
     public void canControlPolicyBasedOnContentType() throws Exception {
         assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
-                matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, TEXT_JAVASCRIPT))), is(true));
+                matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, TEXT_JAVASCRIPT).build())), is(true));
         assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
-                matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML))), is(false));
+                matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML).build())), is(false));
     }
 
     @Test
     public void onlyAppliesForGetRequestsAndResponseIsOk() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response(Status.OK).header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
+        HttpHandler handler = new CacheControlHandler(returnsResponse(response() .header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
         Response response = handler.handle(post("/").build());
         assertThat(response.headers().contains(CACHE_CONTROL), is(false));
         assertThat(response.headers().contains(EXPIRES), is(false));

@@ -26,11 +26,11 @@ public class BasePathHandler implements HttpHandler {
         Sequence<Uri> absoluteLocations = headers(response, LOCATION).
                 map(uri()).
                 map(asFullyQualified(baseUri(request, basePath)));
-        response.headers().remove(LOCATION);
+        ResponseBuilder responseBuilder = ResponseBuilder.modify(response).removeHeaders(LOCATION);
         for (Uri absoluteLocation : absoluteLocations) {
-            response.header(LOCATION, absoluteLocation.toString());
+            responseBuilder.header(LOCATION, absoluteLocation.toString());
         }
-        return response;
+        return responseBuilder.build();
     }
 
     private Callable1<? super String, Uri> uri() {

@@ -1,13 +1,10 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
-import java.util.Arrays;
-import java.util.Date;
-
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
@@ -18,7 +15,7 @@ public class MemoryResponse implements Response {
     private MemoryResponse(Status status, Iterable<? extends Pair<String, String>> headerParameters, Object entity) {
         this.status = status;
         this.headers = headerParameters(headerParameters);
-        entity(entity);
+        this.entity = entity == null ? "" : entity;
     }
 
     static MemoryResponse memoryResponse(final Status status, final Iterable<? extends Pair<String, String>> headerParameters, final Object entity) {
@@ -33,29 +30,8 @@ public class MemoryResponse implements Response {
         return headers;
     }
 
-    public Response header(String name, Object value) {
-        if (value == null) {
-            return this;
-        }
-        if (value instanceof Date) {
-            header(name, Dates.RFC822().format((Date) value));
-        }
-        headers.add(name, value.toString());
-        return this;
-    }
-
-    public Response cookie(String name, Cookie value) {
-        header(HttpHeaders.SET_COOKIE, toHttpHeader(name, value));
-        return this;
-    }
-
     public Object entity() {
         return entity;
-    }
-
-    public Response entity(Object value) {
-        entity = value == null ? "" : value;
-        return this;
     }
 
     @Override

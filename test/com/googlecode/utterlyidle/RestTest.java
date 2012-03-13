@@ -45,6 +45,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
@@ -436,7 +437,7 @@ public class RestTest {
         @GET
         @Path("foo")
         public Response getAndSet(@CookieParam("name") String name) {
-            return response().cookie("anotherName", cookie("anotherValue")).entity(name);
+            return ResponseBuilder.response().cookie("anotherName", cookie("anotherValue")).entity(name).build();
         }
 
         @GET
@@ -677,7 +678,7 @@ public class RestTest {
         @GET
         @Path("bar")
         public Response redirect() {
-            return response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, baseUri.value().mergePath("baz"));
+            return ResponseBuilder.response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, baseUri.value().mergePath("baz")).build();
         }
     }
 
@@ -780,7 +781,7 @@ public class RestTest {
         public Response get(@QueryParam("override") Boolean override) {
             Response response = response(Status.SEE_OTHER);
             if (override) {
-                response = response.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                return modify(response).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();
             }
             return response;
         }

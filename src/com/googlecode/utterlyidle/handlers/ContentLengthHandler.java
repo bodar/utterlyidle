@@ -3,8 +3,10 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 
 public class ContentLengthHandler implements HttpHandler {
     private final HttpHandler httpHandler;
@@ -26,7 +28,6 @@ public class ContentLengthHandler implements HttpHandler {
     }
 
     private Response setContentLength(Response response, int length) {
-        response.headers().remove(CONTENT_LENGTH);
-        return response.header(CONTENT_LENGTH, length);
+        return modify(response).replaceHeaders(CONTENT_LENGTH, length).build();
     }
 }

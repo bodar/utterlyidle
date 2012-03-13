@@ -7,8 +7,10 @@ import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.Sequences.one;
 
 public class Responses {
     public static Response response() {
@@ -32,7 +34,7 @@ public class Responses {
     }
 
     public static Response seeOther(String location) {
-        return response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, location);
+        return response(Status.SEE_OTHER, one(pair(HttpHeaders.LOCATION, location)));
     }
 
     public static Callable1<Response, Status> status() {

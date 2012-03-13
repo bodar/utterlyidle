@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.modules.DependsOnContainer;
 import com.googlecode.yadic.Container;
@@ -18,7 +19,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     }
 
     public Response handle(Response response) throws Exception {
-        return response.entity(getRenderer().render((T) response.entity()).getBytes("UTF-8"));
+        return ResponseBuilder.modify(response).entity(getRenderer().render((T) response.entity()).getBytes("UTF-8")).build();
     }
 
     protected abstract Renderer<T> getRenderer();

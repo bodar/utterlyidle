@@ -4,11 +4,18 @@ import com.googlecode.totallylazy.Pair;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Uri.uri;
-import static com.googlecode.utterlyidle.HttpMessageParser.*;
+import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
+import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
+import static com.googlecode.utterlyidle.HttpMessageParser.toFieldNameAndValue;
+import static com.googlecode.utterlyidle.HttpMessageParser.toMethodAndPath;
+import static com.googlecode.utterlyidle.HttpMessageParser.toStatus;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.Status.BAD_REQUEST;
+import static com.googlecode.utterlyidle.Status.NOT_FOUND;
+import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.utterlyidle.Status.status;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
@@ -52,9 +59,9 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseResponses() {
-        canParseResponse(response(OK).header("header name", "header value").entity("entity"));
-        canParseResponse(Responses.response(OK).entity("response"));
-        canParseResponse(Responses.response(OK));
+        canParseResponse(ResponseBuilder.response(OK).header("header name", "header value").entity("entity"));
+        canParseResponse(ResponseBuilder.response(OK).entity("response"));
+        canParseResponse(ResponseBuilder.response(OK));
     }
 
     @Test
@@ -76,7 +83,8 @@ public class HttpMessageParserTest {
         assertThat(Entity.asString(response), is(" body "));
     }
 
-    private void canParseResponse(Response response) {
+    private void canParseResponse(ResponseBuilder builder) {
+        Response response = builder.build();
         assertThat(response, is(HttpMessageParser.parseResponse(response.toString())));
     }
 

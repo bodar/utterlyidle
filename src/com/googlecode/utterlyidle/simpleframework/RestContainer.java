@@ -9,6 +9,7 @@ import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
@@ -58,9 +59,10 @@ public class RestContainer implements Container {
         } catch (Throwable e) {
             StringWriter stringWriter = new StringWriter();
             using(new PrintWriter(stringWriter), printStackTrace(e));
-            return response(INTERNAL_SERVER_ERROR).
+            return ResponseBuilder.response(INTERNAL_SERVER_ERROR).
                     header(CONTENT_TYPE, TEXT_PLAIN).
-                    entity(stringWriter.toString());
+                    entity(stringWriter.toString()).
+                    build();
         }
     }
 
