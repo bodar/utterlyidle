@@ -9,6 +9,7 @@ import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -79,7 +80,7 @@ public class RestHandler implements HttpHandler {
         Response response = response(Status.INTERNAL_SERVER_ERROR);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stream));
-        return response.entity(stream.toByteArray());
+        return ResponseBuilder.modify(response).entity(stream.toByteArray()).build();
     }
 
 }

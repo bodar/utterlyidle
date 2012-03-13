@@ -15,22 +15,22 @@ import static org.hamcrest.Matchers.is;
 public class EntityTest {
     @Test
     public void shouldSupportStrings() throws Exception {
-        assertThat(Entity.asString(Responses.response().entity("Foo")), is("Foo"));
+        assertThat(Entity.asString(ResponseBuilder.response().entity("Foo").build()), is("Foo"));
     }
 
     @Test
     public void shouldSupportByteArrays() throws Exception {
-        assertThat(Entity.asString(Responses.response().entity("Foo".getBytes())), is("Foo"));
+        assertThat(Entity.asString(ResponseBuilder.response().entity("Foo".getBytes()).build()), is("Foo"));
     }
 
     @Test
     public void shouldSupportStreamingWriter() throws Exception {
-        assertThat(Entity.asString(Responses.response().entity(streamingWriterOf("bar"))), is("bar"));
+        assertThat(Entity.asString(ResponseBuilder.response().entity(streamingWriterOf("bar")).build()), is("bar"));
     }
 
     @Test
     public void shouldSupportStreamingOutput() throws Exception {
-        assertThat(Entity.asString(Responses.response().entity(streamingOutputOf("foobar"))), is("foobar"));
+        assertThat(Entity.asString(ResponseBuilder.response().entity(streamingOutputOf("foobar")).build()), is("foobar"));
     }
 
     private StreamingOutput streamingOutputOf(final String value) {

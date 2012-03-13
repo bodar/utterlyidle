@@ -34,9 +34,9 @@ public class HttpMessageParser {
     }
 
     private static Response buildResponse(String statusLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
-        Response response = Responses.response(toStatus(statusLine));
-        headerLines.fold(response, responseHeader());
-        return response.entity(messageBodyLines.toString("", "", "", Long.MAX_VALUE));
+        ResponseBuilder responseBuilder = ResponseBuilder.response(toStatus(statusLine));
+        headerLines.fold(responseBuilder, responseHeader());
+        return responseBuilder.entity(messageBodyLines.toString("", "", "", Long.MAX_VALUE)).build();
     }
 
     private static Sequence<Sequence<String>> httpMessageLines(String requestMessage) {
@@ -118,7 +118,7 @@ public class HttpMessageParser {
         };
     }
 
-    private static Callable2<? super RequestBuilder, ? super String, RequestBuilder> requestHeader() {
+    private static Callable2<RequestBuilder, String, RequestBuilder> requestHeader() {
         return new Callable2<RequestBuilder, String, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, String messageHeader) throws Exception {
                 Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
@@ -127,11 +127,11 @@ public class HttpMessageParser {
         };
     }
 
-    private static Callable2<? super Response, ? super String, Response> responseHeader() {
-        return new Callable2<Response, String, Response>() {
-            public Response call(Response response, String messageHeader) throws Exception {
+    private static Callable2<ResponseBuilder, String, ResponseBuilder> responseHeader() {
+        return new Callable2<ResponseBuilder, String, ResponseBuilder>() {
+            public ResponseBuilder call(ResponseBuilder responseBuilder, String messageHeader) throws Exception {
                 Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
-                return response.header(fieldNameAndValue.first(), fieldNameAndValue.second());
+                return responseBuilder.header(fieldNameAndValue.first(), fieldNameAndValue.second());
             }
         };
     }

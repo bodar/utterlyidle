@@ -11,6 +11,7 @@ import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.sitemesh.PropertyMap;
 import com.googlecode.utterlyidle.sitemesh.PropertyMapParser;
@@ -58,7 +59,7 @@ public class ProfilingHandler implements HttpHandler {
     }
 
     private Response render(Model model) throws Exception {
-        return Responses.response().entity(funclateModelRenderer(ProfilingHandler.class).render(model).getBytes());
+        return ResponseBuilder.response().entity(funclateModelRenderer(ProfilingHandler.class).render(model).getBytes()).build();
     }
 
     private Callable1<Triple<Request, Response, Long>, Model> asModel() {

@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.utterlyidle.CompositeEntityWriter;
 import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.is;
 public class EtagHandlerTest {
     @Test
     public void onlyPassesThroughSafeHeaders() throws Exception{
-        HttpHandler handler = new EtagHandler(returnsResponse(response().entity("abc").header(HttpHeaders.DATE, "passesThrough").header("X-foo", "doesntPassThrough")));
+        HttpHandler handler = new EtagHandler(returnsResponse(ResponseBuilder.response(OK).entity("abc").header(HttpHeaders.DATE, "passesThrough").header("X-foo", "doesntPassThrough").build()));
         Response response = handler.handle(get("/").header(IF_NONE_MATCH, "\"900150983cd24fb0d6963f7d28e17f72\"").build());
 
         assertThat(response.headers().contains("X-foo"), is(false));

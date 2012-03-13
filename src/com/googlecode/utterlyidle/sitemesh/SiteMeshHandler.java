@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 
 import java.io.IOException;
 
@@ -39,6 +40,6 @@ public class SiteMeshHandler implements HttpHandler {
     private Response decorate(Request request, Response response) throws IOException {
         Decorator decorator = decorators.getDecoratorFor(request, response);
         String result = decorator.decorate(Entity.asString(response));
-        return response.entity(result);
+        return ResponseBuilder.modify(response).entity(result).build();
     }
 }

@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 
 import java.io.FileNotFoundException;
@@ -22,6 +23,7 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -83,14 +85,14 @@ public class ClientHttpHandler implements HttpClient {
     }
 
     private Response createResponse(URLConnection connection, Status status, byte[] bytes) {
-        Response response = pairs(connection.getHeaderFields()).
+        final ResponseBuilder builder = pairs(connection.getHeaderFields()).
                 filter(where(first(String.class), is(not(equalIgnoringCase(HttpHeaders.TRANSFER_ENCODING))))).
-                fold(response(status).entity(bytes),
+                fold(ResponseBuilder.response(status).entity(bytes),
                         responseHeaders());
-        if(!response.headers().contains(CONTENT_LENGTH)){
-            response.header(CONTENT_LENGTH, bytes.length);
+        if(!builder.build().headers().contains(CONTENT_LENGTH)){
+            return builder.header(CONTENT_LENGTH, bytes.length).build();
         }
-        return response;
+        return builder.build();
     }
 
     private void sendRequest(Request request, URLConnection connection) throws IOException {
@@ -119,17 +121,17 @@ public class ClientHttpHandler implements HttpClient {
         };
     }
 
-    private static Callable2<Response, Pair<String, List<String>>, Response> responseHeaders() {
-        return new Callable2<Response, Pair<String, List<String>>, Response>() {
-            public Response call(Response response, final Pair<String, List<String>> entry) throws Exception {
+    private static Callable2<ResponseBuilder, Pair<String, List<String>>, ResponseBuilder> responseHeaders() {
+        return new Callable2<ResponseBuilder, Pair<String, List<String>>, ResponseBuilder>() {
+            public ResponseBuilder call(ResponseBuilder response, final Pair<String, List<String>> entry) throws Exception {
                 return sequence(entry.second()).fold(response, responseHeader(entry.first()));
             }
         };
     }
 
-    private static Callable2<Response, String, Response> responseHeader(final String key) {
-        return new Callable2<Response, String, Response>() {
-            public Response call(Response response, String value) throws Exception {
+    private static Callable2<ResponseBuilder, String, ResponseBuilder> responseHeader(final String key) {
+        return new Callable2<ResponseBuilder, String, ResponseBuilder>() {
+            public ResponseBuilder call(ResponseBuilder response, String value) throws Exception {
                 if (key != null) {
                     return response.header(key, value);
                 }

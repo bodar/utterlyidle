@@ -26,6 +26,7 @@ import static com.googlecode.utterlyidle.ParametersExtractor.parametersMatches;
 import static com.googlecode.utterlyidle.PathMatcher.pathMatches;
 import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.UrlEncodedMessage.DEFAULT_CHARSET;
 
@@ -67,14 +68,17 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Response failure(final MatchFailure matchFailure) {
-        return response(matchFailure.status()).
+        return modify(response(matchFailure.status())).
                 header(CONTENT_TYPE, TEXT_HTML).
-                entity(matchFailure);
+                entity(matchFailure).
+                build();
     }
 
     private Response setContentType(String mimeType, Response response) {
         if (header(response, CONTENT_TYPE) == null) {
-            return response.header(CONTENT_TYPE, defaultIfCharsetNotSpecified(mimeType));
+            return modify(response).
+                    header(CONTENT_TYPE, defaultIfCharsetNotSpecified(mimeType)).
+                    build();
         }
         return response;
     }
@@ -118,7 +122,7 @@ public class BaseHandler implements HttpHandler {
             return (Response) instance;
         }
 
-        return response().entity(instance);
+        return ResponseBuilder.response().entity(instance).build();
     }
 
     private Object unwrapEither(Object instance) {

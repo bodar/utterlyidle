@@ -1,11 +1,11 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable2;
-import com.googlecode.utterlyidle.CompositeEntityWriter;
 import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 
 import java.util.List;
@@ -21,7 +21,8 @@ import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
+import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.NOT_MODIFIED;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.modules.Digest.md5;
@@ -44,19 +45,19 @@ public class EtagHandler implements HttpHandler {
         Digest digest = md5(Entity.asByteArray(response));
         String etag = strongEtag(digest);
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
-            return copySafeHeaders(response, response(NOT_MODIFIED));
+            return copySafeHeaders(response, response(NOT_MODIFIED)).build();
         }
-        return response.header(ETAG, etag).header(Content_MD5, digest.asBase64());
+        return modify(response).header(ETAG, etag).header(Content_MD5, digest.asBase64()).build();
     }
 
-    private Response copySafeHeaders(final Response source, Response destination) {
+    private ResponseBuilder copySafeHeaders(final Response source, ResponseBuilder destination) {
         return sequence(safeHeaders).fold(destination, copyFrom(source));
     }
 
-    private static Callable2<Response, String, Response> copyFrom(final Response source) {
-        return new Callable2<Response, String, Response>() {
+    private static Callable2<ResponseBuilder, String, ResponseBuilder> copyFrom(final Response source) {
+        return new Callable2<ResponseBuilder, String, ResponseBuilder>() {
             @Override
-            public Response call(Response destination, String header) throws Exception {
+            public ResponseBuilder call(ResponseBuilder destination, String header) throws Exception {
                 return destination.header(header, header(source, header));
             }
         };

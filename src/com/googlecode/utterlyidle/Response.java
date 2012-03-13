@@ -8,13 +8,7 @@ public interface Response {
 
     HeaderParameters headers();
 
-    Response header(String name, Object value);
-
-    Response cookie(String name, Cookie value);
-
     Object entity();
-
-    Response entity(Object value);
 
     public static class methods{
         private methods() {}
