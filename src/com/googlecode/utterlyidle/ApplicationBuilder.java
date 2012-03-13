@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.Module;
@@ -90,7 +89,8 @@ public class ApplicationBuilder {
     }
 
     public String responseAsString(RequestBuilder request) throws Exception {
-        return Strings.toString(handle(request).bytes());
+        Response response = handle(request);
+        return Entity.asString(response);
     }
 
     private Application application;

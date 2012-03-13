@@ -35,7 +35,7 @@ public class MemoryResponseTest {
     @Test
     public void shouldPrintContent() throws Exception {
         String content = "<blah></blah>";
-        Response response = response().header(X_FORWARDED_FOR, "192.168.0.1").bytes(content.getBytes());
+        Response response = response().header(X_FORWARDED_FOR, "192.168.0.1").entity(content);
         assertThat(response.toString(), endsWith(content));
     }
 

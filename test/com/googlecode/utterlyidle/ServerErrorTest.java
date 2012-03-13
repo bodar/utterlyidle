@@ -31,7 +31,7 @@ public class ServerErrorTest {
 
         Response response = application.handle(get("exception"));
 
-        assertThat(new String(response.bytes()), containsString(message));
+        assertThat(Entity.asString(response), containsString(message));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ServerErrorTest {
 
         Response response = application.handle(get("exception"));
 
-        assertThat(new String(response.bytes()), containsString(message));
+        assertThat(Entity.asString(response), containsString(message));
     }
 
     @Test
@@ -121,7 +121,7 @@ public class ServerErrorTest {
 
     private void assertResponseContains(Response response, final Class<? extends Throwable> exceptionClass) {
         assertThat(response.status(), is(Status.INTERNAL_SERVER_ERROR));
-        assertThat(new String(response.bytes()), containsString(exceptionClass.getName()));
+        assertThat(Entity.asString(response), containsString(exceptionClass.getName()));
     }
 
     public static class ThrowingRuntimeResource {

@@ -16,9 +16,17 @@ public class ContentLengthHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        response.headers().remove(CONTENT_LENGTH);
-        return response.header(CONTENT_LENGTH, response.bytes().length);
+        Object entity = response.entity();
+        if((entity instanceof byte[])) {
+            return setContentLength(response, ((byte[]) entity).length);
+        } else if(entity instanceof  String) {
+            return setContentLength(response, ((String) entity).getBytes("UTF-8").length);
+        }
+        return response;
     }
 
-
+    private Response setContentLength(Response response, int length) {
+        response.headers().remove(CONTENT_LENGTH);
+        return response.header(CONTENT_LENGTH, length);
+    }
 }

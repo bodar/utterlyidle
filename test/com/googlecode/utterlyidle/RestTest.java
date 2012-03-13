@@ -118,7 +118,7 @@ public class RestTest {
     public void canHandleCookies() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GettableWithCookies.class);
         Response response = application.handle(get("foo").withHeader("cookie", "name=value"));
-        assertThat(new String(response.bytes()), is("value"));
+        assertThat(Entity.asString(response), is("value"));
         assertThat(response.header("Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
 
@@ -196,11 +196,11 @@ public class RestTest {
 
         Response plainResponse = application.handle(get("text").accepting("text/plain"));
         assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
-        assertThat(new String(plainResponse.bytes()), is("<xml/>"));
+        assertThat(Entity.asString(plainResponse), is("<xml/>"));
 
         Response xmlResponse = application.handle(get("text").accepting("text/xml"));
         assertThat(xmlResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/xml"));
-        assertThat(new String(xmlResponse.bytes()), is("<xml/>"));
+        assertThat(Entity.asString(xmlResponse), is("<xml/>"));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class RestTest {
 
         Response plainResponse = application.handle(get("text"));
         assertThat(plainResponse.header(HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
-        assertThat(new String(plainResponse.bytes()), is("Hello"));
+        assertThat(Entity.asString(plainResponse), is("Hello"));
     }
 
     @Test

@@ -1,11 +1,10 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Xml;
+import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.Response;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
@@ -30,7 +29,7 @@ public class Html {
     }
 
     public static Html html(Response response) throws Exception {
-        return new Html(new String(response.bytes(), "UTF-8"));
+        return new Html(Entity.asString(response));
     }
 
     public String title() {

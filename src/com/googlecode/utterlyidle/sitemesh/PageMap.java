@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.utterlyidle.handlers.InternalHttpHandler;
+import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
@@ -44,7 +45,7 @@ public class PageMap extends UnsupportedMap {
             if(!response.status().equals(Status.OK)) {
                 return;
             }
-            cache.put(url, new PropertyMapParser().parse(new String(response.bytes())));
+            cache.put(url, new PropertyMapParser().parse(Entity.asString(response)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

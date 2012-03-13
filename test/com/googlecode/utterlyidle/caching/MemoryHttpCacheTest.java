@@ -29,7 +29,7 @@ public class MemoryHttpCacheTest {
         Request request = get("/foo").build();
         assertThat(cache.get(request), is(none(Response.class)));
 
-        Response response = response(OK).header(CACHE_CONTROL, "public, max-age=60").bytes("text".getBytes());
+        Response response = response(OK).header(CACHE_CONTROL, "public, max-age=60").entity("text");
         cache.put(request, response);
 
         assertThat(cache.get(request), is(some(response)));

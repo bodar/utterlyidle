@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
+import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
@@ -33,7 +35,7 @@ public class SiteMeshHandler implements HttpHandler {
 
     private Response decorate(Request request, Response response) throws IOException {
         Decorator decorator = decorators.getDecoratorFor(request, response);
-        String result = decorator.decorate(new String(response.bytes()));
-        return response.bytes(result.getBytes());
+        String result = decorator.decorate(Entity.asString(response));
+        return response.entity(result);
     }
 }
