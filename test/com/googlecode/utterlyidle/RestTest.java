@@ -23,11 +23,7 @@ import com.googlecode.yadic.Container;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Formatter;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -38,6 +34,8 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
+import static com.googlecode.utterlyidle.Entity.streamingWriterOf;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
@@ -552,13 +550,7 @@ public class RestTest {
     public static class StreamOutput {
         @GET
         public StreamingOutput get() {
-            return new StreamingOutput() {
-                public void write(OutputStream out) throws IOException {
-                    Writer streamWriter = new OutputStreamWriter(out);
-                    streamWriter.write("stream");
-                    streamWriter.flush();
-                }
-            };
+            return streamingOutputOf("stream");
         }
     }
 
@@ -566,11 +558,7 @@ public class RestTest {
     public static class StreamWriter {
         @GET
         public StreamingWriter get() {
-            return new StreamingWriter() {
-                public void write(Writer writer) throws IOException {
-                    writer.write("writer");
-                }
-            };
+            return streamingWriterOf("writer");
         }
     }
 

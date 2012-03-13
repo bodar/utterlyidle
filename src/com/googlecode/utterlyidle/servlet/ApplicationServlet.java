@@ -8,6 +8,7 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 
 import javax.servlet.ServletConfig;
@@ -66,7 +67,9 @@ public class ApplicationServlet extends HttpServlet {
         for (Pair<String, String> pair : response.headers()) {
             resp.setHeader(pair.first(), pair.second());
         }
-        resp.setContentLength(parseInt(header(response, CONTENT_LENGTH)));
+        for (Integer length : Responses.contentLength(response)) {
+            resp.setContentLength(length);
+        }
         using(resp.getOutputStream(), Entity.transferFrom(response));
     }
 

@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Maps;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
@@ -41,7 +42,11 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
     }
 
     public V getValue(K key) {
-        return filterByKey(key).headOption().map(Callables.<V>second()).getOrNull();
+        return valueOption(key).getOrNull();
+    }
+
+    public Option<V> valueOption(K key) {
+        return filterByKey(key).headOption().map(Callables.<V>second());
     }
 
     public Sequence<V> getValues(K key) {
