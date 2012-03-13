@@ -20,6 +20,7 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
+import static java.lang.String.format;
 
 public class RequestBuilder implements Callable<Request> {
     private final String method;
@@ -114,7 +115,7 @@ public class RequestBuilder implements Callable<Request> {
         }
 
         if (sequence(headers).filter(by(first(String.class), is(equalIgnoringCase(HttpHeaders.CONTENT_TYPE)))).isEmpty()) {
-            withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + "; charset=UTF-8");
+            withHeader(HttpHeaders.CONTENT_TYPE, format("%s; charset=%s", MediaType.APPLICATION_FORM_URLENCODED, Entity.DEFAULT_CHARACTER_SET));
         }
         entity = FormParameters.parse(new String(entity)).
                 add(name, value.toString()).

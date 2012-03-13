@@ -28,7 +28,6 @@ import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.UrlEncodedMessage.DEFAULT_CHARSET;
 
 public class BaseHandler implements HttpHandler {
     private final Bindings bindings;
@@ -85,7 +84,7 @@ public class BaseHandler implements HttpHandler {
 
     private String defaultIfCharsetNotSpecified(String mimeType) {
         if (!mimeType.contains("charset")) {
-            return mimeType + "; charset=\"" + DEFAULT_CHARSET + "\"";
+            return mimeType + "; charset=\"" + Entity.DEFAULT_CHARACTER_SET + "\"";
         }
         return mimeType;
     }

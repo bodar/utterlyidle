@@ -19,7 +19,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     }
 
     public Response handle(Response response) throws Exception {
-        return ResponseBuilder.modify(response).entity(getRenderer().render((T) response.entity()).getBytes("UTF-8")).build();
+        return ResponseBuilder.modify(response).entity(getRenderer().render((T) response.entity())).build();
     }
 
     protected abstract Renderer<T> getRenderer();
