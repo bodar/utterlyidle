@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Triple;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.QueryParameters;
@@ -48,7 +49,7 @@ public class ProfilingHandler implements HttpHandler {
 
             Response response = application.handle(newRequest);
 
-            PropertyMap html = new PropertyMapParser().parse(new String((byte[]) response.entity(), "UTF-8"));
+            PropertyMap html = new PropertyMapParser().parse(Entity.asString(response));
 
             List<Triple<Request, Response, Long>> pairs = stats.executionTimes();
             return render(Model.model().add("executionTimes", sequence(pairs).map(asModel()).toList()).
