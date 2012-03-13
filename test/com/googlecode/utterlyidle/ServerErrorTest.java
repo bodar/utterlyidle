@@ -155,7 +155,7 @@ public class ServerErrorTest {
         @GET
         @Path("noProblems")
         public String get() throws Exception {
-            return "";
+            return "noProblems";
         }
 
     }

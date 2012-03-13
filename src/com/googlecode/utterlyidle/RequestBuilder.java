@@ -17,7 +17,6 @@ import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.utterlyidle.FormParameters.formParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
@@ -37,7 +36,7 @@ public class RequestBuilder implements Callable<Request> {
         this(method, Uri.uri(uri));
     }
 
-    public static RequestBuilder modify(Request request){
+    public static RequestBuilder modify(Request request) {
         return new RequestBuilder(request);
     }
 
@@ -57,13 +56,13 @@ public class RequestBuilder implements Callable<Request> {
         uri = value;
         return this;
     }
-    
+
     public RequestBuilder accepting(String value) {
         return withHeader(HttpHeaders.ACCEPT, value);
     }
 
     public RequestBuilder header(String name, Object value) {
-        if(value == null) {
+        if (value == null) {
             return this;
         }
 
@@ -89,9 +88,11 @@ public class RequestBuilder implements Callable<Request> {
         return query(name, value);
     }
 
+    @SuppressWarnings("unchecked")
     public RequestBuilder query(String name, Object value) {
-        if(value != null) {
-            uri = uri.query(UrlEncodedMessage.toString(QueryParameters.parse(uri.query()).add(name, value.toString())));
+        if (value != null) {
+            QueryParameters parse = QueryParameters.parse(uri.query());
+            uri = uri.query(UrlEncodedMessage.toString(parse.add(name, value.toString())));
         }
         return this;
     }
@@ -101,19 +102,19 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder withForms(FormParameters formParameters) {
-        for(Pair<String, String> param : formParameters) {
+        for (Pair<String, String> param : formParameters) {
             form(param.first(), param.second());
         }
         return this;
     }
 
     public RequestBuilder form(String name, Object value) {
-        if(value == null) {
+        if (value == null) {
             return this;
         }
 
         if (sequence(headers).filter(by(first(String.class), is(equalIgnoringCase(HttpHeaders.CONTENT_TYPE)))).isEmpty()) {
-            withHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded; charset=UTF-8");
+            withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + "; charset=UTF-8");
         }
         entity = FormParameters.parse(new String(entity)).
                 add(name, value.toString()).
@@ -180,11 +181,15 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder replaceHeader(String name, Object value) {
-        for (Pair<String, String> header : sequence(headers).find(where(first(String.class), equalIgnoringCase(name)))) {
-            headers.remove(header);
-        }
+        removeHeader(name);
         headers.add(pair(name, value.toString()));
         return this;
     }
 
+    public RequestBuilder removeHeader(String name) {
+        for (Pair<String, String> header : sequence(headers).find(where(first(String.class), equalIgnoringCase(name)))) {
+            headers.remove(header);
+        }
+        return this;
+    }
 }

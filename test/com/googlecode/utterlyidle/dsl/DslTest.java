@@ -12,6 +12,8 @@ import org.junit.Test;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
+import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
@@ -26,7 +28,7 @@ public class DslTest {
                 add(get("target").resource(method(on(Redirect.class).target())));
         Response response = application.handle(RequestBuilder.get("/redirect"));
         assertThat(response.status(), is(Status.SEE_OTHER));
-        assertThat(response.header(HttpHeaders.LOCATION), is("/target"));
+        assertThat(header(response, LOCATION), is("/target"));
     }
 
     @Test

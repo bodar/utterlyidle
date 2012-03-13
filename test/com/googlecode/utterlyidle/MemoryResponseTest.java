@@ -5,7 +5,9 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -28,7 +30,7 @@ public class MemoryResponseTest {
         Response response = response().cookie("a", cookie("1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(calendar.getTime())));;
 
         assertThat(
-                response.header(HttpHeaders.SET_COOKIE),
+                header(response, SET_COOKIE),
                 is("a=\"1\"; Comment=\"some comment\"; Domain=\".acme.com\"; Max-Age=\"123\"; Path=\"/products\"; Secure=\"\"; Expires=\"Sun, 04-Sep-2011 06:15:36 GMT\""));
     }
 
@@ -41,22 +43,21 @@ public class MemoryResponseTest {
 
     @Test
     public void shouldSupportEquals() {
-        assertThat(response().status(OK), is(response().status(OK)));
+        assertThat(response(OK), is(response(OK)));
     }
 
     @Test
     public void fieldNamesAreCaseInsensitive() {
-        assertThat(response().status(OK).header("Content-Type", "text/plain"), is(response().status(OK).header("content-type", "text/plain")));
+        assertThat(response(OK).header("Content-Type", "text/plain"), is(response(OK).header("content-type", "text/plain")));
     }
 
     @Test
     public void fieldValuesAreCaseSensitive() {
-        assertThat(response().status(OK).header("Content-Type", "TEXT/PLAIN"), is(not(response().status(OK).header("Content-Type", "text/plain"))));
+        assertThat(response(OK).header("Content-Type", "TEXT/PLAIN"), is(not(response(OK).header("Content-Type", "text/plain"))));
     }
 
     @Test
     public void orderOfHeadersDoesNotMatter() {
-        assertThat(response().status(OK).header("name1", "value1").header("name2", "value2"), is(response().status(OK).header("name2", "value2").header("name1", "value1")));
+        assertThat(response(OK).header("name1", "value1").header("name2", "value2"), is(response(OK).header("name2", "value2").header("name1", "value1")));
     }
-    
 }

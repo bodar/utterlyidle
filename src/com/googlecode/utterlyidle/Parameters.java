@@ -42,13 +42,11 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
         return values.size();
     }
 
-    @SuppressWarnings("unchecked")
     public V getValue(K key) {
         return filterByKey(key).headOption().map(Callables.<V>second()).getOrNull();
     }
 
-    @SuppressWarnings("unchecked")
-    public Iterable<V> getValues(K key) {
+    public Sequence<V> getValues(K key) {
         return filterByKey(key).map(Callables.<V>second());
     }
 
@@ -61,7 +59,7 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
     }
 
     private Sequence<Pair<K, V>> filterByKey(K key) {
-        return sequence(values).filter(by(Callables.<K>first(), is(call(predicate, key)))).realise();
+        return sequence(values).filter(by(Callables.<K>first(), call(predicate, key))).realise();
     }
 
     public static <K, V> Callable2<Parameters<K, V>, Pair<K, V>, Parameters<K, V>> pairIntoParameters() {
@@ -79,6 +77,7 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object other) {
         if (other instanceof Parameters) {
             final Parameters<K, V> parameters = (Parameters<K, V>) other;

@@ -1,43 +1,32 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
-    private final HeaderParameters headers;
     private Status status;
-    private byte[] bytes = new byte[0];
+    private final HeaderParameters headers;
     private Object entity;
 
-    public MemoryResponse(Status status) {
-        this(status, headerParameters());
+    private MemoryResponse(Status status, Iterable<? extends Pair<String, String>> headerParameters, Object entity) {
+        this.status = status;
+        this.headers = headerParameters(headerParameters);
+        entity(entity);
     }
 
-    public MemoryResponse(Status status, HeaderParameters headerParameters) {
-        this.status = status;
-        this.headers = headerParameters;
+    static MemoryResponse memoryResponse(final Status status, final Iterable<? extends Pair<String, String>> headerParameters, final Object entity) {
+        return new MemoryResponse(status, headerParameters, entity);
     }
 
     public Status status() {
         return status;
-    }
-
-    public Response status(Status value) {
-        this.status = value;
-        return this;
-    }
-
-    public String header(String name) {
-        return headers.getValue(name);
-    }
-
-    public Iterable<String> headers(String name) {
-        return headers.getValues(name);
     }
 
     public HeaderParameters headers() {
@@ -60,27 +49,18 @@ public class MemoryResponse implements Response {
         return this;
     }
 
-    public byte[] bytes() {
-        return bytes;
-    }
-
-    public Response bytes(byte[] value) {
-        this.bytes = value;
-        return this;
-    }
-
     public Object entity() {
         return entity;
     }
 
     public Response entity(Object value) {
-        entity = value;
+        entity = value == null ? "" : value;
         return this;
     }
 
     @Override
     public String toString() {
-        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, new String(bytes()));
+        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, Entity.asString(this));
     }
 
     @Override
@@ -92,7 +72,8 @@ public class MemoryResponse implements Response {
     public boolean equals(Object other) {
         if (other instanceof Response) {
             Response response = (Response) other;
-            return status.equals(response.status()) && (entity != null ? entity.equals(response.entity()) : true) && headers.equals(response.headers());
+
+            return status.equals(response.status()) && Entity.asString(this).equals(Entity.asString(response)) && headers.equals(response.headers());
         }
         return false;
     }

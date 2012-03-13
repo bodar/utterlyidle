@@ -12,45 +12,25 @@ import static com.googlecode.utterlyidle.EntityWriter.functions.writeWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class EntityWriterTest {
-   @Test
+public class EntityTest {
+    @Test
     public void shouldSupportStrings() throws Exception {
-        CompositeEntityWriter entityWriter = new CompositeEntityWriter();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        using(out, writeWith(entityWriter, "Foo"));
-
-        assertThat(out.toString(), is("Foo"));
+        assertThat(Entity.asString(Responses.response().entity("Foo")), is("Foo"));
     }
 
     @Test
     public void shouldSupportByteArrays() throws Exception {
-        CompositeEntityWriter entityWriter = new CompositeEntityWriter();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        using(out, writeWith(entityWriter, "Foo".getBytes()));
-
-        assertThat(out.toString(), is("Foo"));
+        assertThat(Entity.asString(Responses.response().entity("Foo".getBytes())), is("Foo"));
     }
 
     @Test
     public void shouldSupportStreamingWriter() throws Exception {
-        CompositeEntityWriter entityWriter = new CompositeEntityWriter();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        using(out, writeWith(entityWriter, streamingWriterOf("bar")));
-
-        assertThat(out.toString(), is("bar"));
+        assertThat(Entity.asString(Responses.response().entity(streamingWriterOf("bar"))), is("bar"));
     }
 
     @Test
     public void shouldSupportStreamingOutput() throws Exception {
-        CompositeEntityWriter entityWriter = new CompositeEntityWriter();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        using(out, writeWith(entityWriter, streamingOutputOf("foobar")));
-
-        assertThat(out.toString(), is("foobar"));
+        assertThat(Entity.asString(Responses.response().entity(streamingOutputOf("foobar"))), is("foobar"));
     }
 
     private StreamingOutput streamingOutputOf(final String value) {

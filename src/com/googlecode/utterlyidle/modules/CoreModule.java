@@ -2,7 +2,10 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.SystemClock;
 import com.googlecode.utterlyidle.*;
@@ -74,7 +77,7 @@ public class CoreModule extends AbstractModule {
 
     @Override
     public Module addResponseHandlers(ResponseHandlers handlers) {
-        handlers.addGuard(where(entity(), is(nullValue())), NoContentHandler.class);
+        handlers.addGuard(where(entity(), nullOrEmptyString()), NoContentHandler.class);
         handlers.addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).or(instanceOf(StreamingOutput.class))), IdentityHandler.class);
         handlers.addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class));
         handlers.addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class));
@@ -97,5 +100,14 @@ public class CoreModule extends AbstractModule {
         argumentScope.addType(new TypeFor<Either<?, ?>>() {}.get(), new EitherResolver(argumentScope));
         argumentScope.addActivator(UUID.class, UUIDActivator.class);
         return this;
+    }
+
+    private Predicate<Object> nullOrEmptyString() {
+        return new Predicate<Object>() {
+            @Override
+            public boolean matches(Object other) {
+                return other == null || ((other instanceof String) && ((String)other).isEmpty());
+            }
+        };
     }
 }
