@@ -10,6 +10,9 @@ import com.googlecode.utterlyidle.Response;
 
 import java.io.IOException;
 
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.Response.methods.header;
+
 public class SiteMeshHandler implements HttpHandler {
     private final HttpHandler httpHandler;
     private final Decorators decorators;
@@ -28,7 +31,7 @@ public class SiteMeshHandler implements HttpHandler {
     }
 
     private boolean shouldDecorate(Response response) {
-        String header = response.header(HttpHeaders.CONTENT_TYPE);
+        String header = header(response, CONTENT_TYPE);
         return header != null && header.contains(MediaType.TEXT_HTML);
 
     }

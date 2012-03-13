@@ -46,7 +46,7 @@ public class ExceptionHandler implements HttpHandler {
         try {
             return handlers.findAndHandle(request, response);
         } catch (Throwable t) {
-            return response.entity(ExceptionRenderer.toString(t).getBytes());
+            return response.entity(ExceptionRenderer.toString(t));
         }
     }
 }

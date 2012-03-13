@@ -31,7 +31,7 @@ public class UrlEncodedMessage {
         return result;
     }
 
-    public static String toString(Iterable<Pair<String, String>> pairs) {
+    public static String toString(Iterable<? extends Pair<String, String>> pairs) {
         StringBuilder builder = new StringBuilder();
         boolean first = true;
         for (Pair<String, String> pair : pairs) {

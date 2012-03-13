@@ -8,6 +8,7 @@ import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 
 import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
+import static com.googlecode.utterlyidle.Response.methods.header;
 
 public class MemoryHttpCache implements HttpCache {
     private final CacheMap map;
@@ -35,7 +36,7 @@ public class MemoryHttpCache implements HttpCache {
             return false;
         }
 
-        if (response.headers().contains(CACHE_CONTROL) && response.header(CACHE_CONTROL).toLowerCase().contains("public")) {
+        if (response.headers().contains(CACHE_CONTROL) && header(response, CACHE_CONTROL).toLowerCase().contains("public")) {
             return true;
         }
 

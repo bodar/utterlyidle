@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
-import static com.googlecode.totallylazy.Predicates.nullValue;
 
 public class Entity {
     public static final CompositeEntityWriter WRITERS = new CompositeEntityWriter();

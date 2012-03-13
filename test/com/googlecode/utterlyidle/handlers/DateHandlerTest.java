@@ -7,6 +7,8 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
+import static com.googlecode.utterlyidle.HttpHeaders.DATE;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,14 +19,14 @@ public class DateHandlerTest {
         DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(response()), new FixedClock(Dates.date(2000, 1, 1)));
         Response response = handler.handle(RequestBuilder.get("/foo").build());
 
-        assertThat(response.header(HttpHeaders.DATE), is("Sat, 01 Jan 2000 00:00:00 UTC"));
+        assertThat(header(response, DATE), is("Sat, 01 Jan 2000 00:00:00 UTC"));
     }
 
     @Test
     public void neverOverridesDate() throws Exception{
-        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(response().header(HttpHeaders.DATE, "simon")), null);
+        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(response().header(DATE, "simon")), null);
         Response response = handler.handle(RequestBuilder.get("/foo").build());
 
-        assertThat(response.header(HttpHeaders.DATE), is("simon"));
+        assertThat(header(response, DATE), is("simon"));
     }
 }

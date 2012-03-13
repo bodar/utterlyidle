@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.CompositeEntityWriter;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
@@ -21,18 +20,16 @@ public class StringTemplateDecorator implements Decorator {
     private final HttpHandler httpHandlerForIncludes;
     private final BasePath base;
     private final QueryParameters queryParameters;
-    private final CompositeEntityWriter entityWriter;
 
-    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, QueryParameters queryParameters, CompositeEntityWriter entityWriter) {
+    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
         this.template = template;
         this.httpHandlerForIncludes = httpHandlerForIncludes;
         this.base = base;
         this.queryParameters = queryParameters;
-        this.entityWriter = entityWriter;
     }
 
-    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, Request request, CompositeEntityWriter entityWriter) {
-        this(template, httpHandlerForIncludes, base, Requests.query(request), entityWriter);
+    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, Request request) {
+        this(template, httpHandlerForIncludes, base, Requests.query(request));
     }
 
     public Decorator setContent(PropertyMap content) throws IOException {

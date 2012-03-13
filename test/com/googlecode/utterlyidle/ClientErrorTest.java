@@ -19,7 +19,6 @@ public class ClientErrorTest {
     @Test
     public void shouldReturn404WhenPathNotFound() throws Exception {
         Response response = application().handle(get("invalidPath"));
-        System.out.println("response = " + Entity.asString(response));
         assertThat(response.status(), is(Status.NOT_FOUND));
     }
 
@@ -71,7 +70,6 @@ public class ClientErrorTest {
         public void method(@QueryParam("evil") Object o) {
             fail("Should never get here");
         }
-
     }
 
     public static class Foo {
@@ -86,8 +84,7 @@ public class ClientErrorTest {
         @Path("bob")
         @Produces("text/text")
         public String Bob() {
-            return "";
+            return "bob";
         }
     }
-
 }
