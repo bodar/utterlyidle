@@ -1,7 +1,8 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Strings;
+import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
@@ -28,7 +29,7 @@ public class MetaTagRule implements DecoratorRule {
         try {
             Response response = pair.second();
 
-            PropertyMap propertyMap = new PropertyMapParser().parse(Strings.toString(response.bytes()));
+            PropertyMap propertyMap = new PropertyMapParser().parse(Entity.asString(response));
             templateName = propertyMap.getPropertyMap("meta").getPropertyMap(this.name).toString();
             if (templateName != null && templateName.length() != 0) {
                 return true;

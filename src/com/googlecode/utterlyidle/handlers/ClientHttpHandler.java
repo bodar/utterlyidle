@@ -85,7 +85,7 @@ public class ClientHttpHandler implements HttpClient {
     private Response createResponse(URLConnection connection, Status status, byte[] bytes) {
         Response response = pairs(connection.getHeaderFields()).
                 filter(where(first(String.class), is(not(equalIgnoringCase(HttpHeaders.TRANSFER_ENCODING))))).
-                fold(response(status).bytes(bytes),
+                fold(response(status).entity(bytes),
                         responseHeaders());
         if(!response.headers().contains(CONTENT_LENGTH)){
             response.header(CONTENT_LENGTH, bytes.length);

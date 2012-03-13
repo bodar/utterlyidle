@@ -17,10 +17,6 @@ public interface Response {
 
     Response cookie(String name, Cookie value);
 
-    byte[] bytes();
-
-    Response bytes(byte[] value);
-
     Object entity();
 
     Response entity(Object value);

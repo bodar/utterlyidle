@@ -13,6 +13,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class EntityWriterTest {
+   @Test
+    public void shouldSupportStrings() throws Exception {
+        CompositeEntityWriter entityWriter = new CompositeEntityWriter();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        using(out, writeWith(entityWriter, "Foo"));
+
+        assertThat(out.toString(), is("Foo"));
+    }
+
     @Test
     public void shouldSupportByteArrays() throws Exception {
         CompositeEntityWriter entityWriter = new CompositeEntityWriter();

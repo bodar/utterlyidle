@@ -63,7 +63,6 @@ public class CoreModule extends AbstractModule {
         container.add(ResponseHandlers.class);
         container.add(ApplicationId.class);
         container.add(InternalRequestMarker.class);
-        container.add(CompositeEntityWriter.class);
         return this;
     }
 
@@ -76,9 +75,7 @@ public class CoreModule extends AbstractModule {
     @Override
     public Module addResponseHandlers(ResponseHandlers handlers) {
         handlers.addGuard(where(entity(), is(nullValue())), NoContentHandler.class);
-        handlers.addGuard(where(entity(), is(instanceOf(byte[].class))), ByteArrayHandler.class);
-        handlers.addGuard(where(entity(), is(instanceOf(StreamingWriter.class))), StreamingWriterHandler.class);
-        handlers.addGuard(where(entity(), is(instanceOf(StreamingOutput.class))), StreamingOutputHandler.class);
+        handlers.addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).or(instanceOf(StreamingOutput.class))), IdentityHandler.class);
         handlers.addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class));
         handlers.addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class));
         handlers.addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));

@@ -22,13 +22,14 @@ public class ResponseHandlersFinder{
         this.container = container;
     }
 
-    private Option<ResponseHandler> find(final Request request, final Response response){
+    private ResponseHandler find(final Request request, final Response response){
         return registry.handlers().
                 filter(matches(request, response)).
                 map(getHandlerFromRule()).
                 headOption().
                 map(createHandlerIfNeeded()).
-                map(injectResolverIfNeeded());
+                map(injectResolverIfNeeded()).
+                get();
     }
 
     private Callable1<? super ResponseHandler, ResponseHandler> injectResolverIfNeeded() {
@@ -55,7 +56,7 @@ public class ResponseHandlersFinder{
     }
 
     public Response findAndHandle(Request request, Response response) throws Exception {
-        return find(request, response).get().handle(response);
+        return find(request, response).handle(response);
     }
 
 

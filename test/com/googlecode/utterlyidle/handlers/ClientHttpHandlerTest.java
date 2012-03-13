@@ -2,7 +2,13 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Entity;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Server;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.caching.MemoryHttpCache;
 import com.googlecode.utterlyidle.caching.ResponseCacheAdapter;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
@@ -11,14 +17,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.net.*;
+import java.net.ResponseCache;
+import java.net.URL;
 
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
@@ -44,7 +50,7 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void correctlyHandlesTimeouts() throws Exception {
-        Response response = handle(10,get("slow"), server);
+        Response response = handle(10, get("slow"), server);
         assertThat(response.status(), is(Status.CLIENT_TIMEOUT));
     }
 
@@ -53,6 +59,7 @@ public class ClientHttpHandlerTest {
         Response response = new ClientHttpHandler().handle(get(uri("http://127.0.0.1:0/")).build());
         assertThat(response.status(), is(Status.CONNECTION_REFUSED));
     }
+
     @Test
     public void correctlyHandlesANotFoundFileUrl() throws Exception {
         URL resource = URLs.url("file:///bob");
@@ -67,21 +74,21 @@ public class ClientHttpHandlerTest {
         HttpHandler urlHandler = new ClientHttpHandler();
         Response response = urlHandler.handle(get(resource.toString()).build());
         assertThat(response.status(), is(Status.OK));
-        assertThat(new String(response.bytes()), is("This is a test file"));
+        assertThat(Entity.asString(response), is("This is a test file"));
     }
 
     @Test
     public void canGetAResource() throws Exception {
         Response response = handle(get("helloworld/queryparam?name=foo"), server);
         assertThat(response.status(), is(Status.OK));
-        assertThat(new String(response.bytes()), is("Hello foo"));
+        assertThat(Entity.asString(response), is("Hello foo"));
     }
 
     @Test
     public void canPostToAResource() throws Exception {
         Response response = handle(post("helloworld/formparam").withForm("name", "foo"), server);
         assertThat(response.status(), is(Status.OK));
-        assertThat(new String(response.bytes()), is("Hello foo"));
+        assertThat(Entity.asString(response), is("Hello foo"));
     }
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {
