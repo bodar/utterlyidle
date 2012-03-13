@@ -58,7 +58,7 @@ public class RestHandler implements HttpHandler {
         long length = Long.parseLong(response.header(CONTENT_LENGTH));
         httpExchange.sendResponseHeaders(response.status().code(), length == 0 ? -1 : length);
         CompositeEntityWriter entityWriter = application.applicationScope().get(CompositeEntityWriter.class);
-        using(httpExchange.getResponseBody(), EntityWriter.functions.writeWith(entityWriter, response.bytes()));
+        using(httpExchange.getResponseBody(), EntityWriter.functions.writeWith(entityWriter, response.entity()));
         httpExchange.close();
     }
 
@@ -78,7 +78,7 @@ public class RestHandler implements HttpHandler {
         Response response = response().status(Status.INTERNAL_SERVER_ERROR);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stream));
-        return response.bytes(stream.toByteArray());
+        return response.entity(stream.toByteArray());
     }
 
 }

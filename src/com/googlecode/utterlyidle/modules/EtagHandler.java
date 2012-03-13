@@ -1,6 +1,8 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -38,7 +40,7 @@ public class EtagHandler implements HttpHandler {
             return response;
         }
 
-        Digest digest = md5(response.bytes());
+        Digest digest = md5(Entity.asByteArray(response));
         String etag = strongEtag(digest);
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
             return copySafeHeaders(response, response(NOT_MODIFIED));

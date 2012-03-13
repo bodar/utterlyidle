@@ -12,7 +12,7 @@ public class WriteMessageToResponseHandler implements ResponseHandler {
     }
 
     public Response handle(final Response response) throws Exception {
-        return response.bytes(message.getBytes("UTF-8"));
+        return response.entity(message.getBytes("UTF-8"));
     }
 
 }

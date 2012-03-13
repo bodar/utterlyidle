@@ -51,8 +51,8 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseResponses() {
-        canParseResponse(response(OK).header("header name", "header value").bytes("entity".getBytes()));
-        canParseResponse(Responses.response(OK).bytes("response".getBytes()));
+        canParseResponse(response(OK).header("header name", "header value").entity("entity"));
+        canParseResponse(Responses.response(OK).entity("response"));
         canParseResponse(Responses.response(OK));
     }
 
@@ -72,7 +72,7 @@ public class HttpMessageParserTest {
         Response response = HttpMessageParser.parseResponse(" HTTP/1.1  200  OK \r\n Content-Type: text/plain \r\n\r\n body ");
         assertThat(response.status(), is(OK));
         assertThat(response.header("Content-Type"), is("text/plain"));
-        assertThat(new String(response.bytes()), is(" body "));
+        assertThat(Entity.asString(response), is(" body "));
     }
 
     private void canParseResponse(Response response) {

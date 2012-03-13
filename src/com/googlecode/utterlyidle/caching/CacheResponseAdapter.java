@@ -29,7 +29,7 @@ public class CacheResponseAdapter extends CacheResponse {
 
     @Override
     public InputStream getBody() throws IOException {
-        return new ByteArrayInputStream(response.bytes());
+        return new ByteArrayInputStream((byte[])response.entity());
     }
 
     public static Callable1<Response, CacheResponse> asCacheResponse() {

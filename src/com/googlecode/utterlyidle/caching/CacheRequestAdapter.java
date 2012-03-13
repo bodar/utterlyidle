@@ -26,7 +26,7 @@ class CacheRequestAdapter extends CacheRequest {
             @Override
             public void close() throws IOException {
                 super.close();
-                cache.put(request, response.bytes(toByteArray()));
+                cache.put(request, response.entity(toByteArray()));
             }
         };
     }

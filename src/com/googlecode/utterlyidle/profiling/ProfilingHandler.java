@@ -47,7 +47,7 @@ public class ProfilingHandler implements HttpHandler {
 
             Response response = application.handle(newRequest);
 
-            PropertyMap html = new PropertyMapParser().parse(new String(response.bytes(), "UTF-8"));
+            PropertyMap html = new PropertyMapParser().parse(new String((byte[]) response.entity(), "UTF-8"));
 
             List<Triple<Request, Response, Long>> pairs = stats.executionTimes();
             return render(Model.model().add("executionTimes", sequence(pairs).map(asModel()).toList()).
@@ -58,7 +58,7 @@ public class ProfilingHandler implements HttpHandler {
     }
 
     private Response render(Model model) throws Exception {
-        return Responses.response().bytes(funclateModelRenderer(ProfilingHandler.class).render(model).getBytes());
+        return Responses.response().entity(funclateModelRenderer(ProfilingHandler.class).render(model).getBytes());
     }
 
     private Callable1<Triple<Request, Response, Long>, Model> asModel() {

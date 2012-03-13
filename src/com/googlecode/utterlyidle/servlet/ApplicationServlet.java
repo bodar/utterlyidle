@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle.servlet;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
@@ -22,7 +22,6 @@ import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
-import static com.googlecode.utterlyidle.EntityWriter.functions.writeWith;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
@@ -67,8 +66,7 @@ public class ApplicationServlet extends HttpServlet {
             resp.setHeader(pair.first(), pair.second());
         }
         resp.setContentLength(parseInt(response.header(CONTENT_LENGTH)));
-        CompositeEntityWriter entityWriter = application.applicationScope().get(CompositeEntityWriter.class);
-        using(resp.getOutputStream(), writeWith(entityWriter, response.bytes()));
+        using(resp.getOutputStream(), Entity.transferFrom(response));
     }
 
     public static Request request(HttpServletRequest request) {

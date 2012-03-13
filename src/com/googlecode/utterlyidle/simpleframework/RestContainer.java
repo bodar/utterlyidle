@@ -67,7 +67,7 @@ public class RestContainer implements Container {
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
         response.setContentLength(parseInt(applicationResponse.header(CONTENT_LENGTH)));
         CompositeEntityWriter entityWriter = application.applicationScope().get(CompositeEntityWriter.class);
-        using(response.getOutputStream(), writeWith(entityWriter, applicationResponse.bytes()));
+        using(response.getOutputStream(), writeWith(entityWriter, applicationResponse.entity()));
     }
 
     private Callable2<Response, Pair<String, String>, Response> mapHeaders() {
