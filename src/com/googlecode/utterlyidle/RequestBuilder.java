@@ -181,15 +181,19 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder replaceHeader(String name, Object value) {
-        removeHeader(name);
+        removeHeaders(name);
         headers.add(pair(name, value.toString()));
         return this;
     }
 
-    public RequestBuilder removeHeader(String name) {
-        for (Pair<String, String> header : sequence(headers).find(where(first(String.class), equalIgnoringCase(name)))) {
+    public RequestBuilder removeHeaders(String name) {
+        removeHeaders(headers, name);
+        return this;
+    }
+
+    public static void removeHeaders(List<Pair<String, String>> headers, String name) {
+        for (Pair<String, String> header : sequence(headers).filter(where(first(String.class), equalIgnoringCase(name))).realise()) {
             headers.remove(header);
         }
-        return this;
     }
 }

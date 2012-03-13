@@ -36,9 +36,10 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
         return new Callable2<Response, Pair<String, String>, Response>() {
             public Response call(Response response, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
                 if (response.headers().contains(LOCATION)) {
-                    String originalHeader = response.headers().getValue(LOCATION);
-                    response.headers().remove(LOCATION);
-                    response.header(LOCATION, addExtension(originalHeader, extensionAndReplacementMimeType.first()));
+                    return ResponseBuilder.modify(response).
+                            removeHeaders(LOCATION).
+                            header(LOCATION, addExtension(response.headers().getValue(LOCATION), extensionAndReplacementMimeType.first())).
+                            build();
                 }
                 return response;
             }

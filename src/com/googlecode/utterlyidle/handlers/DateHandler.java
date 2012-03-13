@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
 
@@ -23,6 +24,6 @@ public class DateHandler implements HttpHandler{
         if(response.headers().contains(DATE)){
             return response;
         }
-        return response.header(DATE, Dates.RFC822().format(clock.now()));
+        return ResponseBuilder.modify(response).header(DATE, Dates.RFC822().format(clock.now())).build();
     }
 }

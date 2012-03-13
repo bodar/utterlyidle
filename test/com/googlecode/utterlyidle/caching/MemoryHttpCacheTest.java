@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.caching;
 
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Option.none;
@@ -29,7 +30,7 @@ public class MemoryHttpCacheTest {
         Request request = get("/foo").build();
         assertThat(cache.get(request), is(none(Response.class)));
 
-        Response response = response(OK).header(CACHE_CONTROL, "public, max-age=60").entity("text");
+        Response response = ResponseBuilder.response(OK).header(CACHE_CONTROL, "public, max-age=60").entity("text").build();
         cache.put(request, response);
 
         assertThat(cache.get(request), is(some(response)));
@@ -39,7 +40,7 @@ public class MemoryHttpCacheTest {
     @Test
     public void canCacheGetWhenResponseStatusIsOkAndCacheHeaderAllows() throws Exception {
         HttpCache cache = new MemoryHttpCache();
-        assertThat(cache.isCacheable(get("/foo").build(), response(OK).header(CACHE_CONTROL, "public, max-age=60")), is(true));
+        assertThat(cache.isCacheable(get("/foo").build(), ResponseBuilder.response(OK).header(CACHE_CONTROL, "public, max-age=60").build()), is(true));
     }
 
     @Test

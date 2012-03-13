@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.caching;
 
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.caching.HttpCache;
 
 import java.io.ByteArrayOutputStream;
@@ -26,7 +27,7 @@ class CacheRequestAdapter extends CacheRequest {
             @Override
             public void close() throws IOException {
                 super.close();
-                cache.put(request, response.entity(toByteArray()));
+                cache.put(request, ResponseBuilder.modify(response).entity(toByteArray()).build());
             }
         };
     }

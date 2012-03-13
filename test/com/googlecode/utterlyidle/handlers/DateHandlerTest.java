@@ -5,6 +5,8 @@ import com.googlecode.totallylazy.time.FixedClock;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
@@ -24,7 +26,7 @@ public class DateHandlerTest {
 
     @Test
     public void neverOverridesDate() throws Exception{
-        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(response().header(DATE, "simon")), null);
+        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(ResponseBuilder.response(Status.OK).header(DATE, "simon")), null);
         Response response = handler.handle(RequestBuilder.get("/foo").build());
 
         assertThat(header(response, DATE), is("simon"));

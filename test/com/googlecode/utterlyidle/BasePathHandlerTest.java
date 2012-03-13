@@ -27,7 +27,7 @@ public class BasePathHandlerTest {
         return new HttpHandler() {
             @Override
             public Response handle(Request request) throws Exception {
-                return response().entity(request.uri());
+                return ResponseBuilder.response().entity(request.uri()).build();
             }
         };
     }

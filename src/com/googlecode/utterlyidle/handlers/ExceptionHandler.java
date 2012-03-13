@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -40,13 +41,13 @@ public class ExceptionHandler implements HttpHandler {
 
     private Response findAndHandle(Request request, Throwable throwable) {
         exceptions.put(new Date(), request, ExceptionRenderer.toString(throwable));
-        Response response = response(INTERNAL_SERVER_ERROR).
+        ResponseBuilder response = ResponseBuilder.response(INTERNAL_SERVER_ERROR).
                 header(CONTENT_TYPE, TEXT_PLAIN).
                 entity(throwable);
         try {
-            return handlers.findAndHandle(request, response);
+            return handlers.findAndHandle(request, response.build());
         } catch (Throwable t) {
-            return response.entity(ExceptionRenderer.toString(t));
+            return response.entity(ExceptionRenderer.toString(t)).build();
         }
     }
 }
