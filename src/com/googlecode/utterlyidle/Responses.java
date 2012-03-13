@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
@@ -15,11 +16,15 @@ public class Responses {
     }
 
     public static Response response(Status status) {
-        return new MemoryResponse(status);
+        return response(status, Sequences.<Pair<String, String>>empty());
     }
 
-    public static Response response(Status status, HeaderParameters headerParameters) {
-        return new MemoryResponse(status, headerParameters);
+    public static Response response(Status status, Iterable<? extends Pair<String, String>> headerParameters) {
+        return response(status, headerParameters, null);
+    }
+
+    public static Response response(Status status, Iterable<? extends Pair<String, String>> headerParameters, Object entity) {
+        return MemoryResponse.memoryResponse(status, headerParameters, entity);
     }
 
     public static Response seeOther(Uri location) {

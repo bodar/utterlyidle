@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.CompositeEntityWriter;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.EntityWriter;
 import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
@@ -29,6 +30,7 @@ import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 
 public class RestHandler implements HttpHandler {
@@ -55,10 +57,9 @@ public class RestHandler implements HttpHandler {
         for (Pair<String, String> pair : response.headers()) {
             httpExchange.getResponseHeaders().add(pair.first(), pair.second());
         }
-        long length = Long.parseLong(response.header(CONTENT_LENGTH));
+        long length = Long.parseLong(header(response, CONTENT_LENGTH));
         httpExchange.sendResponseHeaders(response.status().code(), length == 0 ? -1 : length);
-        CompositeEntityWriter entityWriter = application.applicationScope().get(CompositeEntityWriter.class);
-        using(httpExchange.getResponseBody(), EntityWriter.functions.writeWith(entityWriter, response.entity()));
+        using(httpExchange.getResponseBody(), Entity.transferFrom(response));
         httpExchange.close();
     }
 
@@ -75,7 +76,7 @@ public class RestHandler implements HttpHandler {
     private Response exceptionResponse(Request request, final Exception e) throws IOException {
         System.err.println(String.format("%s %s -> %s", request.method(), request.uri(), e));
         e.printStackTrace(System.err);
-        Response response = response().status(Status.INTERNAL_SERVER_ERROR);
+        Response response = response(Status.INTERNAL_SERVER_ERROR);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stream));
         return response.entity(stream.toByteArray());

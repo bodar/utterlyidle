@@ -9,6 +9,8 @@ import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.Response.methods.header;
 
 public class ContentTypePredicate implements Predicate<Response> {
     private final String value;
@@ -18,7 +20,7 @@ public class ContentTypePredicate implements Predicate<Response> {
     }
 
     public boolean matches(Response response) {
-        String contentType = response.header(HttpHeaders.CONTENT_TYPE);
+        String contentType = header(response, CONTENT_TYPE);
         return contentType != null && contentType.contains(value);
     }
 

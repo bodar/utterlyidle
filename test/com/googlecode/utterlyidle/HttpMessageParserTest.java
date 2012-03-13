@@ -6,6 +6,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HttpMessageParser.*;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
@@ -35,7 +36,7 @@ public class HttpMessageParserTest {
     public void parseRequestWithExtraSpaces() {
         Request request = HttpMessageParser.parseRequest(" PUT  /path  HTTP/1.1   \r\n  Content-Type :  text/plain \r\n\r\n body ");
         assertThat(request.method(), is(PUT));
-        assertThat(request.uri().path().toString(), is("/path"));
+        assertThat(request.uri().path(), is("/path"));
         assertThat(request.headers().getValue("Content-Type"), is("text/plain"));
         assertThat(new String(request.entity()), is(" body "));
     }
@@ -71,7 +72,7 @@ public class HttpMessageParserTest {
     public void parseResponseWithExtraSpaces() {
         Response response = HttpMessageParser.parseResponse(" HTTP/1.1  200  OK \r\n Content-Type: text/plain \r\n\r\n body ");
         assertThat(response.status(), is(OK));
-        assertThat(response.header("Content-Type"), is("text/plain"));
+        assertThat(header(response, "Content-Type"), is("text/plain"));
         assertThat(Entity.asString(response), is(" body "));
     }
 
