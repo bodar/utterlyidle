@@ -10,6 +10,7 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Responses;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
@@ -69,7 +70,9 @@ public class RestContainer implements Container {
     private void mapTo(com.googlecode.utterlyidle.Response applicationResponse, Response response) throws IOException {
         response.setCode(applicationResponse.status().code());
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
-        response.setContentLength(parseInt(header(applicationResponse, CONTENT_LENGTH)));
+        for (Integer integer : Responses.contentLength(applicationResponse)) {
+            response.setContentLength(integer);
+        }
         using(response.getOutputStream(), Entity.transferFrom(applicationResponse));
     }
 

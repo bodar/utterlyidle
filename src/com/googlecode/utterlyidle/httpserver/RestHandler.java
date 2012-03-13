@@ -1,15 +1,15 @@
 package com.googlecode.utterlyidle.httpserver;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.CompositeEntityWriter;
 import com.googlecode.utterlyidle.Entity;
-import com.googlecode.utterlyidle.EntityWriter;
 import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -21,6 +21,7 @@ import java.io.PrintStream;
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Runnables.write;
@@ -30,8 +31,6 @@ import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 
 public class RestHandler implements HttpHandler {
@@ -58,12 +57,20 @@ public class RestHandler implements HttpHandler {
         for (Pair<String, String> pair : response.headers()) {
             httpExchange.getResponseHeaders().add(pair.first(), pair.second());
         }
-        long length = Long.parseLong(header(response, CONTENT_LENGTH));
-        httpExchange.sendResponseHeaders(response.status().code(), length == 0 ? -1 : length);
+
+        httpExchange.sendResponseHeaders(response.status().code(), Responses.contentLength(response).map(fixWeirdContentLength()).getOrElse(0));
         using(httpExchange.getResponseBody(), Entity.transferFrom(response));
         httpExchange.close();
     }
 
+    private Callable1<Integer, Integer> fixWeirdContentLength() {
+        return new Callable1<Integer, Integer>() {
+            @Override
+            public Integer call(Integer actualContentLength) throws Exception {
+                return actualContentLength == 0 ? -1: actualContentLength;
+            }
+        };
+    }
 
     private MemoryRequest request(HttpExchange httpExchange) {
         return Requests.request(

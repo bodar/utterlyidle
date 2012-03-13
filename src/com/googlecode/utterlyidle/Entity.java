@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
@@ -86,4 +87,21 @@ public class Entity {
         };
     }
 
+    public static StreamingOutput streamingOutputOf(final String value) {
+        return new StreamingOutput() {
+            @Override
+            public void write(OutputStream outputStream) throws IOException {
+                outputStream.write(value.getBytes());
+            }
+        };
+    }
+
+    public static StreamingWriter streamingWriterOf(final String value) {
+        return new StreamingWriter() {
+            @Override
+            public void write(Writer writer) throws IOException {
+                writer.write(value);
+            }
+        };
+    }
 }

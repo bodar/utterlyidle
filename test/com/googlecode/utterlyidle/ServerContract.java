@@ -41,6 +41,14 @@ public abstract class ServerContract {
     }
 
     @Test
+    public void handlesChunking() throws Exception {
+        Response response = handle(get("chunk"), server);
+
+        assertThat(response.status(), is(Status.OK));
+        assertThat(Entity.asString(response), is("chunk"));
+    }
+
+    @Test
     public void shouldCorrectlyHandlerEtagsAndNotModified() throws Exception {
         Response responseWithEtag = handle(get("etag"), server);
 
