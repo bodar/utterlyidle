@@ -8,6 +8,7 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.annotations.DefaultValue;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
@@ -17,11 +18,18 @@ import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 
+import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.Responses.response;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
+    @GET
+    @Path("chunk")
+    public StreamingOutput chunk() {
+        return streamingOutputOf("chunk");
+    }
+
     @GET
     @Path("cacheable")
     public Response cacheable() {

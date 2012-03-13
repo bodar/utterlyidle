@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.simpleframework;
 
-import com.googlecode.utterlyidle.CompositeEntityWriter;
 import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
