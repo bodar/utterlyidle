@@ -80,7 +80,7 @@ public class HttpMessageParserTest {
         Response response = HttpMessageParser.parseResponse(" HTTP/1.1  200  OK \r\n Content-Type: text/plain \r\n\r\n body ");
         assertThat(response.status(), is(OK));
         assertThat(header(response, "Content-Type"), is("text/plain"));
-        assertThat(Entity.asString(response), is(" body "));
+        assertThat(response.entity().asString(), is(" body "));
     }
 
     private void canParseResponse(ResponseBuilder builder) {

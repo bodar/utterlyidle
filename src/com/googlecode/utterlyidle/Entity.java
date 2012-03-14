@@ -1,19 +1,55 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 
-public class Entity {
+public class Entity implements Value<Object> {
+    private static final Entity EMPTY = new Entity("");
+    private final Object value;
+
+    private Entity(Object value) {
+        this.value = value;
+    }
+
+    public static Entity entity(Object value) {
+        if (value instanceof Entity) {
+            return (Entity) value;
+        }
+        return value == null ? empty() : new Entity(value);
+    }
+
+    public static Entity empty() {
+        return EMPTY;
+    }
+
+    @Override
+    public Object value() {
+        return value;
+    }
+
+    public String asString() {
+        return writeTo(this, new ByteArrayOutputStream()).toString();
+    }
+
+    public byte[] asBytes() {
+        return writeTo(this, new ByteArrayOutputStream()).toByteArray();
+    }
+
+    public boolean isStreaming() {
+        return value instanceof StreamingWriter || value instanceof StreamingOutput;
+    }
+
+
     public static final CompositeEntityWriter WRITERS = new CompositeEntityWriter();
     public static final String DEFAULT_CHARACTER_SET = "UTF-8";
 
@@ -25,25 +61,17 @@ public class Entity {
         WRITERS.add(instanceOf(StreamingOutput.class), streamingOutputEntityWriter());
     }
 
-    public static String asString(Response response) {
-        return writeTo(response, new ByteArrayOutputStream()).toString();
-    }
-
-    public static <T extends OutputStream> T writeTo(Response response, T stream) {
+    public static <T extends OutputStream> T writeTo(Entity entity, T stream) {
         try {
-            WRITERS.write(response.entity(), stream);
+            WRITERS.write(entity.value(), stream);
             return stream;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static byte[] asByteArray(Response response) {
-        return writeTo(response, new ByteArrayOutputStream()).toByteArray();
-    }
-
     public static Callable1<OutputStream, Void> transferFrom(Response response) {
-        return EntityWriter.functions.writeWith(WRITERS, response.entity());
+        return EntityWriter.functions.writeWith(WRITERS, response.entity().value());
     }
 
     private static EntityWriter<StreamingOutput> streamingOutputEntityWriter() {
@@ -119,4 +147,6 @@ public class Entity {
             }
         };
     }
+
+
 }

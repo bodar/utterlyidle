@@ -20,14 +20,14 @@ public class BasePathHandlerTest {
     @Test
     public void removesBasePathFromRequestUri() throws Exception {
         HttpHandler handler = new BasePathHandler(returnsRequestUri(), basePath("basePath"));
-        assertThat((Uri) handler.handle(get("/basePath/foo").build()).entity(), is(uri("/foo")));
+        assertThat(handler.handle(get("/basePath/foo").build()).entity().asString(), is("/foo"));
     }
 
     private HttpHandler returnsRequestUri() {
         return new HttpHandler() {
             @Override
             public Response handle(Request request) throws Exception {
-                return ResponseBuilder.response().entity(request.uri()).build();
+                return ResponseBuilder.response().entity(request.uri().toString()).build();
             }
         };
     }
