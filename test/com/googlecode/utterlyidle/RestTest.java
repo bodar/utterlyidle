@@ -63,13 +63,13 @@ public class RestTest {
     public void supportUUIDConversion() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesUUID.class);
         String uuid = UUID.randomUUID().toString();
-        assertThat(application.responseAsString(get("hello").withQuery("name", uuid)), is(uuid));
+        assertThat(application.responseAsString(get("hello").query("name", uuid)), is(uuid));
     }
 
     @Test
     public void supportDefaultValue() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesDefaultValue.class);
-        assertThat(application.responseAsString(get("hello").withQuery("name", "Matt")), is("Matt"));
+        assertThat(application.responseAsString(get("hello").query("name", "Matt")), is("Matt"));
         assertThat(application.responseAsString(get("hello")), is("Dan"));
     }
 
@@ -100,8 +100,8 @@ public class RestTest {
     @Test
     public void whenReturningAResponseUseTheProducesContentTypeIfNoneExplicitlySet() throws Exception {
         ApplicationBuilder application = application().addAnnotated(ReturnsResponseWithContentType.class);
-        assertThat(header(application.handle(get("path").withQuery("override", String.valueOf(false))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_ATOM_XML));
-        assertThat(header(application.handle(get("path").withQuery("override", String.valueOf(true))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_JSON));
+        assertThat(header(application.handle(get("path").query("override", String.valueOf(false))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_ATOM_XML));
+        assertThat(header(application.handle(get("path").query("override", String.valueOf(true))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -117,19 +117,19 @@ public class RestTest {
     @Test
     public void canHandleCookies() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GettableWithCookies.class);
-        Response response = application.handle(get("foo").withHeader("cookie", "name=value"));
+        Response response = application.handle(get("foo").header("cookie", "name=value"));
         assertThat(response.entity().toString(), is("value"));
         assertThat(header(response, "Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
 
     @Test
     public void canHandleQuotedCookies() throws Exception {
-        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("foo").withHeader("cookie", "name=\"value\"")), is("value"));
+        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("foo").header("cookie", "name=\"value\"")), is("value"));
     }
 
     @Test
     public void canHandleCookieParams() throws Exception {
-        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("bar").withHeader("cookie", "name=bob")), is("bob"));
+        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("bar").header("cookie", "name=bob")), is("bob"));
     }
 
     @Test
@@ -147,13 +147,13 @@ public class RestTest {
     @Test
     public void canGetWithQueryParameter() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GettableWithQuery.class);
-        assertThat(application.responseAsString(get("foo").withQuery("name", "value")), is("value"));
+        assertThat(application.responseAsString(get("foo").query("name", "value")), is("value"));
     }
 
     @Test
     public void canPostWithFormParameter() throws Exception {
         ApplicationBuilder application = application().addAnnotated(Postable.class);
-        assertThat(application.responseAsString(post("foo").withForm("name", "value")), is("value"));
+        assertThat(application.responseAsString(post("foo").form("name", "value")), is("value"));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class RestTest {
     public void canDetermineMethodWhenThereIsAChoice() throws Exception {
         ApplicationBuilder application = application().addAnnotated(MultipleGets.class);
         assertThat(application.responseAsString(get("foo")), is("no parameters"));
-        assertThat(application.responseAsString(get("foo").withQuery("arg", "match")), is("match"));
+        assertThat(application.responseAsString(get("foo").query("arg", "match")), is("match"));
     }
 
     @Test
@@ -216,10 +216,10 @@ public class RestTest {
     public void aSingleResourceMethodCanAcceptsMultiplePossibleMimeTypes() throws Exception {
         ApplicationBuilder application = application().addAnnotated(PutWithMultipleMimeTypes.class);
 
-        Response plainResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/plain").entity("<xml/>"));
+        Response plainResponse = application.handle(put("text").header(CONTENT_TYPE, "text/plain").entity("<xml/>"));
         assertThat(plainResponse.status(), is(NO_CONTENT));
 
-        Response xmlResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/xml").entity("<xml/>"));
+        Response xmlResponse = application.handle(put("text").header(CONTENT_TYPE, "text/xml").entity("<xml/>"));
         assertThat(xmlResponse.status(), is(NO_CONTENT));
     }
 
@@ -283,8 +283,8 @@ public class RestTest {
     public void canDetermineInputHandlerByMimeType() throws Exception {
         ApplicationBuilder application = application().addAnnotated(MultiplePutContent.class);
 
-        assertThat(application.responseAsString(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/plain")), is("plain"));
-        assertThat(application.responseAsString(put("text").withHeader(HttpHeaders.CONTENT_TYPE, "text/html")), is("html"));
+        assertThat(application.responseAsString(put("text").header(HttpHeaders.CONTENT_TYPE, "text/plain")), is("plain"));
+        assertThat(application.responseAsString(put("text").header(HttpHeaders.CONTENT_TYPE, "text/html")), is("html"));
     }
 
     @Test
@@ -306,7 +306,7 @@ public class RestTest {
     @Test
     public void canRedirectWithBaseUri() throws Exception {
         ApplicationBuilder application = application().addAnnotated(BaseUriResource.class);
-        Response response = application.handle(get("/foo/bar").withHeader(HttpHeaders.HOST, "localhost:8080"));
+        Response response = application.handle(get("/foo/bar").header(HttpHeaders.HOST, "localhost:8080"));
         assertThat(header(response, LOCATION), is("http://localhost:8080/baz"));
     }
 
@@ -319,14 +319,14 @@ public class RestTest {
     @Test
     public void canCoerceInvalidEithers() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithEither.class);
-        assertThat(application.responseAsString(get("path").withQuery("layout", "invalidValue")), is("layout:left(invalidValue)"));
+        assertThat(application.responseAsString(get("path").query("layout", "invalidValue")), is("layout:left(invalidValue)"));
     }
 
     @Test
     public void canCoerceValidEithers() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(application.responseAsString(get("path").withQuery("layout", value)), is("layout:right(" + value + ")"));
+        assertThat(application.responseAsString(get("path").query("layout", value)), is("layout:right(" + value + ")"));
     }
 
 
@@ -334,14 +334,14 @@ public class RestTest {
     public void canCoerceEithersThatContainAValidOption() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(application.responseAsString(get("path").withQuery("optionalLayout", value)), is("optionalLayout:right(some(" + value + "))"));
+        assertThat(application.responseAsString(get("path").query("optionalLayout", value)), is("optionalLayout:right(some(" + value + "))"));
     }
 
     @Test
     public void canCoerceEithersThatContainAnInvalidOption() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         final String value = "rubbish";
-        assertThat(application.responseAsString(get("path").withQuery("optionalLayout", value)), is("optionalLayout:left(" + value + ")"));
+        assertThat(application.responseAsString(get("path").query("optionalLayout", value)), is("optionalLayout:left(" + value + ")"));
     }
 
     @Test
@@ -359,7 +359,7 @@ public class RestTest {
     @Test
     public void canCoerceOptionalTypes() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithOptionalStrongTypeWithFactoryMethod.class);
-        assertThat(application.responseAsString(get("path").withQuery("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+        assertThat(application.responseAsString(get("path").query("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
     @Test

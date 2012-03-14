@@ -30,13 +30,13 @@ public class HttpMessageParserTest {
     @Test
     public void parseRequests() {
         canParseRequest(new RequestBuilder(POST, "/my/path").
-                withHeader("header 1", "header 1 value").
-                withHeader("header 2", "header 2 value").
-                withForm("form 1", "form 1 value").
-                withForm("form 2", "form 2 value").
+                header("header 1", "header 1 value").
+                header("header 2", "header 2 value").
+                form("form 1", "form 1 value").
+                form("form 2", "form 2 value").
                 build());
         canParseRequest(new RequestBuilder(GET, "/test").build());
-        canParseRequest(new RequestBuilder(GET, "/test").withHeader("name", "value").build());
+        canParseRequest(new RequestBuilder(GET, "/test").header("name", "value").build());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void handlesHeadersParamsWithNoValue() {
-        String input = get("/").withHeader("header", "").build().toString();
+        String input = get("/").header("header", "").build().toString();
 
         Request parsed = HttpMessageParser.parseRequest(input);
 
@@ -105,7 +105,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void handlesFormParamsWithNoValue() {
-        String input = get("/").withForm("form", "").build().toString();
+        String input = get("/").form("form", "").build().toString();
 
         Request parsed = HttpMessageParser.parseRequest(input);
 

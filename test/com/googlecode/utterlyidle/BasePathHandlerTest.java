@@ -34,7 +34,7 @@ public class BasePathHandlerTest {
     @Test
     public void shouldPrependPathWithBasePathForRedirectsWithRelativePaths() throws Exception {
         Response response = new BasePathHandler(returnsResponse(seeOther("bar")), basePath("/foo")).
-                handle(get("").withHeader(HOST, "mayhost:8080").build());
+                handle(get("").header(HOST, "mayhost:8080").build());
         assertThat(header(response, LOCATION), is("http://mayhost:8080/foo/bar"));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }
@@ -57,7 +57,7 @@ public class BasePathHandlerTest {
 
     private void assertLocationIsCorrectlyModified(String originalLocation, String basePath, String finalLocation) throws Exception {
         Response response = new BasePathHandler(returnsResponse(seeOther(originalLocation)), basePath(basePath)).
-                handle(get("").withHeader(HOST, "mayhost:8080").build());
+                handle(get("").header(HOST, "mayhost:8080").build());
         assertThat(header(response, LOCATION), is(finalLocation));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }

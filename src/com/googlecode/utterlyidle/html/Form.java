@@ -63,7 +63,7 @@ public class Form {
     private Callable2<RequestBuilder, NameValue, RequestBuilder> addQueryParams() {
         return new Callable2<RequestBuilder, NameValue, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, NameValue nameValue) throws Exception {
-                return requestBuilder.withQuery(nameValue.name(), nameValue.value());
+                return requestBuilder.query(nameValue.name(), nameValue.value());
             }
         };
     }
@@ -71,7 +71,7 @@ public class Form {
     private Callable2<RequestBuilder, NameValue, RequestBuilder> addFormParams() {
         return new Callable2<RequestBuilder, NameValue, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, NameValue nameValue) throws Exception {
-                return requestBuilder.withForm(nameValue.name(), nameValue.value());
+                return requestBuilder.form(nameValue.name(), nameValue.value());
             }
         };
     }

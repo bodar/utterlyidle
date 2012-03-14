@@ -83,7 +83,7 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void canPostToAResource() throws Exception {
-        Response response = handle(post("helloworld/formparam").withForm("name", "foo"), server);
+        Response response = handle(post("helloworld/formparam").form("name", "foo"), server);
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello foo"));
     }
@@ -96,7 +96,7 @@ public class ClientHttpHandlerTest {
         HttpHandler urlHandler = new ClientHttpHandler(timeout);
         Uri uri = request.uri();
         Uri path = server.uri().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
-        return urlHandler.handle(request.withUri(path).build());
+        return urlHandler.handle(request.uri(path).build());
     }
 
     private Server server;

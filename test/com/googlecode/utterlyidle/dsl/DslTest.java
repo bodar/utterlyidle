@@ -40,27 +40,27 @@ public class DslTest {
     @Test
     public void supportsGetWithParameters() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Foo.class).say(queryParam(String.class, "value")))));
-        assertThat(application.responseAsString(RequestBuilder.get("/bar").withQuery("value", "Dan")), is("Hello Dan"));
+        assertThat(application.responseAsString(RequestBuilder.get("/bar").query("value", "Dan")), is("Hello Dan"));
     }
 
     @Test
     public void supportsGetWithDefaultValue() throws Exception {
         ApplicationBuilder application = application().add(get("/hello").resource(method(on(Foo.class).say(queryParam(String.class, "name", "Matt")))));
         assertThat(application.responseAsString(RequestBuilder.get("/hello")), is("Hello Matt"));
-        assertThat(application.responseAsString(RequestBuilder.get("/hello").withQuery("name", "Dan")), is("Hello Dan"));
+        assertThat(application.responseAsString(RequestBuilder.get("/hello").query("name", "Dan")), is("Hello Dan"));
     }
 
     @Test
     public void supportsDefinedParameter() throws Exception {
         ApplicationBuilder application = application().add(get("/hello").resource(method(on(Foo.class).say(definedParam("Matt")))));
         assertThat(application.responseAsString(RequestBuilder.get("/hello")), is("Hello Matt"));
-        assertThat(application.responseAsString(RequestBuilder.get("/hello").withQuery("name", "Dan")), is("Hello Matt"));
+        assertThat(application.responseAsString(RequestBuilder.get("/hello").query("name", "Dan")), is("Hello Matt"));
     }
 
     @Test
     public void supportsGetWithMultipleParameters() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Bob.class).say(queryParam(String.class, "firstName"), queryParam(String.class, "lastName")))));
-        assertThat(application.responseAsString(RequestBuilder.get("/bar").withQuery("firstName", "Dan").withQuery("lastName", "Bodart")), is("Hello Dan Bodart"));
+        assertThat(application.responseAsString(RequestBuilder.get("/bar").query("firstName", "Dan").query("lastName", "Bodart")), is("Hello Dan Bodart"));
     }
 
     @Test

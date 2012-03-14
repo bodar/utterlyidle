@@ -26,7 +26,8 @@ public class BindingsRequestGeneratorTest {
     public void canGeneratePOSTRequest() throws Exception {
         RequestGenerator requestGenerator = requestGenerator(annotatedClass(RequestGeneratorResource.class));
         Request request = requestGenerator.requestFor(method(on(RequestGeneratorResource.class).post("query", "form")));
-        assertThat(request, is(RequestBuilder.post(uri(new URL("http://server/base/test?query=query"))).withForm("form", "form").build()));
+        Request expected = RequestBuilder.post(uri(new URL("http://server/base/test?query=query"))).form("form", "form").build();
+        assertThat(request, is(expected));
     }
 
     private BindingsRequestGenerator requestGenerator(Binding... bindings) {

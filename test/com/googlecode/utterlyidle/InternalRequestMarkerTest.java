@@ -24,6 +24,6 @@ public class InternalRequestMarkerTest {
     @Test
     public void indicatedRequestIsNotInternalForForwardedForValueNotEqualToApplicationId() throws Exception {
         InternalRequestMarker marker = new InternalRequestMarker(applicationId());
-        assertThat(marker.isInternal(RequestBuilder.get("/testInternalUrl").withHeader("X-Forwarded-For", randomUUID()).build()), is(false));
+        assertThat(marker.isInternal(RequestBuilder.get("/testInternalUrl").header("X-Forwarded-For", randomUUID()).build()), is(false));
     }
 }

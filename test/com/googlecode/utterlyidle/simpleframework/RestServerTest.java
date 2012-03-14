@@ -21,7 +21,7 @@ public class RestServerTest extends ServerContract {
 
     @Test
     public void willOnlyHandleSingleValueHeadersBecauseSimpleWebDoesntSupportIt() throws Exception {
-        Response response = handle(get("echoheaders").accepting("*/*").withHeader("someheader", "first value").withHeader("someheader", "second value"), server);
+        Response response = handle(get("echoheaders").accepting("*/*").header("someheader", "first value").header("someheader", "second value"), server);
         String result = response.entity().toString();
 
         assertThat(result, not(containsString("first value")));

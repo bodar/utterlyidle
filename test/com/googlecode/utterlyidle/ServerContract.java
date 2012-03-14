@@ -82,7 +82,7 @@ public abstract class ServerContract {
 
     @Test
     public void preservesXForwardedForIfRequestHasOne() throws Exception {
-        Response response = handle(get("helloworld/xff").withHeader(X_FORWARDED_FOR, "sky.com"), server);
+        Response response = handle(get("helloworld/xff").header(X_FORWARDED_FOR, "sky.com"), server);
 
         String result = response.entity().toString();
 
@@ -91,7 +91,7 @@ public abstract class ServerContract {
 
     @Test
     public void handlesGets() throws Exception {
-        Response response = handle(get("helloworld/queryparam").withQuery("name", "foo"), server);
+        Response response = handle(get("helloworld/queryparam").query("name", "foo"), server);
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello foo"));
@@ -99,7 +99,7 @@ public abstract class ServerContract {
 
     @Test
     public void handlesPosts() throws Exception {
-        Response response = handle(post("helloworld/formparam").withForm("name", "fred"), server);
+        Response response = handle(post("helloworld/formparam").form("name", "fred"), server);
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello fred"));
@@ -107,7 +107,7 @@ public abstract class ServerContract {
 
     @Test
     public void mapsRequestHeaders() throws Exception {
-        Response response = handle(get("helloworld/headerparam").accepting(WILDCARD).withHeader("name", "bar"), server);
+        Response response = handle(get("helloworld/headerparam").accepting(WILDCARD).header("name", "bar"), server);
 
         assertThat(response.entity().toString(), is("Hello bar"));
     }
@@ -128,7 +128,7 @@ public abstract class ServerContract {
 
     @Test
     public void canHandleMultiValueQueryParameters() throws Exception {
-        Response response = handle(get("echoquery").withQuery("a", "first").withQuery("a", "second").accepting(WILDCARD), server);
+        Response response = handle(get("echoquery").query("a", "first").query("a", "second").accepting(WILDCARD), server);
 
         String result = response.entity().toString();
 
@@ -138,14 +138,14 @@ public abstract class ServerContract {
 
     @Test
     public void retainsOrderOfQueryParameters() throws Exception {
-        Response response = handle(get("echoquery").withQuery("a", "1").withQuery("b", "2").withQuery("a", "3").withQuery("b", "4").accepting(WILDCARD), server);
+        Response response = handle(get("echoquery").query("a", "1").query("b", "2").query("a", "3").query("b", "4").accepting(WILDCARD), server);
 
         assertThat(response.entity().toString(), is("?a=1&b=2&a=3&b=4"));
     }
 
     @Test
     public void willPrintStackTraceAsPlainText() throws Exception {
-        Response response = handle(get("goesbang").withQuery("exceptionMessage", "goes_bang").accepting(WILDCARD), server);
+        Response response = handle(get("goesbang").query("exceptionMessage", "goes_bang").accepting(WILDCARD), server);
 
         assertThat(response.status(), is(Status.INTERNAL_SERVER_ERROR));
         assertThat(response.entity().toString(), allOf(containsString("Exception"), containsString("goes_bang")));

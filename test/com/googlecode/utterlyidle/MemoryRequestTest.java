@@ -18,10 +18,10 @@ public class MemoryRequestTest {
     public void shouldBeReversibleToRawMessage() {
         assertThat(post("http://www.youtube.com/watch?v=606eK4abteQ")
                 .accepting("text/html")
-                .withForm("chups", "nah bru")
-                .withForm("plinkton", "nom")
-                .withHeader("Cookie", "size=diciptive")
-                .withHeader("Referer", "http://google.com").
+                .form("chups", "nah bru")
+                .form("plinkton", "nom")
+                .header("Cookie", "size=diciptive")
+                .header("Referer", "http://google.com").
                         build().toString(),
                    is(
                            "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\r\n" +
