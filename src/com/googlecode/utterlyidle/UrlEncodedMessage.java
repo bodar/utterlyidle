@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Strings;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -13,7 +14,7 @@ import static com.googlecode.totallylazy.Pair.pair;
 public class UrlEncodedMessage {
     public static List<Pair<String, String>> parse(String value) {
         List<Pair<String, String>> result = new ArrayList<Pair<String, String>>();
-        if (value == null) {
+        if (Strings.isEmpty(value)) {
             return result;
         }
 

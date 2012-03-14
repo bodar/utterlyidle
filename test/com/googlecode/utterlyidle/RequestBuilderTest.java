@@ -10,12 +10,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class RequestBuilderTest {
     @Test
     public void canCreateRequestBuilderFromRequest() {
-        Request originalRequest = new RequestBuilder("GET", "/home")
-                .withCookie("fred", cookie("blogs"))
-                .withForm("going", "well")
-                .withHeader("some", "header")
-                .accepting("accept header")
-                .withQuery("a query", "a question").build();
+        Request originalRequest = new RequestBuilder("GET", "/home").
+                cookie("fred", cookie("blogs")).
+                form("going", "well").
+                header("some", "header").
+                accepting("accept header").
+                query("a query", "a question").
+                build();
 
         Request clonedRequest = new RequestBuilder(originalRequest).build();
 

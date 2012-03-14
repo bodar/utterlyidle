@@ -30,7 +30,7 @@ public class ClientErrorTest {
 
     @Test
     public void shouldReturn400WhenMethodMatchesButARequiredArgumentIsMissing() throws Exception {
-        Response response = application().addAnnotated(SomeOther.class).handle(get("path").withQuery("someOther", "value"));
+        Response response = application().addAnnotated(SomeOther.class).handle(get("path").query("someOther", "value"));
         assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
@@ -42,7 +42,7 @@ public class ClientErrorTest {
 
     @Test
     public void shouldReturn415WhenResourceCanNotConsumeType() throws Exception {
-        Response response = application().addAnnotated(Foo.class).handle(get("path").withHeader(HttpHeaders.CONTENT_TYPE, "application/rubbish"));
+        Response response = application().addAnnotated(Foo.class).handle(get("path").header(HttpHeaders.CONTENT_TYPE, "application/rubbish"));
         assertThat(response.status(), is(Status.UNSUPPORTED_MEDIA_TYPE));
     }
 
