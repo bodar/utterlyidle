@@ -9,7 +9,7 @@ public interface Response {
 
     HeaderParameters headers();
 
-    Object entity();
+    Entity entity();
 
     public static class methods{
         private methods() {}

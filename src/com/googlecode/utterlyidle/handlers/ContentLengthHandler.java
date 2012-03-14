@@ -1,10 +1,8 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
@@ -19,8 +17,8 @@ public class ContentLengthHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        if((response.entity() instanceof byte[]) || (response.entity() instanceof  String)) {
-            return setContentLength(response, Entity.asByteArray(response).length);
+        if((!response.entity().isStreaming())) {
+            return setContentLength(response, response.entity().asBytes().length);
         }
         return response;
     }

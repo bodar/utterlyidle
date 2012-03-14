@@ -90,7 +90,7 @@ public class ApplicationBuilder {
 
     public String responseAsString(RequestBuilder request) throws Exception {
         Response response = handle(request);
-        return Entity.asString(response);
+        return response.entity().asString();
     }
 
     private Application application;

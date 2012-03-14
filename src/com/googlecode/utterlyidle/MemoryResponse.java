@@ -1,24 +1,21 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.utterlyidle.cookies.Cookie;
 
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class MemoryResponse implements Response {
     private Status status;
     private final HeaderParameters headers;
-    private Object entity;
+    private Entity entity;
 
-    private MemoryResponse(Status status, Iterable<? extends Pair<String, String>> headerParameters, Object entity) {
+    private MemoryResponse(Status status, Iterable<? extends Pair<String, String>> headerParameters, Entity entity) {
         this.status = status;
         this.headers = headerParameters(headerParameters);
-        this.entity = entity == null ? "" : entity;
+        this.entity = entity;
     }
 
-    static MemoryResponse memoryResponse(final Status status, final Iterable<? extends Pair<String, String>> headerParameters, final Object entity) {
+    static MemoryResponse memoryResponse(final Status status, final Iterable<? extends Pair<String, String>> headerParameters, final Entity entity) {
         return new MemoryResponse(status, headerParameters, entity);
     }
 
@@ -30,13 +27,13 @@ public class MemoryResponse implements Response {
         return headers;
     }
 
-    public Object entity() {
+    public Entity entity() {
         return entity;
     }
 
     @Override
     public String toString() {
-        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, Entity.asString(this));
+        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, entity().asString());
     }
 
     @Override
@@ -48,7 +45,7 @@ public class MemoryResponse implements Response {
     public boolean equals(Object other) {
         if (other instanceof Response) {
             Response response = (Response) other;
-            return status.equals(response.status()) && Entity.asString(this).equals(Entity.asString(response)) && headers.equals(response.headers());
+            return status.equals(response.status()) && entity().asString().equals(response.entity().asString()) && headers.equals(response.headers());
         }
         return false;
     }

@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
@@ -41,9 +40,8 @@ public class ClientHttpHandlerTest {
     }
 
     @Test
-    @Ignore("Manual test")
     public void correctlyHandlesChunkedTransferEncoding() throws Exception {
-        Response response = new ClientHttpHandler().handle(get(uri("some url that supports chunking")).build());
+        Response response = handle(get(uri("chunk")), server);
         assertThat(response.headers().contains(HttpHeaders.TRANSFER_ENCODING), is(false));
         assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(true));
     }
@@ -74,21 +72,21 @@ public class ClientHttpHandlerTest {
         HttpHandler urlHandler = new ClientHttpHandler();
         Response response = urlHandler.handle(get(resource.toString()).build());
         assertThat(response.status(), is(Status.OK));
-        assertThat(Entity.asString(response), is("This is a test file"));
+        assertThat(response.entity().asString(), is("This is a test file"));
     }
 
     @Test
     public void canGetAResource() throws Exception {
         Response response = handle(get("helloworld/queryparam?name=foo"), server);
         assertThat(response.status(), is(Status.OK));
-        assertThat(Entity.asString(response), is("Hello foo"));
+        assertThat(response.entity().asString(), is("Hello foo"));
     }
 
     @Test
     public void canPostToAResource() throws Exception {
         Response response = handle(post("helloworld/formparam").withForm("name", "foo"), server);
         assertThat(response.status(), is(Status.OK));
-        assertThat(Entity.asString(response), is("Hello foo"));
+        assertThat(response.entity().asString(), is("Hello foo"));
     }
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {

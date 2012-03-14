@@ -16,20 +16,20 @@ import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 public class ResponseBuilder {
     private Status status;
     private List<Pair<String, String>> headers;
-    private Object entity;
+    private Entity entity;
 
-    public ResponseBuilder(Status status, Iterable<Pair<String, String>> headers, Object entity) {
+    public ResponseBuilder(Status status, Iterable<Pair<String, String>> headers, Entity entity) {
         this.status = status;
         this.headers = sequence(headers).toList();
         this.entity = entity;
     }
 
     public static ResponseBuilder response(Status status) {
-        return new ResponseBuilder(status, Sequences.<Pair<String, String>>empty(), "");
+        return new ResponseBuilder(status, Sequences.<Pair<String, String>>empty(), Entity.empty());
     }
 
     public static ResponseBuilder response() {
-        return new ResponseBuilder(Status.OK, Sequences.<Pair<String, String>>empty(), "");
+        return new ResponseBuilder(Status.OK, Sequences.<Pair<String, String>>empty(), Entity.empty());
     }
 
     public static ResponseBuilder modify(Response response) {
@@ -67,7 +67,7 @@ public class ResponseBuilder {
     }
 
     public ResponseBuilder entity(Object value){
-        entity = value == null ? "" : value;
+        entity = Entity.entity(value);
         return this;
     }
 

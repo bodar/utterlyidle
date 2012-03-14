@@ -45,7 +45,7 @@ public abstract class ServerContract {
         Response response = handle(get("chunk"), server);
 
         assertThat(response.status(), is(Status.OK));
-        assertThat(Entity.asString(response), is("chunk"));
+        assertThat(response.entity().asString(), is("chunk"));
     }
 
     @Test
@@ -60,7 +60,7 @@ public abstract class ServerContract {
 
         assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
         assertThat(header(response, CONTENT_LENGTH), CoreMatchers.is("0"));
-        assertThat(Entity.asByteArray(response).length, CoreMatchers.is(0));
+        assertThat(response.entity().asBytes().length, CoreMatchers.is(0));
     }
 
     @Test
@@ -75,7 +75,7 @@ public abstract class ServerContract {
     public void setXForwardedForIfRequestDoesntHaveOne() throws Exception {
         Response response = handle(get("helloworld/xff"), server);
 
-        String result = Entity.asString(response);
+        String result = response.entity().asString();
 
         assertThat(result, startsWith("127.0."));
     }
@@ -84,7 +84,7 @@ public abstract class ServerContract {
     public void preservesXForwardedForIfRequestHasOne() throws Exception {
         Response response = handle(get("helloworld/xff").withHeader(X_FORWARDED_FOR, "sky.com"), server);
 
-        String result = Entity.asString(response);
+        String result = response.entity().asString();
 
         assertThat(result, is("sky.com"));
     }
@@ -94,7 +94,7 @@ public abstract class ServerContract {
         Response response = handle(get("helloworld/queryparam").withQuery("name", "foo"), server);
 
         assertThat(response.status(), is(Status.OK));
-        assertThat(Entity.asString(response), is("Hello foo"));
+        assertThat(response.entity().asString(), is("Hello foo"));
     }
 
     @Test
@@ -102,14 +102,14 @@ public abstract class ServerContract {
         Response response = handle(post("helloworld/formparam").withForm("name", "fred"), server);
 
         assertThat(response.status(), is(Status.OK));
-        assertThat(Entity.asString(response), is("Hello fred"));
+        assertThat(response.entity().asString(), is("Hello fred"));
     }
 
     @Test
     public void mapsRequestHeaders() throws Exception {
         Response response = handle(get("helloworld/headerparam").accepting(WILDCARD).withHeader("name", "bar"), server);
 
-        assertThat(Entity.asString(response), is("Hello bar"));
+        assertThat(response.entity().asString(), is("Hello bar"));
     }
 
     @Test
@@ -130,7 +130,7 @@ public abstract class ServerContract {
     public void canHandleMultiValueQueryParameters() throws Exception {
         Response response = handle(get("echoquery").withQuery("a", "first").withQuery("a", "second").accepting(WILDCARD), server);
 
-        String result = Entity.asString(response);
+        String result = response.entity().asString();
 
         assertThat(result, containsString("first"));
         assertThat(result, containsString("second"));
@@ -140,7 +140,7 @@ public abstract class ServerContract {
     public void retainsOrderOfQueryParameters() throws Exception {
         Response response = handle(get("echoquery").withQuery("a", "1").withQuery("b", "2").withQuery("a", "3").withQuery("b", "4").accepting(WILDCARD), server);
 
-        assertThat(Entity.asString(response), is("?a=1&b=2&a=3&b=4"));
+        assertThat(response.entity().asString(), is("?a=1&b=2&a=3&b=4"));
     }
 
     @Test
@@ -148,6 +148,6 @@ public abstract class ServerContract {
         Response response = handle(get("goesbang").withQuery("exceptionMessage", "goes_bang").accepting(WILDCARD), server);
 
         assertThat(response.status(), is(Status.INTERNAL_SERVER_ERROR));
-        assertThat(Entity.asString(response), allOf(containsString("Exception"), containsString("goes_bang")));
+        assertThat(response.entity().asString(), allOf(containsString("Exception"), containsString("goes_bang")));
     }
 }

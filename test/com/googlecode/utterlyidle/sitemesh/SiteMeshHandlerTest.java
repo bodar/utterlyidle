@@ -5,8 +5,6 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -128,7 +126,7 @@ public class SiteMeshHandlerTest {
                 addAnnotated(resourceClass).
                 add(stringTemplateDecorators(packageUrl(SiteMeshHandlerTest.class), decoratorRules)).
                 handle(get(path).query("decorator", VALID_TEMPLATE_NAME));
-        assertThat(Entity.asString(response), is(result));
+        assertThat(response.entity().asString(), is(result));
     }
 
     public static class SomeResource {
