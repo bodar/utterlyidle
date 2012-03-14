@@ -16,7 +16,7 @@ import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.EntityWriter.functions.asFunction;
 
 public class CompositeEntityWriter implements EntityWriter<Object> {
-    private final Rules<Object,Callable1<OutputStream,Void>> rules = new Rules<Object, Callable1<OutputStream, Void>>();
+    private final Rules<Object,Callable1<OutputStream,Void>> rules = Rules.rules();
 
     @Override
     public void write(Object entity, OutputStream outputStream) throws Exception {
