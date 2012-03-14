@@ -8,7 +8,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RequestBuilderTest {
-
     @Test
     public void canCreateRequestBuilderFromRequest() {
         Request originalRequest = new RequestBuilder("GET", "/home")
@@ -23,8 +22,6 @@ public class RequestBuilderTest {
         assertThat(clonedRequest.method(), is(equalTo(originalRequest.method())));
         assertThat(clonedRequest.uri(), is(equalTo(originalRequest.uri())));
         assertThat(clonedRequest.headers().toString(), is(equalTo(originalRequest.headers().toString())));
-        assertThat(new String(clonedRequest.entity()), is(equalTo(new String(originalRequest.entity()))));
-
+        assertThat(clonedRequest.entity().toString(), is(equalTo(originalRequest.entity().toString())));
     }
 }
-

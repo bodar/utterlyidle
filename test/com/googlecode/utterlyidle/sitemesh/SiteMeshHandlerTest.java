@@ -126,7 +126,7 @@ public class SiteMeshHandlerTest {
                 addAnnotated(resourceClass).
                 add(stringTemplateDecorators(packageUrl(SiteMeshHandlerTest.class), decoratorRules)).
                 handle(get(path).query("decorator", VALID_TEMPLATE_NAME));
-        assertThat(response.entity().asString(), is(result));
+        assertThat(response.entity().toString(), is(result));
     }
 
     public static class SomeResource {

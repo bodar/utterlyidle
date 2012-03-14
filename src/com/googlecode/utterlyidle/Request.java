@@ -10,5 +10,5 @@ public interface Request {
 
     public HeaderParameters headers();
 
-    public byte[] entity();
+    public Entity entity();
 }

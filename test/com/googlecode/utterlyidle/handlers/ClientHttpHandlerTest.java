@@ -13,7 +13,6 @@ import com.googlecode.utterlyidle.caching.ResponseCacheAdapter;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.ResponseCache;
@@ -72,21 +71,21 @@ public class ClientHttpHandlerTest {
         HttpHandler urlHandler = new ClientHttpHandler();
         Response response = urlHandler.handle(get(resource.toString()).build());
         assertThat(response.status(), is(Status.OK));
-        assertThat(response.entity().asString(), is("This is a test file"));
+        assertThat(response.entity().toString(), is("This is a test file"));
     }
 
     @Test
     public void canGetAResource() throws Exception {
         Response response = handle(get("helloworld/queryparam?name=foo"), server);
         assertThat(response.status(), is(Status.OK));
-        assertThat(response.entity().asString(), is("Hello foo"));
+        assertThat(response.entity().toString(), is("Hello foo"));
     }
 
     @Test
     public void canPostToAResource() throws Exception {
         Response response = handle(post("helloworld/formparam").withForm("name", "foo"), server);
         assertThat(response.status(), is(Status.OK));
-        assertThat(response.entity().asString(), is("Hello foo"));
+        assertThat(response.entity().toString(), is("Hello foo"));
     }
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {

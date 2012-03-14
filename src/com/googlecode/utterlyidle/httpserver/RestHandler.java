@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
@@ -59,7 +58,7 @@ public class RestHandler implements HttpHandler {
         }
 
         httpExchange.sendResponseHeaders(response.status().code(), Responses.contentLength(response).map(fixWeirdContentLength()).getOrElse(0));
-        using(httpExchange.getResponseBody(), Entity.transferFrom(response));
+        using(httpExchange.getResponseBody(), response.entity().transferFrom());
         httpExchange.close();
     }
 
