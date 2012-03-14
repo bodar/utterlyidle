@@ -23,10 +23,10 @@ import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static java.lang.String.format;
 
 public class RequestBuilder implements Callable<Request> {
-    private final String method;
+    private String method;
     private Uri uri;
     private final List<Pair<String, String>> headers = new ArrayList<Pair<String, String>>();
-    private byte[] entity = new byte[0];
+    private Entity entity = Entity.empty();
 
     public RequestBuilder(String method, Uri uri) {
         this.method = method;
@@ -117,18 +117,24 @@ public class RequestBuilder implements Callable<Request> {
         if (sequence(headers).filter(by(first(String.class), is(equalIgnoringCase(HttpHeaders.CONTENT_TYPE)))).isEmpty()) {
             withHeader(HttpHeaders.CONTENT_TYPE, format("%s; charset=%s", MediaType.APPLICATION_FORM_URLENCODED, Entity.DEFAULT_CHARACTER_SET));
         }
-        entity = FormParameters.parse(new String(entity)).
+        entity = Entity.entity(FormParameters.parse(entity).
                 add(name, value.toString()).
-                toString().getBytes();
+                toString());
         return this;
     }
 
+    @Deprecated
     public RequestBuilder withInput(byte[] input) {
         return input(input);
     }
 
+    @Deprecated
     public RequestBuilder input(byte[] input) {
-        this.entity = input;
+        return entity(input);
+    }
+
+    public RequestBuilder entity(Object entity) {
+        this.entity = Entity.entity(entity);
         return this;
     }
 

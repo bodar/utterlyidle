@@ -45,7 +45,7 @@ public class HttpMessageParserTest {
         assertThat(request.method(), is(PUT));
         assertThat(request.uri().path(), is("/path"));
         assertThat(request.headers().getValue("Content-Type"), is("text/plain"));
-        assertThat(new String(request.entity()), is(" body "));
+        assertThat(request.entity().toString(), is(" body "));
     }
 
     private void canParseRequest(Request request) {
@@ -80,7 +80,7 @@ public class HttpMessageParserTest {
         Response response = HttpMessageParser.parseResponse(" HTTP/1.1  200  OK \r\n Content-Type: text/plain \r\n\r\n body ");
         assertThat(response.status(), is(OK));
         assertThat(header(response, "Content-Type"), is("text/plain"));
-        assertThat(response.entity().asString(), is(" body "));
+        assertThat(response.entity().toString(), is(" body "));
     }
 
     private void canParseResponse(ResponseBuilder builder) {

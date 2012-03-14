@@ -1,11 +1,8 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Uri;
-import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Uri.uri;
-import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Requests.request;
@@ -54,10 +51,6 @@ public class MemoryRequestTest {
     @Test
     public void shouldSupportEquals(){
         assertEquals(get("http://www.google.com").build(), get("http://www.google.com").build());
-    }
-
-    private Request createRequestWith(Uri uri) {
-        return new MemoryRequest(HttpMethod.GET, uri, HeaderParameters.headerParameters(), "foo".getBytes());
     }
 
 }

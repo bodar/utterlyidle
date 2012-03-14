@@ -1,19 +1,17 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.io.HierarchicalPath;
-
 import java.util.concurrent.Callable;
 
 public class PathParametersActivator implements Callable<PathParameters> {
-    private final HierarchicalPath path;
+    private final Request request;
     private final UriTemplate uriTemplate;
 
-    public PathParametersActivator(HierarchicalPath path, UriTemplate uriTemplate) {
-        this.path = path;
+    public PathParametersActivator(Request request, UriTemplate uriTemplate) {
+        this.request = request;
         this.uriTemplate = uriTemplate;
     }
 
     public PathParameters call() throws Exception {
-        return uriTemplate.extract(path.toString());
+        return uriTemplate.extract(request.uri().path());
     }
 }

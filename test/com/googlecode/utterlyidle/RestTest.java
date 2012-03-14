@@ -118,7 +118,7 @@ public class RestTest {
     public void canHandleCookies() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GettableWithCookies.class);
         Response response = application.handle(get("foo").withHeader("cookie", "name=value"));
-        assertThat(response.entity().asString(), is("value"));
+        assertThat(response.entity().toString(), is("value"));
         assertThat(header(response, "Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
 
@@ -196,11 +196,11 @@ public class RestTest {
 
         Response plainResponse = application.handle(get("text").accepting("text/plain"));
         assertThat(header(plainResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
-        assertThat(plainResponse.entity().asString(), is("<xml/>"));
+        assertThat(plainResponse.entity().toString(), is("<xml/>"));
 
         Response xmlResponse = application.handle(get("text").accepting("text/xml"));
         assertThat(header(xmlResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/xml"));
-        assertThat(xmlResponse.entity().asString(), is("<xml/>"));
+        assertThat(xmlResponse.entity().toString(), is("<xml/>"));
     }
 
     @Test
@@ -209,17 +209,17 @@ public class RestTest {
 
         Response plainResponse = application.handle(get("text"));
         assertThat(header(plainResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
-        assertThat(plainResponse.entity().asString(), is("Hello"));
+        assertThat(plainResponse.entity().toString(), is("Hello"));
     }
 
     @Test
     public void aSingleResourceMethodCanAcceptsMultiplePossibleMimeTypes() throws Exception {
         ApplicationBuilder application = application().addAnnotated(PutWithMultipleMimeTypes.class);
 
-        Response plainResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/plain").withInput("<xml/>".getBytes()));
+        Response plainResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/plain").entity("<xml/>"));
         assertThat(plainResponse.status(), is(NO_CONTENT));
 
-        Response xmlResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/xml").withInput("<xml/>".getBytes()));
+        Response xmlResponse = application.handle(put("text").withHeader(CONTENT_TYPE, "text/xml").entity("<xml/>"));
         assertThat(xmlResponse.status(), is(NO_CONTENT));
     }
 
@@ -230,7 +230,7 @@ public class RestTest {
         assertThat(application.responseAsString(get("text").accepting(mimeTypes)), is("xml"));
 
         mimeTypes = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
-        assertThat(application.responseAsString(put("path/foo").accepting(mimeTypes).withInput("input".getBytes())), is("input"));
+        assertThat(application.responseAsString(put("path/foo").accepting(mimeTypes).entity("input")), is("input"));
     }
 
     @Test
@@ -276,7 +276,7 @@ public class RestTest {
     public void supportsPut() throws Exception {
         ApplicationBuilder application = application().addAnnotated(PutContent.class);
 
-        assertThat(application.responseAsString(put("path/bar").withInput("input".getBytes())), is("input"));
+        assertThat(application.responseAsString(put("path/bar").entity("input")), is("input"));
     }
 
     @Test

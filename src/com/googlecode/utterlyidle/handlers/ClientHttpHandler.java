@@ -23,7 +23,6 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -99,17 +98,8 @@ public class ClientHttpHandler implements HttpClient {
         sequence(request.headers()).fold(connection, requestHeaders());
         if (Integer.valueOf(request.headers().getValue(CONTENT_LENGTH)) > 0) {
             connection.setDoOutput(true);
-            using(connection.getOutputStream(), copyRequestEntity(request));
+            using(connection.getOutputStream(), request.entity().transferFrom());
         }
-    }
-
-    private Callable1<OutputStream, Void> copyRequestEntity(final Request request) {
-        return new Callable1<OutputStream, Void>() {
-            public Void call(OutputStream outputStream) throws Exception {
-                outputStream.write(request.entity());
-                return Runnables.VOID;
-            }
-        };
     }
 
     private static Callable2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {

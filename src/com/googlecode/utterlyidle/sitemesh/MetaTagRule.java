@@ -27,7 +27,7 @@ public class MetaTagRule implements DecoratorRule {
         try {
             Response response = pair.second();
 
-            PropertyMap propertyMap = new PropertyMapParser().parse(response.entity().asString());
+            PropertyMap propertyMap = new PropertyMapParser().parse(response.entity().toString());
             templateName = propertyMap.getPropertyMap("meta").getPropertyMap(this.name).toString();
             if (templateName != null && templateName.length() != 0) {
                 return true;

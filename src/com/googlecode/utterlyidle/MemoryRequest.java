@@ -10,22 +10,26 @@ import static java.lang.String.format;
 public class MemoryRequest implements Request {
     private final String method;
     private final Uri uri;
-    private final byte[] entity;
+    private final Entity entity;
     private final HeaderParameters headers;
 
-    public MemoryRequest(String method, Uri uri, HeaderParameters headers, byte[] entity) {
+    private MemoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
         this.method = method;
         this.uri = uri;
         this.headers = headers;
-        this.entity = entity == null ? new byte[0] : entity;
+        this.entity = entity;
         setContentLength();
+    }
+
+    static MemoryRequest memoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
+        return new MemoryRequest(method, uri, headers, entity);
     }
 
     private void setContentLength() {
         if(headers().contains(CONTENT_LENGTH)){
             headers().remove(CONTENT_LENGTH);
         }
-        headers().add(CONTENT_LENGTH, String.valueOf(entity().length));
+        headers().add(CONTENT_LENGTH, String.valueOf(entity().asBytes().length));
     }
 
     public String method() {
@@ -36,7 +40,7 @@ public class MemoryRequest implements Request {
         return uri;
     }
 
-    public byte[] entity() {
+    public Entity entity() {
         return entity;
     }
 
@@ -46,11 +50,11 @@ public class MemoryRequest implements Request {
 
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer(format("%s %s HTTP/1.1%s", method, uri, HTTP_LINE_SEPARATOR));
-        result.append(headers());
-        result.append(HTTP_BODY_SEPARATOR);
-        result.append(new String(entity()));
-        return result.toString();
+        return new StringBuilder(format("%s %s HTTP/1.1%s", method, uri, HTTP_LINE_SEPARATOR)).
+                append(headers()).
+                append(HTTP_BODY_SEPARATOR).
+                append(entity()).
+                toString();
     }
 
     @Override

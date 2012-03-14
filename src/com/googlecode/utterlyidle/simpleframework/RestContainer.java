@@ -4,8 +4,6 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.CompositeEntityWriter;
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Requests;
@@ -26,16 +24,11 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
-import static com.googlecode.utterlyidle.EntityWriter.functions.writeWith;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
-import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
-import static java.lang.Integer.parseInt;
 
 public class RestContainer implements Container {
     private final Application application;
@@ -73,7 +66,7 @@ public class RestContainer implements Container {
         for (Integer integer : Responses.contentLength(applicationResponse)) {
             response.setContentLength(integer);
         }
-        using(response.getOutputStream(), Entity.transferFrom(applicationResponse));
+        using(response.getOutputStream(), applicationResponse.entity().transferFrom());
     }
 
     private Callable2<Response, Pair<String, String>, Response> mapHeaders() {
@@ -90,7 +83,7 @@ public class RestContainer implements Container {
                 request.getMethod(),
                 request.getPath().toString(),
                 query(request),
-                withXForwardedFor(clientAddress(request.getClientAddress().getAddress()),headers(request)),
+                withXForwardedFor(clientAddress(request.getClientAddress().getAddress()), headers(request)),
                 bytes(request.getInputStream()));
     }
 
