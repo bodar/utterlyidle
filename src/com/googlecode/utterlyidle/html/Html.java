@@ -2,8 +2,6 @@ package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Xml;
-import com.googlecode.utterlyidle.CompositeEntityWriter;
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.Response;
 import org.w3c.dom.Node;
 
@@ -29,7 +27,7 @@ public class Html {
     }
 
     public static Html html(Response response) throws Exception {
-        return new Html(Entity.asString(response));
+        return new Html(response.entity().asString());
     }
 
     public String title() {

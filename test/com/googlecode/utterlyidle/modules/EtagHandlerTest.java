@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Response;
@@ -63,6 +62,6 @@ public class EtagHandlerTest {
         HttpHandler handler = new EtagHandler(returnsResponse(response().entity("abc")));
         Response response = handler.handle(get("/").header(IF_NONE_MATCH, "\"900150983cd24fb0d6963f7d28e17f72\"").build());
         assertThat(response.status(), is(Status.NOT_MODIFIED));
-        assertThat(Entity.asString(response).length(), is(0));
+        assertThat(response.entity().asString().length(), is(0));
     }
 }

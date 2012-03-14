@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.simpleframework;
 
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerContract;
@@ -23,7 +22,7 @@ public class RestServerTest extends ServerContract {
     @Test
     public void willOnlyHandleSingleValueHeadersBecauseSimpleWebDoesntSupportIt() throws Exception {
         Response response = handle(get("echoheaders").accepting("*/*").withHeader("someheader", "first value").withHeader("someheader", "second value"), server);
-        String result = Entity.asString(response);
+        String result = response.entity().asString();
 
         assertThat(result, not(containsString("first value")));
         assertThat(result, containsString("second value"));

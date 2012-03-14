@@ -30,7 +30,7 @@ public class Responses {
     }
 
     public static Response response(Status status, Iterable<? extends Pair<String, String>> headerParameters, Object entity) {
-        return MemoryResponse.memoryResponse(status, headerParameters, entity);
+        return MemoryResponse.memoryResponse(status, headerParameters, Entity.entity(entity));
     }
 
     public static Response seeOther(Uri location) {
