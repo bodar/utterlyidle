@@ -48,7 +48,6 @@ public class MemoryResponse implements Response {
     public boolean equals(Object other) {
         if (other instanceof Response) {
             Response response = (Response) other;
-
             return status.equals(response.status()) && Entity.asString(this).equals(Entity.asString(response)) && headers.equals(response.headers());
         }
         return false;

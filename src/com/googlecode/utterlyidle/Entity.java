@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -18,33 +19,28 @@ public class Entity {
 
     static {
         WRITERS.add(instanceOf(byte[].class), bytesEntityWriter());
+        WRITERS.add(instanceOf(InputStream.class), inputStreamEntityWriter());
         WRITERS.add(instanceOf(String.class), stringEntityWriter());
         WRITERS.add(instanceOf(StreamingWriter.class), streamingWriterEntityWriter());
         WRITERS.add(instanceOf(StreamingOutput.class), streamingOutputEntityWriter());
     }
 
     public static String asString(Response response) {
+        return writeTo(response, new ByteArrayOutputStream()).toString();
+    }
+
+    public static <T extends OutputStream> T writeTo(Response response, T stream) {
         try {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            writeTo(response, stream);
-            return stream.toString();
+            WRITERS.write(response.entity(), stream);
+            return stream;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void writeTo(Response response, OutputStream stream) throws Exception {
-        WRITERS.write(response.entity(), stream);
-    }
-
     public static byte[] asByteArray(Response response) {
-        try {
-            return asString(response).getBytes(DEFAULT_CHARACTER_SET);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return writeTo(response, new ByteArrayOutputStream()).toByteArray();
     }
-
 
     public static Callable1<OutputStream, Void> transferFrom(Response response) {
         return EntityWriter.functions.writeWith(WRITERS, response.entity());
@@ -76,6 +72,25 @@ public class Entity {
                 outputStream.write(entity);
             }
         };
+    }
+
+    private static EntityWriter<InputStream> inputStreamEntityWriter() {
+        return new EntityWriter<InputStream>() {
+            @Override
+            public void write(InputStream input, OutputStream output) throws IOException {
+                copy(input, output);
+            }
+        };
+    }
+
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+
+    public static void copy(InputStream input, OutputStream output) throws IOException {
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        int n;
+        while (-1 != (n = input.read(buffer))) {
+            output.write(buffer, 0, n);
+        }
     }
 
     private static EntityWriter<String> stringEntityWriter() {
