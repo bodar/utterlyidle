@@ -33,7 +33,7 @@ public class MemoryResponse implements Response {
 
     @Override
     public String toString() {
-        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, entity().asString());
+        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, entity().toString());
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MemoryResponse implements Response {
     public boolean equals(Object other) {
         if (other instanceof Response) {
             Response response = (Response) other;
-            return status.equals(response.status()) && entity().asString().equals(response.entity().asString()) && headers.equals(response.headers());
+            return status.equals(response.status()) && entity().toString().equals(response.entity().toString()) && headers.equals(response.headers());
         }
         return false;
     }

@@ -36,7 +36,7 @@ public class SiteMeshHandler implements HttpHandler {
 
     private Response decorate(Request request, Response response) throws IOException {
         Decorator decorator = decorators.getDecoratorFor(request, response);
-        String result = decorator.decorate(response.entity().asString());
+        String result = decorator.decorate(response.entity().toString());
         return ResponseBuilder.modify(response).entity(result).build();
     }
 }

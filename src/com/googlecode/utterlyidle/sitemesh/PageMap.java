@@ -43,7 +43,7 @@ public class PageMap extends UnsupportedMap {
             if(!response.status().equals(Status.OK)) {
                 return;
             }
-            cache.put(url, new PropertyMapParser().parse(response.entity().asString()));
+            cache.put(url, new PropertyMapParser().parse(response.entity().toString()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

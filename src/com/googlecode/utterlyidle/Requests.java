@@ -12,11 +12,11 @@ import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 
 public class Requests {
-    public static MemoryRequest request(String method, Uri requestUri, HeaderParameters headers, byte[] input) {
-        return new MemoryRequest(method, requestUri, headers, input);
+    public static MemoryRequest request(String method, Uri requestUri, HeaderParameters headers, Object input) {
+        return MemoryRequest.memoryRequest(method, requestUri, headers, Entity.entity(input));
     }
 
-    public static Request request(String method, String path, QueryParameters query, HeaderParameters headers, byte[] input) {
+    public static Request request(String method, String path, QueryParameters query, HeaderParameters headers, Object input) {
         return request(method, Uri.uri(path + query.toString()), headers, input);
     }
 
@@ -86,7 +86,7 @@ public class Requests {
     public static FormParameters form(Request request) {
         String contentType = request.headers().getValue(HttpHeaders.CONTENT_TYPE);
         if (contentType != null && contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED)) {
-            return FormParameters.parse(new String(request.entity()));
+            return FormParameters.parse(request.entity());
         } else {
             return FormParameters.formParameters();
         }
@@ -104,9 +104,9 @@ public class Requests {
         };
     }
 
-    public static Callable1<Request, byte[]> input() {
-        return new Callable1<Request, byte[]>() {
-            public byte[] call(Request request) throws Exception {
+    public static Callable1<Request, Entity> input() {
+        return new Callable1<Request, Entity>() {
+            public Entity call(Request request) throws Exception {
                 return request.entity();
             }
         };

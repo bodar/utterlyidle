@@ -37,7 +37,7 @@ public class Entity implements Value<Object> {
         return value;
     }
 
-    public String asString() {
+    public String toString() {
         return writeTo(this, new ByteArrayOutputStream()).toString();
     }
 
@@ -70,8 +70,8 @@ public class Entity implements Value<Object> {
         }
     }
 
-    public static Callable1<OutputStream, Void> transferFrom(Response response) {
-        return EntityWriter.functions.writeWith(WRITERS, response.entity().value());
+    public Callable1<OutputStream, Void> transferFrom() {
+        return EntityWriter.functions.writeWith(WRITERS, value());
     }
 
     private static EntityWriter<StreamingOutput> streamingOutputEntityWriter() {

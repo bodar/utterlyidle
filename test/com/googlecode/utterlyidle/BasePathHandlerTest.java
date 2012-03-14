@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Uri;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -20,7 +19,7 @@ public class BasePathHandlerTest {
     @Test
     public void removesBasePathFromRequestUri() throws Exception {
         HttpHandler handler = new BasePathHandler(returnsRequestUri(), basePath("basePath"));
-        assertThat(handler.handle(get("/basePath/foo").build()).entity().asString(), is("/foo"));
+        assertThat(handler.handle(get("/basePath/foo").build()).entity().toString(), is("/foo"));
     }
 
     private HttpHandler returnsRequestUri() {

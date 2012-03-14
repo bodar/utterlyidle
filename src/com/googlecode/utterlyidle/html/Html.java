@@ -27,7 +27,7 @@ public class Html {
     }
 
     public static Html html(Response response) throws Exception {
-        return new Html(response.entity().asString());
+        return new Html(response.entity().toString());
     }
 
     public String title() {

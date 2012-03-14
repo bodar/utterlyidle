@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.servlet;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
@@ -24,8 +23,6 @@ import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplication;
 import static java.lang.Integer.parseInt;
@@ -70,7 +67,7 @@ public class ApplicationServlet extends HttpServlet {
         for (Integer length : Responses.contentLength(response)) {
             resp.setContentLength(length);
         }
-        using(resp.getOutputStream(), Entity.transferFrom(response));
+        using(resp.getOutputStream(), response.entity().transferFrom());
     }
 
     public static Request request(HttpServletRequest request) {

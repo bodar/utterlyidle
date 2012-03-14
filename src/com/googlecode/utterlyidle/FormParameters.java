@@ -22,6 +22,10 @@ public class FormParameters extends Parameters<String,String> {
         return (FormParameters) sequence(UrlEncodedMessage.parse(value)).foldLeft(new FormParameters(), Parameters.<String,String>pairIntoParameters());
     }
 
+    public static FormParameters parse(Entity value) {
+        return parse(value.toString());
+    }
+
     @Override
     public String toString() {
         return UrlEncodedMessage.toString(this);

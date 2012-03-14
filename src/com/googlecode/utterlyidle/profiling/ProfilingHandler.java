@@ -47,7 +47,7 @@ public class ProfilingHandler implements HttpHandler {
 
             Response response = application.handle(newRequest);
 
-            PropertyMap html = new PropertyMapParser().parse(response.entity().asString());
+            PropertyMap html = new PropertyMapParser().parse(response.entity().toString());
 
             List<Triple<Request, Response, Long>> pairs = stats.executionTimes();
             return render(Model.model().add("executionTimes", sequence(pairs).map(asModel()).toList()).
