@@ -17,6 +17,7 @@ import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.totallylazy.Strings.replace;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
@@ -46,15 +47,20 @@ public class RequestBuilder implements Callable<Request> {
 
         sequence(request.headers()).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
-                requestBuilder.withHeader(nameAndValue.first(), nameAndValue.second());
+                requestBuilder.header(nameAndValue.first(), nameAndValue.second());
                 return requestBuilder;
             }
         });
         this.entity = request.entity();
     }
 
+    @Deprecated
     public RequestBuilder withUri(Uri value) {
-        uri = value;
+        return uri(value);
+    }
+
+    public RequestBuilder uri(Uri uri) {
+        this.uri = uri;
         return this;
     }
 
@@ -71,10 +77,12 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
+    @Deprecated
     public RequestBuilder withHeader(String name, Object value) {
         return header(name, value);
     }
 
+    @Deprecated
     public RequestBuilder withCookie(String name, Cookie cookie) {
         return cookie(name, cookie);
     }
@@ -84,7 +92,7 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
-
+    @Deprecated
     public RequestBuilder withQuery(String name, Object value) {
         return query(name, value);
     }
@@ -98,14 +106,19 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
+    @Deprecated
     public RequestBuilder withForm(String name, Object value) {
         return form(name, value);
     }
 
+    @Deprecated
     public RequestBuilder withForms(FormParameters formParameters) {
-        for (Pair<String, String> param : formParameters) {
-            form(param.first(), param.second());
-        }
+        return forms(formParameters);
+    }
+
+    public RequestBuilder forms(FormParameters formParameters) {
+        replaceHeader(HttpHeaders.CONTENT_TYPE, format("%s; charset=%s", MediaType.APPLICATION_FORM_URLENCODED, Entity.DEFAULT_CHARACTER_SET));
+        entity = Entity.entity(formParameters.toString());
         return this;
     }
 
@@ -114,13 +127,7 @@ public class RequestBuilder implements Callable<Request> {
             return this;
         }
 
-        if (sequence(headers).filter(by(first(String.class), is(equalIgnoringCase(HttpHeaders.CONTENT_TYPE)))).isEmpty()) {
-            withHeader(HttpHeaders.CONTENT_TYPE, format("%s; charset=%s", MediaType.APPLICATION_FORM_URLENCODED, Entity.DEFAULT_CHARACTER_SET));
-        }
-        entity = Entity.entity(FormParameters.parse(entity).
-                add(name, value.toString()).
-                toString());
-        return this;
+        return forms((FormParameters) FormParameters.parse(entity).add(name, value.toString()));
     }
 
     @Deprecated
@@ -180,11 +187,6 @@ public class RequestBuilder implements Callable<Request> {
 
     public Uri uri() {
         return uri;
-    }
-
-    public RequestBuilder uri(Uri uri) {
-        this.uri = uri;
-        return this;
     }
 
     public RequestBuilder replaceHeader(String name, Object value) {

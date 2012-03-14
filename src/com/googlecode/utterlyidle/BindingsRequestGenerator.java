@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.proxy.Invocation;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 
 import static com.googlecode.utterlyidle.Extractors.extractForm;
 
@@ -20,7 +21,11 @@ public class BindingsRequestGenerator implements RequestGenerator {
 
     @Override
     public Request requestFor(final Binding binding, final Object... arguments) {
-        return  new RequestBuilder(binding.httpMethod(), redirector.uriOf(binding, arguments)).withForms(extractForm(binding, arguments)).build();
+        RequestBuilder requestBuilder = new RequestBuilder(binding.httpMethod(), redirector.uriOf(binding, arguments));
+        if(binding.httpMethod().equals(HttpMethod.POST)) {
+            requestBuilder.forms(extractForm(binding, arguments));
+        }
+        return requestBuilder.build();
     }
 
 }

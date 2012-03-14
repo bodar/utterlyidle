@@ -29,7 +29,7 @@ public class HttpMessageParser {
     private static Request buildRequest(String requestLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
         RequestBuilder requestBuilder = new RequestBuilder(toMethod(requestLine), toPath(requestLine));
         requestBuilder = headerLines.fold(requestBuilder, requestHeader());
-        requestBuilder.withInput(toInput(messageBodyLines).getBytes());
+        requestBuilder.entity(toInput(messageBodyLines));
         return requestBuilder.build();
     }
 
@@ -122,7 +122,7 @@ public class HttpMessageParser {
         return new Callable2<RequestBuilder, String, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, String messageHeader) throws Exception {
                 Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
-                return requestBuilder.withHeader(fieldNameAndValue.first(), fieldNameAndValue.second());
+                return requestBuilder.header(fieldNameAndValue.first(), fieldNameAndValue.second());
             }
         };
     }
