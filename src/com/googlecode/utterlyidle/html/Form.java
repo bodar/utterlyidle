@@ -10,6 +10,8 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.w3c.dom.Element;
 
+import static java.lang.String.format;
+
 public class Form {
     private final Element form;
 
@@ -17,7 +19,10 @@ public class Form {
         this.form = form;
     }
 
-    public Request submit(String submitXpath) {
+    public Request submit(String submitXpath) throws IllegalStateException {
+        if (new Input(Xml.selectElement(form, submitXpath).get()).disabled()){
+            throw new IllegalStateException(format("Attempt to invoke disabled input for [%s]", submitXpath));
+        }
         String action = Xml.selectContents(form, "@action");
         String method = Xml.selectContents(form, "@method");
         Sequence<NameValue> inputs = nameValuePairs("descendant::input[not(@type='submit')]|descendant::textarea|descendant::select|" + submitXpath );
