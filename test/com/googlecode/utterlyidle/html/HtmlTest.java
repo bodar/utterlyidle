@@ -1,0 +1,49 @@
+package com.googlecode.utterlyidle.html;
+
+import com.googlecode.totallylazy.matchers.NumberMatcher;
+import org.junit.Test;
+
+import static com.googlecode.utterlyidle.html.Html.html;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
+public class HtmlTest {
+    @Test
+    public void printsContentIfItCantParseIt() throws Exception {
+        try {
+            new Html("foo");
+            fail("should have thrown");
+        } catch (IllegalArgumentException e){
+            assertThat(e.getMessage(), containsString("foo"));
+        }
+    }
+
+    @Test
+    public void toStringReturnsOriginalHtml() throws Exception{
+        Html html = html("   <html/>   ");
+        assertThat(html.toString(), is("   <html/>   "));
+    }
+
+    @Test
+    public void supportsCount() throws Exception{
+        Html html = html("<html/>");
+        assertThat(html.count("//html"), NumberMatcher.is(1));
+        assertThat(html.count("//bob"), NumberMatcher.is(0));
+    }
+
+    @Test
+    public void supportsContains() throws Exception{
+        Html html = html("<html/>");
+        assertThat(html.contains("//html"), is(true));
+        assertThat(html.contains("//bob"), is(false));
+    }
+
+    @Test
+    public void supportsInnerHtml() throws Exception {
+        Html html = html("<html><head><title>Oh Hello</title></head><body></body></html>");
+        assertThat(html.innerHtml("//head"), is(html("<title>Oh Hello</title>")));
+    }
+    
+}
