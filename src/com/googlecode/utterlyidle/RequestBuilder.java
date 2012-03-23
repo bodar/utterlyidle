@@ -12,12 +12,9 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Predicates.by;
-import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.totallylazy.Strings.replace;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
@@ -106,7 +103,18 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
-    @Deprecated
+    @SuppressWarnings("unchecked")
+    public RequestBuilder removeQuery(String name) {
+        QueryParameters parse = QueryParameters.parse(uri.query());
+        uri = uri.query(UrlEncodedMessage.toString(parse.remove(name)));
+        return this;
+    }
+
+    public RequestBuilder replaceQuery(String name, Object value) {
+        return removeQuery(name).query(name, value);
+    }
+
+        @Deprecated
     public RequestBuilder withForm(String name, Object value) {
         return form(name, value);
     }
