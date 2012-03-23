@@ -1,5 +1,6 @@
 <html>
 <head>
+    <title>$response.title$</title>
     $response.head$
 </head>
 <body>
