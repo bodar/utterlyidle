@@ -11,7 +11,7 @@ $response.body$
         <thead>
         <tr>
             <th class="header">#</th>
-            <th class="header">Path</th>
+            <th class="header">Uri</th>
             <th class="header">Status</th>
             <th class="header">Milliseconds</th>
         </tr>
@@ -20,7 +20,7 @@ $response.body$
         $requests : {
         <tr>
             <td>$i$</td>
-            <td>$it.path$</td>
+            <td><a href="$it.link$">$it.uri$</a></td>
             <td>$it.status$</td>
             <td>$it.milliseconds$</td>
         </tr>
