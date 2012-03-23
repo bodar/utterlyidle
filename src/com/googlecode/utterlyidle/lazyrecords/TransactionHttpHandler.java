@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.lazyrecords;
 
 import com.googlecode.lazyrecords.Transaction;
 import com.googlecode.utterlyidle.HttpHandler;
