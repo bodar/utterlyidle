@@ -38,6 +38,8 @@ public class ProfilingHandler implements HttpHandler {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
         return modify(response).entity(group.getInstanceOf("profile", model().
                 add("response", html).
-                add("executionTimes", profilingData.data()).toMap()).toString()).build();
+                add("requests", profilingData.requests).
+                add("queries", profilingData.queries).
+                toMap()).toString()).build();
     }
 }
