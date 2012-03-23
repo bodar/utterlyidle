@@ -25,7 +25,7 @@ public class ProfilingClient implements HttpClient {
     public Response handle(Request request) throws Exception {
         long start = System.nanoTime();
         Response response = httpHandler.handle(request);
-        profilingData.add(request.uri(), response.status(), calculateMilliseconds(start, System.nanoTime()));
+        profilingData.add(request, response, calculateMilliseconds(start, System.nanoTime()));
         return response;
     }
 }
