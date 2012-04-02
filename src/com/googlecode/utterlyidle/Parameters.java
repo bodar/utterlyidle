@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -20,7 +21,7 @@ import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public class Parameters<K, V> implements Iterable<Pair<K, V>> {
-    private final List<Pair<K, V>> values = new ArrayList<Pair<K, V>>();
+    private final List<Pair<K, V>> values = new CopyOnWriteArrayList<Pair<K, V>>();
     private final Callable1<K, Predicate<K>> predicate;
 
     public Parameters(Callable1<K, Predicate<K>> predicate) {
