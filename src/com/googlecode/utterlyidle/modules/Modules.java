@@ -1,18 +1,16 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.yadic.Container;
-import com.googlecode.yadic.Containers;
 import com.googlecode.yadic.Resolver;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Classes.isInstance;
 import static com.googlecode.totallylazy.Methods.methods;
@@ -22,10 +20,10 @@ import static com.googlecode.yadic.Containers.selfRegister;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
 public class Modules implements ModuleDefinitions, ModuleActivator {
-    private final List<Module> modules = new ArrayList<Module>();
-    private final List<Class<? extends Module>> applicationModuleClasses = new ArrayList<Class<? extends Module>>();
-    private final List<Class<? extends Module>> requestModuleClasses = new ArrayList<Class<? extends Module>>();
-    private final List<Class<? extends Module>> argumentModuleClasses = new ArrayList<Class<? extends Module>>();
+    private final List<Module> modules = new CopyOnWriteArrayList<Module>();
+    private final List<Class<? extends Module>> applicationModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
+    private final List<Class<? extends Module>> requestModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
+    private final List<Class<? extends Module>> argumentModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
 
     public Modules setupApplicationScope(Container applicationScope) {
         applicationScope.addInstance(Modules.class, this);
@@ -57,13 +55,13 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
 
     public ModuleActivator activateRequestModules(Container requestScope) {
         selfRegister(requestScope);
-        sequence(modules).forEach(activate(requestScope, requestModuleClasses));
+        sequence(modules).each(activate(requestScope, requestModuleClasses));
         return this;
     }
 
     public ModuleActivator activateArgumentModules(Container argumentScope) {
         selfRegister(argumentScope);
-        sequence(modules).forEach(activate(argumentScope, argumentModuleClasses));
+        sequence(modules).each(activate(argumentScope, argumentModuleClasses));
         return this;
     }
 
@@ -97,6 +95,7 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         };
     }
 
+    @SuppressWarnings("unchecked")
     private static Object[] convertToInstances(Type[] genericParameterTypes, Resolver resolver) {
         return sequence(genericParameterTypes).map(asCallable1(resolver)).toArray(Object.class);
     }
