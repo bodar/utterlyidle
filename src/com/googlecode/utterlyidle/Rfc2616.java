@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicate;
 
 import static com.googlecode.totallylazy.Sequences.characters;
@@ -31,5 +32,14 @@ public class Rfc2616 {
 
     public static String toUnquotedString(String value) {
         return value.replaceFirst("^\"", "").replaceFirst("\"$", "");
+    }
+
+    public static Function1<String, String> toUnquotedString() {
+        return new Function1<String, String>() {
+            @Override
+            public String call(String s) throws Exception {
+                return toUnquotedString(s);
+            }
+        };
     }
 }
