@@ -8,9 +8,9 @@ import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 
 public class RelativeUriExtractor {
     public static Uri relativeUriOf(Binding binding, Object... arguments) {
-        PathParameters parameters = Extractors.extractParameters(binding, arguments, new PathParameters());
+        PathParameters parameters = Extractors.extractParameters(binding, arguments, PathParameters.pathParameters());
         String path = binding.uriTemplate().generate(parameters).toString();
-        QueryParameters query = Extractors.extractParameters(binding, arguments, new QueryParameters());
+        QueryParameters query = Extractors.extractParameters(binding, arguments, QueryParameters.queryParameters());
         return Uri.uri(path + extractParametersFromQueryArgument(arguments, query).toString());
     }
 

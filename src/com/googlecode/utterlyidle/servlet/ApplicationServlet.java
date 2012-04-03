@@ -91,7 +91,7 @@ public class ApplicationServlet extends HttpServlet {
         HeaderParameters result = HeaderParameters.headerParameters();
         for (String name : sequence(request.getHeaderNames(), String.class)) {
             for (String value : sequence(request.getHeaders(name), String.class)) {
-                result.add(name, value);
+                result = result.add(name, value);
             }
         }
         return result;

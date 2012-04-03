@@ -108,7 +108,7 @@ public class BindingBuilder implements Callable<Binding> {
 
     private static ThreadLocalParameters parameters = new ThreadLocalParameters();
 
-    private static <T> T namedParameter(Type type, String name, final Class<? extends Parameters<String, String>> parametersClass, final Option<String> defaultValue) {
+    private static <T> T namedParameter(Type type, String name, final Class<? extends Parameters<String, String, ?>> parametersClass, final Option<String> defaultValue) {
         Option<Parameter> namedParameterSome = Option.<Parameter>some(new NamedParameter(name, parametersClass, defaultValue));
         parameters.get().add(Pair.pair(type, namedParameterSome));
         return null;

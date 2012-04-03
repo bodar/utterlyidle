@@ -135,7 +135,7 @@ public class RequestBuilder implements Callable<Request> {
             return this;
         }
 
-        return forms((FormParameters) FormParameters.parse(entity).add(name, value.toString()));
+        return forms(FormParameters.parse(entity).add(name, value.toString()));
     }
 
     @Deprecated

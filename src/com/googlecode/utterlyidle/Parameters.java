@@ -6,36 +6,36 @@ import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.PersistentList;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class Parameters<K, V> implements Iterable<Pair<K, V>> {
-    private final List<Pair<K, V>> values = new CopyOnWriteArrayList<Pair<K, V>>();
+public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> implements Iterable<Pair<K, V>> {
     private final Callable1<K, Predicate<K>> predicate;
+    private final PersistentList<Pair<K, V>> values;
 
-    public Parameters(Callable1<K, Predicate<K>> predicate) {
+    protected Parameters(Callable1<K, Predicate<K>> predicate, PersistentList<Pair<K, V>> values) {
         this.predicate = predicate;
+        this.values = values;
+    }
+    
+    protected abstract Self self(PersistentList<Pair<K, V>> values);
+
+    public Self add(K name, V value) {
+        return self(values.add(pair(name, value)));
     }
 
-    public Parameters add(K name, V value) {
-        values.add(pair(name, value));
-        return this;
-    }
-
-    public Parameters remove(K name) {
-        values.removeAll(filterByKey(name).toList());
-        return this;
+    public Self remove(K name) {
+        return self(values.removeAll(filterByKey(name)));
     }
 
     public int size() {
@@ -66,10 +66,9 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
         return sequence(values).filter(by(Callables.<K>first(), call(predicate, key))).realise();
     }
 
-    public static <K, V> Callable2<Parameters<K, V>, Pair<K, V>, Parameters<K, V>> pairIntoParameters() {
-        return new Callable2<Parameters<K, V>, Pair<K, V>, Parameters<K, V>>() {
-            @SuppressWarnings("unchecked")
-            public Parameters<K, V> call(Parameters<K, V> result, Pair<K, V> pair) throws Exception {
+    public static <K, V, Self extends Parameters<K, V, Self>> Callable2<Self, Pair<K, V>, Self> pairIntoParameters() {
+        return new Callable2<Self, Pair<K, V>, Self>() {
+            public Self call(Self result, Pair<K, V> pair) throws Exception {
                 return result.add(pair.first(), pair.second());
             }
         };
@@ -84,7 +83,7 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
     @SuppressWarnings("unchecked")
     public boolean equals(Object other) {
         if (other instanceof Parameters) {
-            final Parameters<K, V> parameters = (Parameters<K, V>) other;
+            final Self parameters = (Self) other;
 
             if (size() != parameters.size()) return false;
 
@@ -93,7 +92,7 @@ public class Parameters<K, V> implements Iterable<Pair<K, V>> {
         return false;
     }
 
-    private Predicate<? super Pair<K, V>> sameHeaderExistsIn(final Parameters<K, V> parameters) {
+    private Predicate<? super Pair<K, V>> sameHeaderExistsIn(final Self parameters) {
         return new Predicate<Pair<K, V>>() {
             public boolean matches(Pair<K, V> pair) {
                  return parameters.contains(pair.first()) && parameters.getValue(pair.first()).equals(pair.second());
