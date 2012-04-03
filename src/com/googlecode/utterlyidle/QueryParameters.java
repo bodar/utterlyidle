@@ -1,17 +1,31 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.PersistentList;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
-public class QueryParameters extends Parameters<String, String> {
-    public QueryParameters() {
-        super(equalIgnoringCase());
+public class QueryParameters extends Parameters<String, String, QueryParameters> {
+    private QueryParameters() {
+        this(PersistentList.<Pair<String, String>>empty());
     }
 
-    public static QueryParameters parse(String value){
-         return (QueryParameters) sequence(UrlEncodedMessage.parse(value)).foldLeft(new QueryParameters(), Parameters.<String,String>pairIntoParameters());
+    private QueryParameters(PersistentList<Pair<String, String>> values) {
+        super(equalIgnoringCase(), values);
+    }
+
+    @Override
+    protected QueryParameters self(PersistentList<Pair<String, String>> values) {
+        return new QueryParameters(values);
+    }
+
+    public static QueryParameters parse(String value) {
+        return sequence(UrlEncodedMessage.parse(value)).foldLeft(new QueryParameters(), Parameters.<String, String, QueryParameters>pairIntoParameters());
+    }
+
+    public static QueryParameters queryParameters() {
+        return new QueryParameters();
     }
 
     public static QueryParameters queryParameters(Pair<String, String>... pairs) {
@@ -19,7 +33,7 @@ public class QueryParameters extends Parameters<String, String> {
     }
 
     public static QueryParameters queryParameters(Iterable<Pair<String, String>> pairs) {
-        return (QueryParameters) sequence(pairs).foldLeft(new QueryParameters(), Parameters.<String,String>pairIntoParameters());
+        return sequence(pairs).foldLeft(new QueryParameters(), Parameters.<String, String, QueryParameters>pairIntoParameters());
     }
 
     @Override

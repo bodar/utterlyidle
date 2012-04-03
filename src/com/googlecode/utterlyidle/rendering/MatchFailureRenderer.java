@@ -5,9 +5,15 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Strings;
-import com.googlecode.utterlyidle.*;
-import org.antlr.stringtemplate.StringTemplate;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Redirector;
+import com.googlecode.utterlyidle.Renderer;
 import org.antlr.stringtemplate.StringTemplateGroup;
 
 import java.io.IOException;
@@ -39,7 +45,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
 
             model.add("resources", model().
                     add("method", httpMethod).
-                    add("path",  redirector.uriOf(binding).path()).
+                    add("path", redirector.uriOf(binding).path()).
                     add("query", asModel(parameters.filter(where(parametersClass(), matches(QueryParameters.class))))).
                     add("form", asModel(parameters.filter(where(parametersClass(), matches(FormParameters.class))))));
         }
@@ -51,10 +57,10 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         return Predicates.is(aClass);
     }
 
-    public static Callable1<NamedParameter, Class<? extends Parameters<String, String>>> parametersClass() {
-        return new Callable1<NamedParameter, Class<? extends Parameters<String, String>>>() {
-            public Class<? extends Parameters<String, String>> call(NamedParameter namedParameter) throws Exception {
-                 return namedParameter.parametersClass();
+    public static Callable1<NamedParameter, Class<? extends Parameters<String, String, ?>>> parametersClass() {
+        return new Callable1<NamedParameter, Class<? extends Parameters<String, String, ?>>>() {
+            public Class<? extends Parameters<String, String, ?>> call(NamedParameter namedParameter) throws Exception {
+                return namedParameter.parametersClass();
             }
         };
     }

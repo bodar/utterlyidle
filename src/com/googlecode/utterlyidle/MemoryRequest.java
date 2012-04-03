@@ -16,20 +16,16 @@ public class MemoryRequest implements Request {
     private MemoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
         this.method = method;
         this.uri = uri;
-        this.headers = headers;
         this.entity = entity;
-        setContentLength();
+        this.headers = setContentLength(headers);
     }
 
     static MemoryRequest memoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
         return new MemoryRequest(method, uri, headers, entity);
     }
 
-    private void setContentLength() {
-        if(headers().contains(CONTENT_LENGTH)){
-            headers().remove(CONTENT_LENGTH);
-        }
-        headers().add(CONTENT_LENGTH, String.valueOf(entity().asBytes().length));
+    private HeaderParameters setContentLength(HeaderParameters headers) {
+        return headers.remove(CONTENT_LENGTH).add(CONTENT_LENGTH, String.valueOf(entity().asBytes().length));
     }
 
     public String method() {

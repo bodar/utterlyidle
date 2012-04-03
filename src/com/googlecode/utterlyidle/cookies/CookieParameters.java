@@ -1,50 +1,48 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.PersistentList;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.PersistentList.list;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.empty;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.regex.Regex.regex;
-import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 
-public class CookieParameters extends Parameters<String, String> {
-    private CookieParameters(final HeaderParameters headerParameters) {
-        super(equalIgnoringCase());
-        parseRequestCookies(sequence(headerParameters.getValues(COOKIE)).filter(not(empty())));
+public class CookieParameters extends Parameters<String, String, CookieParameters> {
+    private CookieParameters(PersistentList<Pair<String, String>> values) {
+        super(equalIgnoringCase(), values);
+    }
+
+    @Override
+    protected CookieParameters self(PersistentList<Pair<String, String>> values) {
+        return new CookieParameters(values);
     }
 
     public static CookieParameters cookies(final HeaderParameters headerParameters) {
-        return new CookieParameters(headerParameters);
+        return new CookieParameters(list(headerParameters.
+                getValues(HttpHeaders.COOKIE).
+                filter(not(empty())).
+                flatMap(parseIntoPairs())));
     }
 
-    private void parseRequestCookies(Sequence<String> headers) {
-        for (String header : headers) {
-            parseIntoPairs(header).map(unQuoteValue()).fold(this, Parameters.<String, String>pairIntoParameters());
-        }
-    }
-
-    private Callable1<? super Pair<String, String>, Pair<String, String>> unQuoteValue() {
-        return new Callable1<Pair<String, String>, Pair<String, String>>() {
-            public Pair<String, String> call(Pair<String, String> pair) throws Exception {
-                return pair(pair.first(), Rfc2616.toUnquotedString(pair.second()));
-            }
-        };
-    }
-
-    private Sequence<Pair<String, String>> parseIntoPairs(String header) {
+    private static Sequence<Pair<String, String>> parseIntoPairs(String header) {
         return regex("\\s*;\\s*").
                 split(header).
                 map(splitOnFirst("=")).
-                filter(not(anAttribute()));
+                filter(not(anAttribute())).
+                map(Callables.<String, String, String>second(Rfc2616.toUnquotedString()));
     }
 
     private static Predicate<? super Pair<String, String>> anAttribute() {
@@ -63,12 +61,21 @@ public class CookieParameters extends Parameters<String, String> {
         };
     }
 
-
     public static String toHttpHeader(String name, Cookie cookie) {
         final String cookieValue = String.format("%s=%s; ", name, Rfc2616.toQuotedString(cookie.value()));
         final String attributes = sequence(cookie.attributes()).toString("; ");
 
         return cookieValue + attributes;
+    }
+
+
+    private static Function1<String, Sequence<Pair<String, String>>> parseIntoPairs() {
+        return new Function1<String, Sequence<Pair<String, String>>>() {
+            @Override
+            public Sequence<Pair<String, String>> call(String header) throws Exception {
+                return parseIntoPairs(header);
+            }
+        };
     }
 
 }
