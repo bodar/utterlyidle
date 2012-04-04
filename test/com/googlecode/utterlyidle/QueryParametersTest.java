@@ -6,7 +6,11 @@ import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class QueryParametersTest {
+public class QueryParametersTest extends ParametersContract<QueryParameters> {
+    @Override
+    protected QueryParameters parameters() {
+        return queryParameters();
+    }
 
     @Test
     public void supportsCreationFromSequence() throws Exception {

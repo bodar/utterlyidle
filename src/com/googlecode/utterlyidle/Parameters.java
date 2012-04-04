@@ -38,6 +38,10 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
         return self(values.removeAll(filterByKey(name)));
     }
 
+    public Self replace(K name, V value) {
+        return remove(name).add(name, value);
+    }
+
     public int size() {
         return values.size();
     }
