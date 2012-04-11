@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Uri;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -24,5 +25,11 @@ public class RequestBuilderTest {
         assertThat(clonedRequest.uri(), is(equalTo(originalRequest.uri())));
         assertThat(clonedRequest.headers().toString(), is(equalTo(originalRequest.headers().toString())));
         assertThat(clonedRequest.entity().toString(), is(equalTo(originalRequest.entity().toString())));
+    }
+
+    @Test
+    public void shouldRemoveQueryParamsFromEncodedUri() throws Exception {
+        RequestBuilder requestBuilder = new RequestBuilder("GET", "/home").query("^&%$^%", "foo").query("removeme", "");
+        assertThat(requestBuilder.removeQuery("removeme").build().uri(), equalTo(Uri.uri("/home?%5E%26%25%24%5E%25=foo")));
     }
 }
