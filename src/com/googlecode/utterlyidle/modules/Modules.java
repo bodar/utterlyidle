@@ -10,6 +10,7 @@ import com.googlecode.yadic.Resolver;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Classes.isInstance;
@@ -20,10 +21,16 @@ import static com.googlecode.yadic.Containers.selfRegister;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
 public class Modules implements ModuleDefinitions, ModuleActivator {
+    public static final String AUTO_START = "utterlyidle.auto.start";
     private final List<Module> modules = new CopyOnWriteArrayList<Module>();
     private final List<Class<? extends Module>> applicationModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
     private final List<Class<? extends Module>> requestModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
     private final List<Class<? extends Module>> argumentModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
+    private final Properties properties;
+
+    public Modules(Properties properties) {
+        this.properties = properties;
+    }
 
     public Modules setupApplicationScope(Container applicationScope) {
         applicationScope.addInstance(Modules.class, this);
@@ -66,7 +73,9 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     }
 
     public void activateStartupModule(Module module, Container requestScope) {
-        activate(module, requestScope, sequence(StartupModule.class));
+        if(Boolean.valueOf(properties.getProperty(AUTO_START, "true"))){
+            activate(module, requestScope, sequence(StartupModule.class));
+        }
     }
 
 

@@ -15,6 +15,7 @@ import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.closeable.CloseableContainer;
 
 import java.io.IOException;
+import java.util.Properties;
 import java.util.UUID;
 
 import static com.googlecode.totallylazy.Closeables.using;
@@ -23,16 +24,26 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 
 public class RestApplication implements Application {
     private final CloseableContainer applicationScope = CloseableContainer.closeableContainer();
-    private final Modules modules = new Modules();
+    private final Modules modules;
 
     public RestApplication(BasePath basePath) {
-        this(basePath, new Module[0]);
+        this(basePath, System.getProperties());
+    }
+
+    public RestApplication(BasePath basePath, Properties properties) {
+        this(basePath, properties, new Module[0]);
     }
 
     public RestApplication(BasePath basePath, Module... modules) {
+        this(basePath, System.getProperties(), modules);
+    }
+
+    public RestApplication(BasePath basePath, Properties properties, Module... modules) {
         applicationScope.addInstance(BasePath.class, basePath);
+        applicationScope.addInstance(Properties.class, properties);
         applicationScope.addInstance(Application.class, this);
         applicationScope.removeCloseable(Application.class);
+        this.modules = new Modules(properties);
         this.modules.setupApplicationScope(applicationScope);
         add(new CoreModule());
         add(new LastExceptionsModule());
