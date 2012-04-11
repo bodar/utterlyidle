@@ -20,7 +20,7 @@ public class StartupModuleTest {
 
     @Test
     public void shouldNotStartIfStartingIsDisabled() throws Exception {
-        Properties properties = new Properties();
+        UtterlyIdleProperties properties = new UtterlyIdleProperties();
         properties.setProperty(Modules.AUTO_START, "false");
         StartableThing startable = new StartableThing(null);
         new RestApplication(BasePath.basePath("/"), properties).add(requestInstance(startable)).add(start());

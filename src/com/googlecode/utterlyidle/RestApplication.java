@@ -27,20 +27,20 @@ public class RestApplication implements Application {
     private final Modules modules;
 
     public RestApplication(BasePath basePath) {
-        this(basePath, System.getProperties());
+        this(basePath, new UtterlyIdleProperties());
     }
 
-    public RestApplication(BasePath basePath, Properties properties) {
+    public RestApplication(BasePath basePath, UtterlyIdleProperties properties) {
         this(basePath, properties, new Module[0]);
     }
 
     public RestApplication(BasePath basePath, Module... modules) {
-        this(basePath, System.getProperties(), modules);
+        this(basePath, new UtterlyIdleProperties(), modules);
     }
 
-    public RestApplication(BasePath basePath, Properties properties, Module... modules) {
+    public RestApplication(BasePath basePath, UtterlyIdleProperties properties, Module... modules) {
         applicationScope.addInstance(BasePath.class, basePath);
-        applicationScope.addInstance(Properties.class, properties);
+        applicationScope.addInstance(UtterlyIdleProperties.class, properties);
         applicationScope.addInstance(Application.class, this);
         applicationScope.removeCloseable(Application.class);
         this.modules = new Modules(properties);
