@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.UtterlyIdleProperties;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 
@@ -21,14 +22,14 @@ import static com.googlecode.yadic.Containers.selfRegister;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
 public class Modules implements ModuleDefinitions, ModuleActivator {
-    public static final String AUTO_START = "utterlyidle.auto.start";
+    public static final String AUTO_START = "auto.start";
     private final List<Module> modules = new CopyOnWriteArrayList<Module>();
     private final List<Class<? extends Module>> applicationModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
     private final List<Class<? extends Module>> requestModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
     private final List<Class<? extends Module>> argumentModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
-    private final Properties properties;
+    private final UtterlyIdleProperties properties;
 
-    public Modules(Properties properties) {
+    public Modules(UtterlyIdleProperties properties) {
         this.properties = properties;
     }
 
