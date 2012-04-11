@@ -1,8 +1,11 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.utterlyidle.modules.StartupModule;
 import com.googlecode.yadic.Container;
 import org.junit.Test;
+
+import java.util.Properties;
 
 import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
 import static com.googlecode.utterlyidle.modules.Modules.requestScopedClass;
@@ -13,6 +16,15 @@ public class StartupModuleTest {
     @Test
     public void supportStartingEvenIfHasDependencyOnRequest() throws Exception {
         new RestApplication(BasePath.basePath("/")).add(requestScopedClass(StartableThing.class)).add(start());
+    }
+
+    @Test
+    public void shouldNotStartIfStartingIsDisabled() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty(Modules.AUTO_START, "false");
+        StartableThing startable = new StartableThing(null);
+        new RestApplication(BasePath.basePath("/"), properties).add(requestInstance(startable)).add(start());
+        assertThat(startable.count, is(0));
     }
 
     @Test
