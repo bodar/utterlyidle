@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle.examples;
 
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.numbers.Numbers;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
@@ -24,6 +26,12 @@ import static com.googlecode.utterlyidle.Responses.response;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
+    @GET
+    @Path("primes")
+    public Sequence<Number> primes() {
+        return Numbers.primes();
+    }
+
     @GET
     @Path("chunk")
     public StreamingOutput chunk() {
