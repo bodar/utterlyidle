@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 import com.googlecode.utterlyidle.handlers.DateHandler;
@@ -15,8 +16,6 @@ import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.closeable.CloseableContainer;
 
 import java.io.IOException;
-import java.util.Properties;
-import java.util.UUID;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -52,12 +51,21 @@ public class RestApplication implements Application {
         }
     }
 
-    public Application add(Module module) {
+    public Application add(final Module module) {
         modules.activateApplicationModule(module, applicationScope);
-        Container requestScope = createRequestScope();
-        requestScope.addInstance(Request.class, get("/dummy/request/to/allow/starting/application").build());
-        modules.activateStartupModule(module, requestScope);
+        usingRequestScope(activateStartupModule(module));
         return this;
+    }
+
+    private Callable1<Container, Void> activateStartupModule(final Module module) {
+        return new Callable1<Container, Void>() {
+            @Override
+            public Void call(Container container) throws Exception {
+                container.addInstance(Request.class, get("/dummy/request/to/allow/starting/application").build());
+                modules.activateStartupModule(module, container);
+                return Runnables.VOID;
+            }
+        };
     }
 
     public Container applicationScope() {
@@ -96,12 +104,6 @@ public class RestApplication implements Application {
                 return container;
             }
         });
-    }
-
-    private void addBasePathIfNeeded(Container requestScope) {
-        if (!requestScope.contains(BasePath.class)) {
-            requestScope.addInstance(BasePath.class, BasePath.basePath("/"));
-        }
     }
 
     public <T> T usingParameterScope(Request request, Callable1<Container, T> callable) {
