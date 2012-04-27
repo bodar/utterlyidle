@@ -26,11 +26,15 @@ public class ProfilingHandler implements HttpHandler {
 
     @Override
     public Response handle(Request request) throws Exception {
-        if (!query(request).contains(QUERY_PARAMETER)) {
+        if (!shouldProfile(request)) {
             return httpHandler.handle(request);
         }
 
         return decorate(profile(httpHandler, profilingData).handle(request));
+    }
+
+    public static boolean shouldProfile(Request request) {
+        return query(request).contains(QUERY_PARAMETER);
     }
 
     private Response decorate(Response response) throws IOException {
@@ -38,8 +42,8 @@ public class ProfilingHandler implements HttpHandler {
         EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
         return modify(response).entity(group.getInstanceOf("profile", model().
                 add("response", html).
-                add("requests", profilingData.requests).
-                add("queries", profilingData.queries).
+                add("requests", profilingData.requests()).
+                add("queries", profilingData.queries()).
                 toMap()).toString()).build();
     }
 }
