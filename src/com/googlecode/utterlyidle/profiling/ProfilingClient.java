@@ -9,8 +9,6 @@ import static com.googlecode.totallylazy.callables.TimeCallable.calculateMillise
 import static com.googlecode.utterlyidle.handlers.HttpClient.methods.httpClient;
 
 public class ProfilingClient implements HttpClient {
-    public static final String NO_PROFILE_HEADER = "X-No-Profile";
-
     private final HttpClient httpHandler;
     private final ProfilingData profilingData;
 
@@ -27,9 +25,7 @@ public class ProfilingClient implements HttpClient {
     public Response handle(Request request) throws Exception {
         long start = System.nanoTime();
         Response response = httpHandler.handle(request);
-        if (!request.headers().contains(NO_PROFILE_HEADER)) {
-            profilingData.add(request, response, calculateMilliseconds(start, System.nanoTime()));
-        }
+        profilingData.add(request, response, calculateMilliseconds(start, System.nanoTime()));
         return response;
     }
 }
