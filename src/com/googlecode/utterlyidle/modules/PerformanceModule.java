@@ -4,6 +4,7 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.handlers.CacheControlHandler;
 import com.googlecode.utterlyidle.handlers.CachePolicy;
+import com.googlecode.utterlyidle.handlers.GzipHandler;
 import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.handlers.CachePolicy.cachePolicy;
@@ -20,6 +21,7 @@ public class PerformanceModule implements RequestScopedModule {
                 add(contentType(MediaType.TEXT_JAVASCRIPT)).
                 add(contentType(MediaType.TEXT_CSS)
                 ));
+        container.decorate(HttpHandler.class, GzipHandler.class);
         container.decorate(HttpHandler.class, CacheControlHandler.class);
         container.decorate(HttpHandler.class, EtagHandler.class);
         return this;
