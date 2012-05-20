@@ -23,16 +23,16 @@ public class MemoryRequestTest {
                 .header("Cookie", "size=diciptive")
                 .header("Referer", "http://google.com").
                         build().toString(),
-                   is(
-                           "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\r\n" +
-                                   "Accept: text/html\r\n" +
-                                   "Content-Type: application/x-www-form-urlencoded; charset=UTF-8\r\n" +
-                                   "Cookie: size=diciptive\r\n" +
-                                   "Referer: http://google.com\r\n" +
-                                   "Content-Length: 26\r\n" +
-                                   "\r\n" +
-                                   "chups=nah+bru&plinkton=nom"
-                   ));
+                is(
+                        "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\r\n" +
+                                "Accept: text/html\r\n" +
+                                "Content-Type: application/x-www-form-urlencoded; charset=UTF-8\r\n" +
+                                "Cookie: size=diciptive\r\n" +
+                                "Referer: http://google.com\r\n" +
+                                "Content-Length: 26\r\n" +
+                                "\r\n" +
+                                "chups=nah+bru&plinkton=nom"
+                ));
     }
 
     @Test
@@ -49,7 +49,7 @@ public class MemoryRequestTest {
     }
 
     @Test
-    public void shouldSupportEquals(){
+    public void shouldSupportEquals() {
         assertEquals(get("http://www.google.com").build(), get("http://www.google.com").build());
     }
 
