@@ -1,7 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequences;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -10,9 +8,11 @@ import java.util.TimeZone;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_ENCODING;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -22,6 +22,8 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
+import static com.googlecode.utterlyidle.handlers.GzipHandler.GZIP;
+import static com.googlecode.utterlyidle.handlers.GzipHandler.gzip;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;

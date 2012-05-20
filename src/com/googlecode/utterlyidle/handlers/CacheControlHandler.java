@@ -43,9 +43,10 @@ public class CacheControlHandler implements HttpHandler {
         }
 
         Date now = Dates.RFC822().parse(header(response, DATE));
+        String date = RFC822().format(Seconds.add(now, cachePolicy.value()));
         return modify(response).
                 header(CACHE_CONTROL, format("public, max-age=%s", cachePolicy.value())).
-                header(EXPIRES, RFC822().format(Seconds.add(now, cachePolicy.value()))).
+                header(EXPIRES, date).
                 build();
     }
 }
