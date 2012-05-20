@@ -33,7 +33,7 @@ public class MemoryResponse implements Response {
 
     @Override
     public String toString() {
-        return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", status, headers, entity().toString());
+        return methods.asString(this);
     }
 
     @Override

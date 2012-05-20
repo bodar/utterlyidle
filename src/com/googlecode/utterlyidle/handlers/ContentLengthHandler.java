@@ -23,7 +23,7 @@ public class ContentLengthHandler implements HttpHandler {
         return response;
     }
 
-    private Response setContentLength(Response response, int length) {
+    public static Response setContentLength(Response response, int length) {
         return modify(response).replaceHeaders(CONTENT_LENGTH, length).build();
     }
 }
