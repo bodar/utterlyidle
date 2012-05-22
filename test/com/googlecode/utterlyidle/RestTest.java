@@ -3,6 +3,8 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.annotations.Consumes;
 import com.googlecode.utterlyidle.annotations.CookieParam;
 import com.googlecode.utterlyidle.annotations.DELETE;
@@ -136,6 +138,13 @@ public class RestTest {
     public void canGet() throws Exception {
         ApplicationBuilder application = application().addAnnotated(Gettable.class);
         assertThat(application.responseAsString(get("foo")), is("bar"));
+    }
+
+    @Test
+    public void supportsGetWithListOfUUIDs() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
+        Sequence<UUID> expectedIds = Sequences.sequence(UUID.randomUUID(), UUID.randomUUID());
+        assertThat(application.responseAsString(get("/path").query("id", expectedIds.first().toString()).query("id", expectedIds.second().toString())), is("ids"));
     }
 
     @Test
@@ -411,7 +420,7 @@ public class RestTest {
 
     @Test
     public void shouldHandleResourceWithAParameterMissingAnAnnotation() throws Exception {
-        ApplicationBuilder application = application().addAnnotated(GetWithParameterButNoAnnotation.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
         assertThat(application.handle(get("path")).status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
@@ -735,6 +744,14 @@ public class RestTest {
             System.out.println(test);
         }
 
+    }
+
+    @Path("path")
+    public static class GetWithListOfUUIDs {
+        @GET
+        public String get(@QueryParam("id") Iterable<UUID> ids) {
+            return "ids";
+        }
     }
 
     @Path("path")
