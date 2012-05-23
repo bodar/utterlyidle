@@ -124,9 +124,7 @@ public class CoreModule extends AbstractModule {
         @Override
         public Iterable<T> resolve(Type type) throws Exception {
             Iterable<String> values = cast(container.resolve(new TypeFor<Iterable<String>>() {}.get()));
-            return sequence(values).map(mapper);
+            return sequence(values).map(mapper).realise();
         }
-
     }
-
 }
