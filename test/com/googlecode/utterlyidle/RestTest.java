@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.annotations.Consumes;
 import com.googlecode.utterlyidle.annotations.CookieParam;
 import com.googlecode.utterlyidle.annotations.DELETE;
@@ -145,6 +146,14 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
         Sequence<UUID> expectedIds = Sequences.sequence(UUID.randomUUID(), UUID.randomUUID());
         assertThat(application.responseAsString(get("/path").query("id", expectedIds.first().toString()).query("id", expectedIds.second().toString())), is("ids"));
+    }
+
+    @Test
+    public void correctlyErrorsWhenBadlyFormedParameterUsed() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
+        Sequence<UUID> ids = Sequences.sequence(UUID.randomUUID(), UUID.randomUUID());
+        Response response = application.handle(get("/path").query("id", ids.first() + "," + ids.second()));
+        assertThat(response.status(), Matchers.not(Status.OK));
     }
 
     @Test
@@ -420,7 +429,7 @@ public class RestTest {
 
     @Test
     public void shouldHandleResourceWithAParameterMissingAnAnnotation() throws Exception {
-        ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
+        ApplicationBuilder application = application().addAnnotated(GetWithParameterButNoAnnotation.class);
         assertThat(application.handle(get("path")).status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
