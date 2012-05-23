@@ -2,10 +2,9 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.*;
 import com.googlecode.utterlyidle.annotations.*;
+import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.dsl.DslTest;
 import org.junit.Test;
-
-import java.net.URL;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Uri.uri;
@@ -54,6 +53,20 @@ public class BaseUriRedirectorTest {
         assertLocation(response, "http://server/base/redirect?foo=bar");
     }
     
+    @Test
+    public void supportsIterableQueryParameters() throws Exception {
+        Uri uri = redirector(annotatedClass(IterableParameterResource.class)).absoluteUriOf(method(on(IterableParameterResource.class).dosomething(Sequences.sequence("1234", "5678"))));
+        assertThat(uri, is(uri("/base/path?id=1234&id=5678")));
+    }
+
+    public static class IterableParameterResource {
+        @GET
+        @Path("/path")
+        public String dosomething(@QueryParam("id") Iterable<String> values) {
+            return "foo";
+        }
+    }
+
     @Test
     public void supportsDefaultValue() throws Exception {
         Redirector redirector = redirector(get("/redirect").resource(method(on(DslTest.Redirect.class).redirect(queryParam(String.class, "foo", "Dan")))).build());
