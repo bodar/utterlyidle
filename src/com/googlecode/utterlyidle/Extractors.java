@@ -1,17 +1,25 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Left;
+import com.googlecode.totallylazy.None;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Right;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Some;
 
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.some;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Sequences.unzip;
 import static com.googlecode.totallylazy.Unchecked.cast;
 
 public class Extractors {
     public static FormParameters extractForm(Binding binding, Object... arguments) {
-        return  extractParameters(binding, arguments, FormParameters.formParameters());
+        return extractParameters(binding, arguments, FormParameters.formParameters());
     }
 
     public static <T extends Parameters<String, String, ?>> T extractParameters(final Binding binding, final Object[] arguments, T result) {
@@ -24,14 +32,25 @@ public class Extractors {
             if (pair.first() instanceof NamedParameter) {
                 NamedParameter parameter = (NamedParameter) pair.first();
                 if (parameter.parametersClass().equals(result.getClass())) {
-                    String value = getValue(parameter, pair.second());
-                    if (value != null) {
-                        result = result.add(parameter.name(), value);
+                    for (Object value : asIterable(pair.second())) {
+                        result = addAsString(result, parameter, getValue(parameter, value));
                     }
                 }
             }
         }
         return cast(result);
+    }
+
+    private static Iterable asIterable(Object value) {
+        if(value instanceof Iterable) return (Iterable) value;
+        return one(value);
+    }
+
+    private static Parameters<String, String, ?> addAsString(Parameters<String, String, ?> result, NamedParameter parameter, String value) {
+        if (value != null) {
+            result = result.add(parameter.name(), value);
+        }
+        return result;
     }
 
     static Sequence<Pair<Parameter, Object>> getParameterAndValue(final Sequence<Option<Parameter>> parameters, final Sequence<Object> arguments) {
