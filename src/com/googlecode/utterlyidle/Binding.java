@@ -57,8 +57,8 @@ public class Binding {
                 map(Callables.<Parameter>value()).safeCast(NamedParameter.class);
     }
 
-    public Number numberOfArguments() {
-        return parameters.size();
+    public int numberOfArguments() {
+        return parameters.size().intValue();
     }
 
     public int priority() {
@@ -96,6 +96,26 @@ public class Binding {
                 return binding.method();
             }
         };
+    }
+
+    public static class functions {
+        public static Function1<Binding, Integer> priority() {
+            return new Function1<Binding, Integer>() {
+                @Override
+                public Integer call(Binding binding) throws Exception {
+                    return binding.priority();
+                }
+            };
+        }
+        public static Function1<Binding, Integer> numberOfArguments() {
+            return new Function1<Binding, Integer>() {
+                @Override
+                public Integer call(Binding binding) throws Exception {
+                    return binding.numberOfArguments();
+                }
+            };
+        }
+
     }
 
 }
