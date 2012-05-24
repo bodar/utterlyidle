@@ -1,8 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function1;
-
 import java.util.Comparator;
 
 import static com.googlecode.totallylazy.comparators.Comparators.comparators;
@@ -22,6 +19,4 @@ public class MatchQuality {
                 where(numberOfArguments(), descending(Integer.class))
         );
     }
-
-
 }

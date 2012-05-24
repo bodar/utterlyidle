@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.ResponseBuilder;
 public class ReturnResponseHandler implements HttpHandler {
     private final Response response;
 
-    public ReturnResponseHandler(Response response) {
+    private ReturnResponseHandler(Response response) {
         this.response = response;
     }
 
@@ -20,7 +20,11 @@ public class ReturnResponseHandler implements HttpHandler {
         return new ReturnResponseHandler(response);
     }
 
+    public static HttpHandler returnsResponse(final String response) {
+        return returnsResponse(ResponseBuilder.response().entity(response));
+    }
+
     public static HttpHandler returnsResponse(final ResponseBuilder builder) {
-        return new ReturnResponseHandler(builder.build());
+        return returnsResponse(builder.build());
     }
 }
