@@ -1,35 +1,21 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.numbers.Numbers;
-
 import java.util.Comparator;
 
-class MatchQuality implements Comparator<Binding> {
-    private final Request request;
+import static com.googlecode.totallylazy.comparators.Comparators.comparators;
+import static com.googlecode.totallylazy.comparators.Comparators.descending;
+import static com.googlecode.totallylazy.comparators.Comparators.where;
+import static com.googlecode.utterlyidle.Binding.functions.numberOfArguments;
+import static com.googlecode.utterlyidle.Binding.functions.priority;
+import static com.googlecode.utterlyidle.ProducesMimeMatcher.quality;
 
-    private MatchQuality(Request request) {
-        this.request = request;
+public class MatchQuality {
+    public static Comparator<Binding> matchQuality(Request request) {
+        return comparators(
+                where(quality(request), descending(Float.class)),
+                where(priority(), descending(Integer.class)),
+                where(numberOfArguments(), descending(Integer.class))
+        );
     }
 
-    public int compare(Binding firstSignature, Binding secondSignature) {
-        float firstQuality = new ProducesMimeMatcher(firstSignature.produces()).matchQuality(request);
-        float secondQuality = new ProducesMimeMatcher(secondSignature.produces()).matchQuality(request);
-
-        if (firstQuality == secondQuality){
-            int firstPriority = firstSignature.priority();
-            int secondPriority = secondSignature.priority();
-
-            if(firstPriority == secondPriority){
-                return Numbers.compare(secondSignature.numberOfArguments(), firstSignature.numberOfArguments());
-            }
-
-            return firstPriority > secondPriority ? -1 : 1;
-        }
-
-        return firstQuality > secondQuality ? -1 : 1;
-    }
-
-    public static MatchQuality matchQuality(Request request) {
-        return new MatchQuality(request);
-    }
 }
