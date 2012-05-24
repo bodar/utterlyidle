@@ -8,11 +8,15 @@ import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;
 
-public class PathMatcher implements Predicate<Request> {
+public class PathMatcher extends LogicalPredicate<Request> {
     private final UriTemplate uriTemplate;
 
-    public PathMatcher(UriTemplate uriTemplate) {
+    private PathMatcher(UriTemplate uriTemplate) {
         this.uriTemplate = uriTemplate;
+    }
+
+    public static PathMatcher pathMatches(UriTemplate uriTemplate) {
+        return new PathMatcher(uriTemplate);
     }
 
     public boolean matches(Request request) {
@@ -20,13 +24,17 @@ public class PathMatcher implements Predicate<Request> {
     }
 
     public static LogicalPredicate<? super Pair<Request, Response>> path(String path) {
-        return where(first(Request.class), new PathMatcher(UriTemplate.uriTemplate(path)));
+        return where(first(Request.class), pathMatches(path));
+    }
+
+    public static PathMatcher pathMatches(String path) {
+        return pathMatches(UriTemplate.uriTemplate(path));
     }
 
     public static LogicalPredicate<Binding> pathMatches(final Request request) {
         return new LogicalPredicate<Binding>() {
             public boolean matches(Binding binding) {
-                return new PathMatcher(binding.uriTemplate()).matches(request);
+                return pathMatches(binding.uriTemplate()).matches(request);
             }
         };
     }
