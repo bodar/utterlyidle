@@ -92,4 +92,8 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     public boolean equals(Object obj) {
         return obj instanceof UriTemplate && template.equals(((UriTemplate) obj).template);
     }
+
+    public int segments() {
+        return template.split("\\/").length;
+    }
 }

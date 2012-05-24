@@ -116,6 +116,17 @@ public class Binding {
             };
         }
 
+        public static Function1<Binding, Integer> pathSegments() {
+            return new Function1<Binding, Integer>() {
+                @Override
+                public Integer call(Binding binding) throws Exception {
+                    return binding.uriTemplate().segments();
+
+                }
+            };
+        }
+
+
     }
 
 }

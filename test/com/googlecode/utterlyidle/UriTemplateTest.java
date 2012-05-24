@@ -10,6 +10,14 @@ import static org.hamcrest.Matchers.is;
 
 public class UriTemplateTest {
     @Test
+    public void reportsNumberOfSegments() throws Exception {
+        assertThat(uriTemplate("properties").segments(), is(1));
+        assertThat(uriTemplate("properties/{name}").segments(), is(2));
+        assertThat(uriTemplate("properties/{name}/foo").segments(), is(3));
+        assertThat(uriTemplate("properties/{name}/foo/{id}").segments(), is(4));
+    }
+
+    @Test
     public void encodesOnlyPathParamsWhichDontContainForwardSlashes() throws Exception {
         UriTemplate template = uriTemplate("properties/{name}");
 
