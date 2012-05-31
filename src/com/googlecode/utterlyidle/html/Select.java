@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
 import static com.googlecode.totallylazy.Xml.removeAttribute;
@@ -16,6 +17,11 @@ public class Select implements NameValue {
 
     public Select(Element select) {
         this.select = select;
+    }
+
+    public Iterable<Option> options() {
+        return Xml.selectNodes(select, "option").map(Option.asNode());
+
     }
 
     public String value() {
