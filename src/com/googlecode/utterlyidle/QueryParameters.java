@@ -1,22 +1,22 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.PersistentList;
+import com.googlecode.totallylazy.collections.ImmutableList;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
 public class QueryParameters extends Parameters<String, String, QueryParameters> {
     private QueryParameters() {
-        this(PersistentList.<Pair<String, String>>empty());
+        this(ImmutableList.constructors.<Pair<String, String>>empty());
     }
 
-    private QueryParameters(PersistentList<Pair<String, String>> values) {
+    private QueryParameters(ImmutableList<Pair<String, String>> values) {
         super(equalIgnoringCase(), values);
     }
 
     @Override
-    protected QueryParameters self(PersistentList<Pair<String, String>> values) {
+    protected QueryParameters self(ImmutableList<Pair<String, String>> values) {
         return new QueryParameters(values);
     }
 

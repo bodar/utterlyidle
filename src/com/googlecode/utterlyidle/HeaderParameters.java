@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.PersistentList;
+import com.googlecode.totallylazy.collections.ImmutableList;
 
 import java.util.Map;
 
@@ -13,15 +13,15 @@ import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public class HeaderParameters extends Parameters<String, String, HeaderParameters> {
     public HeaderParameters() {
-        this(PersistentList.<Pair<String, String>>empty());
+        this(ImmutableList.constructors.<Pair<String, String>>empty());
     }
 
-    public HeaderParameters(PersistentList<Pair<String, String>> values) {
+    public HeaderParameters(ImmutableList<Pair<String, String>> values) {
         super(equalIgnoringCase(), values);
     }
 
     @Override
-    protected HeaderParameters self(PersistentList<Pair<String, String>> values) {
+    protected HeaderParameters self(ImmutableList<Pair<String, String>> values) {
         return new HeaderParameters(values);
     }
 
