@@ -38,7 +38,7 @@ public class LastExceptionsTest {
     }
 
     private void verifyLastExceptionsContains(Sequence<Number> expected) {
-        MemorisedSequence<StoredException> exceptions = sequence(lastExceptions).memorise();
+        Sequence<StoredException> exceptions = sequence(lastExceptions).memorise();
         assertThat(exceptions.size(), is(expected.size()));
 
         expected.zip(exceptions.map(StoredException.exception())).forEach(new Callable1<Pair<Number, String>, Void>() {

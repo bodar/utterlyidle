@@ -1,22 +1,22 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.PersistentList;
+import com.googlecode.totallylazy.collections.ImmutableList;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
 public class FormParameters extends Parameters<String,String, FormParameters > {
     private FormParameters() {
-        this(PersistentList.<Pair<String, String>>empty());
+        this(ImmutableList.constructors.<Pair<String, String>>empty());
     }
 
-    private FormParameters(PersistentList<Pair<String, String>> values) {
+    private FormParameters(ImmutableList<Pair<String, String>> values) {
         super(equalIgnoringCase(), values);
     }
 
     @Override
-    protected FormParameters self(PersistentList<Pair<String, String>> values) {
+    protected FormParameters self(ImmutableList<Pair<String, String>> values) {
         return new FormParameters(values);
     }
 

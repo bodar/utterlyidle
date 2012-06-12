@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.PersistentList;
+import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 
@@ -21,14 +21,14 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> implements Iterable<Pair<K, V>> {
     private final Callable1<K, Predicate<K>> predicate;
-    private final PersistentList<Pair<K, V>> values;
+    private final ImmutableList<Pair<K, V>> values;
 
-    protected Parameters(Callable1<K, Predicate<K>> predicate, PersistentList<Pair<K, V>> values) {
+    protected Parameters(Callable1<K, Predicate<K>> predicate, ImmutableList<Pair<K, V>> values) {
         this.predicate = predicate;
         this.values = values;
     }
     
-    protected abstract Self self(PersistentList<Pair<K, V>> values);
+    protected abstract Self self(ImmutableList<Pair<K, V>> values);
 
     public Self add(K name, V value) {
         return self(values.add(pair(name, value)));
