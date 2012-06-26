@@ -58,7 +58,7 @@ public class Binding {
     }
 
     public int numberOfArguments() {
-        return parameters.size().intValue();
+        return parameters.size();
     }
 
     public int priority() {

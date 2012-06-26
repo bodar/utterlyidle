@@ -111,7 +111,7 @@ public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
         if (!containedBy(base)) {
             return this;
         }
-        Sequence<String> remainingSegments = segments().drop(firstConsecutiveCommonSegments(base).size().intValue());
+        Sequence<String> remainingSegments = segments().drop(firstConsecutiveCommonSegments(base).size());
         return new HierarchicalPath(join(remainingSegments));
     }
 
