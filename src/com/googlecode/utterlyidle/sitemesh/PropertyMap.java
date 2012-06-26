@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Iterators;
+import com.googlecode.totallylazy.Sequences;
 import org.sitemesh.content.ContentProperty;
 
 import java.util.Arrays;
@@ -40,7 +41,7 @@ public class PropertyMap extends UnsupportedMap<String, Object>{
 
     @Override
     public int size() {
-        return Iterators.size(property.getChildren().iterator()).intValue();
+        return Sequences.size(property.getChildren());
     }
 }
 
