@@ -36,7 +36,7 @@ public class HttpMessageParser {
     private static Response buildResponse(String statusLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
         ResponseBuilder responseBuilder = ResponseBuilder.response(toStatus(statusLine));
         headerLines.fold(responseBuilder, responseHeader());
-        return responseBuilder.entity(messageBodyLines.toString("", "", "", Long.MAX_VALUE)).build();
+        return responseBuilder.entity(messageBodyLines.toString("", "", "")).build();
     }
 
     private static Sequence<Sequence<String>> httpMessageLines(String requestMessage) {
