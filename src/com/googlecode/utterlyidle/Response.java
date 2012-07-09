@@ -50,5 +50,14 @@ public interface Response {
                 }
             };
         }
+
+        public static Function1<Response, Status> status() {
+            return new Function1<Response, Status>() {
+                @Override
+                public Status call(Response response) throws Exception {
+                    return response.status();
+                }
+            };
+        }
     }
 }
