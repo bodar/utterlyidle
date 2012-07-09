@@ -4,12 +4,7 @@ import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_ENCODING;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
-import static com.googlecode.utterlyidle.handlers.GzipHandler.clientAcceptsGZip;
-import static com.googlecode.utterlyidle.handlers.GzipHandler.isGZipped;
-import static com.googlecode.utterlyidle.handlers.GzipHandler.ungzip;
 
 public interface Response {
     Status status();
@@ -39,11 +34,19 @@ public interface Response {
     }
 
     public static class functions {
+        public static Function1<Object, Response> asResponse() {
+            return asResponse(response());
+        }
+
         public static Function1<Object, Response> asResponse(final String contentType) {
+            return asResponse(response().contentType(contentType));
+        }
+
+        public static Function1<Object, Response> asResponse(final ResponseBuilder response) {
             return new Function1<Object, Response>() {
                 @Override
                 public Response call(Object entity) throws Exception {
-                    return response().entity(entity).header(HttpHeaders.CONTENT_TYPE, contentType).build();
+                    return response.entity(entity).build();
                 }
             };
         }

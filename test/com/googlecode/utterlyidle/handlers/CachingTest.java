@@ -67,9 +67,9 @@ public class CachingTest {
     @Test
     public void canControlPolicyBasedOnContentType() throws Exception {
         assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
-                matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, TEXT_JAVASCRIPT).build())), is(true));
+                matches(Pair.pair(get("/foo").build(), response().contentType(TEXT_JAVASCRIPT).build())), is(true));
         assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
-                matches(Pair.pair(get("/foo").build(), response().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_ATOM_XML).build())), is(false));
+                matches(Pair.pair(get("/foo").build(), response().contentType(MediaType.APPLICATION_ATOM_XML).build())), is(false));
     }
 
     @Test

@@ -42,7 +42,7 @@ public class ClientErrorTest {
 
     @Test
     public void shouldReturn415WhenResourceCanNotConsumeType() throws Exception {
-        Response response = application().addAnnotated(Foo.class).handle(get("path").header(HttpHeaders.CONTENT_TYPE, "application/rubbish"));
+        Response response = application().addAnnotated(Foo.class).handle(get("path").contentType("application/rubbish"));
         assertThat(response.status(), is(Status.UNSUPPORTED_MEDIA_TYPE));
     }
 

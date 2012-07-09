@@ -213,4 +213,8 @@ public class RequestBuilder implements Callable<Request> {
             headers.remove(header);
         }
     }
+
+    public RequestBuilder contentType(String contentType) {
+        return header(HttpHeaders.CONTENT_TYPE, contentType);
+    }
 }
