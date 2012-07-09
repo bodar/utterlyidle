@@ -1,10 +1,12 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_ENCODING;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
+import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.handlers.GzipHandler.clientAcceptsGZip;
 import static com.googlecode.utterlyidle.handlers.GzipHandler.isGZipped;
 import static com.googlecode.utterlyidle.handlers.GzipHandler.ungzip;
@@ -33,6 +35,17 @@ public interface Response {
 
         public static String asString(Response response) {
             return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", response.status(), response.headers(), response.entity().toString());
+        }
+    }
+
+    public static class functions {
+        public static Function1<Object, Response> asResponse(final String contentType) {
+            return new Function1<Object, Response>() {
+                @Override
+                public Response call(Object entity) throws Exception {
+                    return response().entity(entity).header(HttpHeaders.CONTENT_TYPE, contentType).build();
+                }
+            };
         }
     }
 }
