@@ -68,7 +68,7 @@ public class BaseHandler implements HttpHandler {
 
     private Response failure(final MatchFailure matchFailure) {
         return modify(response(matchFailure.status())).
-                header(CONTENT_TYPE, TEXT_HTML).
+                contentType(TEXT_HTML).
                 entity(matchFailure).
                 build();
     }
@@ -76,7 +76,7 @@ public class BaseHandler implements HttpHandler {
     private Response setContentType(String mimeType, Response response) {
         if (header(response, CONTENT_TYPE) == null) {
             return modify(response).
-                    header(CONTENT_TYPE, defaultIfCharsetNotSpecified(mimeType)).
+                    contentType(defaultIfCharsetNotSpecified(mimeType)).
                     build();
         }
         return response;

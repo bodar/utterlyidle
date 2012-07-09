@@ -81,7 +81,7 @@ public class RestTest {
 
         ApplicationBuilder application = application().addAnnotated(UsesCustomValue.class).add(new ArgumentScopedModule() {
             public Module addPerArgumentObjects(Container container) {
-                container.addInstance(CustomValueWithoutPublicContructor.class, new CustomValueWithoutPublicContructor(SOME_CUSTOM_VALUE));
+                container.addInstance(CustomValueWithoutPublicConstructor.class, new CustomValueWithoutPublicConstructor(SOME_CUSTOM_VALUE));
                 return this;
             }
         });
@@ -92,7 +92,7 @@ public class RestTest {
     public void supportCustomArgumentActivationWithOption() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesCustomValueWithOption.class).add(new ArgumentScopedModule() {
             public Module addPerArgumentObjects(Container container) {
-                container.addActivator(CustomValueWithoutPublicContructor.class, CustomValueWithoutPublicContructorActivator.class);
+                container.addActivator(CustomValueWithoutPublicConstructor.class, CustomValueWithoutPublicConstructorActivator.class);
                 return this;
             }
         });
@@ -300,8 +300,8 @@ public class RestTest {
     public void canDetermineInputHandlerByMimeType() throws Exception {
         ApplicationBuilder application = application().addAnnotated(MultiplePutContent.class);
 
-        assertThat(application.responseAsString(put("text").header(HttpHeaders.CONTENT_TYPE, "text/plain")), is("plain"));
-        assertThat(application.responseAsString(put("text").header(HttpHeaders.CONTENT_TYPE, "text/html")), is("html"));
+        assertThat(application.responseAsString(put("text").contentType("text/plain")), is("plain"));
+        assertThat(application.responseAsString(put("text").contentType("text/html")), is("html"));
     }
 
     @Test
@@ -794,7 +794,7 @@ public class RestTest {
         public Response get(@QueryParam("override") Boolean override) {
             Response response = response(Status.SEE_OTHER);
             if (override) {
-                return modify(response).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).build();
+                return modify(response).contentType(MediaType.APPLICATION_JSON).build();
             }
             return response;
         }
@@ -819,7 +819,7 @@ public class RestTest {
     @Path("path")
     public static class UsesCustomValue {
         @GET
-        public String get(CustomValueWithoutPublicContructor value) {
+        public String get(CustomValueWithoutPublicConstructor value) {
             return value.getValue();
         }
     }
@@ -827,15 +827,15 @@ public class RestTest {
     @Path("path")
     public static class UsesCustomValueWithOption {
         @GET
-        public boolean get(@QueryParam("optionalParam") Option<CustomValueWithoutPublicContructor> option) {
+        public boolean get(@QueryParam("optionalParam") Option<CustomValueWithoutPublicConstructor> option) {
             return option.isEmpty();
         }
     }
 
-    public static class CustomValueWithoutPublicContructor {
+    public static class CustomValueWithoutPublicConstructor {
         private final String value;
 
-        CustomValueWithoutPublicContructor(String value) {
+        CustomValueWithoutPublicConstructor(String value) {
             this.value = value;
         }
 
@@ -844,16 +844,16 @@ public class RestTest {
         }
     }
 
-    public static class CustomValueWithoutPublicContructorActivator implements Callable<CustomValueWithoutPublicContructor> {
+    public static class CustomValueWithoutPublicConstructorActivator implements Callable<CustomValueWithoutPublicConstructor> {
 
         private String value;
 
-        public CustomValueWithoutPublicContructorActivator(String value) {
+        public CustomValueWithoutPublicConstructorActivator(String value) {
             this.value = value;
         }
 
-        public CustomValueWithoutPublicContructor call() throws Exception {
-            return new CustomValueWithoutPublicContructor(value);
+        public CustomValueWithoutPublicConstructor call() throws Exception {
+            return new CustomValueWithoutPublicConstructor(value);
         }
     }
 
