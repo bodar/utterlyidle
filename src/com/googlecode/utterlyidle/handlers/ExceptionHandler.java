@@ -42,7 +42,7 @@ public class ExceptionHandler implements HttpHandler {
     private Response findAndHandle(Request request, Throwable throwable) {
         exceptions.put(new Date(), request, ExceptionRenderer.toString(throwable));
         ResponseBuilder response = ResponseBuilder.response(INTERNAL_SERVER_ERROR).
-                header(CONTENT_TYPE, TEXT_PLAIN).
+                contentType(TEXT_PLAIN).
                 entity(throwable);
         try {
             return handlers.findAndHandle(request, response.build());

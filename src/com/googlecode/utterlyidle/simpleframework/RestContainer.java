@@ -54,7 +54,7 @@ public class RestContainer implements Container {
             StringWriter stringWriter = new StringWriter();
             using(new PrintWriter(stringWriter), printStackTrace(e));
             return ResponseBuilder.response(INTERNAL_SERVER_ERROR).
-                    header(CONTENT_TYPE, TEXT_PLAIN).
+                    contentType(TEXT_PLAIN).
                     entity(stringWriter.toString()).
                     build();
         }

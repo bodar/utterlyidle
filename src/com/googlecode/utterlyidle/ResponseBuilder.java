@@ -75,4 +75,8 @@ public class ResponseBuilder {
     public ResponseBuilder replaceHeaders(String name, Object value) {
         return removeHeaders(name).header(name, value);
     }
+
+    public ResponseBuilder contentType(String contentType) {
+        return header(HttpHeaders.CONTENT_TYPE, contentType);
+    }
 }
