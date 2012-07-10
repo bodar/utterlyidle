@@ -51,7 +51,7 @@ public class Form {
     }
 
     private Sequence<NameValue> nameValuePairs(Sequence<String> xpath) {
-        return Xml.selectElements(form, xpath.toString(DESCENDANT, "|", "")).flatMap(toNameAndValue());
+        return Xml.selectElements(form, xpath.toString(DESCENDANT, "|"+DESCENDANT, "")).flatMap(toNameAndValue());
     }
 
     private Callable1<? super Element, Sequence<NameValue>> toNameAndValue() {
