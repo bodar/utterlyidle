@@ -4,6 +4,7 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.ParametersContract;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
@@ -76,6 +77,6 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
     }
 
     private Request request(HeaderParameters headers) {
-        return Requests.request(null, null, headers, null);
+        return Requests.request(HttpMethod.GET, null, headers, null);
     }
 }
