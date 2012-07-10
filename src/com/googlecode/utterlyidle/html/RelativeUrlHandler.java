@@ -6,6 +6,7 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 
+import static com.googlecode.totallylazy.Strings.isEmpty;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
 public class RelativeUrlHandler implements HttpHandler {
@@ -20,8 +21,8 @@ public class RelativeUrlHandler implements HttpHandler {
         RequestBuilder requestBuilder = modify(request);
         if (currentUri != null) {
             Uri newUri = requestBuilder.uri();
-            if (newUri.toString().equals("")) {
-                requestBuilder.uri(currentUri);
+            if (isEmpty(newUri.path())) {
+                requestBuilder.uri(currentUri.query(newUri.query()));
             } else if (newUri.isRelative()) {
                 String absolutePath = currentUri.mergePath(newUri.path()).path();
                 requestBuilder.uri(newUri.mergePath(absolutePath));

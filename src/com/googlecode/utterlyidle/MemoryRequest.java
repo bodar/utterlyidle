@@ -14,7 +14,7 @@ public class MemoryRequest implements Request {
     private final HeaderParameters headers;
 
     private MemoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
-        this.method = method;
+        this.method = method.toUpperCase();
         this.uri = uri;
         this.entity = entity;
         this.headers = setContentLength(headers);
