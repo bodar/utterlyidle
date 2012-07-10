@@ -10,9 +10,11 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.w3c.dom.Element;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.String.format;
 
 public class Form {
+    public static final String DESCENDANT = "descendant::";
     private final Element form;
 
     public Form(Element form) {
@@ -23,16 +25,33 @@ public class Form {
         if (new Input(Xml.selectElement(form, submitXpath).get()).disabled()){
             throw new IllegalStateException(format("Attempt to invoke disabled input for [%s]", submitXpath));
         }
+        return submitXpath(fieldExpressions().add(sanitise(submitXpath)));
+    }
+
+    public Request submit() throws IllegalStateException {
+        return submitXpath(fieldExpressions());
+    }
+
+    private Request submitXpath(Sequence<String> fieldExpressions) {
         String action = Xml.selectContents(form, "@action");
         String method = Xml.selectContents(form, "@method");
-        Sequence<NameValue> inputs = nameValuePairs("descendant::input[not(@type='submit')]|descendant::textarea|descendant::select|" + submitXpath );
+
+        Sequence<NameValue> inputs = nameValuePairs(fieldExpressions);
         return inputs.fold(new RequestBuilder(method, action),
                 method.equalsIgnoreCase(HttpMethod.POST) ? addFormParams() : addQueryParams()).
                 build();
     }
 
-    private Sequence<NameValue> nameValuePairs(String xpath) {
-        return Xml.selectElements(form, xpath).flatMap(toNameAndValue());
+    private Sequence<String> fieldExpressions() {
+        return sequence("input[not(@type='submit')]", "textarea", "select");
+    }
+
+    private String sanitise(String submitXpath) {
+        return submitXpath.startsWith(DESCENDANT) ? submitXpath.substring(DESCENDANT.length()) : submitXpath;
+    }
+
+    private Sequence<NameValue> nameValuePairs(Sequence<String> xpath) {
+        return Xml.selectElements(form, xpath.toString(DESCENDANT, "|", "")).flatMap(toNameAndValue());
     }
 
     private Callable1<? super Element, Sequence<NameValue>> toNameAndValue() {
