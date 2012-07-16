@@ -8,12 +8,22 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RelativeUrlHandlerTest {
 
     RecordRequestHandler delegate = new RecordRequestHandler();
+
+    @Test
+    public void preserveQueryParameters() throws Exception {
+        RelativeUrlHandler relativeUrlHandler = new RelativeUrlHandler(delegate);
+        String urlWithQueryParameter = "/foo/bar?q=123";
+        relativeUrlHandler.handle(get(urlWithQueryParameter).build());
+        relativeUrlHandler.handle(post("").build());
+        assertThat(relativeUrlHandler.getCurrentUri().toString(), is(urlWithQueryParameter));
+    }
 
     @Test
     public void preserveAbsolutePath() throws Exception {
