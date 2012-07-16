@@ -38,7 +38,7 @@ public class Responses {
     }
 
     public static Response seeOther(String location) {
-        return response(Status.SEE_OTHER, one(pair(HttpHeaders.LOCATION, location)));
+        return response(Status.SEE_OTHER, one(pair(HttpHeaders.LOCATION, location)), location);
     }
 
     public static Callable1<Response, Status> status() {
