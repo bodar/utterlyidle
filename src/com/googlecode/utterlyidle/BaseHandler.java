@@ -118,6 +118,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private void registerMatchedResource(Class<?> declaringClass) {
+        if(container.contains(MatchedResource.class)) container.remove(MatchedResource.class);
         container.addInstance(MatchedResource.class, new MatchedResource(declaringClass));
     }
 
