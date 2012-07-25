@@ -62,6 +62,12 @@ import static org.hamcrest.Matchers.startsWith;
 
 public class RestTest {
     @Test
+    public void supportMatchedResource() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(DependsOnMatchedResource.class);
+        assertThat(application.responseAsString(get("hello")), is("DependsOnMatchedResource"));
+    }
+
+    @Test
     public void supportUUIDConversion() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesUUID.class);
         String uuid = UUID.randomUUID().toString();
@@ -870,6 +876,20 @@ public class RestTest {
         @GET
         public UUID get(@QueryParam("name") UUID name) {
             return name;
+        }
+    }
+
+    @Path("hello")
+    public static class DependsOnMatchedResource {
+        private final MatchedResource matchedResource;
+
+        public DependsOnMatchedResource(MatchedResource matchedResource) {
+            this.matchedResource = matchedResource;
+        }
+
+        @GET
+        public String get() {
+            return matchedResource.forClass().getSimpleName();
         }
     }
 }

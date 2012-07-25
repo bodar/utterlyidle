@@ -108,12 +108,17 @@ public class BaseHandler implements HttpHandler {
     private Object invokeMethod(Binding binding, Request request) throws Exception {
         try {
             Class<?> declaringClass = binding.method().getDeclaringClass();
+            registerMatchedResource(declaringClass);
             Object resourceInstance = container.get(declaringClass);
             Object[] arguments = new ParametersExtractor(binding.uriTemplate(), application, binding.parameters()).extract(request);
             return binding.method().invoke(resourceInstance, arguments);
         } catch (InvocationTargetException e) {
             throw toException(e.getCause());
         }
+    }
+
+    private void registerMatchedResource(Class<?> declaringClass) {
+        container.addInstance(MatchedResource.class, new MatchedResource(declaringClass));
     }
 
     private Response wrapInResponse(Object instance) {
