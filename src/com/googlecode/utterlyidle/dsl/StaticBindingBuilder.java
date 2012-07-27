@@ -30,6 +30,7 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
         put("less", MediaType.TEXT_CSS);
         put("html", MediaType.TEXT_HTML);
         put("xml", MediaType.TEXT_XML);
+        put("csv", MediaType.TEXT_CSV);
         put("txt", MediaType.TEXT_PLAIN);
     }};
 
