@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
+    <file url="file://$USER_HOME$/trunk/faith" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/faith/faith-core" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-acceptance-test" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-core" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-end-to-end-test" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-integration-test" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-lab-test" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-performance-test" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-sql" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-test-builders" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-test-support" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-tools" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-webapp" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-zombie-core" charset="UTF-8" />
+    <file url="file://$USER_HOME$/trunk/netstream/knitware/knitware-zombie-webapp" charset="UTF-8" />
+  </component>
 </project>
 
