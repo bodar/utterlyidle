@@ -31,7 +31,7 @@ public class Rfc2616 {
     }
 
     public static String toUnquotedString(String value) {
-        return value.replaceFirst("^\"", "").replaceFirst("\"$", "");
+        return value.replaceFirst("^\"", "").replaceFirst("\"$", "").replace("\\\"", "\"");
     }
 
     public static Function1<String, String> toUnquotedString() {
