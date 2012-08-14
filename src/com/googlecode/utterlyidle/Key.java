@@ -7,10 +7,11 @@ import org.apache.commons.codec.binary.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 
+import static com.googlecode.totallylazy.Strings.bytes;
+import static com.googlecode.totallylazy.Strings.string;
 import static com.googlecode.utterlyidle.handlers.GzipHandler.gzip;
 import static com.googlecode.utterlyidle.handlers.GzipHandler.ungzip;
 import static javax.crypto.Cipher.DECRYPT_MODE;
@@ -18,7 +19,6 @@ import static javax.crypto.Cipher.ENCRYPT_MODE;
 
 public class Key implements Value<String> {
     public static final String ALGORITHM = "AES";
-    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     private final String secret;
 
@@ -53,14 +53,6 @@ public class Key implements Value<String> {
     @Override
     public String value() {
         return secret;
-    }
-
-    private byte[] bytes(String value) {
-        return value.getBytes(UTF8);
-    }
-
-    private String string(byte[] value) throws GeneralSecurityException {
-        return new String(value, UTF8);
     }
 
     private static String generate() {
