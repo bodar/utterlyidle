@@ -8,7 +8,8 @@
             <jarjar jarfile="${release.no.libs.jar}">
                 <zipfileset src="${release.jar.path}"/>
                 <zipgroupfileset dir="${build.dependencies.dir}" includes="commons-codec-*.jar" />
-                <rule pattern="org.apache.commons.codec.**" result="com.googlecode.utterlyidle.internal.codec.@1"/>
+                <rule pattern="org.apache.commons.codec.*" result="com.googlecode.utterlyidle.internal.codec.$@1"/>
+                <rule pattern="org.apache.commons.codec.**.*" result="com.googlecode.utterlyidle.internal.codec.@1.$@2"/>
             </jarjar>
             <delete file="${release.jar.path}"/>
             <move file="${release.no.libs.jar}" tofile="${release.jar.path}"/>
