@@ -25,7 +25,6 @@ import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplication;
-import static java.lang.Integer.parseInt;
 
 public class ApplicationServlet extends HttpServlet {
     public static final String KEY = "application";
@@ -87,7 +86,7 @@ public class ApplicationServlet extends HttpServlet {
         return (value != null && value.length() > 0) ? "?" + value : "";
     }
 
-    private static HeaderParameters convertToHeaderParameters(HttpServletRequest request) {
+    public static HeaderParameters convertToHeaderParameters(HttpServletRequest request) {
         HeaderParameters result = HeaderParameters.headerParameters();
         for (String name : sequence(request.getHeaderNames(), String.class)) {
             for (String value : sequence(request.getHeaders(name), String.class)) {
