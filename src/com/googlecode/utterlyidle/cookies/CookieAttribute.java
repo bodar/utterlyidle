@@ -1,11 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.utterlyidle.Rfc2616;
-
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class CookieAttribute {
@@ -64,7 +60,7 @@ public class CookieAttribute {
 
     @Override
     public String toString() {
-        return String.format("%s=%s", name, Rfc2616.toQuotedString(value));
+        return String.format("%s=%s", name, value);
     }
 
     private static Date gmt(Date date) {
