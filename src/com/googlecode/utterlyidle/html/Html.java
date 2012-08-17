@@ -1,6 +1,8 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.LazyException;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Response;
 import org.w3c.dom.Node;
@@ -89,5 +91,9 @@ public class Html {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Sequence<String> selectValues(String xpath) {
+        return Xml.textContents(Xml.selectNodes(document, xpath));
     }
 }
