@@ -1,8 +1,11 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.matchers.NumberMatcher;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static com.googlecode.utterlyidle.html.Html.html;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
@@ -45,5 +48,13 @@ public class HtmlTest {
         Html html = html("<html><head><title>Oh Hello</title></head><body></body></html>");
         assertThat(html.innerHtml("//head"), is(html("<title>Oh Hello</title>")));
     }
-    
+
+    @Test
+    public void supportsSelectValues() throws Exception {
+        Html html = html("<html><head><title>Title1</title><title>Title2</title></head><body></body></html>");
+        assertThat(html.selectValues("//title"), hasExactly("Title1", "Title2"));
+
+    }
+
+
 }
