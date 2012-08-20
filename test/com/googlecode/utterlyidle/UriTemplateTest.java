@@ -18,6 +18,14 @@ public class UriTemplateTest {
     }
 
     @Test
+    public void ignoresPathVariablesContainingSlashes() throws Exception {
+        assertThat(uriTemplate("properties/{name:foo/order}").segments(), is(2));
+        assertThat(uriTemplate("properties/{name:foo/order}/foo").segments(), is(3));
+        assertThat(uriTemplate("properties/{name:foo/order}/foo/{id:foo/order}").segments(), is(4));
+
+    }
+
+    @Test
     public void encodesOnlyPathParamsWhichDontContainForwardSlashes() throws Exception {
         UriTemplate template = uriTemplate("properties/{name}");
 
