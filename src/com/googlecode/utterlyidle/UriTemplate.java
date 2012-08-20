@@ -94,6 +94,6 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public int segments() {
-        return template.split("\\/").length;
+        return template.replaceAll("\\{[^\\}]*\\}", " ").split("\\/").length;
     }
 }
