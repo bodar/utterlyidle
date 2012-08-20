@@ -51,6 +51,11 @@ public class RequestBuilder implements Callable<Request> {
         this.entity = request.entity();
     }
 
+    public RequestBuilder method(String value){
+        this.method = value;
+        return this;
+    }
+
     @Deprecated
     public RequestBuilder withUri(Uri value) {
         return uri(value);
