@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Strings;
 
@@ -59,6 +60,26 @@ public class UrlEncodedMessage {
             return URLEncoder.encode(value, Entity.DEFAULT_CHARACTER_SET);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static class functions {
+        public static Function1<String, String> encode() {
+            return new Function1<String, String>() {
+                @Override
+                public String call(String value) throws Exception {
+                    return UrlEncodedMessage.encode(value);
+                }
+            };
+        }
+
+        public static Function1<String, String> decode() {
+            return new Function1<String, String>() {
+                @Override
+                public String call(String value) throws Exception {
+                    return UrlEncodedMessage.decode(value);
+                }
+            };
         }
     }
 }
