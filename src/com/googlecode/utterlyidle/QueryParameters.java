@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.collections.ImmutableList;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
