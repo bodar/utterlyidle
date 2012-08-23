@@ -3,12 +3,13 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.First;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.collections.ImmutableList;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,7 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
         this.predicate = predicate;
         this.values = values;
     }
-    
+
     protected abstract Self self(ImmutableList<Pair<K, V>> values);
 
     public Self add(K name, V value) {
@@ -67,7 +68,12 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
     }
 
     private Sequence<Pair<K, V>> filterByKey(K key) {
-        return sequence(values).filter(by(Callables.<K>first(), call(predicate, key))).realise();
+        Predicate<First<K>> predicate = by(Callables.<K>first(), call(this.predicate, key));
+        return filter(predicate).realise();
+    }
+
+    public Sequence<Pair<K, V>> filter(final Predicate<First<K>> predicate) {
+        return sequence(values).filter(predicate);
     }
 
     public static <K, V, Self extends Parameters<K, V, Self>> Callable2<Self, Pair<K, V>, Self> pairIntoParameters() {
@@ -99,7 +105,7 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
     private Predicate<? super Pair<K, V>> sameHeaderExistsIn(final Self parameters) {
         return new Predicate<Pair<K, V>>() {
             public boolean matches(Pair<K, V> pair) {
-                 return parameters.contains(pair.first()) && parameters.getValue(pair.first()).equals(pair.second());
+                return parameters.contains(pair.first()) && parameters.getValue(pair.first()).equals(pair.second());
             }
         };
     }
