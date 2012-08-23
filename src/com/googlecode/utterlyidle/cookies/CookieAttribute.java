@@ -24,11 +24,21 @@ public class CookieAttribute {
         this.value = value;
     }
 
+    @Deprecated //remove after build 639
     public String getName() {
+        return name();
+    }
+
+    @Deprecated //remove after build 639
+    public String getValue() {
+        return value();
+    }
+
+    public String name() {
         return name;
     }
 
-    public String getValue() {
+    public String value() {
         return value;
     }
 
