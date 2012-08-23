@@ -35,7 +35,7 @@ public class MemoryResponseTest {
 
         assertThat(
                 header(response, SET_COOKIE),
-                is("a=\"1\"; Comment=some comment; Domain=.acme.com; Max-Age=123; Path=/products; Secure=; Expires=Sun, 04-Sep-2011 06:15:36 GMT"));
+                is("a=\"1\"; Comment=some comment; Domain=.acme.com; Max-Age=123; Path=/products; Secure=; Expires=Sun, 04 Sep 2011 06:15:36 UTC"));
     }
 
     @Test
