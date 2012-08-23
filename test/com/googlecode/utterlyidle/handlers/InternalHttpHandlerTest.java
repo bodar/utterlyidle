@@ -31,6 +31,18 @@ public class InternalHttpHandlerTest {
     }
 
     @Test
+    public void shouldIgnoreCaseOfHeaders() throws Exception {
+        String cookieValue = "why hello";
+        Request cookieRequest = get("/foo").header(COOKIE.toLowerCase(), cookieValue).build();
+        Request sitemeshRequest = get("/bar").build();
+        SnoopingRequestMarker snoopingRequestMarker = new SnoopingRequestMarker(applicationId());
+
+        new InternalHttpHandler(snoopingRequestMarker, new HelloWorldApplication(BasePath.basePath("base")), cookieRequest).handle(sitemeshRequest);
+
+        assertThat(snoopingRequestMarker.request.headers().getValue(COOKIE), is(cookieValue));
+    }
+
+    @Test
     public void shouldNotPassNonWhitelistedHeadersThrough() throws Exception {
         Request cookieRequest = get("/foo").header("X-StuffIsAwesome", true).build();
         Request sitemeshRequest = get("/bar").build();

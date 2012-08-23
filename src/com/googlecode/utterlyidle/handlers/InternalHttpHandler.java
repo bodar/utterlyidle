@@ -2,7 +2,10 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.First;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HttpHandler;
@@ -11,11 +14,10 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 
-import static com.googlecode.totallylazy.Predicates.in;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
 public class InternalHttpHandler implements HttpHandler {
     private static final Sequence<String> HEADER_WHITE_LIST = sequence(COOKIE);
@@ -32,15 +34,22 @@ public class InternalHttpHandler implements HttpHandler {
 
     @Override
     public Response handle(Request request) throws Exception {
-        Request requestWithHeaders = sequence(originalRequest.headers()).filter(where(Callables.<String>first(), in(HEADER_WHITE_LIST))).fold(modify(request), addHeader()).build();
-        return application.handle(marker.markAsInternal(requestWithHeaders));
+        Request requestWithOriginalHeaders = requestWithOriginalHeaders(request);
+        return application.handle(marker.markAsInternal(requestWithOriginalHeaders));
     }
 
-    private Callable2<RequestBuilder, Pair<String, String>, RequestBuilder> addHeader() {
-        return new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
+    private Request requestWithOriginalHeaders(Request request) {
+        Predicate<First<String>> inWhitelist = by(Callables.<String>first(), Predicates.or(HEADER_WHITE_LIST.map(equalIgnoringCase())));
+        Sequence<Pair<String, String>> headersToAdd = originalRequest.headers().filter(inWhitelist);
+
+        return headersToAdd.fold(request, addHeader());
+    }
+
+    private Callable2<Request, Pair<String, String>, Request> addHeader() {
+        return new Callable2<Request, Pair<String, String>, Request>() {
             @Override
-            public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> headerPair) throws Exception {
-                return requestBuilder.header(headerPair.first(), headerPair.second());
+            public Request call(Request request, Pair<String, String> headerPair) throws Exception {
+                return RequestBuilder.modify(request).header(headerPair.first(), headerPair.second()).build();
             }
         };
     }
