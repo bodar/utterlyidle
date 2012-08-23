@@ -42,7 +42,7 @@ public class CompositeHandler implements HttpHandler {
     }
 
     public CompositeHandler add(Predicate<? super Request> predicate, Callable1<? super Request, ? extends Response> callable) {
-        rules.add(predicate, callable);
+        rules.addFirst(predicate, callable);
         return this;
     }
 }

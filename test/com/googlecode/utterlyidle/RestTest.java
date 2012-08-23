@@ -458,7 +458,7 @@ public class RestTest {
         @GET
         @Path("foo")
         public Response getAndSet(@CookieParam("name") String name) {
-            return ResponseBuilder.response().cookie("anotherName", cookie("anotherValue")).entity(name).build();
+            return ResponseBuilder.response().cookie(cookie("anotherName", "anotherValue")).entity(name).build();
         }
 
         @GET
