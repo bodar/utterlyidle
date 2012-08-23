@@ -59,7 +59,7 @@ public class ResponseBuilder {
     }
 
     public ResponseBuilder cookie(Cookie cookie) {
-        return header(HttpHeaders.SET_COOKIE, toHttpHeader(cookie.name(), cookie));
+        return header(HttpHeaders.SET_COOKIE, toHttpHeader(cookie));
     }
 
     public Response build(){
