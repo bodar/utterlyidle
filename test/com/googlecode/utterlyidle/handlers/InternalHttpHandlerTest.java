@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.junit.Test;
 
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -19,15 +20,14 @@ import static org.junit.Assert.assertThat;
 public class InternalHttpHandlerTest {
     @Test
     public void shouldPassWhitelistedHeadersThrough() throws Exception {
-        Cookie cookie = cookie("chocolate");
-        String name = "monster";
-        Request cookieRequest = get("/foo").cookie(name, cookie).build();
+        Cookie cookie = cookie("monster", "chocolate");
+        Request cookieRequest = get("/foo").cookie(cookie).build();
         Request sitemeshRequest = get("/bar").build();
         SnoopingRequestMarker snoopingRequestMarker = new SnoopingRequestMarker(applicationId());
 
-        new InternalHttpHandler(snoopingRequestMarker, new HelloWorldApplication(BasePath.basePath("base")), cookieRequest).handle(sitemeshRequest);
+        new InternalHttpHandler(snoopingRequestMarker, new HelloWorldApplication(basePath("base")), cookieRequest).handle(sitemeshRequest);
 
-        assertThat(snoopingRequestMarker.request.headers().getValue(COOKIE), is(toHttpHeader(name, cookie)));
+        assertThat(snoopingRequestMarker.request.headers().getValue(COOKIE), is(toHttpHeader(cookie)));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class InternalHttpHandlerTest {
         Request sitemeshRequest = get("/bar").build();
         SnoopingRequestMarker snoopingRequestMarker = new SnoopingRequestMarker(applicationId());
 
-        new InternalHttpHandler(snoopingRequestMarker, new HelloWorldApplication(BasePath.basePath("base")), cookieRequest).handle(sitemeshRequest);
+        new InternalHttpHandler(snoopingRequestMarker, new HelloWorldApplication(basePath("base")), cookieRequest).handle(sitemeshRequest);
 
         assertThat(snoopingRequestMarker.request.headers().getValue("X-StuffIsAwesome"), is(nullValue()));
     }
