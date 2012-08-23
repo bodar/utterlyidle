@@ -53,8 +53,13 @@ public class ResponseBuilder {
         return this;
     }
 
+    @Deprecated
     public ResponseBuilder cookie(String name, Cookie value) {
-        return header(HttpHeaders.SET_COOKIE, toHttpHeader(name, value));
+        return cookie(value);
+    }
+
+    public ResponseBuilder cookie(Cookie cookie) {
+        return header(HttpHeaders.SET_COOKIE, toHttpHeader(cookie.name(), cookie));
     }
 
     public Response build(){

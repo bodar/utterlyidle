@@ -61,11 +61,16 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
         };
     }
 
-    public static String toHttpHeader(String name, Cookie cookie) {
-        final String cookieValue = String.format("%s=%s; ", name, Rfc2616.toQuotedString(cookie.value()));
+    public static String toHttpHeader(Cookie cookie) {
+        final String cookieValue = String.format("%s=%s; ", cookie.name(), Rfc2616.toQuotedString(cookie.value()));
         final String attributes = sequence(cookie.attributes()).toString("; ");
 
         return cookieValue + attributes;
+    }
+
+    @Deprecated // delete after build 637
+    public static String toHttpHeader(String name, Cookie cookie) {
+        return toHttpHeader(cookie);
     }
 
 

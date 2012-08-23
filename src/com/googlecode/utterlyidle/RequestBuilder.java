@@ -52,7 +52,7 @@ public class RequestBuilder implements Callable<Request> {
         this.entity = request.entity();
     }
 
-    public RequestBuilder method(String value){
+    public RequestBuilder method(String value) {
         this.method = value;
         return this;
     }
@@ -90,8 +90,13 @@ public class RequestBuilder implements Callable<Request> {
         return cookie(name, cookie);
     }
 
+    @Deprecated //delete after build 637
     public RequestBuilder cookie(String name, Cookie cookie) {
-        headers.add(pair(HttpHeaders.COOKIE, toHttpHeader(name, cookie)));
+        return cookie(cookie);
+    }
+
+    public RequestBuilder cookie(Cookie cookie) {
+        headers.add(pair(HttpHeaders.COOKIE, toHttpHeader(cookie)));
         return this;
     }
 
@@ -120,7 +125,7 @@ public class RequestBuilder implements Callable<Request> {
         return removeQuery(name).query(name, value);
     }
 
-        @Deprecated
+    @Deprecated
     public RequestBuilder withForm(String name, Object value) {
         return form(name, value);
     }
