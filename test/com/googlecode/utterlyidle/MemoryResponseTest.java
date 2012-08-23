@@ -31,11 +31,11 @@ public class MemoryResponseTest {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Australia/Sydney"));
         calendar.set(2011, 8, 4, 16, 15, 36);
         Response response = ResponseBuilder.response().
-                cookie("a", cookie("1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(calendar.getTime()))).build();
+                cookie(cookie("a", "1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(calendar.getTime()))).build();
 
         assertThat(
                 header(response, SET_COOKIE),
-                is("a=\"1\"; Comment=some comment; Domain=.acme.com; Max-Age=123; Path=/products; Secure=; Expires=Sun, 04-Sep-2011 06:15:36 GMT"));
+                is("a=\"1\"; Comment=some comment; Domain=.acme.com; Max-Age=123; Path=/products; Secure=; Expires=Sun, 04 Sep 2011 06:15:36 UTC"));
     }
 
     @Test

@@ -26,6 +26,6 @@ public class CompositeEntityWriter implements EntityWriter<Object> {
     public <T> void add(Predicate<? super T> predicate, final EntityWriter<? super T> writer) {
         Predicate<Object> cast = cast(predicate);
         EntityWriter<Object> objectWriter = cast(writer);
-        rules.add(cast, asFunction(objectWriter));
+        rules.addFirst(cast, asFunction(objectWriter));
     }
 }
