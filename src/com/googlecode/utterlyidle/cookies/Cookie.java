@@ -1,8 +1,10 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static java.lang.String.format;
 
 public class Cookie {
     private final String name;
@@ -29,5 +31,13 @@ public class Cookie {
 
     public Iterable<CookieAttribute> attributes() {
         return attributes;
+    }
+
+    @Override
+    public String toString() {
+        final String cookieValue = format("%s=%s; ", name, Rfc2616.toQuotedString(value));
+        final String attributes = this.attributes.toString("; ");
+
+        return cookieValue + attributes;
     }
 }
