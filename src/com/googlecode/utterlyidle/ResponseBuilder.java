@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.time.Dates;
@@ -11,7 +10,6 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 
 public class ResponseBuilder {
@@ -74,6 +72,11 @@ public class ResponseBuilder {
 
     public ResponseBuilder entity(Object value){
         entity = Entity.entity(value);
+        return this;
+    }
+    
+    public ResponseBuilder removeEntity() {
+        entity = Entity.empty();
         return this;
     }
 
