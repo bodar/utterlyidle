@@ -61,13 +61,14 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
         };
     }
 
-    public static String toHttpHeader(String name, Cookie cookie) {
-        final String cookieValue = String.format("%s=%s; ", name, Rfc2616.toQuotedString(cookie.value()));
-        final String attributes = sequence(cookie.attributes()).toString("; ");
-
-        return cookieValue + attributes;
+    public static String toHttpHeader(Cookie cookie) {
+        return cookie.toString();
     }
 
+    @Deprecated // delete after build 637
+    public static String toHttpHeader(String name, Cookie cookie) {
+        return toHttpHeader(cookie);
+    }
 
     private static Function1<String, Sequence<Pair<String, String>>> parseIntoPairs() {
         return new Function1<String, Sequence<Pair<String, String>>>() {
@@ -77,5 +78,4 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
             }
         };
     }
-
 }

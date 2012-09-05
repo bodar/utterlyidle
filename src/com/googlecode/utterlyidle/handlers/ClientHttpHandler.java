@@ -68,7 +68,7 @@ public class ClientHttpHandler implements HttpClient {
             Status status = status(connection); // request is actually sent now
             byte[] bytes = using(inputStream(connection), bytes());
             return createResponse(connection, status, bytes);
-        } catch (ConnectException ex) {
+        } catch (SocketException ex) {
             return response(Status.CONNECTION_REFUSED);
         } catch (SocketTimeoutException ex) {
             return response(Status.CLIENT_TIMEOUT);

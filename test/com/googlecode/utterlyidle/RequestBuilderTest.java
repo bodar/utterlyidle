@@ -12,7 +12,7 @@ public class RequestBuilderTest {
     @Test
     public void canCreateRequestBuilderFromRequest() {
         Request originalRequest = new RequestBuilder("GET", "/home").
-                cookie("fred", cookie("blogs")).
+                cookie(cookie("fred", "blogs")).
                 form("going", "well").
                 header("some", "header").
                 accepting("accept header").

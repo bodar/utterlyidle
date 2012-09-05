@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
@@ -51,14 +52,9 @@ public class RequestBuilder implements Callable<Request> {
         this.entity = request.entity();
     }
 
-    public RequestBuilder method(String value){
+    public RequestBuilder method(String value) {
         this.method = value;
         return this;
-    }
-
-    @Deprecated
-    public RequestBuilder withUri(Uri value) {
-        return uri(value);
     }
 
     public RequestBuilder uri(Uri uri) {
@@ -67,7 +63,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder accepting(String value) {
-        return withHeader(HttpHeaders.ACCEPT, value);
+        return header(HttpHeaders.ACCEPT, value);
     }
 
     public RequestBuilder header(String name, Object value) {
@@ -79,24 +75,14 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
-    @Deprecated
-    public RequestBuilder withHeader(String name, Object value) {
-        return header(name, value);
-    }
-
-    @Deprecated
-    public RequestBuilder withCookie(String name, Cookie cookie) {
-        return cookie(name, cookie);
-    }
-
+    @Deprecated //delete after build 637
     public RequestBuilder cookie(String name, Cookie cookie) {
-        headers.add(pair(HttpHeaders.COOKIE, toHttpHeader(name, cookie)));
-        return this;
+        return cookie(cookie);
     }
 
-    @Deprecated
-    public RequestBuilder withQuery(String name, Object value) {
-        return query(name, value);
+    public RequestBuilder cookie(Cookie cookie) {
+        headers.add(pair(HttpHeaders.COOKIE, toHttpHeader(cookie)));
+        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -119,16 +105,6 @@ public class RequestBuilder implements Callable<Request> {
         return removeQuery(name).query(name, value);
     }
 
-        @Deprecated
-    public RequestBuilder withForm(String name, Object value) {
-        return form(name, value);
-    }
-
-    @Deprecated
-    public RequestBuilder withForms(FormParameters formParameters) {
-        return forms(formParameters);
-    }
-
     public RequestBuilder forms(FormParameters formParameters) {
         replaceHeader(HttpHeaders.CONTENT_TYPE, format("%s; charset=%s", MediaType.APPLICATION_FORM_URLENCODED, Entity.DEFAULT_CHARACTER_SET));
         entity = Entity.entity(formParameters.toString());
@@ -141,16 +117,6 @@ public class RequestBuilder implements Callable<Request> {
         }
 
         return forms(FormParameters.parse(entity).add(name, value.toString()));
-    }
-
-    @Deprecated
-    public RequestBuilder withInput(byte[] input) {
-        return input(input);
-    }
-
-    @Deprecated
-    public RequestBuilder input(byte[] input) {
-        return entity(input);
     }
 
     public RequestBuilder entity(Object entity) {
