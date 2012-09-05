@@ -62,16 +62,6 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
     }
 
     @Test
-    public void shouldHandleDoubleQuotesInCookieValues() throws Exception {
-        assertThat(
-                toHttpHeader("a", cookie("Some \"double quoted thing\"")),
-                is("a=\"Some \\\"double quoted thing\\\"\"; "));
-
-        Request request = get("").cookie("a", Cookie.cookie("\"")).build();
-        assertThat(cookies(request.headers()).getValue("a"), is("\""));
-    }
-
-    @Test
     public void copesWithCookieHeaderWithNoCookies() {
         CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "")))).headers());
         assertThat(cookies.size(), is(0));

@@ -1,9 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
@@ -11,7 +9,6 @@ import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.handlers.ConvertExtensionToAcceptHeader.Replacements.replacements;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -96,17 +93,4 @@ public class ConvertExtensionToAcceptHeaderTest {
         return ConvertExtensionToAcceptHeader.fileExtension(uri(url)).getOrNull();
     }
 
-    private static class StubHttpHandler implements HttpHandler {
-        public Request request;
-        public Response response = response();
-
-        public Response handle(Request request) throws Exception {
-            this.request = request;
-            return response;
-        }
-
-        public void respondsWith(Response response) {
-            this.response = response;
-        }
-    }
 }
