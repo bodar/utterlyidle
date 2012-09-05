@@ -59,5 +59,14 @@ public interface Response {
                 }
             };
         }
+
+        public static Function1<Response, String> header(final String name) {
+            return new Function1<Response, String>() {
+                @Override
+                public String call(Response response) throws Exception {
+                    return response.headers().getValue(name);
+                }
+            };
+        }
     }
 }
