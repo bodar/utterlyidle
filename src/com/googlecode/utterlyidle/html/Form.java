@@ -1,18 +1,17 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.Xml;
+import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Xml.contents;
+import static com.googlecode.totallylazy.Xml.selectNode;
 import static java.lang.String.format;
 
 public class Form {
@@ -32,6 +31,18 @@ public class Form {
 
     public Request submit() throws IllegalStateException {
         return submitXpath(fieldExpressions());
+    }
+
+    public String action() {
+        return attribute("@action");
+    }
+
+    public String method() {
+        return attribute("@method");
+    }
+
+    private String attribute(String xpath) {
+        return selectNode(form, xpath).map(contents()).getOrElse((String) null);
     }
 
     @Override
