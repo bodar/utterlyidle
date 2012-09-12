@@ -5,10 +5,13 @@ import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Response;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
 import static com.googlecode.totallylazy.Xml.selectElement;
+import static com.googlecode.totallylazy.Xml.selectElements;
+import static com.googlecode.utterlyidle.html.Form.fromElement;
 import static java.lang.String.format;
 
 public class Html {
@@ -20,7 +23,7 @@ public class Html {
             this.raw = document;
             this.document = Xml.document(document);
         } catch (LazyException e){
-            throw new IllegalArgumentException(format("Could not parse html: %s", document));
+            throw new IllegalArgumentException(format("Could not parse html: %s", document), e);
         }
     }
 
@@ -38,6 +41,10 @@ public class Html {
 
     public Form form(String xpath) {
         return new Form(selectElement(document, xpath).get());
+    }
+
+    public Sequence<Form> forms() {
+        return selectElements(document, "//form").map(fromElement());
     }
 
     public Input input(String xpath) {
@@ -96,4 +103,5 @@ public class Html {
     public Sequence<String> selectValues(String xpath) {
         return Xml.textContents(Xml.selectNodes(document, xpath));
     }
+
 }
