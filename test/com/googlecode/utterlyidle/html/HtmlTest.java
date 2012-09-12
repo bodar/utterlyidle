@@ -8,6 +8,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static com.googlecode.utterlyidle.html.Html.html;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -27,6 +28,15 @@ public class HtmlTest {
     public void toStringReturnsOriginalHtml() throws Exception{
         Html html = html("   <html/>   ");
         assertThat(html.toString(), is("   <html/>   "));
+    }
+
+    @Test
+    public void returnsForms() throws Exception{
+        Html html = html("<html><form id=\"form1\"><input name=\"one\"/></form><form id=\"form2\"><input name=\"two\"/></form></html>");
+        Sequence<Form> forms = html.forms();
+        assertThat(forms.size(), is(equalTo(2)));
+        assertThat(forms.first().toString(), is(equalTo("<form id=\"form1\"><input name=\"one\"/></form>")));
+        assertThat(forms.second().toString(), is(equalTo("<form id=\"form2\"><input name=\"two\"/></form>")));
     }
 
     @Test

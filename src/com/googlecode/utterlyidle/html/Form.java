@@ -121,4 +121,13 @@ public class Form {
             }
         };
     }
+
+    public static Callable1<? super Element, ? extends Form> fromElement() {
+        return new Callable1<Element, Form>() {
+            @Override
+            public Form call(Element element) throws Exception {
+                return new Form(element);
+            }
+        };
+    }
 }
