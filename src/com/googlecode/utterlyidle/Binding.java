@@ -5,6 +5,8 @@ import com.googlecode.totallylazy.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import static com.googlecode.totallylazy.Predicates.some;
+
 public class Binding {
     private final Method method;
     private final String httpMethod;
@@ -61,10 +63,13 @@ public class Binding {
         return parameters.size();
     }
 
+    private int numberOfDefaultArguments() {
+        return namedParameters().map(NamedParameter.methods.defaultValue()).filter(Predicates.<String>some()).size();
+    }
+
     public int priority() {
         return priority;
     }
-
 
     public boolean hidden() {
         return hidden;
@@ -97,7 +102,6 @@ public class Binding {
             }
         };
     }
-
     public static class functions {
         public static Function1<Binding, Integer> priority() {
             return new Function1<Binding, Integer>() {
@@ -107,6 +111,7 @@ public class Binding {
                 }
             };
         }
+
         public static Function1<Binding, Integer> numberOfArguments() {
             return new Function1<Binding, Integer>() {
                 @Override
@@ -115,6 +120,16 @@ public class Binding {
                 }
             };
         }
+
+        public static Function1<Binding, Integer> numberOfDefaultArguments() {
+            return new Function1<Binding, Integer>() {
+                @Override
+                public Integer call(Binding binding) throws Exception {
+                    return binding.numberOfDefaultArguments();
+                }
+            };
+        }
+
 
         public static Function1<Binding, Integer> pathSegments() {
             return new Function1<Binding, Integer>() {
@@ -125,7 +140,6 @@ public class Binding {
                 }
             };
         }
-
 
     }
 
