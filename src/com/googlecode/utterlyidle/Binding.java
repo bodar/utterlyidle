@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Predicates.some;
+import static com.googlecode.utterlyidle.NamedParameter.methods.defaultValue;
 
 public class Binding {
     private final Method method;
@@ -64,7 +65,7 @@ public class Binding {
     }
 
     private int numberOfDefaultArguments() {
-        return namedParameters().map(NamedParameter.methods.defaultValue()).filter(Predicates.<String>some()).size();
+        return namedParameters().map(defaultValue()).filter(Predicates.<String>some()).size();
     }
 
     public int priority() {
