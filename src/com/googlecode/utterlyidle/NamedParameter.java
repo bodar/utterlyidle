@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
@@ -70,5 +71,16 @@ public class NamedParameter implements Parameter {
     public void addTo(Container container) {
         container.addActivator(String.class, extractValueFrom(container)).
                 addType(new TypeFor<Iterable<String>>() {}.get(), extractValuesFrom(container));
+    }
+
+    public static class methods {
+        public static Callable1<NamedParameter, Option<String>> defaultValue() {
+            return new Callable1<NamedParameter, Option<String>>() {
+                @Override
+                public Option<String> call(NamedParameter namedParameter) throws Exception {
+                    return namedParameter.defaultValue();
+                }
+            };
+        }
     }
 }
