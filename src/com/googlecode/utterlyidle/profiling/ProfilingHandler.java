@@ -9,7 +9,7 @@ import com.googlecode.utterlyidle.sitemesh.PropertyMapParser;
 
 import java.io.IOException;
 
-import static com.googlecode.funclate.Model.model;
+import static com.googlecode.funclate.Model.immutable.model;
 import static com.googlecode.utterlyidle.Requests.query;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.profiling.ProfilingClient.profile;
