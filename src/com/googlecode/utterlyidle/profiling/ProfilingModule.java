@@ -7,9 +7,6 @@ import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
 
-import static com.googlecode.totallylazy.Function.returns;
-import static com.googlecode.totallylazy.callables.LazyCallable.lazy;
-
 public class ProfilingModule implements RequestScopedModule {
     @Override
     public Module addPerRequestObjects(Container container) throws Exception {
