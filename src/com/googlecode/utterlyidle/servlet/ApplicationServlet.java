@@ -20,6 +20,7 @@ import java.io.IOException;
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.LazyException.lazyException;
+import static com.googlecode.totallylazy.Sequences.forwardOnly;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
@@ -88,8 +89,8 @@ public class ApplicationServlet extends HttpServlet {
 
     public static HeaderParameters convertToHeaderParameters(HttpServletRequest request) {
         HeaderParameters result = HeaderParameters.headerParameters();
-        for (String name : sequence(request.getHeaderNames(), String.class)) {
-            for (String value : sequence(request.getHeaders(name), String.class)) {
+        for (String name : forwardOnly(request.getHeaderNames(), String.class)) {
+            for (String value : forwardOnly(request.getHeaders(name), String.class)) {
                 result = result.add(name, value);
             }
         }
