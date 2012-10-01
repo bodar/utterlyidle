@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 
+import static com.googlecode.funclate.Model.mutable.model;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 @Produces(MediaType.TEXT_HTML)
@@ -24,6 +25,6 @@ public class LastExceptionsResource {
 
     @GET
     public Model allRecordedExceptions() {
-        return Model.model().add("base", basePath).add("exceptions", sequence(lastExceptions).reverse().toList()).add("maximumSize", lastExceptions.getMaximumSize());
+        return model().add("base", basePath).add("exceptions", sequence(lastExceptions).reverse().toList()).add("maximumSize", lastExceptions.getMaximumSize());
     }
 }

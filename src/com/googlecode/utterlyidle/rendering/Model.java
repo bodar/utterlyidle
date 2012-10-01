@@ -10,6 +10,7 @@ import java.util.Set;
 import static com.googlecode.totallylazy.Sequences.join;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
+@Deprecated // will be removed after 650
 public class Model extends AbstractMap<String, List<Object>> {
     private final Map<String, List<Object>> values = new LinkedHashMap<String, List<Object>>();
 
@@ -41,7 +42,7 @@ public class Model extends AbstractMap<String, List<Object>> {
         return values.get(key.toString());
     }
 
-    public Object first(String key){
+    public Object first(String key) {
         return sequence(get(key)).head();
     }
 }

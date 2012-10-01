@@ -22,7 +22,6 @@ import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Strings.EMPTY;
 import static com.googlecode.totallylazy.URLs.packageUrl;
-import static com.googlecode.utterlyidle.rendering.Model.model;
 
 public class MatchFailureRenderer implements Renderer<MatchFailure> {
     private final BasePath basePath;
@@ -35,7 +34,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
 
     public String render(MatchFailure value) throws IOException {
         StringTemplateGroup group = new EnhancedStringTemplateGroup(packageUrl(getClass()));
-        Model model = model();
+        com.googlecode.funclate.Model model = model();
         model.add("base", basePath);
         model.add("status", value.status());
 
@@ -50,7 +49,11 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
                     add("form", asModel(parameters.filter(where(parametersClass(), matches(FormParameters.class))))));
         }
 
-        return group.getInstanceOf("matchFailure", model).toString();
+        return group.getInstanceOf("matchFailure", model.toMap()).toString();
+    }
+
+    private com.googlecode.funclate.Model model() {
+        return com.googlecode.funclate.Model.mutable.model();
     }
 
     public static Predicate<? super Class> matches(Class aClass) {
@@ -65,8 +68,8 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         };
     }
 
-    private Model asModel(Sequence<NamedParameter> parameters) {
-        Model result = model();
+    private com.googlecode.funclate.Model asModel(Sequence<NamedParameter> parameters) {
+        com.googlecode.funclate.Model result = model();
         for (NamedParameter parameter : parameters) {
             result.add(parameter.name(), parameter.defaultValue().getOrElse(EMPTY));
         }
