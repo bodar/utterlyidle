@@ -35,9 +35,8 @@ public class HelloWorldApplication extends RestApplication {
                 bindingsModule(annotatedClass(HelloWorld.class)),
                 new ResponseHandlersModule() {
                     @Override
-                    public Module addResponseHandlers(ResponseHandlers handlers) throws Exception {
-                        handlers.add(where(entity(), instanceOf(Sequence.class)), streamingRenderer(new SequenceRenderer()));
-                        return this;
+                    public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) throws Exception {
+                        return handlers.add(where(entity(), instanceOf(Sequence.class)), streamingRenderer(new SequenceRenderer()));
                     }
                 },
                 new ProfilingModule(),

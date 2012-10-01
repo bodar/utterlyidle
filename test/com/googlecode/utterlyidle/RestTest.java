@@ -86,9 +86,8 @@ public class RestTest {
         final String SOME_CUSTOM_VALUE = "some custom value";
 
         ApplicationBuilder application = application().addAnnotated(UsesCustomValue.class).add(new ArgumentScopedModule() {
-            public Module addPerArgumentObjects(Container container) {
-                container.addInstance(CustomValueWithoutPublicConstructor.class, new CustomValueWithoutPublicConstructor(SOME_CUSTOM_VALUE));
-                return this;
+            public Container addPerArgumentObjects(Container container) {
+                return container.addInstance(CustomValueWithoutPublicConstructor.class, new CustomValueWithoutPublicConstructor(SOME_CUSTOM_VALUE));
             }
         });
         assertThat(application.responseAsString(get("path")), is(SOME_CUSTOM_VALUE));
@@ -97,9 +96,8 @@ public class RestTest {
     @Test
     public void supportCustomArgumentActivationWithOption() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesCustomValueWithOption.class).add(new ArgumentScopedModule() {
-            public Module addPerArgumentObjects(Container container) {
-                container.addActivator(CustomValueWithoutPublicConstructor.class, CustomValueWithoutPublicConstructorActivator.class);
-                return this;
+            public Container addPerArgumentObjects(Container container) {
+                return container.addActivator(CustomValueWithoutPublicConstructor.class, CustomValueWithoutPublicConstructorActivator.class);
             }
         });
         assertThat(application.responseAsString(get("path")), is("true"));
@@ -409,15 +407,14 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
         application.add(new RequestScopedModule() {
             @Override
-            public Module addPerRequestObjects(Container container) throws Exception {
-                container.addActivator(MyCustomClassRenderer.class, new Callable<MyCustomClassRenderer>() {
+            public Container addPerRequestObjects(Container container) throws Exception {
+                return container.addActivator(MyCustomClassRenderer.class, new Callable<MyCustomClassRenderer>() {
                     @Override
                     public MyCustomClassRenderer call() throws Exception {
                         called[0] = true;
                         return new MyCustomClassRenderer();
                     }
                 });
-                return this;
             }
         });
         application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));

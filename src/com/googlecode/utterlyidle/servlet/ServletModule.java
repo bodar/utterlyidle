@@ -19,13 +19,13 @@ public class ServletModule implements ApplicationScopedModule, RequestScopedModu
         this.context = context;
     }
 
-    public Module addPerApplicationObjects(Container container) {
-        container.addActivator(WebRoot.class, webRoot(context));
-        container.addActivator(AttributeMap.class, attributeMap(context));
-        return this;
+    public Container addPerApplicationObjects(Container container) {
+        return container.
+                addActivator(WebRoot.class, webRoot(context)).
+                addActivator(AttributeMap.class, attributeMap(context));
     }
 
-    public Module addPerRequestObjects(Container container) {
-        return this;
+    public Container addPerRequestObjects(Container container) {
+        return container;
     }
 }
