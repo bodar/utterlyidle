@@ -14,20 +14,20 @@ import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentTy
 
 public class PerformanceModule implements RequestScopedModule {
     @Override
-    public Module addPerRequestObjects(Container container) throws Exception {
-        container.addInstance(GZipPolicy.class, gZipPolicy().
-                add(contentType(MediaType.TEXT_JAVASCRIPT)).
-                add(contentType(MediaType.TEXT_CSS)));
-        container.decorate(HttpHandler.class, GzipHandler.class);
-        container.addInstance(CachePolicy.class, cachePolicy(60).
-                add(contentType(MediaType.IMAGE_PNG)).
-                add(contentType(MediaType.IMAGE_GIF)).
-                add(contentType(MediaType.IMAGE_JPEG)).
-                add(contentType(MediaType.IMAGE_X_ICON)).
-                add(contentType(MediaType.TEXT_JAVASCRIPT)).
-                add(contentType(MediaType.TEXT_CSS)));
-        container.decorate(HttpHandler.class, CacheControlHandler.class);
-        container.decorate(HttpHandler.class, EtagHandler.class);
-        return this;
+    public Container addPerRequestObjects(Container container) throws Exception {
+        return container.
+                addInstance(GZipPolicy.class, gZipPolicy().
+                        add(contentType(MediaType.TEXT_JAVASCRIPT)).
+                        add(contentType(MediaType.TEXT_CSS))).
+                decorate(HttpHandler.class, GzipHandler.class).
+                addInstance(CachePolicy.class, cachePolicy(60).
+                        add(contentType(MediaType.IMAGE_PNG)).
+                        add(contentType(MediaType.IMAGE_GIF)).
+                        add(contentType(MediaType.IMAGE_JPEG)).
+                        add(contentType(MediaType.IMAGE_X_ICON)).
+                        add(contentType(MediaType.TEXT_JAVASCRIPT)).
+                        add(contentType(MediaType.TEXT_CSS))).
+                decorate(HttpHandler.class, CacheControlHandler.class).
+                decorate(HttpHandler.class, EtagHandler.class);
     }
 }

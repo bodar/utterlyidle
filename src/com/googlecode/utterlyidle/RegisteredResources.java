@@ -14,10 +14,11 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 public class RegisteredResources implements Resources {
     private final List<Binding> bindings = new CopyOnWriteArrayList<Binding>();
 
-    public void add(Binding ... bindings) {
+    public Resources add(Binding ... bindings) {
         for (Binding binding : bindings) {
             this.bindings.add(binding);
         }
+        return this;
     }
 
     @Override
