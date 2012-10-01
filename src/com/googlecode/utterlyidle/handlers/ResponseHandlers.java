@@ -22,27 +22,33 @@ public class ResponseHandlers {
         return join(guards, custom, catchAll);
     }
 
-    public void addGuard(Predicate<? super Pair<Request, Response>> predicate, Class<? extends ResponseHandler> handler) {
+    public ResponseHandlers addGuard(Predicate<? super Pair<Request, Response>> predicate, Class<? extends ResponseHandler> handler) {
         guards.add(rule(predicate, handler));
+        return this;
     }
 
-    public void addGuard(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler handler) {
+    public ResponseHandlers addGuard(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler handler) {
         guards.add(rule(predicate, handler));
+        return this;
     }
 
-    public void add(Predicate<? super Pair<Request, Response>> predicate, Class<? extends ResponseHandler> handler) {
+    public ResponseHandlers add(Predicate<? super Pair<Request, Response>> predicate, Class<? extends ResponseHandler> handler) {
         custom.add(rule(predicate, handler));
+        return this;
     }
 
-    public void add(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler handler) {
+    public ResponseHandlers add(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler handler) {
         custom.add(rule(predicate, handler));
+        return this;
     }
 
-    public void addCatchAll(Predicate<? super Pair<Request, Response>> predicate, Class<? extends ResponseHandler> handler) {
+    public ResponseHandlers addCatchAll(Predicate<? super Pair<Request, Response>> predicate, Class<? extends ResponseHandler> handler) {
         catchAll.add(rule(predicate, handler));
+        return this;
     }
 
-    public void addCatchAll(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler handler) {
+    public ResponseHandlers addCatchAll(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler handler) {
         catchAll.add(rule(predicate, handler));
+        return this;
     }
 }

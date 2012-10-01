@@ -8,16 +8,14 @@ import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
 
 public abstract class ActivateSiteMeshModule implements RequestScopedModule, ModuleDefiner, SiteMeshModule {
-    public Module addPerRequestObjects(Container container) {
-        container.add(Decorators.class);
-        container.addInstance(DecoratorProvider.class, provider(container));
-        container.decorate(HttpHandler.class, SiteMeshHandler.class);
-        return this;
+    public Container addPerRequestObjects(Container container) {
+        return container.add(Decorators.class).
+                addInstance(DecoratorProvider.class, provider(container)).
+                decorate(HttpHandler.class, SiteMeshHandler.class);
     }
 
-    public Module defineModules(ModuleDefinitions moduleDefinitions) {
-        moduleDefinitions.addRequestModule(SiteMeshModule.class);
-        return this;
+    public ModuleDefinitions defineModules(ModuleDefinitions moduleDefinitions) {
+        return moduleDefinitions.addRequestModule(SiteMeshModule.class);
     }
 
     protected abstract DecoratorProvider provider(Container container);

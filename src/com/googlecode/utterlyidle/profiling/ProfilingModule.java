@@ -9,13 +9,13 @@ import com.googlecode.yadic.Container;
 
 public class ProfilingModule implements RequestScopedModule {
     @Override
-    public Module addPerRequestObjects(Container container) throws Exception {
+    public Container addPerRequestObjects(Container container) throws Exception {
         container.addActivator(ProfilingData.class, ProfilingDataActivator.class);
         if (container.contains(Logger.class)) {
             container.decorate(Logger.class, ProfilingLogger.class);
         }
         container.decorate(HttpHandler.class, ProfilingHandler.class);
         container.decorate(HttpClient.class, ProfilingClient.class);
-        return this;
+        return container;
     }
 }

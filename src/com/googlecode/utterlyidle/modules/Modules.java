@@ -112,47 +112,42 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
 
     public static Module applicationScopedClass(final Class<?> aClass) {
         return new ApplicationScopedModule() {
-            public Module addPerApplicationObjects(Container container) {
-                container.add(aClass);
-                return this;
+            public Container addPerApplicationObjects(Container container) {
+                return container.add(aClass);
             }
         };
     }
 
     public static Module bindingsModule(final Binding... bindings) {
         return new ResourcesModule() {
-            public Module addResources(Resources resources) {
-                resources.add(bindings);
-                return this;
+            public Resources addResources(Resources resources) {
+                return resources.add(bindings);
             }
         };
     }
 
     public static Module requestInstance(final Object instance) {
         return new RequestScopedModule() {
-            public Module addPerRequestObjects(Container container) {
+            public Container addPerRequestObjects(Container container) {
                 Class aClass = instance.getClass();
-                container.addInstance(aClass, instance);
-                return this;
+                return container.addInstance(aClass, instance);
             }
         };
     }
 
     public static Module applicationInstance(final Object instance) {
         return new ApplicationScopedModule() {
-            public Module addPerApplicationObjects(Container container) {
+            public Container addPerApplicationObjects(Container container) {
                 Class aClass = instance.getClass();
-                container.addInstance(aClass, instance);
-                return this;
+                return container.addInstance(aClass, instance);
             }
         };
     }
 
     public static Module requestScopedClass(final Class<?> aClass) {
         return new RequestScopedModule() {
-            public Module addPerRequestObjects(Container container) {
-                container.add(aClass);
-                return this;
+            public Container addPerRequestObjects(Container container) {
+                return container.add(aClass);
             }
         };
     }

@@ -6,9 +6,44 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.SystemClock;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BaseUri;
+import com.googlecode.utterlyidle.BaseUriActivator;
+import com.googlecode.utterlyidle.BaseUriRedirector;
+import com.googlecode.utterlyidle.Bindings;
+import com.googlecode.utterlyidle.BindingsRequestGenerator;
+import com.googlecode.utterlyidle.EitherResolver;
+import com.googlecode.utterlyidle.Entity;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.InternalRequestMarker;
+import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.PathParameters;
+import com.googlecode.utterlyidle.PathParametersActivator;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Redirector;
+import com.googlecode.utterlyidle.RegisteredResources;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.RequestGenerator;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.ResourcePath;
+import com.googlecode.utterlyidle.ResourcePathActivator;
+import com.googlecode.utterlyidle.Resources;
+import com.googlecode.utterlyidle.SmartHttpClient;
+import com.googlecode.utterlyidle.StreamingOutput;
+import com.googlecode.utterlyidle.StreamingWriter;
+import com.googlecode.utterlyidle.UUIDActivator;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import com.googlecode.utterlyidle.handlers.*;
+import com.googlecode.utterlyidle.handlers.ApplicationId;
+import com.googlecode.utterlyidle.handlers.Auditor;
+import com.googlecode.utterlyidle.handlers.Auditors;
+import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
+import com.googlecode.utterlyidle.handlers.HttpClient;
+import com.googlecode.utterlyidle.handlers.IdentityHandler;
+import com.googlecode.utterlyidle.handlers.InternalHttpHandler;
+import com.googlecode.utterlyidle.handlers.NoContentHandler;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
+import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.rendering.MatchFailureRenderer;
 import com.googlecode.utterlyidle.rendering.ObjectRenderer;
@@ -23,94 +58,92 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
-import static com.googlecode.totallylazy.Predicates.*;
+import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 import static com.googlecode.totallylazy.Unchecked.cast;
-import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.status;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 
-public class CoreModule extends AbstractModule {
+public class CoreModule implements ModuleDefiner, RequestScopedModule, ApplicationScopedModule, ResourcesModule, ResponseHandlersModule, ArgumentScopedModule {
     @Override
-    public Module defineModules(ModuleDefinitions moduleDefinitions) {
-        moduleDefinitions.addApplicationModule(ApplicationScopedModule.class);
-        moduleDefinitions.addApplicationModule(ResourcesModule.class);
-        moduleDefinitions.addApplicationModule(ResponseHandlersModule.class);
-        moduleDefinitions.addRequestModule(RequestScopedModule.class);
-        moduleDefinitions.addRequestModule(AuditModule.class);
-        moduleDefinitions.addArgumentModule(ArgumentScopedModule.class);
-        return this;
+    public ModuleDefinitions defineModules(ModuleDefinitions moduleDefinitions) {
+        return moduleDefinitions.
+                addApplicationModule(ApplicationScopedModule.class).
+                addApplicationModule(ResourcesModule.class).
+                addApplicationModule(ResponseHandlersModule.class).
+                addRequestModule(RequestScopedModule.class).
+                addRequestModule(AuditModule.class).addArgumentModule(ArgumentScopedModule.class);
     }
 
     @Override
-    public Module addPerRequestObjects(Container container) {
-        container.addActivator(ResourcePath.class, ResourcePathActivator.class);
-        container.addActivator(BaseUri.class, BaseUriActivator.class);
-        container.add(Redirector.class, BaseUriRedirector.class);
-        container.add(RequestGenerator.class, BindingsRequestGenerator.class);
-        container.add(ResponseHandlersFinder.class);
-        container.add(Auditors.class, Auditors.class);
-        container.addActivator(Auditor.class, container.getActivator(Auditors.class));
-        container.add(HttpClient.class, ClientHttpHandler.class);
-        container.add(InternalHttpHandler.class);
-        container.decorate(HttpClient.class, SmartHttpClient.class);
-        return this;
+    public Container addPerRequestObjects(Container container) {
+        return container.
+                addActivator(ResourcePath.class, ResourcePathActivator.class).
+                addActivator(BaseUri.class, BaseUriActivator.class).
+                add(Redirector.class, BaseUriRedirector.class).
+                add(RequestGenerator.class, BindingsRequestGenerator.class).
+                add(ResponseHandlersFinder.class).
+                add(Auditors.class, Auditors.class).
+                addActivator(Auditor.class, container.getActivator(Auditors.class)).
+                add(HttpClient.class, ClientHttpHandler.class).
+                add(InternalHttpHandler.class).
+                decorate(HttpClient.class, SmartHttpClient.class);
     }
 
     @Override
-    public Module addPerApplicationObjects(Container container) {
-        container.add(Clock.class, SystemClock.class);
-        container.add(Resources.class, RegisteredResources.class);
-        container.addActivator(Bindings.class, container.getActivator(Resources.class));
-        container.add(ResponseHandlers.class);
-        container.add(ApplicationId.class);
-        container.add(InternalRequestMarker.class);
-        return this;
+    public Container addPerApplicationObjects(Container container) {
+        return container.add(Clock.class, SystemClock.class).
+                add(Resources.class, RegisteredResources.class).
+                addActivator(Bindings.class, container.getActivator(Resources.class)).
+                add(ResponseHandlers.class).
+                add(ApplicationId.class).
+                add(InternalRequestMarker.class);
     }
 
     @Override
-    public Module addResources(Resources resources) {
-        resources.add(bindings(in(packageUrl(Application.class)).path("utterlyidle")));
-        return this;
+    public Resources addResources(Resources resources) {
+        return resources.add(bindings(in(packageUrl(Application.class)).path("utterlyidle")));
     }
 
     @Override
-    public Module addResponseHandlers(ResponseHandlers handlers) {
-        handlers.addGuard(where(entity(), nullOrEmptyString()), NoContentHandler.class);
-        handlers.addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).or(instanceOf(StreamingOutput.class))), IdentityHandler.class);
-        handlers.addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class));
-        handlers.addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class));
-        handlers.addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class));
-        handlers.addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
-        return this;
+    public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) {
+        return handlers.
+                addGuard(where(entity(), nullOrEmptyString()), NoContentHandler.class).
+                addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).or(instanceOf(StreamingOutput.class))), IdentityHandler.class).
+                addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class)).
+                addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class)).
+                addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class)).
+                addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
     }
 
     @Override
-    public Module addPerArgumentObjects(Container argumentScope) throws Exception {
+    public Container addPerArgumentObjects(Container argumentScope) throws Exception {
         Request request = argumentScope.get(Request.class);
-        argumentScope.addActivator(PathParameters.class, PathParametersActivator.class);
-        argumentScope.addInstance(HeaderParameters.class, request.headers());
-        argumentScope.addInstance(QueryParameters.class, Requests.query(request));
-        argumentScope.addInstance(FormParameters.class, Requests.form(request));
-        argumentScope.addInstance(CookieParameters.class, Requests.cookies(request));
-        argumentScope.addInstance(Entity.class, request.entity());
-        argumentScope.addInstance(InputStream.class, new ByteArrayInputStream(request.entity().asBytes()));
-        argumentScope.addType(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class)));
-        argumentScope.addType(new TypeFor<Either<?, ?>>() {}.get(), EitherResolver.class);
-        argumentScope.addActivator(UUID.class, UUIDActivator.class);
-        argumentScope.addType(new TypeFor<Iterable<UUID>>() {}.get(), new TypedIterableResolver<UUID>(argumentScope, UUIDActivator.fromString()));
-        return this;
+        return (Container) argumentScope.addActivator(PathParameters.class, PathParametersActivator.class).
+                addInstance(HeaderParameters.class, request.headers()).
+                addInstance(QueryParameters.class, Requests.query(request)).
+                addInstance(FormParameters.class, Requests.form(request)).
+                addInstance(CookieParameters.class, Requests.cookies(request)).
+                addInstance(Entity.class, request.entity()).
+                addInstance(InputStream.class, new ByteArrayInputStream(request.entity().asBytes())).
+                addActivator(UUID.class, UUIDActivator.class).
+                addType(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class))).
+                addType(new TypeFor<Either<?, ?>>() {}.get(), EitherResolver.class).
+                addType(new TypeFor<Iterable<UUID>>() {}.get(), new TypedIterableResolver<UUID>(argumentScope, UUIDActivator.fromString()));
     }
 
     private Predicate<Object> nullOrEmptyString() {
         return new Predicate<Object>() {
             @Override
             public boolean matches(Object other) {
-                return other == null || ((other instanceof String) && ((String)other).isEmpty());
+                return other == null || ((other instanceof String) && ((String) other).isEmpty());
             }
         };
     }
@@ -126,7 +159,8 @@ public class CoreModule extends AbstractModule {
 
         @Override
         public Iterable<T> resolve(Type type) throws Exception {
-            Iterable<String> values = cast(container.resolve(new TypeFor<Iterable<String>>() {}.get()));
+            Iterable<String> values = cast(container.resolve(new TypeFor<Iterable<String>>() {
+            }.get()));
             return sequence(values).map(mapper).realise();
         }
     }
