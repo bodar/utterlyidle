@@ -1,0 +1,12 @@
+syntax: glob
+out
+*.iws
+build/artifacts
+.idea/workspace.xml
+*.orig
+utterlyidle.ipr
+lib/build
+lib/runtime
+lib/optional
+.idea/dictionaries/*
+*~
