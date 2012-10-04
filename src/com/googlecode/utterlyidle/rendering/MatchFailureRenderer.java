@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.rendering;
 
 import com.googlecode.funclate.stringtemplate.EnhancedStringTemplateGroup;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
@@ -38,18 +39,27 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         model.add("base", basePath);
         model.add("status", value.status());
 
-        for (Binding binding : value.matchesSoFar().filter(not(hidden()))) {
-            final String httpMethod = binding.httpMethod();
-            Sequence<NamedParameter> parameters = binding.namedParameters();
+        Sequence<com.googlecode.funclate.Model> objects = value.matchesSoFar().filter(not(hidden())).map(bindingAsModel());
 
-            model.add("resources", model().
-                    add("method", httpMethod).
-                    add("path", redirector.uriOf(binding).path()).
-                    add("query", asModel(parameters.filter(where(parametersClass(), matches(QueryParameters.class))))).
-                    add("form", asModel(parameters.filter(where(parametersClass(), matches(FormParameters.class))))));
-        }
+        model.add("resources", objects);
 
         return group.getInstanceOf("matchFailure", model.toMap()).toString();
+    }
+
+    private Function1<Binding, com.googlecode.funclate.Model> bindingAsModel() {
+        return new Function1<Binding, com.googlecode.funclate.Model>() {
+            @Override
+            public com.googlecode.funclate.Model call(Binding binding) throws Exception {
+                final String httpMethod = binding.httpMethod();
+                Sequence<NamedParameter> parameters = binding.namedParameters();
+
+                return model().
+                        add("method", httpMethod).
+                        add("path", redirector.uriOf(binding).path()).
+                        add("query", parameterAsModel(parameters.filter(where(parametersClass(), matches(QueryParameters.class))))).
+                        add("form", parameterAsModel(parameters.filter(where(parametersClass(), matches(FormParameters.class)))));
+            }
+        };
     }
 
     private com.googlecode.funclate.Model model() {
@@ -68,7 +78,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
         };
     }
 
-    private com.googlecode.funclate.Model asModel(Sequence<NamedParameter> parameters) {
+    private com.googlecode.funclate.Model parameterAsModel(Sequence<NamedParameter> parameters) {
         com.googlecode.funclate.Model result = model();
         for (NamedParameter parameter : parameters) {
             result.add(parameter.name(), parameter.defaultValue().getOrElse(EMPTY));
