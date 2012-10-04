@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.sitemesh;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class PageMap extends UnsupportedMap {
     private void getAndCache(String url) {
         try {
             Response response = httpHandler.handle(RequestBuilder.get(url).build());
-            if(!response.status().equals(Status.OK)) {
+            if(!response.status().isSuccessful()) {
                 if(debugging()) System.err.printf("Failed to include '%s' received '%s'%n", url, response.status());
                 return;
             }
