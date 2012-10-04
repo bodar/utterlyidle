@@ -8,6 +8,8 @@ import com.googlecode.utterlyidle.Status;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Debug.debugging;
+
 public class PageMap extends UnsupportedMap {
     private final HttpHandler httpHandler;
     private Map<String, PropertyMap> cache = new HashMap<String, PropertyMap>();
@@ -41,6 +43,7 @@ public class PageMap extends UnsupportedMap {
         try {
             Response response = httpHandler.handle(RequestBuilder.get(url).build());
             if(!response.status().equals(Status.OK)) {
+                if(debugging()) System.err.printf("Failed to include '%s' received '%s'%n", url, response.status());
                 return;
             }
             cache.put(url, new PropertyMapParser().parse(response.entity().toString()));
