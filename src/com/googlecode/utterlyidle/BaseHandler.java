@@ -9,6 +9,7 @@ import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Container;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Exceptions.toException;
 import static com.googlecode.totallylazy.Left.left;
@@ -107,18 +108,23 @@ public class BaseHandler implements HttpHandler {
 
     private Object invokeMethod(Binding binding, Request request) throws Exception {
         try {
-            Class<?> declaringClass = binding.method().getDeclaringClass();
+            Method method = binding.method();
+            Class<?> declaringClass = method.getDeclaringClass();
+
             registerMatchedResource(declaringClass);
+
             Object resourceInstance = container.get(declaringClass);
             Object[] arguments = new ParametersExtractor(binding.uriTemplate(), application, binding.parameters()).extract(request);
-            return binding.method().invoke(resourceInstance, arguments);
+            return method.isVarArgs()
+                    ? method.invoke(resourceInstance, (Object) arguments)
+                    : method.invoke(resourceInstance, arguments);
         } catch (InvocationTargetException e) {
             throw toException(e.getCause());
         }
     }
 
     private void registerMatchedResource(Class<?> declaringClass) {
-        if(container.contains(MatchedResource.class)) container.remove(MatchedResource.class);
+        if (container.contains(MatchedResource.class)) container.remove(MatchedResource.class);
         container.addInstance(MatchedResource.class, new MatchedResource(declaringClass));
     }
 
