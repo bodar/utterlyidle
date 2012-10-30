@@ -164,6 +164,22 @@ public class RequestBuilder implements Callable<Request> {
         return new RequestBuilder(HttpMethod.DELETE, path);
     }
 
+    public static RequestBuilder head(String path) {
+        return new RequestBuilder(HttpMethod.HEAD, path);
+    }
+
+    public static RequestBuilder head(Uri uri) {
+        return new RequestBuilder(HttpMethod.HEAD, uri);
+    }
+
+    public static RequestBuilder options(String path) {
+        return new RequestBuilder(HttpMethod.OPTIONS, path);
+    }
+
+    public static RequestBuilder options(Uri uri) {
+        return new RequestBuilder(HttpMethod.OPTIONS, uri);
+    }
+
     public Uri uri() {
         return uri;
     }

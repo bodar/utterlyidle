@@ -10,6 +10,7 @@ public @interface HttpMethod {
     java.lang.String DELETE = "DELETE";
     java.lang.String HEAD = "HEAD";
     java.lang.String OPTIONS = "OPTIONS";
+    java.lang.String ANY = "*";
 
     java.lang.String value();
 }
