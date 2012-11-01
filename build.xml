@@ -13,7 +13,9 @@
     <property name="release.pom" value="${release.name}.pom"/>
     <property name="release.src" value="${release.name}-sources.jar"/>
     <property name="release.jar.path" value="${artifacts}/${release.jar}"/>
-    <property name="test.jar.path" value="${artifacts}/${release.name}.test.jar"/>
+    <property name="tests.jar" value="${release.name}-tests.jar"/>
+    <property name="tests.src" value="${release.name}-test-sources.jar"/>
+    <property name="tests.jar.path" value="${artifacts}/${tests.jar}"/>
     <property name="build.dependencies.dir" value="lib/build"/>
     <property name="runtime.dependencies.dir" value="lib/runtime"/>
     <property name="optional.dependencies.dir" value="lib/optional"/>
@@ -32,7 +34,7 @@
     <path id="all.jars">
         <path refid="all.dependancies"/>
         <path path="${release.jar.path}"/>
-        <path path="${test.jar.path}"/>
+        <path path="${tests.jar.path}"/>
     </path>
 
     <target name="update" description="Update library dependencies">
@@ -55,11 +57,11 @@
         <compile.and.jar src="${src}" jar="${release.jar.path}" classpathref="all.dependancies"
                          version="${release.version}"/>
         <embed.libs/>
-        <compile.and.jar src="${test}" jar="${test.jar.path}" classpathref="all.jars" version="${release.version}"/>
+        <compile.and.jar src="${test}" jar="${tests.jar.path}" classpathref="all.jars" version="${release.version}"/>
     </target>
 
     <target name="test">
-        <test jar="${test.jar.path}" classpathref="all.jars" reports="${reports}"/>
+        <test jar="${tests.jar.path}" classpathref="all.jars" reports="${reports}"/>
     </target>
 
     <target name="package">
@@ -67,9 +69,11 @@
 
         <zip destfile="${artifacts}/${release.src}" basedir="src"/>
 
+        <zip destfile="${artifacts}/${tests.src}" basedir="test"/>
+
         <exec executable="hg" output="${artifacts}/hg.properties">
-	    <arg line="log -l 1"/>
-	</exec>
+	        <arg line="log -l 1"/>
+	    </exec>
         <property file="${artifacts}/hg.properties" prefix="hg"/>
 
         <propertyfile file="${artifacts}/release.properties">
@@ -77,13 +81,17 @@
             <entry key="project.name" value="${ant.project.name}"/>
             <entry key="release.name" value="${release.name}"/>
             <entry key="release.path" value="com/googlecode/${ant.project.name}/${ant.project.name}/${release.version}/"/>
-            <entry key="release.files" value="${release.jar},${release.pom},${release.src}"/>
+            <entry key="release.files" value="${release.jar},${release.pom},${release.src},${tests.jar},${tests.src}"/>
             <entry key="${release.jar}.description" value="${hg.summary} build:${build.number} "/>
             <entry key="${release.jar}.labels" value="Jar"/>
             <entry key="${release.pom}.description" value="Maven POM file build:${build.number}"/>
             <entry key="${release.pom}.labels" value="POM"/>
             <entry key="${release.src}.description" value="Source file build:${build.number}"/>
             <entry key="${release.src}.labels" value="Source"/>
+            <entry key="${tests.jar}.description" value="Tests jar build:${build.number}"/>
+            <entry key="${tests.jar}.labels" value="Tests"/>
+            <entry key="${tests.src}.description" value="Test sources jar build:${build.number}"/>
+            <entry key="${tests.src}.labels" value="Test Sources"/>
         </propertyfile>
 
          <generate.pom artifact.uri="mvn:com.googlecode.${ant.project.name}:${ant.project.name}:jar:${release.version}"
