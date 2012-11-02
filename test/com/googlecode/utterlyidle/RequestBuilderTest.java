@@ -1,8 +1,13 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,5 +36,23 @@ public class RequestBuilderTest {
     public void shouldRemoveQueryParamsFromEncodedUri() throws Exception {
         RequestBuilder requestBuilder = new RequestBuilder("GET", "/home").query("^&%$^%", "foo").query("removeme", "");
         assertThat(requestBuilder.removeQuery("removeme").build().uri(), equalTo(Uri.uri("/home?%5E%26%25%24%5E%25=foo")));
+    }
+
+    @Test
+    public void shouldBeAbleToReplaceACookie() throws Exception {
+        Request request = RequestBuilder.get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie1", "timtam").build();
+        assertThat(CookieParameters.cookies(request.headers()).getValue("cookie1"), is("timtam"));
+    }
+
+    @Test
+    public void replacingACookiePreservesHeaderOrder() throws Exception {
+        Request request = RequestBuilder.get("/").header("path", "/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie2", "penguin").build();
+        assertThat(request.headers(), is(headerParameters(sequence(pair("path", "/"), pair("Cookie", "cookie1=\"value1\""), pair("Cookie", "cookie2=\"penguin\""), pair("Content-Length", "0")))));
+    }
+
+    @Test
+    public void canReplaceCookieWhenListedInMiddleOfMultiCookie() throws Exception {
+        Request request = RequestBuilder.get("/").header(COOKIE, "cookie1=\"value1\"; cookie2=\"value2\"").replaceCookie("cookie2", "hobnob").build();
+        assertThat(request.headers().toMap().get(COOKIE).get(0), is("cookie1=\"value1\"; cookie2=\"hobnob\""));
     }
 }
