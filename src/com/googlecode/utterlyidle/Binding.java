@@ -1,11 +1,16 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import static com.googlecode.totallylazy.Predicates.some;
 import static com.googlecode.utterlyidle.NamedParameter.methods.defaultValue;
 
 public class Binding {
@@ -56,8 +61,8 @@ public class Binding {
     @SuppressWarnings("unchecked")
     public Sequence<NamedParameter> namedParameters() {
         return parameters.map(Callables.<Option<Parameter>>second()).
-                filter(Predicates.<Parameter>some()).
-                map(Callables.<Parameter>value()).safeCast(NamedParameter.class);
+                flatMap(Option.<Parameter>identity()).
+                safeCast(NamedParameter.class);
     }
 
     public int numberOfArguments() {
@@ -65,7 +70,7 @@ public class Binding {
     }
 
     private int numberOfDefaultArguments() {
-        return namedParameters().map(defaultValue()).filter(Predicates.<String>some()).size();
+        return namedParameters().map(defaultValue()).flatMap(Option.<String>identity()).size();
     }
 
     public int priority() {

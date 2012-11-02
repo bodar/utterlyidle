@@ -97,15 +97,20 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
 
             if (size() != parameters.size()) return false;
 
-            return sequence(this).forAll(sameHeaderExistsIn(parameters));
+            return sequence(this).zip(parameters).forAll(pairsMatch());
         }
         return false;
     }
 
-    private Predicate<? super Pair<K, V>> sameHeaderExistsIn(final Self parameters) {
-        return new Predicate<Pair<K, V>>() {
-            public boolean matches(Pair<K, V> pair) {
-                return parameters.contains(pair.first()) && parameters.getValue(pair.first()).equals(pair.second());
+    private Predicate<Pair<Pair<K, V>, Pair<K, V>>> pairsMatch() {
+        return new Predicate<Pair<Pair<K, V>, Pair<K, V>>>() {
+            @Override
+            public boolean matches(Pair<Pair<K, V>, Pair<K, V>> pair) {
+                Pair<K, V> first = pair.first();
+                Pair<K, V> second = pair.second();
+
+                Predicate<K> predicate = call(Parameters.this.predicate, first.first());
+                return predicate.matches(second.first()) && first.second().equals(second.second());
             }
         };
     }
