@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import static com.googlecode.totallylazy.Option.identity;
 import static com.googlecode.totallylazy.Predicates.some;
 import static com.googlecode.utterlyidle.NamedParameter.methods.defaultValue;
 
@@ -53,11 +54,10 @@ public class Binding {
         return parameters;
     }
 
-    @SuppressWarnings("unchecked")
     public Sequence<NamedParameter> namedParameters() {
         return parameters.map(Callables.<Option<Parameter>>second()).
-                filter(Predicates.<Parameter>some()).
-                map(Callables.<Parameter>value()).safeCast(NamedParameter.class);
+                flatMap(identity(Parameter.class)).
+                safeCast(NamedParameter.class);
     }
 
     public int numberOfArguments() {
@@ -65,7 +65,7 @@ public class Binding {
     }
 
     private int numberOfDefaultArguments() {
-        return namedParameters().map(defaultValue()).filter(Predicates.<String>some()).size();
+        return namedParameters().flatMap(defaultValue()).size();
     }
 
     public int priority() {
