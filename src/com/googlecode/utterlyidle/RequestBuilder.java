@@ -1,7 +1,10 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
@@ -12,12 +15,17 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Callables.first;
+import static com.googlecode.totallylazy.Callables.replace;
+import static com.googlecode.totallylazy.Functions.returns1;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.Requests.request;
+import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static java.lang.String.format;
 
@@ -81,7 +89,12 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder cookie(Cookie cookie) {
-        headers.add(pair(HttpHeaders.COOKIE, toHttpHeader(cookie)));
+        cookie(cookie.name(), cookie.value());
+        return this;
+    }
+
+    public RequestBuilder cookie(String name, String value) {
+        headers.add(pair(COOKIE, toHttpHeader(Cookie.cookie(name, value))));
         return this;
     }
 
@@ -164,6 +177,22 @@ public class RequestBuilder implements Callable<Request> {
         return new RequestBuilder(HttpMethod.DELETE, path);
     }
 
+    public static RequestBuilder head(String path) {
+        return new RequestBuilder(HttpMethod.HEAD, path);
+    }
+
+    public static RequestBuilder head(Uri uri) {
+        return new RequestBuilder(HttpMethod.HEAD, uri);
+    }
+
+    public static RequestBuilder options(String path) {
+        return new RequestBuilder(HttpMethod.OPTIONS, path);
+    }
+
+    public static RequestBuilder options(Uri uri) {
+        return new RequestBuilder(HttpMethod.OPTIONS, uri);
+    }
+
     public Uri uri() {
         return uri;
     }
@@ -187,5 +216,36 @@ public class RequestBuilder implements Callable<Request> {
 
     public RequestBuilder contentType(String contentType) {
         return header(HttpHeaders.CONTENT_TYPE, contentType);
+    }
+
+    public RequestBuilder replaceCookie(final String name, final String value) {
+        Sequence<Pair<String, String>> newHeaders = sequence(headers).
+                map(replace(
+                        where(first(String.class), is(COOKIE)),
+                        Callables.<String, String, String>second(toCookie(name, value)))).realise();
+        headers.clear();
+        headers.addAll(newHeaders.toList());
+        return this;
+    }
+
+    private Function1<String, String> toCookie(final String name, final String value) {
+        return new Function1<String, String>() {
+            @Override
+            public String call(String headerValue) throws Exception {
+                return cookies(headerValue).map(
+                        replace(where(first(String.class), is(name)),
+                                Callables.<String, String, String>second(returns1(value)))).
+                        map(toCookieString()).toString("; ");
+            }
+        };
+    }
+
+    private Function1<Pair<String, String>, String> toCookieString() {
+        return new Function1<Pair<String, String>, String>() {
+            @Override
+            public String call(Pair<String, String> cookie) throws Exception {
+                return format("%s=%s", cookie.first(), Rfc2616.toQuotedString(cookie.second()));
+            }
+        };
     }
 }
