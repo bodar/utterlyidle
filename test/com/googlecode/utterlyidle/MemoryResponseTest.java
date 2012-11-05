@@ -61,7 +61,8 @@ public class MemoryResponseTest {
     }
 
     @Test
-    public void orderOfHeadersDoesNotMatter() {
-        assertThat(response(OK, sequence(pair("name1", "value1"), pair("name2", "value2"))), is(response(OK, sequence(pair("name2", "value2"), pair("name1", "value1")))));
+    public void orderOfHeadersDoesMatter() {
+        assertThat(response(OK, sequence(pair("name1", "value1"), pair("name2", "value2"))), is(response(OK, sequence(pair("name1", "value1"), pair("name2", "value2")))));
+        assertThat(response(OK, sequence(pair("name1", "value1"), pair("name2", "value2"))), is(not(response(OK, sequence(pair("name2", "value2"), pair("name1", "value1"))))));
     }
 }

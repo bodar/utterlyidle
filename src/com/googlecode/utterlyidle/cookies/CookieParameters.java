@@ -4,20 +4,19 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.collections.ImmutableList;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.list;
 import static com.googlecode.totallylazy.Predicates.not;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.empty;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.totallylazy.collections.ImmutableList.constructors.list;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 
 public class CookieParameters extends Parameters<String, String, CookieParameters> {
@@ -37,7 +36,7 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
                 flatMap(parseIntoPairs())));
     }
 
-    private static Sequence<Pair<String, String>> parseIntoPairs(String header) {
+    public static Sequence<Pair<String, String>> cookies(String header) {
         return regex("\\s*;\\s*").
                 split(header).
                 map(splitOnFirst("=")).
@@ -74,7 +73,7 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
         return new Function1<String, Sequence<Pair<String, String>>>() {
             @Override
             public Sequence<Pair<String, String>> call(String header) throws Exception {
-                return parseIntoPairs(header);
+                return cookies(header);
             }
         };
     }
