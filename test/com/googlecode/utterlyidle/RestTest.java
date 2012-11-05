@@ -22,10 +22,12 @@ import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
+import com.googlecode.yadic.generics.TypeFor;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.Formatter;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -61,6 +63,23 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
 public class RestTest {
+    @Test
+    public void canDecorateARenderer() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
+        final Type renderer = new TypeFor<Renderer<MyCustomClass>>() {}.get();
+        application.add(new RequestScopedModule() {
+            @Override
+            public Container addPerRequestObjects(Container container) throws Exception {
+                container.addType(renderer, MyCustomClassRenderer.class);
+                container.decorateType(renderer, MyCustomClassRendererDecorator.class);
+                return container;
+            }
+        });
+        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(renderer));
+        assertThat(application.responseAsString(get("path")), is("foobar"));
+
+    }
+
     @Test
     public void supportMatchedResource() throws Exception {
         ApplicationBuilder application = application().addAnnotated(DependsOnMatchedResource.class);
@@ -787,6 +806,18 @@ public class RestTest {
     public static class MyCustomClassRenderer implements Renderer<MyCustomClass> {
         public String render(MyCustomClass value) {
             return "foo";
+        }
+    }
+
+    public static class MyCustomClassRendererDecorator implements Renderer<MyCustomClass> {
+        private final Renderer<MyCustomClass> renderer;
+
+        public MyCustomClassRendererDecorator(Renderer<MyCustomClass> renderer) {
+            this.renderer = renderer;
+        }
+
+        public String render(MyCustomClass value) throws Exception {
+            return renderer.render(value) + "bar";
         }
     }
 
