@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Option;
 
 public class Models {
     @Deprecated // will be removed after 650
+    @SuppressWarnings("deprecation")
     public static <T> Callable2<Model, Option<T>, Model> handleOptional(final Callable2<Model, T, Model> callable) {
         return new Callable2<Model, Option<T>, Model>() {
             public Model call(Model model, Option<T> optional) throws Exception {
