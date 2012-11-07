@@ -14,8 +14,11 @@ import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
+import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.RequestBuilder.head;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
@@ -110,6 +113,15 @@ public abstract class ServerContract {
         Response response = handle(get("helloworld/headerparam").accepting(WILDCARD).header("name", "bar"), server);
 
         assertThat(response.entity().toString(), is("Hello bar"));
+    }
+
+    @Test
+    public void handlesTheAnyCatchAllHttpVerb() throws Exception {
+        assertThat(handle(get("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(post("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(put("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(delete("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(head("any"), server).headers().getValue("x-custom-header"), is("smile"));
     }
 
     @Test

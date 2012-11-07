@@ -54,7 +54,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
                 Sequence<NamedParameter> parameters = binding.namedParameters();
 
                 return model().
-                        add("method", httpMethod).
+                        add("method", httpMethod.equals("*") ? "ANY" : httpMethod).
                         add("path", redirector.uriOf(binding).path()).
                         add("query", parameterAsModel(parameters.filter(where(parametersClass(), matches(QueryParameters.class))))).
                         add("form", parameterAsModel(parameters.filter(where(parametersClass(), matches(FormParameters.class)))));

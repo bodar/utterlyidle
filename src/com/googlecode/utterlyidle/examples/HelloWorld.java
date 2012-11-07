@@ -7,10 +7,10 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.StreamingOutput;
+import com.googlecode.utterlyidle.annotations.ANY;
 import com.googlecode.utterlyidle.annotations.DefaultValue;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
@@ -22,7 +22,7 @@ import com.googlecode.utterlyidle.annotations.QueryParam;
 
 import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
-import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.ResponseBuilder.response;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
@@ -41,7 +41,7 @@ public class HelloWorld {
     @GET
     @Path("cacheable")
     public Response cacheable() {
-        return ResponseBuilder.response(Status.OK).header(HttpHeaders.CACHE_CONTROL, "public, max-age=60").entity("cacheable").build();
+        return response(Status.OK).header(HttpHeaders.CACHE_CONTROL, "public, max-age=60").entity("cacheable").build();
     }
 
     @GET
@@ -66,7 +66,7 @@ public class HelloWorld {
     @GET
     @Path("helloworld/inresponseheaders")
     public Response getx(@QueryParam("name") String name) {
-        return ResponseBuilder.response(Status.OK).header("greeting", hello(name)).entity("").build();
+        return response(Status.OK).header("greeting", hello(name)).entity("").build();
     }
 
     @GET
@@ -118,6 +118,11 @@ public class HelloWorld {
         return "<html><body>some content</body></html>";
     }
 
+    @ANY
+    @Path("any")
+    public Response any() {
+        return response().header("x-custom-header", "smile").entity(hello("everyone")).build();
+    }
 
     private String hello(String name) {
         return "Hello " + name;
