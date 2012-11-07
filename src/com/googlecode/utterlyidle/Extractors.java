@@ -53,6 +53,7 @@ public class Extractors {
         return result;
     }
 
+    @SuppressWarnings("deprecation")
     static Sequence<Pair<Parameter, Object>> getParameterAndValue(final Sequence<Option<Parameter>> parameters, final Sequence<Object> arguments) {
         return parameters.zip(arguments).
                 filter(where(Callables.<Option<Parameter>>first(), is(some(Parameter.class)))).

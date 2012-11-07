@@ -8,9 +8,17 @@ import com.googlecode.utterlyidle.modules.DependsOnContainer;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 
+import java.lang.reflect.Type;
+
+import static com.googlecode.totallylazy.Unchecked.cast;
+
 
 public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     public static <T> RenderingResponseHandler<T> renderer(Class<? extends Renderer<T>> renderer) {
+        return new ClassRenderingResponseHandler<T>(renderer);
+    }
+
+    public static <T> RenderingResponseHandler<T> renderer(Type renderer) {
         return new ClassRenderingResponseHandler<T>(renderer);
     }
 
@@ -22,21 +30,21 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
         return ResponseBuilder.modify(response).entity(getRenderer().render((T) response.entity().value())).build();
     }
 
-    protected abstract Renderer<T> getRenderer();
+    protected abstract Renderer<T> getRenderer() throws Exception;
 
     private static class ClassRenderingResponseHandler<T> extends RenderingResponseHandler<T> implements DependsOnContainer {
-        private final Class<? extends Renderer<T>> renderer;
+        private final Type renderer;
         private Container container;
 
-        public ClassRenderingResponseHandler(Class<? extends Renderer<T>> renderer) {
+        public ClassRenderingResponseHandler(Type renderer) {
             this.renderer = renderer;
         }
 
-        protected Renderer<T> getRenderer() {
+        protected Renderer<T> getRenderer() throws Exception {
             if(!container.contains(renderer)){
-                return new SimpleContainer(container).add(renderer).get(renderer);
+                return cast(new SimpleContainer(container).addType(renderer, renderer).resolve(renderer));
             }
-            return container.get(renderer);
+            return cast(container.resolve(renderer));
         }
 
         @Override
