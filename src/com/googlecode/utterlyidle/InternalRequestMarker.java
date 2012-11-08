@@ -16,6 +16,6 @@ public class InternalRequestMarker {
     }
 
     public Boolean isInternal(Request request) {
-        return request.headers().contains(HttpHeaders.X_FORWARDED_FOR) && request.headers().getValue(HttpHeaders.X_FORWARDED_FOR).equals(applicationId.toString());
+        return request.headers().contains(HttpHeaders.X_FORWARDED_FOR) && request.headers().getValues(HttpHeaders.X_FORWARDED_FOR).contains(applicationId.toString());
     }
 }

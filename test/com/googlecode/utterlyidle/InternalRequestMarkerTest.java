@@ -26,4 +26,12 @@ public class InternalRequestMarkerTest {
         InternalRequestMarker marker = new InternalRequestMarker(applicationId());
         assertThat(marker.isInternal(RequestBuilder.get("/testInternalUrl").header("X-Forwarded-For", randomUUID()).build()), is(false));
     }
+
+    @Test
+    public void shouldWorkWhenXForwardedForAlreadyInRequest() throws Exception {
+        Request request = RequestBuilder.get("/").header(HttpHeaders.X_FORWARDED_FOR, "quidgeybo").build();
+        InternalRequestMarker marker = new InternalRequestMarker(applicationId());
+        Request internalRequest = marker.markAsInternal(request);
+        assertThat(marker.isInternal(internalRequest), is(true));
+    }
 }
