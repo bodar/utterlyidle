@@ -19,6 +19,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
+import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
@@ -27,7 +28,7 @@ import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.modules.Digest.md5;
 
 public class EtagHandler implements HttpHandler {
-    public static final List<String> safeHeaders = new CopyOnWriteArrayList<String>(list(DATE, LAST_MODIFIED, CACHE_CONTROL, EXPIRES));
+    public static final List<String> safeHeaders = new CopyOnWriteArrayList<String>(list(DATE, LAST_MODIFIED, CACHE_CONTROL, EXPIRES, SET_COOKIE));
     private final HttpHandler httpHandler;
 
     public EtagHandler(HttpHandler httpHandler) {
