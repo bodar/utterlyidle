@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
@@ -221,7 +222,7 @@ public class RequestBuilder implements Callable<Request> {
     public RequestBuilder replaceCookie(final String name, final String value) {
         Sequence<Pair<String, String>> newHeaders = sequence(headers).
                 map(replace(
-                        where(first(String.class), is(COOKIE)),
+                        where(first(String.class), equalIgnoringCase(COOKIE)),
                         Callables.<String, String, String>second(toCookie(name, value)))).realise();
         headers.clear();
         headers.addAll(newHeaders.toList());
@@ -233,7 +234,7 @@ public class RequestBuilder implements Callable<Request> {
             @Override
             public String call(String headerValue) throws Exception {
                 return cookies(headerValue).map(
-                        replace(where(first(String.class), is(name)),
+                        replace(where(first(String.class), equalIgnoringCase(name)),
                                 Callables.<String, String, String>second(returns1(value)))).
                         map(toCookieString()).toString("; ");
             }
