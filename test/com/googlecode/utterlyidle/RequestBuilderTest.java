@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import org.junit.Test;
 
@@ -9,6 +10,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
+import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,6 +43,16 @@ public class RequestBuilderTest {
     @Test
     public void shouldBeAbleToReplaceACookie() throws Exception {
         Request request = RequestBuilder.get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie1", "timtam").build();
+        assertThat(CookieParameters.cookies(request.headers()).getValue("cookie1"), is("timtam"));
+    }
+
+    @Test
+    public void shouldBeAbleToReplaceACookieEvenIfHeaderParameterCaseDiffers() throws Exception {
+        Request request = RequestBuilder.get("/").
+                header(COOKIE.toLowerCase(), toHttpHeader(Cookie.cookie("cookie1", "McVitees Digestive with caramel"))).
+                cookie("cookie2", "value2").
+                replaceCookie("cookie1", "timtam").build();
+
         assertThat(CookieParameters.cookies(request.headers()).getValue("cookie1"), is("timtam"));
     }
 
