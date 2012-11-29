@@ -9,6 +9,8 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.Requests.form;
+import static com.googlecode.utterlyidle.Requests.query;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -66,5 +68,19 @@ public class RequestBuilderTest {
     public void canReplaceCookieWhenListedInMiddleOfMultiCookie() throws Exception {
         Request request = RequestBuilder.get("/").header(COOKIE, "cookie1=\"value1\"; cookie2=\"value2\"").replaceCookie("cookie2", "hobnob").build();
         assertThat(request.headers().toMap().get(COOKIE).get(0), is("cookie1=\"value1\"; cookie2=\"hobnob\""));
+    }
+    
+    @Test
+    public void canCopyFormParamsIntoQueryParams() {
+        Request postForm = RequestBuilder.post("/?three=3").form("one", "1").form("two", 2).build();
+
+        Request modified = RequestBuilder.modify(postForm).copyFormParamsToQuery().build();
+
+        QueryParameters queryParameters = query(modified);
+        assertThat(queryParameters.getValue("one"),is(equalTo("1")));
+        assertThat(queryParameters.getValue("two"),is(equalTo("2")));
+        assertThat(queryParameters.getValue("three"),is(equalTo("3")));
+        FormParameters formParameters = form(modified);
+        assertThat(formParameters.size(), is(2));
     }
 }
