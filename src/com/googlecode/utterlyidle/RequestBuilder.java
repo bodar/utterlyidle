@@ -1,11 +1,11 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
@@ -25,6 +25,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
@@ -249,4 +250,18 @@ public class RequestBuilder implements Callable<Request> {
             }
         };
     }
+
+    public RequestBuilder copyFormParamsToQuery() {
+        return sequence(queryParameters(FormParameters.parse(entity))).fold(this,addQuery());
+    }
+
+    private Callable2<RequestBuilder, Pair<String, String>, RequestBuilder> addQuery() {
+        return new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
+            @Override
+            public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> pair) throws Exception {
+                return requestBuilder.query(pair.first(),pair.second());
+            }
+        };
+    }
+
 }
