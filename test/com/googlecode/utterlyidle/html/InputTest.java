@@ -5,6 +5,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.Xml.document;
 import static com.googlecode.totallylazy.Xml.selectElement;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class InputTest {
@@ -16,5 +17,12 @@ public class InputTest {
         Input disabledInput = new Input(selectElement(document("<html><input disabled='disabled'/></html>"), "//input").get());
         assertThat(disabledInput.enabled(), is(false));
         assertThat(disabledInput.disabled(), is(true));
+    }
+    
+    @Test
+    public void dealsWithNoInitialValue() {
+        Input input = new Input(selectElement(document("<html><input/></html>"), "//input").get());
+        input.value("some value");
+        assertThat(input.value(), is(equalTo("some value")));
     }
 }
