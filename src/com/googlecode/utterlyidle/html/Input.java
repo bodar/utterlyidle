@@ -22,7 +22,7 @@ public class Input implements NameValue{
     }
 
     public Input value(String value) {
-        selectNode(input, VALUE).get().setTextContent(value);
+        input.setAttribute("value",value);
         return this;
     }
 
