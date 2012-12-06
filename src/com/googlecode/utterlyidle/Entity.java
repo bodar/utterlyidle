@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Characters;
 import com.googlecode.totallylazy.Value;
 
 import java.io.ByteArrayOutputStream;
@@ -9,9 +10,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.Strings.bytes;
+import static com.googlecode.totallylazy.Strings.string;
 
 public class Entity implements Value<Object> {
     private static final Entity EMPTY = new Entity("");
@@ -38,7 +42,7 @@ public class Entity implements Value<Object> {
     }
 
     public String toString() {
-        return writeTo(this, new ByteArrayOutputStream()).toString();
+        return string(asBytes());
     }
 
     public byte[] asBytes() {
@@ -49,9 +53,8 @@ public class Entity implements Value<Object> {
         return value instanceof StreamingWriter || value instanceof StreamingOutput;
     }
 
-
     public static final CompositeEntityWriter WRITERS = new CompositeEntityWriter();
-    public static final String DEFAULT_CHARACTER_SET = "UTF-8";
+    public static final Charset DEFAULT_CHARACTER_SET = Characters.UTF8;
 
     static {
         WRITERS.add(instanceOf(byte[].class), bytesEntityWriter());
@@ -87,7 +90,7 @@ public class Entity implements Value<Object> {
         return new EntityWriter<StreamingWriter>() {
             @Override
             public void write(StreamingWriter entity, OutputStream outputStream) throws Exception {
-                using(new OutputStreamWriter(outputStream), StreamingWriter.functions.write(entity));
+                using(new OutputStreamWriter(outputStream, DEFAULT_CHARACTER_SET), StreamingWriter.functions.write(entity));
             }
 
         };
@@ -134,7 +137,7 @@ public class Entity implements Value<Object> {
         return new StreamingOutput() {
             @Override
             public void write(OutputStream outputStream) throws IOException {
-                outputStream.write(value.getBytes());
+                outputStream.write(bytes(value));
             }
         };
     }

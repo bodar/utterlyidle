@@ -4,14 +4,14 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 
-import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Strings.bytes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class EntityTest {
     @Test
     public void shouldSupportInputStream() throws Exception {
-        assertThat(ResponseBuilder.response().entity(new ByteArrayInputStream("Foo".getBytes(Entity.DEFAULT_CHARACTER_SET))).build().entity().toString(), is("Foo"));
+        assertThat(ResponseBuilder.response().entity(new ByteArrayInputStream(bytes("Foo"))).build().entity().toString(), is("Foo"));
     }
 
     @Test
