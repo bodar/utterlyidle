@@ -7,7 +7,6 @@ import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.StreamingWriter;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
-import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.PerformanceModule;
 import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.utterlyidle.profiling.ProfilingModule;

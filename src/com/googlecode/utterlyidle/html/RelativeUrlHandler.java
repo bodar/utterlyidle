@@ -5,7 +5,6 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.annotations.HttpMethod;
 
 import static com.googlecode.totallylazy.Strings.isEmpty;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;

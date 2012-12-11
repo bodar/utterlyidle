@@ -1,12 +1,10 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.collections.ImmutableSet;
-import com.googlecode.totallylazy.collections.ImmutableSortedSet;
 import com.googlecode.totallylazy.numbers.Numbers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Set;
 
 import static com.googlecode.totallylazy.collections.ImmutableSortedSet.constructors.sortedSet;
 import static com.googlecode.totallylazy.numbers.Numbers.range;

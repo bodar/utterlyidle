@@ -1,11 +1,9 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Response;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import static com.googlecode.totallylazy.Xml.selectContents;

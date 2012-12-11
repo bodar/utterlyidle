@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.utterlyidle.ApplicationBuilder;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
@@ -9,9 +8,9 @@ import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;

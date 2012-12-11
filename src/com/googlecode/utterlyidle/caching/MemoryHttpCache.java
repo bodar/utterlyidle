@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.caching;
 
 import com.googlecode.totallylazy.Option;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;

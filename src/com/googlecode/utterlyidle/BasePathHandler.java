@@ -4,8 +4,6 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
 
-import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;

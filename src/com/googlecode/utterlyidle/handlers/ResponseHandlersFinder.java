@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;

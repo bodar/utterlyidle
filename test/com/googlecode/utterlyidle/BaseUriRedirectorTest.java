@@ -1,12 +1,17 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
-import com.googlecode.utterlyidle.annotations.*;
-import com.googlecode.utterlyidle.dsl.BindingBuilder;
+import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Left;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Right;
+import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Uri;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.dsl.DslTest;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;

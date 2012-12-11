@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.ModuleDefiner;
 import com.googlecode.utterlyidle.modules.ModuleDefinitions;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;

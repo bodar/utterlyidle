@@ -2,12 +2,11 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.handlers.WriteMessageToResponseHandler;
 import com.googlecode.yadic.ContainerException;
 import org.junit.Test;
-
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.Path;
 
 import java.io.IOException;
 

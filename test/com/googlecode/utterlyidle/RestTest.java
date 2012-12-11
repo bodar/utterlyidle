@@ -19,7 +19,6 @@ import com.googlecode.utterlyidle.annotations.Priority;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
-import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;

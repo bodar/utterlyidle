@@ -1,8 +1,21 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.proxy.Invocation;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.MediaType;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.Parameter;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.PathParameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.RelativeUriExtractor;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.lang.annotation.Annotation;
@@ -12,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Option.none;
-import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;

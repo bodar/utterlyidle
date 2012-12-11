@@ -2,16 +2,13 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Rule;
 import com.googlecode.totallylazy.Rules;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
-import static com.googlecode.totallylazy.Callables.callWith;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.handlers.Handlers.asFunction;
 

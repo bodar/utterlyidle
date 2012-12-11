@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.numbers.Numbers;
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
 import org.junit.Test;
 
 import java.util.Date;

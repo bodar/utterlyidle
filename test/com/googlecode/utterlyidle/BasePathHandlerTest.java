@@ -3,13 +3,11 @@ package com.googlecode.utterlyidle;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.HOST;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
 import static org.hamcrest.CoreMatchers.is;

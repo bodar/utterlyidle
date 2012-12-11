@@ -5,7 +5,15 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.proxy.CallOn;
 import com.googlecode.totallylazy.proxy.Invocation;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.Parameter;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.PathParameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 

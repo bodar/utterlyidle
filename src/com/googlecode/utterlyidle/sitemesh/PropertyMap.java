@@ -1,12 +1,10 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.Iterators;
 import com.googlecode.totallylazy.Sequences;
 import org.sitemesh.content.ContentProperty;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class PropertyMap extends UnsupportedMap<String, Object>{
     private final ContentProperty property;

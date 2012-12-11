@@ -1,12 +1,14 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.*;
-import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.sequence;
