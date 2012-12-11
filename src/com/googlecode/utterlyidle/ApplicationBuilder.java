@@ -6,6 +6,8 @@ import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
+import com.googlecode.utterlyidle.services.Service;
+import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Containers;
 import com.googlecode.yadic.SimpleContainer;
@@ -24,6 +26,7 @@ import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 import static com.googlecode.utterlyidle.modules.Modules.applicationScopedClass;
 import static com.googlecode.utterlyidle.modules.Modules.requestScopedClass;
+import static com.googlecode.utterlyidle.modules.Modules.serviceClass;
 
 public class ApplicationBuilder {
     private final Container container = new SimpleContainer();
@@ -119,6 +122,10 @@ public class ApplicationBuilder {
 
     public ApplicationBuilder addRequestScopedClass(Class<?> aClass) {
         return add(requestScopedClass(aClass));
+    }
+
+    public ApplicationBuilder addService(Class<? extends Service> aClass) {
+        return add(serviceClass(aClass));
     }
 
     public static class ActivateModules implements Callable<Application>{

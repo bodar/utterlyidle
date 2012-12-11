@@ -2,12 +2,17 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.services.Service;
+import com.googlecode.utterlyidle.services.Services;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static org.hamcrest.CoreMatchers.is;
@@ -36,6 +41,40 @@ public class RestApplicationTest {
         application.handle(get("/foo"));
         assertThat(started[0], is(1));
         assertThat(stopped[0], is(1));
+    }
+
+    @Test
+    public void servicesAreDiscoverable() {
+        Application application = application().
+                addService(FooService.class).build();
+
+        Services services = application.applicationScope().get(Services.class);
+        assertThat(sequence(services).contains(FooService.class), is(true));
+    }
+
+
+    @Test
+    public void servicesAreNotStartedOnAppConstruction() {
+        Application application = application().
+                addService(FooService.class).build();
+
+        FooService service = application.applicationScope().get(FooService.class);
+        assertThat(service.starts.get(), is(0));
+        assertThat(service.stops.get(), is(0));
+    }
+
+    @Test
+    public void startingApplicationStartsAndStopsServices() throws Exception {
+        Application application = application().
+                addService(FooService.class).build();
+        application.start();
+        FooService service = application.applicationScope().get(FooService.class);
+        assertThat(service.starts.get(), is(1));
+        assertThat(service.stops.get(), is(0));
+
+        application.stop();
+        assertThat(service.starts.get(), is(1));
+        assertThat(service.stops.get(), is(1));
     }
 
     private int runningInstances() {
@@ -74,4 +113,18 @@ public class RestApplicationTest {
         }
     }
 
+    public static class FooService implements Service {
+        public final AtomicInteger starts = new AtomicInteger();
+        public final AtomicInteger stops = new AtomicInteger();
+
+        @Override
+        public void start() {
+            starts.incrementAndGet();
+        }
+
+        @Override
+        public void stop() {
+            stops.incrementAndGet();
+        }
+    }
 }

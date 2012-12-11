@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
@@ -12,6 +13,8 @@ import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptionsModule;
+import com.googlecode.utterlyidle.services.Service;
+import com.googlecode.utterlyidle.services.Services;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.closeable.CloseableContainer;
@@ -141,5 +144,27 @@ public class RestApplication implements Application {
 
     public void close() throws IOException {
         applicationScope.close();
+    }
+
+    @Override
+    public void start() {
+        sequence(applicationScope.get(Services.class)).each(new Function1<Class<? extends Service>, Void>() {
+            @Override
+            public Void call(Class<? extends Service> aClass) throws Exception {
+                applicationScope.get(aClass).start();
+                return Runnables.VOID;
+            }
+        });
+    }
+
+    @Override
+    public void stop() {
+        sequence(applicationScope.get(Services.class)).each(new Function1<Class<? extends Service>, Void>() {
+            @Override
+            public Void call(Class<? extends Service> aClass) throws Exception {
+                applicationScope.get(aClass).stop();
+                return Runnables.VOID;
+            }
+        });
     }
 }
