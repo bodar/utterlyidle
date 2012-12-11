@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
@@ -19,7 +18,6 @@ import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.replace;
 import static com.googlecode.totallylazy.Functions.returns1;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;

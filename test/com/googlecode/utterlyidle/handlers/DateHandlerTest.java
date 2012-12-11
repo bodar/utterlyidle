@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.FixedClock;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;

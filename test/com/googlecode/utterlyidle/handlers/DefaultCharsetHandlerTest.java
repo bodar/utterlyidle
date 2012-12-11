@@ -1,8 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.ApplicationBuilder;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import org.hamcrest.CoreMatchers;

@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.caching;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.caching.HttpCache;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

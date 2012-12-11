@@ -1,6 +1,9 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Bytes;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -10,8 +13,11 @@ import com.googlecode.utterlyidle.Status;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;

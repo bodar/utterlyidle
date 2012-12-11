@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;

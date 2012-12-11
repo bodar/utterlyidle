@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Request;
 
 import java.util.Date;

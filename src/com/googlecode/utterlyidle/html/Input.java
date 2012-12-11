@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
-import static com.googlecode.totallylazy.Xml.selectNode;
 import static java.lang.String.format;
 
 

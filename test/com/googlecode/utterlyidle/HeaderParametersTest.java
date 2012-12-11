@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.googlecode.totallylazy.Arrays.list;
