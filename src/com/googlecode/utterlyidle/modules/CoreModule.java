@@ -48,6 +48,8 @@ import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.rendering.MatchFailureRenderer;
 import com.googlecode.utterlyidle.rendering.ObjectRenderer;
 import com.googlecode.utterlyidle.rendering.SeeOtherRenderer;
+import com.googlecode.utterlyidle.services.Services;
+import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.generics.TypeFor;
@@ -78,8 +80,10 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 addApplicationModule(ApplicationScopedModule.class).
                 addApplicationModule(ResourcesModule.class).
                 addApplicationModule(ResponseHandlersModule.class).
+                addApplicationModule(ServicesModule.class).
                 addRequestModule(RequestScopedModule.class).
-                addRequestModule(AuditModule.class).addArgumentModule(ArgumentScopedModule.class);
+                addRequestModule(AuditModule.class).
+                addArgumentModule(ArgumentScopedModule.class);
     }
 
     @Override
@@ -104,7 +108,8 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 addActivator(Bindings.class, container.getActivator(Resources.class)).
                 add(ResponseHandlers.class).
                 add(ApplicationId.class).
-                add(InternalRequestMarker.class);
+                add(InternalRequestMarker.class).
+                add(Services.class);
     }
 
     @Override

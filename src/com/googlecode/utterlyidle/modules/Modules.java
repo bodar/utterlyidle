@@ -5,6 +5,9 @@ import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.UtterlyIdleProperties;
+import com.googlecode.utterlyidle.services.Service;
+import com.googlecode.utterlyidle.services.Services;
+import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 
@@ -151,4 +154,25 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         };
     }
 
+    public static ServicesModule serviceClass(final Class<? extends Service> aClass) {
+        return new AutoRegisteringServicesModule(aClass);
+    }
+
+    private static class AutoRegisteringServicesModule implements ServicesModule, ApplicationScopedModule {
+        private final Class<? extends Service> aClass;
+
+        public AutoRegisteringServicesModule(Class<? extends Service> aClass) {
+            this.aClass = aClass;
+        }
+
+        @Override
+        public Services add(Services services) throws Exception {
+            return services.addService(aClass);
+        }
+
+        @Override
+        public Container addPerApplicationObjects(Container container) throws Exception {
+            return container.add(aClass);
+        }
+    }
 }
