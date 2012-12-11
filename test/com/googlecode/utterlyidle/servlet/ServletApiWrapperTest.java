@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Xml;
-import junit.framework.TestCase;
 import org.junit.Test;
 import org.w3c.dom.Document;
 

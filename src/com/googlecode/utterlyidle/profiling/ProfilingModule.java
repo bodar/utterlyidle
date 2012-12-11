@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.profiling;
 import com.googlecode.lazyrecords.Logger;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.handlers.HttpClient;
-import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
 

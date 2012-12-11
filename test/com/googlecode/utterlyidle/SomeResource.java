@@ -1,12 +1,10 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Option;
-
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.PathParam;
 import com.googlecode.utterlyidle.annotations.QueryParam;
-import com.googlecode.utterlyidle.StreamingOutput;
 
 @Path("path/{id}")
 public class SomeResource {

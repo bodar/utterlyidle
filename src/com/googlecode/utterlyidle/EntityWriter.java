@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Function2;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 import static com.googlecode.totallylazy.Runnables.VOID;

@@ -3,10 +3,8 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Responses;
 import org.junit.Test;
 

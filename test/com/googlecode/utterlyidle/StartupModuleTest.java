@@ -5,8 +5,6 @@ import com.googlecode.utterlyidle.modules.StartupModule;
 import com.googlecode.yadic.Container;
 import org.junit.Test;
 
-import java.util.Properties;
-
 import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
 import static com.googlecode.utterlyidle.modules.Modules.requestScopedClass;
 import static org.hamcrest.MatcherAssert.assertThat;

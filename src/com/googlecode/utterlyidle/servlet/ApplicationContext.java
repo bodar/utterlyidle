@@ -5,7 +5,6 @@ import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.yadic.SimpleContainer;
 
 import javax.servlet.ServletContext;
-
 import java.util.concurrent.Callable;
 
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.basePath;

@@ -3,7 +3,11 @@ package com.googlecode.utterlyidle.rendering.exceptions;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Request;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class LastExceptions implements Iterable<StoredException> {
 

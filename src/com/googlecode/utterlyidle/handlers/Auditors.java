@@ -1,19 +1,16 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.yadic.Container;
 
-import javax.naming.spi.Resolver;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Callables.returns;
-import static com.googlecode.totallylazy.Callers.call;
 
 public class Auditors implements Auditor{
     private final List<Callable<Auditor>> auditors = new ArrayList<Callable<Auditor>>();

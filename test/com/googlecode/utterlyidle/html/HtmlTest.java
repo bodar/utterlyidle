@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.matchers.NumberMatcher;
 import org.junit.Test;
 
