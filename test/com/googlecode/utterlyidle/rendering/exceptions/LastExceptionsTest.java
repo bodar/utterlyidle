@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.numbers.Numbers;
@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.util.Date;
 
-import static com.googlecode.totallylazy.Runnables.VOID;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,21 +40,19 @@ public class LastExceptionsTest {
         Sequence<StoredException> exceptions = sequence(lastExceptions).memorise();
         assertThat(exceptions.size(), is(expected.size()));
 
-        expected.zip(exceptions.map(StoredException.exception())).forEach(new Callable1<Pair<Number, String>, Void>() {
+        expected.zip(exceptions.map(StoredException.exception())).forEach(new Block<Pair<Number, String>>() {
             @Override
-            public Void call(Pair<Number, String> numberStringPair) throws Exception {
-                assertThat(numberStringPair.first().toString(), is(numberStringPair.second()));
-                return VOID;
+            protected void execute(Pair<Number, String> pair) throws Exception {
+                assertThat(pair.first().toString(), is(pair.second()));
             }
         });
     }
 
     private void addNumbersToLastExceptions(Sequence<Number> numbers) {
-        numbers.forEach(new Callable1<Number, Void>() {
+        numbers.forEach(new Block<Number>() {
             @Override
-            public Void call(Number number) throws Exception {
+            protected void execute(Number number) throws Exception {
                 lastExceptions.put(new Date(), RequestBuilder.get("/foo").build(), number.toString());
-                return VOID;
             }
         });
     }

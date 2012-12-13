@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Runnables;
+import com.googlecode.totallylazy.Block;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -11,12 +10,11 @@ public interface StreamingWriter {
     void write(Writer writer) throws IOException;
 
     public static class functions {
-        public static Function1<OutputStreamWriter, Void> write(final StreamingWriter entity) {
-            return new Function1<OutputStreamWriter, Void>() {
+        public static Block<OutputStreamWriter> write(final StreamingWriter entity) {
+            return new Block<OutputStreamWriter>() {
                 @Override
-                public Void call(OutputStreamWriter writer) throws Exception {
+                protected void execute(OutputStreamWriter writer) throws Exception {
                     entity.write(writer);
-                    return Runnables.VOID;
                 }
             };
         }
