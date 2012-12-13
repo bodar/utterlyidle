@@ -1,11 +1,9 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.Function1;
 
 import java.io.OutputStream;
-
-import static com.googlecode.totallylazy.Runnables.VOID;
 
 public interface EntityWriter<T> {
     void write(T entity, OutputStream outputStream) throws Exception;
@@ -14,12 +12,11 @@ public interface EntityWriter<T> {
         private functions() {
         }
 
-        public static <T> Function2<T, OutputStream, Void> asFunction(final EntityWriter<T> writer) {
-            return new Function2<T, OutputStream, Void>() {
+        public static <T> Function1<T, Block<OutputStream>> asFunction(final EntityWriter<T> writer) {
+            return new Function1<T, Block<OutputStream>>() {
                 @Override
-                public Void call(T o, OutputStream outputStream) throws Exception {
-                    writer.write(o, outputStream);
-                    return VOID;
+                public Block<OutputStream> call(T t) throws Exception {
+                    return writeWith(writer, t);
                 }
             };
         }
@@ -32,6 +29,5 @@ public interface EntityWriter<T> {
                 }
             };
         }
-
     }
 }
