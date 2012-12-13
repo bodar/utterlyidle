@@ -43,7 +43,7 @@ public class RestServer implements Server {
         long start = nanoTime();
         HttpServer server = startUpServer(application, configuration);
         System.out.println(format("Listening on %s, started HttpServer in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
-        Service.functions.start().asyncApply(application);
+        Service.functions.start().callConcurrently(application);
         return server;
     }
 

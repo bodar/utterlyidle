@@ -39,6 +39,7 @@ public class StartupModuleTest {
         assertThat(startable.count, is(1));
     }
 
+    @SuppressWarnings("deprecation")
     private StartupModule start() {
         return new StartupModule() {
             public Container start(Container requestScope) {

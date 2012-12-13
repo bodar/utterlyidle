@@ -72,7 +72,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
 
     public static Option<String> fileExtension(Uri url) {
         String file = hierarchicalPath(url.path()).file();
-        return file.indexOf(".") < 0 ? none(String.class) : some(file.substring(file.lastIndexOf(".")));
+        return !file.contains(".") ? none(String.class) : some(file.substring(file.lastIndexOf(".")));
     }
 
     private Uri removeExtension(Uri uri) {
