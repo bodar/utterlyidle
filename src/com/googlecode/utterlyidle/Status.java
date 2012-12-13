@@ -1,20 +1,20 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.collections.ImmutableSet;
+import com.googlecode.totallylazy.collections.PersistentSet;
 import com.googlecode.totallylazy.numbers.Numbers;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-import static com.googlecode.totallylazy.collections.ImmutableSortedSet.constructors.sortedSet;
+import static com.googlecode.totallylazy.collections.PersistentSortedSet.constructors.sortedSet;
 import static com.googlecode.totallylazy.numbers.Numbers.range;
 
 public class Status {
-    public static final ImmutableSet<Integer> INFORMATIONAL = set(100, 199);
+    public static final PersistentSet<Integer> INFORMATIONAL = set(100, 199);
     public static final Status CONTINUE = status(100, "Continue");
     public static final Status SWITCHING_PROTOCOLS = status(101, "Switching Protocols");
 
-    public static final ImmutableSet<Integer> SUCCESSFUL = set(200, 299);
+    public static final PersistentSet<Integer> SUCCESSFUL = set(200, 299);
     public static final Status OK = status(200, "OK");
     public static final Status CREATED = status(201, "Created");
     public static final Status ACCEPTED = status(202, "Accepted");
@@ -23,7 +23,7 @@ public class Status {
     public static final Status RESET_CONTENT = status(205, "Reset Content");
     public static final Status PARTIAL_CONTENT = status(206, "Partial Content");
 
-    public static final ImmutableSet<Integer> REDIRECTION = set(300, 399);
+    public static final PersistentSet<Integer> REDIRECTION = set(300, 399);
     public static final Status MULTIPLE_CHOICES = status(300, "Multiple Choices");
     public static final Status MOVED_PERMANENTLY = status(301, "Moved Permanently");
     public static final Status FOUND = status(302, "Found");
@@ -32,7 +32,7 @@ public class Status {
     public static final Status USE_PROXY = status(305, "Use Proxy");
     public static final Status TEMPORARY_REDIRECT = status(307, "Temporary Redirect");
 
-    public static final ImmutableSet<Integer> CLIENT_ERROR = set(400, 499);
+    public static final PersistentSet<Integer> CLIENT_ERROR = set(400, 499);
     public static final Status BAD_REQUEST = status(400, "Bad Request");
     public static final Status UNSATISFIABLE_PARAMETERS = BAD_REQUEST.description("Unsatisfiable Parameters");
     public static final Status UNAUTHORIZED = status(401, "Unauthorized");
@@ -53,7 +53,7 @@ public class Status {
     public static final Status REQUESTED_RANGE_NOT_SATISFIABLE = status(416, "Requested Range Not Satisfiable");
     public static final Status EXPECTATION_FAILED = status(417, "Expectation Failed");
 
-    public static final ImmutableSet<Integer> SERVER_ERROR = set(500, 599);
+    public static final PersistentSet<Integer> SERVER_ERROR = set(500, 599);
     public static final Status INTERNAL_SERVER_ERROR = status(500, "Internal Server Error");
     public static final Status NOT_IMPLEMENTED = status(501, "Not Implemented");
     public static final Status BAD_GATEWAY = status(502, "Bad Gateway");
@@ -115,7 +115,7 @@ public class Status {
         return SUCCESSFUL.contains(code);
     }
 
-    private static ImmutableSet<Integer> set(int start, int end) {
+    private static PersistentSet<Integer> set(int start, int end) {
         return sortedSet(range(start, end).map(Numbers.intValue));
     }
 }

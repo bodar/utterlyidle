@@ -1,22 +1,22 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.collections.ImmutableList;
+import com.googlecode.totallylazy.collections.PersistentList;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
 public class PathParameters extends Parameters<String, String, PathParameters> {
     private PathParameters() {
-        this(ImmutableList.constructors.<Pair<String, String>>empty());
+        this(PersistentList.constructors.<Pair<String, String>>empty());
     }
 
-    private PathParameters(ImmutableList<Pair<String, String>> values) {
+    private PathParameters(PersistentList<Pair<String, String>> values) {
         super(equalIgnoringCase(), values);
     }
 
     @Override
-    protected PathParameters self(ImmutableList<Pair<String, String>> values) {
+    protected PathParameters self(PersistentList<Pair<String, String>> values) {
         return new PathParameters(values);
     }
 
