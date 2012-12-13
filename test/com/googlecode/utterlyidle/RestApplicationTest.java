@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callables;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.services.Service;
@@ -9,7 +10,6 @@ import org.junit.Test;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -49,7 +49,7 @@ public class RestApplicationTest {
                 addService(FooService.class).build();
 
         Services services = application.applicationScope().get(Services.class);
-        assertThat(sequence(services).contains(FooService.class), is(true));
+        assertThat(sequence(services).map(Callables.<Class<? extends Service>>first()).contains(FooService.class), is(true));
     }
 
 
