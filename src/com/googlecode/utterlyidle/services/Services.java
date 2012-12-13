@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.services;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UnaryFunction;
-import com.googlecode.totallylazy.collections.ImmutableMap;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.totallylazy.collections.ListMap;
 import com.googlecode.yadic.Container;
 
@@ -12,7 +12,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.collections.ListMap.listMap;
 
 public class Services implements Service, Iterable<Pair<Class<? extends Service>, Services.Status>> {
-    private ImmutableMap<Class<? extends Service>, Status> services = ListMap.emptyListMap();
+    private PersistentMap<Class<? extends Service>, Status> services = ListMap.emptyListMap();
     private final Container container;
 
     public Services(Container container) {

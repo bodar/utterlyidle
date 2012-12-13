@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.collections.ImmutableList;
+import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Parameters;
@@ -16,16 +16,16 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Strings.empty;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.list;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 
 public class CookieParameters extends Parameters<String, String, CookieParameters> {
-    private CookieParameters(ImmutableList<Pair<String, String>> values) {
+    private CookieParameters(PersistentList<Pair<String, String>> values) {
         super(equalIgnoringCase(), values);
     }
 
     @Override
-    protected CookieParameters self(ImmutableList<Pair<String, String>> values) {
+    protected CookieParameters self(PersistentList<Pair<String, String>> values) {
         return new CookieParameters(values);
     }
 
