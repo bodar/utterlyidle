@@ -1,16 +1,16 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.collections.ImmutableList;
+import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.cons;
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.empty;
-import static com.googlecode.totallylazy.collections.ImmutableList.constructors.reverse;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.cons;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.empty;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.reverse;
 
 public class RecordingHttpHandler implements HttpHandler {
-    private ImmutableList<Request> requests = empty();
+    private PersistentList<Request> requests = empty();
     private final HttpHandler delegate;
 
     private RecordingHttpHandler(HttpHandler delegate) {
@@ -26,7 +26,7 @@ public class RecordingHttpHandler implements HttpHandler {
         return delegate.handle(request);
     }
 
-    public ImmutableList<Request> requests() {
+    public PersistentList<Request> requests() {
         return reverse(requests);
     }
 }
