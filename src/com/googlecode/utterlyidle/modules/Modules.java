@@ -167,7 +167,7 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
 
         @Override
         public Services add(Services services) throws Exception {
-            return services.addService(aClass);
+            return services.add(aClass);
         }
 
         @Override
