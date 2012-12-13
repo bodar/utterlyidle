@@ -1,5 +1,8 @@
 package com.googlecode.utterlyidle.servlet;
 
+import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.yadic.SimpleContainer;
@@ -7,6 +10,7 @@ import com.googlecode.yadic.SimpleContainer;
 import javax.servlet.ServletContext;
 import java.util.concurrent.Callable;
 
+import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.basePath;
 
 public class ApplicationContext {
@@ -23,9 +27,20 @@ public class ApplicationContext {
     public static synchronized Application getApplication(final ServletContext servletContext, final String className) {
         if (servletContext.getAttribute(KEY) == null) {
             Application application = createApplication(servletContext, getClass(className));
+            one(application).mapConcurrently(start());
             setApplication(servletContext, application);
         }
         return (Application) servletContext.getAttribute(KEY);
+    }
+
+    private static Function1<Application, Void> start() {
+        return new Function1<Application, Void>() {
+            @Override
+            public Void call(Application application) throws Exception {
+                application.start();
+                return Runnables.VOID;
+            }
+        };
     }
 
     private static Application createApplication(ServletContext servletContext, Class<? extends Application> aClass) {
