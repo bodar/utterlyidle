@@ -24,7 +24,7 @@ public class ApplicationContext {
     public static synchronized Application getApplication(final ServletContext servletContext, final String className) {
         if (servletContext.getAttribute(KEY) == null) {
             Application application = createApplication(servletContext, getClass(className));
-            Service.functions.start().asyncApply(application);
+            Service.functions.start().callConcurrently(application);
             setApplication(servletContext, application);
         }
         return (Application) servletContext.getAttribute(KEY);

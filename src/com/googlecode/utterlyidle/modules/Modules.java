@@ -74,6 +74,7 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     public void activateStartupModule(Module module, Container requestScope) {
         if (Boolean.valueOf(properties.getProperty(AUTO_START, "true"))) {
             activate(module, requestScope, sequence(StartupModule.class));
