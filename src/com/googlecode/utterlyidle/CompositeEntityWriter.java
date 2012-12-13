@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Rules;
@@ -10,7 +11,7 @@ import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.EntityWriter.functions.asFunction;
 
 public class CompositeEntityWriter implements EntityWriter<Object> {
-    private final Rules<Object,Callable1<OutputStream,Void>> rules = Rules.rules();
+    private final Rules<Object,Block<OutputStream>> rules = Rules.rules();
 
     @Override
     public void write(Object entity, OutputStream outputStream) throws Exception {
