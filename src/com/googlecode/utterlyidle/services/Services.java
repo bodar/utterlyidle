@@ -19,7 +19,7 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
         this.container = container;
     }
 
-    public Services addService(Class<? extends Service> service) {
+    public Services add(Class<? extends Service> service) {
         services = services.put(service, Status.status(Status.State.stopped, ""));
         return this;
     }
