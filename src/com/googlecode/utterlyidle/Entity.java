@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Characters;
 import com.googlecode.totallylazy.Value;
 
@@ -73,7 +73,7 @@ public class Entity implements Value<Object> {
         }
     }
 
-    public Callable1<OutputStream, Void> transferFrom() {
+    public Block<OutputStream> transferFrom() {
         return EntityWriter.functions.writeWith(WRITERS, value());
     }
 

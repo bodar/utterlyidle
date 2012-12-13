@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
-import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 import com.googlecode.utterlyidle.handlers.DateHandler;
@@ -59,13 +59,12 @@ public class RestApplication implements Application {
         return this;
     }
 
-    private Callable1<Container, Void> activateStartupModule(final Module module) {
-        return new Callable1<Container, Void>() {
+    private Block<Container> activateStartupModule(final Module module) {
+        return new Block<Container>() {
             @Override
-            public Void call(Container container) throws Exception {
+            protected void execute(Container container) throws Exception {
                 container.addInstance(Request.class, get("/dummy/request/to/allow/starting/application").build());
                 modules.activateStartupModule(module, container);
-                return Runnables.VOID;
             }
         };
     }

@@ -6,6 +6,7 @@ import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.modules.BasicAuditing;
+import com.googlecode.utterlyidle.services.Service;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class RestServer implements Server {
         long start = nanoTime();
         HttpServer server = startUpServer(application, configuration);
         System.out.println(format("Listening on %s, started HttpServer in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
+        Service.functions.start().asyncApply(application);
         return server;
     }
 
@@ -56,5 +58,4 @@ public class RestServer implements Server {
         uri = updatedConfiguration.toUrl();
         return server;
     }
-
 }

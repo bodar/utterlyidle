@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Resources;
@@ -18,7 +18,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Classes.isInstance;
 import static com.googlecode.totallylazy.Methods.methods;
-import static com.googlecode.totallylazy.Runnables.VOID;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.yadic.Containers.selfRegister;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
@@ -76,17 +75,17 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     }
 
     public void activateStartupModule(Module module, Container requestScope) {
-        if(Boolean.valueOf(properties.getProperty(AUTO_START, "true"))){
+        if (Boolean.valueOf(properties.getProperty(AUTO_START, "true"))) {
             activate(module, requestScope, sequence(StartupModule.class));
         }
     }
 
 
-    public static <M extends Iterable<? extends Class<? extends Module>>> Callable1<Module, Void> activate(final Container container, final M modules) {
-        return new Callable1<Module, Void>() {
-            public Void call(Module module) throws Exception {
+    public static <M extends Iterable<? extends Class<? extends Module>>> Block<Module> activate(final Container container, final M modules) {
+        return new Block<Module>() {
+            @Override
+            protected void execute(Module module) throws Exception {
                 activate(module, container, modules);
-                return VOID;
             }
         };
     }
@@ -98,11 +97,11 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
                 forEach(invoke(module, resolver));
     }
 
-    private static Callable1<Method, Void> invoke(final Object instance, final Resolver resolver) {
-        return new Callable1<Method, Void>() {
-            public Void call(Method method) throws Exception {
+    private static Block<Method> invoke(final Object instance, final Resolver resolver) {
+        return new Block<Method>() {
+            @Override
+            protected void execute(Method method) throws Exception {
                 method.invoke(instance, convertToInstances(method.getGenericParameterTypes(), resolver));
-                return VOID;
             }
         };
     }
