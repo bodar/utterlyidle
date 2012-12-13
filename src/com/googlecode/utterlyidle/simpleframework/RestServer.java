@@ -5,6 +5,7 @@ import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.services.Service;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.connect.Connection;
@@ -43,6 +44,7 @@ public class RestServer implements Server {
         long start = nanoTime();
         SocketConnection connection1 = startUpApp(application, configuration);
         System.out.println(format("Listening on %s, started SimpleWeb in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
+        Service.functions.start().callConcurrently(application);
         return connection1;
     }
 

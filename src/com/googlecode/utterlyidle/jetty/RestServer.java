@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
 import org.mortbay.jetty.Server;
@@ -45,6 +46,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         long start = nanoTime();
         Server server = startUpServer(application, serverConfig);
         System.out.println(format("Listening on %s, started Jetty in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
+        Service.functions.start().callConcurrently(application);
         return server;
     }
 
