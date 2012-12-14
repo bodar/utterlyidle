@@ -1,9 +1,11 @@
 package com.googlecode.utterlyidle.services;
 
+import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UnaryFunction;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.totallylazy.collections.ListMap;
+import com.googlecode.utterlyidle.Application;
 import com.googlecode.yadic.Container;
 
 import java.util.Iterator;
@@ -12,11 +14,11 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.collections.ListMap.listMap;
 
 public class Services implements Service, Iterable<Pair<Class<? extends Service>, Services.Status>> {
+    private final Application application;
     private PersistentMap<Class<? extends Service>, Status> services = ListMap.emptyListMap();
-    private final Container container;
 
-    public Services(Container container) {
-        this.container = container;
+    public Services(Application application) {
+        this.application = application;
     }
 
     public Services add(Class<? extends Service> service) {
@@ -34,9 +36,14 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
         }));
     }
 
-    private Status start(Pair<Class<? extends Service>, Status> pair) throws Exception {
+    private Status start(final Pair<Class<? extends Service>, Status> pair) throws Exception {
         try {
-            container.get(pair.first()).start();
+            application.usingRequestScope(new Block<Container>() {
+                @Override
+                protected void execute(Container container) throws Exception {
+                    container.get(pair.first()).start();
+                }
+            });
             return Status.status(Status.State.running, "");
         } catch (Exception e) {
             return Status.status(Status.State.failure, e.getMessage());
@@ -53,9 +60,14 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
         }));
     }
 
-    private Status stop(Pair<Class<? extends Service>, Status> pair) throws Exception {
+    private Status stop(final Pair<Class<? extends Service>, Status> pair) throws Exception {
         try {
-            container.get(pair.first()).stop();
+            application.usingRequestScope(new Block<Container>() {
+                @Override
+                protected void execute(Container container) throws Exception {
+                    container.get(pair.first()).stop();
+                }
+            });
             return Status.status(Status.State.stopped, "");
         } catch (Exception e) {
             return Status.status(Status.State.failure, e.getMessage());
