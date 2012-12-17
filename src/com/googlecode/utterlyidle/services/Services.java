@@ -1,6 +1,8 @@
 package com.googlecode.utterlyidle.services;
 
 import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.Debug;
+import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UnaryFunction;
 import com.googlecode.totallylazy.collections.PersistentMap;
@@ -10,6 +12,7 @@ import com.googlecode.yadic.Container;
 
 import java.util.Iterator;
 
+import static com.googlecode.totallylazy.Debug.inDebug;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.collections.ListMap.listMap;
 
@@ -46,7 +49,7 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
             });
             return Status.status(Status.State.running, "");
         } catch (Exception e) {
-            return Status.status(Status.State.failure, e.getMessage());
+            return Status.status(Status.State.failure, Exceptions.asString(e));
         }
     }
 
@@ -70,7 +73,7 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
             });
             return Status.status(Status.State.stopped, "");
         } catch (Exception e) {
-            return Status.status(Status.State.failure, e.getMessage());
+            return Status.status(Status.State.failure, Exceptions.asString(e));
         }
     }
 
@@ -91,6 +94,7 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
         }
 
         public static Status status(State state, String message) {
+            if(state == State.failure && inDebug()) System.out.println(message);
             return new Status(state, message);
         }
     }
