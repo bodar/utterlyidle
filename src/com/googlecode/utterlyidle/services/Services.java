@@ -29,6 +29,11 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
         return this;
     }
 
+    public Services addAndRegister(Class<? extends Service> service) {
+        application.applicationScope().add(service);
+        return add(service);
+    }
+
     @Override
     public void start() {
         services = listMap(sequence(services).map(new UnaryFunction<Pair<Class<? extends Service>, Status>>() {
