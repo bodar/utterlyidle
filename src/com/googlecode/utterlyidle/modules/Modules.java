@@ -155,24 +155,12 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     }
 
     public static ServicesModule serviceClass(final Class<? extends Service> aClass) {
-        return new AutoRegisteringServicesModule(aClass);
+        return new ServicesModule() {
+            @Override
+            public Services add(Services services) throws Exception {
+                return services.addAndRegister(aClass);
+            }
+        };
     }
 
-    private static class AutoRegisteringServicesModule implements ServicesModule, ApplicationScopedModule {
-        private final Class<? extends Service> aClass;
-
-        public AutoRegisteringServicesModule(Class<? extends Service> aClass) {
-            this.aClass = aClass;
-        }
-
-        @Override
-        public Services add(Services services) throws Exception {
-            return services.add(aClass);
-        }
-
-        @Override
-        public Container addPerApplicationObjects(Container container) throws Exception {
-            return container.add(aClass);
-        }
-    }
 }
