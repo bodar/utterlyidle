@@ -30,18 +30,18 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
     public void start() {
         services = listMap(sequence(services).map(new UnaryFunction<Pair<Class<? extends Service>, Status>>() {
             @Override
-            public Pair<Class<? extends Service>, Status> call(Pair<Class<? extends Service>, Status> pair) throws Exception {
-                return Pair.<Class<? extends Service>, Status>pair(pair.first(), Services.this.start(pair));
+            public Pair<Class<? extends Service>, Status> call(Pair<Class<? extends Service>, Status> services) throws Exception {
+                return Pair.<Class<? extends Service>, Status>pair(services.first(), Services.this.start(services));
             }
         }));
     }
 
-    private Status start(final Pair<Class<? extends Service>, Status> pair) throws Exception {
+    private Status start(final Pair<Class<? extends Service>, Status> services) throws Exception {
         try {
             application.usingRequestScope(new Block<Container>() {
                 @Override
                 protected void execute(Container container) throws Exception {
-                    container.get(pair.first()).start();
+                    container.get(services.first()).start();
                 }
             });
             return Status.status(Status.State.running, "");
@@ -54,18 +54,18 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
     public void stop() {
         services = listMap(sequence(services).map(new UnaryFunction<Pair<Class<? extends Service>, Status>>() {
             @Override
-            public Pair<Class<? extends Service>, Status> call(Pair<Class<? extends Service>, Status> pair) throws Exception {
-                return Pair.<Class<? extends Service>, Status>pair(pair.first(), Services.this.stop(pair));
+            public Pair<Class<? extends Service>, Status> call(Pair<Class<? extends Service>, Status> services) throws Exception {
+                return Pair.<Class<? extends Service>, Status>pair(services.first(), Services.this.stop(services));
             }
         }));
     }
 
-    private Status stop(final Pair<Class<? extends Service>, Status> pair) throws Exception {
+    private Status stop(final Pair<Class<? extends Service>, Status> services) throws Exception {
         try {
             application.usingRequestScope(new Block<Container>() {
                 @Override
                 protected void execute(Container container) throws Exception {
-                    container.get(pair.first()).stop();
+                    container.get(services.first()).stop();
                 }
             });
             return Status.status(Status.State.stopped, "");
