@@ -1,11 +1,15 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.Zip;
+import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.caching.MemoryHttpCache;
@@ -15,6 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.net.ResponseCache;
 import java.net.URL;
 
@@ -63,6 +68,28 @@ public class ClientHttpHandlerTest {
         HttpHandler urlHandler = new ClientHttpHandler();
         Response response = urlHandler.handle(get(resource.toString()).build());
         assertThat(response.status(), is(Status.NOT_FOUND));
+    }
+
+    @Test
+    public void supportsLastModifiedOnFileUrls() throws Exception {
+        File file = Files.temporaryFile();
+        HttpHandler urlHandler = new ClientHttpHandler();
+        Response response = urlHandler.handle(get(file.toURI().toString()).build());
+        assertThat(response.status(), is(Status.OK));
+        assertThat(Response.methods.header(response, HttpHeaders.LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
+    }
+
+    @Test
+    public void supportsLastModifiedOnJarUrls() throws Exception {
+        File parentTempDir = Files.temporaryDirectory(Files.randomFilename());
+        File file = Files.temporaryFile(parentTempDir);
+        File zipFile = Files.temporaryFile();
+        Zip.zip(parentTempDir, zipFile);
+        HttpHandler urlHandler = new ClientHttpHandler();
+        String jarUrl = String.format("jar:%s!/%s", zipFile.toURI(), Files.relativePath(parentTempDir, file));
+        Response response = urlHandler.handle(get(jarUrl).build());
+        assertThat(response.status(), is(Status.OK));
+        assertThat(Response.methods.header(response, HttpHeaders.LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
     }
 
     @Test

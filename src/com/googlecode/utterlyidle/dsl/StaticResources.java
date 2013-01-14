@@ -1,6 +1,14 @@
 package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.LazyException;
+import com.googlecode.totallylazy.Uri;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,16 +18,13 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 
 public class StaticResources {
-    public byte[] get(URL baseUrl, String filename){
+    public Response get(URL baseUrl, String filename){
         try {
-            URL fileUrl = new URL(baseUrl.toString() + filename);
-            return using(fileUrl.openStream(), new Callable1<InputStream, byte[]>() {
-                public byte[] call(InputStream stream) throws Exception {
-                    return bytes(stream);
-                }
-            });
-        } catch (IOException e) {
-            return new byte[0];
+            Uri fileUrl = Uri.uri(baseUrl.toString() + filename);
+            HttpHandler handler = new ClientHttpHandler();
+            return handler.handle(RequestBuilder.get(fileUrl).build());
+        } catch (Exception e) {
+            throw LazyException.lazyException(e);
         }
     }
 }
