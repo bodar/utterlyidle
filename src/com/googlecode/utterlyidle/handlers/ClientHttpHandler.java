@@ -18,6 +18,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
@@ -29,6 +30,7 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -94,6 +96,7 @@ public class ClientHttpHandler implements HttpClient {
                 filter(where(first(String.class), is(not(equalIgnoringCase(HttpHeaders.TRANSFER_ENCODING))))).
                 fold(ResponseBuilder.response(status).entity(bytes),
                         responseHeaders());
+        builder.replaceHeaders(LAST_MODIFIED, new Date(connection.getLastModified()));
         if(!builder.build().headers().contains(CONTENT_LENGTH)){
             return builder.header(CONTENT_LENGTH, bytes.length).build();
         }
