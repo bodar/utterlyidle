@@ -25,11 +25,13 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
         put("gif", MediaType.IMAGE_GIF);
         put("jpeg", MediaType.IMAGE_JPEG);
         put("ico", MediaType.IMAGE_X_ICON);
+        put("svg", MediaType.IMAGE_SVG);
         put("js", MediaType.TEXT_JAVASCRIPT);
         put("css", MediaType.TEXT_CSS);
         put("less", MediaType.TEXT_CSS);
         put("html", MediaType.TEXT_HTML);
         put("xml", MediaType.TEXT_XML);
+        put("xsl", MediaType.TEXT_XML);
         put("csv", MediaType.TEXT_CSV);
         put("txt", MediaType.TEXT_PLAIN);
     }};

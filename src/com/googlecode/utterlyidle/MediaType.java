@@ -20,4 +20,5 @@ public class MediaType {
     public static final String IMAGE_GIF = "image/gif";
     public static final String IMAGE_X_ICON = "image/x-icon";
     public static final String IMAGE_JPEG = "image/jpeg";
+    public static final String IMAGE_SVG = "image/svg+xml";
 }
