@@ -2,22 +2,26 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.utterlyidle.services.Service;
-import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Containers;
 import com.googlecode.yadic.SimpleContainer;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Strings.EMPTY;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
@@ -61,6 +65,10 @@ public class ApplicationBuilder {
     }
 
     public ApplicationBuilder content(final URL baseUrl, final String path) {
+        return addContent(baseUrl, path);
+    }
+
+    public ApplicationBuilder addContent(final URL baseUrl, final String path) {
         return add(bindings(in(baseUrl).path(path)));
     }
 
@@ -116,6 +124,10 @@ public class ApplicationBuilder {
         return start(defaultConfiguration());
     }
 
+    public Server start(int port) {
+        return start(defaultConfiguration().port(port));
+    }
+
     public ApplicationBuilder addApplicationScopedClass(Class<?> aClass) {
         return add(applicationScopedClass(aClass));
     }
@@ -126,6 +138,18 @@ public class ApplicationBuilder {
 
     public ApplicationBuilder addService(Class<? extends Service> aClass) {
         return add(serviceClass(aClass));
+    }
+
+    public static ApplicationBuilder staticApplication(File root) {
+        return staticApplication(root, EMPTY);
+    }
+
+    public static ApplicationBuilder staticApplication(File root, String path) {
+        try {
+            return application().content(root.toURI().toURL(), path);
+        } catch (MalformedURLException e) {
+            throw lazyException(e);
+        }
     }
 
     public static class ActivateModules implements Callable<Application>{
