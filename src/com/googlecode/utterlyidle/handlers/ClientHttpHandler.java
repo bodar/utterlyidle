@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.JarURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -51,7 +52,7 @@ public class ClientHttpHandler implements HttpClient {
         URL url = new URL(request.uri().toString());
         URLConnection connection = url.openConnection();
         connection.setConnectTimeout(milliseconds);
-        connection.setUseCaches(true);
+        connection.setUseCaches(false);
         connection.setReadTimeout(milliseconds);
         if (connection instanceof HttpURLConnection) {
             return handle(request, (HttpURLConnection) connection);

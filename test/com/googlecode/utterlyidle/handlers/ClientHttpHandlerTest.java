@@ -9,18 +9,14 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.caching.MemoryHttpCache;
-import com.googlecode.utterlyidle.caching.ResponseCacheAdapter;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.net.ResponseCache;
 import java.net.URL;
 
 import static com.googlecode.totallylazy.Uri.uri;
@@ -31,17 +27,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
-    @Test
-    public void canCacheAResponse() throws Exception {
-        MemoryHttpCache cache = new MemoryHttpCache();
-        ResponseCache.setDefault(new ResponseCacheAdapter(cache));
-        assertThat(cache.size(), is(0));
-        Response response = handle(get("cacheable"), server);
-        assertThat(cache.size(), is(1));
-        Response cachedResponse = handle(get("cacheable"), server);
-        assertThat(cache.size(), is(1));
-        assertThat(response, is(cachedResponse));
-    }
 
     @Test
     public void correctlyHandlesChunkedTransferEncoding() throws Exception {
