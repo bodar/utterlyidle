@@ -15,6 +15,7 @@ import com.googlecode.utterlyidle.PathParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
+import com.googlecode.utterlyidle.bindings.actions.Action;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.lang.reflect.Method;
@@ -26,9 +27,10 @@ import java.util.concurrent.Callable;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
+import static com.googlecode.utterlyidle.bindings.actions.InvokeResourceMethod.constructors.invokeResourceMethod;
 
 public class BindingBuilder implements Callable<Binding> {
-    private Method method;
+    private Action action;
     private UriTemplate uriTemplate;
     private String httpMethod = HttpMethod.GET;
     private Sequence<String> consumes = sequence(WILDCARD);
@@ -42,7 +44,7 @@ public class BindingBuilder implements Callable<Binding> {
     }
 
     public Binding build() {
-        return new Binding(method, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden);
+        return new Binding(action, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden);
     }
 
     public BindingBuilder path(String value) {
@@ -78,15 +80,19 @@ public class BindingBuilder implements Callable<Binding> {
         return this;
     }
 
-    public BindingBuilder method(Method value) {
-        method = value;
+    public BindingBuilder action(Action value) {
+        action = value;
         return this;
+    }
+
+    public BindingBuilder method(Method value) {
+        return action(invokeResourceMethod(value));
     }
 
     public BindingBuilder resource(Invocation invocation) {
         typesWithParameter = parameters.get();
         parameters.remove();
-        return method(invocation.method());
+        return action(invokeResourceMethod(invocation.method()));
     }
 
     public BindingBuilder resource(CallOn callOn) {
