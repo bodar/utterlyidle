@@ -3,6 +3,10 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.bindings.BindingMatcher;
+import com.googlecode.utterlyidle.bindings.DefaultBindingMatcher;
+import com.googlecode.utterlyidle.bindings.actions.ResourceClass;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 import com.googlecode.utterlyidle.handlers.DateHandler;
@@ -14,14 +18,18 @@ import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptionsModule;
 import com.googlecode.utterlyidle.services.Services;
 import com.googlecode.yadic.Container;
+import com.googlecode.yadic.Containers;
 import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.closeable.CloseableContainer;
 
 import java.io.IOException;
 
+import static com.googlecode.totallylazy.Callables.value;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.Binding.functions.action;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.bindings.actions.Action.functions.metaData;
 
 public class RestApplication implements Application {
     private final CloseableContainer applicationScope = CloseableContainer.closeableContainer();
@@ -83,6 +91,7 @@ public class RestApplication implements Application {
 
     private CloseableContainer createRequestScope() {
         final CloseableContainer requestScope = CloseableContainer.closeableContainer(applicationScope);
+        requestScope.add(BindingMatcher.class, DefaultBindingMatcher.class);
         requestScope.add(HttpHandler.class, BaseHandler.class);
         requestScope.decorate(HttpHandler.class, DateHandler.class);
         modules.activateRequestModules(requestScope);
@@ -97,15 +106,20 @@ public class RestApplication implements Application {
 
     private void addResourcesIfNeeded(Container requestScope) {
         Bindings bindings = requestScope.get(Bindings.class);
-        sequence(bindings).fold(requestScope, new Callable2<Container, Binding, Container>() {
-            public Container call(Container container, Binding binding) throws Exception {
-                Class<?> aClass = binding.method().getDeclaringClass();
-                if (!container.contains(aClass)) {
-                    container.add(aClass);
-                }
-                return container;
-            }
-        });
+        resourceClasses(bindings)
+                .fold(requestScope, new Callable2<Container, Class, Container>() {
+                    @Override
+                    public Container call(Container container, Class aClass) throws Exception {
+                        return Containers.addIfAbsent(container, aClass);
+                    }
+                });
+    }
+
+    private Sequence<Class> resourceClasses(Bindings bindings) {
+        return sequence(bindings)
+                .map(action())
+                .flatMap(metaData(ResourceClass.class))
+                .map(value(Class.class));
     }
 
     public <T> T usingParameterScope(Request request, Callable1<Container, T> callable) {

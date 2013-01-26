@@ -32,6 +32,7 @@ import static com.googlecode.utterlyidle.annotations.HttpMethodExtractor.httpMet
 import static com.googlecode.utterlyidle.annotations.Param.param;
 import static com.googlecode.utterlyidle.annotations.Param.toParam;
 import static com.googlecode.utterlyidle.annotations.UriTemplateExtractor.uriTemplate;
+import static com.googlecode.utterlyidle.bindings.actions.InvokeResourceMethod.constructors.invokeResourceMethod;
 
 public class AnnotatedBindings {
     public static Binding[] annotatedClass(Class<?> aClass) {
@@ -53,7 +54,7 @@ public class AnnotatedBindings {
     private static Callable1<HttpMethod, Binding> asBinding(final Method method) {
         return new Callable1<HttpMethod, Binding>() {
             public Binding call(HttpMethod httpMethod) throws Exception {
-                return new Binding(method, uriTemplate(method), httpMethod.value(), consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method));
+                return new Binding(invokeResourceMethod(method), uriTemplate(method), httpMethod.value(), consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method));
             }
         };
     }

@@ -1,21 +1,24 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.utterlyidle.bindings.actions.Action;
+import com.googlecode.yadic.Container;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Option.identity;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.NamedParameter.methods.defaultValue;
 
-public class Binding {
-    private final Method method;
+public class Binding  {
+    private final Action action;
     private final String httpMethod;
     private final UriTemplate uriTemplate;
     private final Sequence<String> consumes;
@@ -24,8 +27,15 @@ public class Binding {
     private final int priority;
     private final boolean hidden;
 
-    public Binding(Method method, UriTemplate uriTemplate, String httpMethod, Sequence<String> consumes, Sequence<String> produces, Sequence<Pair<Type, Option<Parameter>>> parameters, int priority, boolean hidden) {
-        this.method = method;
+    public Binding(Action action,
+                   UriTemplate uriTemplate,
+                   String httpMethod,
+                   Sequence<String> consumes,
+                   Sequence<String> produces,
+                   Sequence<Pair<Type, Option<Parameter>>> parameters,
+                   int priority,
+                   boolean hidden) {
+        this.action = action;
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
         this.consumes = consumes;
@@ -35,8 +45,11 @@ public class Binding {
         this.hidden = hidden;
     }
 
-    public Method method() {
-        return method;
+    public Object invoke(Container container) throws Exception {
+        return action().invoke(container);
+    }
+    public Action action() {
+        return action;
     }
 
     public String httpMethod() {
@@ -91,24 +104,29 @@ public class Binding {
         return obj instanceof Binding && myFields().equals(((Binding) obj).myFields());
     }
 
-    protected Sequence myFields() {
-        return Sequences.sequence(method, httpMethod, uriTemplate, consumes, produces, parameters, priority);
+    protected Sequence<Object> myFields() {
+        return Sequences.sequence(action, httpMethod, uriTemplate, consumes, produces, parameters, priority);
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s -> %s", httpMethod, uriTemplate, method);
+        return String.format("%s %s -> %s", httpMethod, uriTemplate, action.description());
     }
 
-    public static Callable1<Binding, Method> extractMethod() {
-        return new Callable1<Binding, Method>() {
-            @Override
-            public Method call(final Binding binding) throws Exception {
-                return binding.method();
-            }
-        };
-    }
     public static class functions {
+
+        public static LogicalPredicate<Binding> isForMethod(final Method method) {
+            return where(action(), Action.functions.isForMethod(method));
+        }
+        public static Function1<Binding, Action> action() {
+            return new Function1<Binding, Action>() {
+                @Override
+                public Action call(Binding binding) throws Exception {
+                    return binding.action();
+                }
+            };
+        }
+
         public static Function1<Binding, Integer> priority() {
             return new Function1<Binding, Integer>() {
                 @Override
