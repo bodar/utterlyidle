@@ -1,8 +1,11 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.proxy.Invocation;
+
+import java.util.NoSuchElementException;
 
 import static com.googlecode.utterlyidle.BasePathHandler.toFullyQualified;
 
@@ -57,7 +60,10 @@ public class BaseUriRedirector implements Redirector {
 
     @Override
     public Uri resourceUriOf(Invocation invocation) {
-        return bindings.find(invocation.method()).
+        Option<Binding> methodBinding = bindings.find(invocation.method());
+        if(methodBinding.isEmpty())
+            throw new NoSuchElementException(String.format("Not binding found for %s", invocation.method()));
+        return methodBinding.
                 map(resourceUriOf(invocation.arguments())).
                 get();
     }
