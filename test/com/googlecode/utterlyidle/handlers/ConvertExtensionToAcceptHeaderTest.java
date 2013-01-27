@@ -22,6 +22,9 @@ import static org.hamcrest.Matchers.nullValue;
 public class ConvertExtensionToAcceptHeaderTest {
     @Test
     public void findsExtensionInRequestUrl() {
+        assertThat(extensionOf(""), is(nullValue()));
+        assertThat(extensionOf("/"), is(nullValue()));
+        assertThat(extensionOf("/.csv"), is(".csv"));
         assertThat(extensionOf("/spong"), is(nullValue()));
         assertThat(extensionOf("/spong?param=not.an.extension"), is(nullValue()));
         assertThat(extensionOf("/spong/groupof.stuff/actual.html?moose=still+not+monkey"), is(".html"));
