@@ -8,6 +8,8 @@ import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 import com.googlecode.utterlyidle.handlers.HttpClient;
 import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 
+@Deprecated
+/** Superseded by com.googlecode.utterlyidle.html.Browser */
 public class Browser implements HttpClient {
     private final HttpHandler httpHandler;
 
