@@ -4,13 +4,19 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.ParametersContract;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -62,6 +68,17 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
     public void copesWithCookieHeaderWithNoCookies() {
         CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "")))).headers());
         assertThat(cookies.size(), is(0));
+    }
+
+    @Test
+    public void parsesResponseCookies() {
+        Response response = response(OK)
+                .cookie(cookie("test", "test value", expires(date(2013, 1, 1))))
+                .build();
+
+        CookieParameters cookies = CookieParameters.cookies(response);
+
+        assertThat(cookies.getValue("test"), is("test value"));
     }
 
     private Request request(HeaderParameters headers) {

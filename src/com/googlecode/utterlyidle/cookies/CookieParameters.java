@@ -3,13 +3,14 @@ package com.googlecode.utterlyidle.cookies;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Functions;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Pair.pair;
@@ -18,6 +19,8 @@ import static com.googlecode.totallylazy.Strings.empty;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.list;
 import static com.googlecode.totallylazy.regex.Regex.regex;
+import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 
 public class CookieParameters extends Parameters<String, String, CookieParameters> {
     private CookieParameters(PersistentList<Pair<String, String>> values) {
@@ -29,11 +32,39 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
         return new CookieParameters(values);
     }
 
+    /** Cookies from a request's COOKIE header */
     public static CookieParameters cookies(final HeaderParameters headerParameters) {
-        return new CookieParameters(list(headerParameters.
-                getValues(HttpHeaders.COOKIE).
+        // In a request header every NAME=VALUE pair is a cookie value
+        return new CookieParameters(
+                list(
+                        pairsPerParameter(headerParameters, COOKIE).
+                                flatMap(Functions.<Sequence<Pair<String, String>>>identity())));
+    }
+
+
+    /** Cookie values from a response's SET-COOKIE header */
+    public static CookieParameters cookies(Response response) {
+        // First NAME=VALUE pair is the cookie value. Other pairs are attributes
+        return new CookieParameters(
+                list(
+                        pairsPerParameter(response.headers(), SET_COOKIE).
+                                map(Callables.<Pair<String, String>>first())));
+    }
+
+    private static Sequence<Sequence<Pair<String, String>>> pairsPerParameter(HeaderParameters headerParameters, String parameter) {
+        return headerParameters.
+                getValues(parameter).
                 filter(not(empty())).
-                flatMap(parseIntoPairs())));
+                map(parseCookieHeader());
+    }
+
+    public static Function1<String, Sequence<Pair<String, String>>> parseCookieHeader() {
+        return new Function1<String, Sequence<Pair<String, String>>>() {
+            @Override
+            public Sequence<Pair<String, String>> call(String header) throws Exception {
+                return cookies(header);
+            }
+        };
     }
 
     public static Sequence<Pair<String, String>> cookies(String header) {
