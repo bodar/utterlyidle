@@ -11,6 +11,7 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.io.HierarchicalPath;
 
 import java.util.Iterator;
 
@@ -71,12 +72,14 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     public static Option<String> fileExtension(Uri url) {
-        String file = hierarchicalPath(url.path()).file();
-        return !file.contains(".") ? none(String.class) : some(file.substring(file.lastIndexOf(".")));
+        HierarchicalPath path = hierarchicalPath(url.path());
+        if (path.segments().isEmpty()) return none();
+        String file = path.file();
+        return file.indexOf(".") < 0 ? none(String.class) : some(file.substring(file.lastIndexOf(".")));
     }
 
     private Uri removeExtension(Uri uri) {
-        if(fileExtension(uri).isEmpty()) return uri;
+        if (fileExtension(uri).isEmpty()) return uri;
         String file = hierarchicalPath(uri.path()).file();
         String fileWithoutExtension = file.substring(0, file.lastIndexOf("."));
         return uri.path(hierarchicalPath(uri.path()).segments().init().add(fileWithoutExtension).toString("/"));
