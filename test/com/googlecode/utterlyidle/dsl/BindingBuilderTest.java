@@ -25,7 +25,7 @@ public class BindingBuilderTest {
     @Test
     public void preservesAllStateWhenModifyingABinding() throws NoSuchMethodException {
         InvokeResourceMethod action = invokeResourceMethod(BindingBuilderTest.class.getMethods()[0]);
-        Sequence<Pair<Type,Option<Parameter>>> parameters = sequence(pair((Type) BindingBuilderTest.class, Option.some((Parameter) new DefinedParameter(String.class, ""))));
+        Sequence<Pair<Type,Option<Parameter>>> parameters = sequence(pair((Type) BindingBuilderTest.class, Option.some((Parameter) new DefinedParameter<String>(String.class, ""))));
 
         Binding original = new Binding(
                 action,
