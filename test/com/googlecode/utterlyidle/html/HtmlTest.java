@@ -16,7 +16,7 @@ public class HtmlTest {
     @Test
     public void printsContentIfItCantParseIt() throws Exception {
         try {
-            new Html("foo");
+            html("foo");
             fail("should have thrown");
         } catch (IllegalArgumentException e){
             assertThat(e.getMessage(), containsString("foo"));
@@ -24,9 +24,9 @@ public class HtmlTest {
     }
 
     @Test
-    public void toStringReturnsOriginalHtml() throws Exception{
-        Html html = html("   <html/>   ");
-        assertThat(html.toString(), is("   <html/>   "));
+    public void toStringFormatsHtml() throws Exception{
+        Html html = html("   <html><body></body></html>   ");
+        assertThat(html.toString(), is("<html>\n<body></body>\n</html>\n"));
     }
 
     @Test
@@ -34,8 +34,8 @@ public class HtmlTest {
         Html html = html("<html><form id=\"form1\"><input name=\"one\"/></form><form id=\"form2\"><input name=\"two\"/></form></html>");
         Sequence<Form> forms = html.forms();
         assertThat(forms.size(), is(equalTo(2)));
-        assertThat(forms.first().toString(), is(equalTo("<form id=\"form1\"><input name=\"one\"/></form>")));
-        assertThat(forms.second().toString(), is(equalTo("<form id=\"form2\"><input name=\"two\"/></form>")));
+        assertThat(forms.first().toString(), is(equalTo("<form id=\"form1\">\n    <input name=\"one\"/>\n</form>\n")));
+        assertThat(forms.second().toString(), is(equalTo("<form id=\"form2\">\n    <input name=\"two\"/>\n</form>\n")));
     }
 
     @Test

@@ -1,15 +1,12 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Xml;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import org.w3c.dom.Element;
 
-public class Link implements NameValue{
-    private final Element link;
-
+public class Link extends AbstractElement implements NameValue {
     public Link(Element link) {
-        this.link = link;
+        super(link);
     }
 
     public Request click() {
@@ -17,10 +14,10 @@ public class Link implements NameValue{
     }
 
     public String value() {
-        return Xml.selectContents(link, "@href");
+        return attribute("href");
     }
 
     public String name() {
-        return link.getTextContent();
+        return selectContent("text()");
     }
 }
