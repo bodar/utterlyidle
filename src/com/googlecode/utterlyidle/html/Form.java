@@ -10,22 +10,18 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.w3c.dom.Element;
 
-import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Xml.contents;
-import static com.googlecode.totallylazy.Xml.selectNode;
 import static java.lang.String.format;
 
-public class Form {
+public class Form extends ContainerElement {
     public static final String DESCENDANT = "descendant::";
-    private final Element form;
 
     public Form(Element form) {
-        this.form = form;
+        super(form);
     }
 
     public Request submit(String submitXpath) throws IllegalStateException {
-        if (new Input(Xml.selectElement(form, submitXpath).get()).disabled()){
+        if (new Input(expectElement(submitXpath)).disabled()){
             throw new IllegalStateException(format("Attempt to invoke disabled input for [%s]", submitXpath));
         }
         return submitXpath(fieldExpressions().add(sanitise(submitXpath)));
@@ -36,29 +32,16 @@ public class Form {
     }
 
     public String action() {
-        return attribute("@action");
+        return attribute("action");
     }
 
     public String method() {
-        return attribute("@method");
-    }
-
-    private String attribute(String xpath) {
-        return selectNode(form, xpath).map(contents()).getOrElse((String) null);
-    }
-
-    @Override
-    public String toString() {
-        try {
-            return Xml.asString(form);
-        } catch (Exception e) {
-            throw lazyException(e);
-        }
+        return attribute("method");
     }
 
     private Request submitXpath(Sequence<String> fieldExpressions) {
-        String action = Xml.selectContents(form, "@action");
-        String method = Xml.selectContents(form, "@method");
+        String action = selectContent("@action");
+        String method = selectContent("@method");
 
         Sequence<NameValue> inputs = nameValuePairs(fieldExpressions);
         return inputs.fold(new RequestBuilder(method, action),
@@ -75,7 +58,7 @@ public class Form {
     }
 
     private Sequence<NameValue> nameValuePairs(Sequence<String> xpath) {
-        return Xml.selectElements(form, xpath.toString(DESCENDANT, "|"+DESCENDANT, "")).flatMap(toNameAndValue());
+        return selectElements(xpath.toString(DESCENDANT, "|" + DESCENDANT, "")).flatMap(toNameAndValue());
     }
 
     private Callable1<? super Element, Sequence<NameValue>> toNameAndValue() {

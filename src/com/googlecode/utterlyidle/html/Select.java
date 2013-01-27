@@ -4,9 +4,9 @@ import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
+import static com.googlecode.totallylazy.Xml.expectElement;
 import static com.googlecode.totallylazy.Xml.removeAttribute;
 import static com.googlecode.totallylazy.Xml.selectContents;
-import static com.googlecode.totallylazy.Xml.selectElement;
 import static com.googlecode.totallylazy.Xml.selectElements;
 import static java.lang.String.format;
 
@@ -35,8 +35,16 @@ public class Select implements NameValue {
     }
 
     public Select value(String value) {
+        return valueWithXPath("option[@value='" + value + "']");
+    }
+
+    public Select valueWithText(String text) {
+        return valueWithXPath("option[@text='" + text + "']");
+    }
+
+    public Select valueWithXPath(String optionExpression) {
         selectElements(select, SELECTED_OPTION).each(removeAttribute(SELECTED));
-        selectElement(select, "option[@value='" + value + "']").get().setAttribute(SELECTED, SELECTED);
+        expectElement(select, optionExpression).setAttribute(SELECTED, SELECTED);
         return this;
     }
 

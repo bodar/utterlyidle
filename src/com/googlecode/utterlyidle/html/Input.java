@@ -3,34 +3,26 @@ package com.googlecode.utterlyidle.html;
 import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
-import static com.googlecode.totallylazy.Xml.selectContents;
-import static java.lang.String.format;
 
-
-public class Input implements NameValue{
-    public static final String NAME = "@name";
-    public static final String VALUE = "@value";
-    protected final Element input;
+public class Input extends AbstractElement implements NameValue {
+    public static final String NAME = "name";
+    public static final String VALUE = "value";
 
     public Input(Element input) {
-        this.input = input;
+        super(input);
     }
 
     public String value() {
-        return selectContents(input, VALUE);
+        return attribute(VALUE);
     }
 
     public Input value(String value) {
-        input.setAttribute("value",value);
+        setAttribute("value",value);
         return this;
     }
 
     public String name() {
-        return selectContents(input, NAME);
-    }
-
-    public String attribute(String attributeName) {
-        return selectContents(input, format("@%s", attributeName));
+        return attribute(NAME);
     }
 
     public boolean enabled() {
@@ -38,6 +30,6 @@ public class Input implements NameValue{
     }
 
     public boolean disabled() {
-        return Xml.matches(input, "boolean(@disabled='disabled')");
+        return Xml.matches(node, "boolean(@disabled='disabled')");
     }
 }

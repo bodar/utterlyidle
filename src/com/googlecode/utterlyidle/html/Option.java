@@ -4,14 +4,9 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import org.w3c.dom.Node;
 
-import static com.googlecode.totallylazy.Xml.selectContents;
-
-public class Option {
-
-    private Node node;
-
+public class Option extends AbstractElement {
     public Option(Node node) {
-        this.node = node;
+        super(node);
     }
 
     public static Callable1<Node, Option> asNode() {
@@ -51,11 +46,11 @@ public class Option {
     }
 
     public String value() {
-        return selectContents(node, "@value");
+        return attribute("value");
     }
 
     public String text() {
-        return selectContents(node, "text()");
+        return selectContent("text()");
     }
 
     public Pair<String, String> entry() {
