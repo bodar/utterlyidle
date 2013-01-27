@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 
@@ -47,6 +48,24 @@ public interface Response {
                 @Override
                 public Response call(Object entity) throws Exception {
                     return response.entity(entity).build();
+                }
+            };
+        }
+
+        public static Function1<Response, Entity> entity() {
+            return new Function1<Response, Entity>() {
+                @Override
+                public Entity call(Response response) throws Exception {
+                    return response.entity();
+                }
+            };
+        }
+
+        public static LogicalPredicate<Response> entityTypeIs(final Class type) {
+            return new LogicalPredicate<Response>() {
+                @Override
+                public boolean matches(Response other) {
+                    return other != null && type.isInstance(other.entity().value());
                 }
             };
         }
