@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.dsl;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.proxy.CallOn;
 import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.utterlyidle.Binding;
@@ -20,8 +21,6 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Option.some;
@@ -36,8 +35,21 @@ public class BindingBuilder implements Callable<Binding> {
     private Sequence<String> consumes = sequence(WILDCARD);
     private Sequence<String> produces = sequence(WILDCARD);
     private int priority = 0;
-    private List<Pair<Type,Option<Parameter>>> typesWithParameter = Collections.emptyList();
+    private Sequence<Pair<Type,Option<Parameter>>> typesWithParameter = Sequences.empty();
     private boolean hidden = false;
+
+
+    public static BindingBuilder modify(Binding binding) {
+        return new BindingBuilder().
+                action(binding.action()).
+                uriTemplate(binding.uriTemplate()).
+                httpMethod(binding.httpMethod()).
+                consumes(binding.consumes()).
+                produces(binding.produces()).
+                priority(binding.priority()).
+                parameters(binding.parameters()).
+                hidden(binding.hidden());
+    }
 
     public Binding call() throws Exception {
         return build();
@@ -48,7 +60,11 @@ public class BindingBuilder implements Callable<Binding> {
     }
 
     public BindingBuilder path(String value) {
-        uriTemplate = UriTemplate.uriTemplate(value);
+        return uriTemplate(UriTemplate.uriTemplate(value));
+    }
+
+    public BindingBuilder uriTemplate(UriTemplate value) {
+        uriTemplate = value;
         return this;
     }
 
@@ -90,10 +106,16 @@ public class BindingBuilder implements Callable<Binding> {
     }
 
     public BindingBuilder resource(Invocation invocation) {
-        typesWithParameter = parameters.get();
+        parameters(parameters.get());
         parameters.remove();
         return action(invokeResourceMethod(invocation.method()));
     }
+
+    public BindingBuilder parameters(Iterable<Pair<Type, Option<Parameter>>> value) {
+        typesWithParameter = sequence(value);
+        return this;
+    }
+
 
     public BindingBuilder resource(CallOn callOn) {
         return resource(callOn.invocation());
