@@ -2,12 +2,15 @@ package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.UtterlyIdleProperties;
+import com.googlecode.utterlyidle.modules.Modules;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.yadic.SimpleContainer;
 
 import javax.servlet.ServletContext;
 import java.util.concurrent.Callable;
 
+import static com.googlecode.utterlyidle.modules.Modules.autoStart;
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.basePath;
 
 public class ApplicationContext {
@@ -24,12 +27,13 @@ public class ApplicationContext {
     public static synchronized Application getApplication(final ServletContext servletContext, final String className) {
         if (servletContext.getAttribute(KEY) == null) {
             Application application = createApplication(servletContext, getClass(className));
-            Service.functions.start().callConcurrently(application);
+            if (autoStart(application.applicationScope().get(UtterlyIdleProperties.class))) {
+                Service.functions.start().callConcurrently(application);
+            }
             setApplication(servletContext, application);
         }
         return (Application) servletContext.getAttribute(KEY);
     }
-
 
     private static Application createApplication(ServletContext servletContext, Class<? extends Application> aClass) {
         Application application = constructApplication(aClass, basePath(servletContext));
