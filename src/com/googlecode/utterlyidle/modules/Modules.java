@@ -76,7 +76,7 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
 
     @SuppressWarnings("deprecation")
     public void activateStartupModule(Module module, Container requestScope) {
-        if (Boolean.valueOf(properties.getProperty(AUTO_START, "true"))) {
+        if (autoStart(properties)) {
             activate(module, requestScope, sequence(StartupModule.class));
         }
     }
@@ -163,4 +163,7 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         };
     }
 
+    public static Boolean autoStart(UtterlyIdleProperties properties) {
+        return Boolean.valueOf(properties.getProperty(AUTO_START, "true"));
+    }
 }
