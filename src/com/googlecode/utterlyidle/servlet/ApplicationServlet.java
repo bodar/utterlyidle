@@ -23,6 +23,7 @@ import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.forwardOnly;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
+import static com.googlecode.utterlyidle.Protocol.protocol;
 import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplication;
@@ -80,7 +81,7 @@ public class ApplicationServlet extends HttpServlet {
             );
             return requestEnricher(
                     clientAddress(servletRequest.getRemoteAddr()),
-                    servletRequest.getProtocol().toLowerCase())
+                    protocol(servletRequest.getProtocol()))
                     .enrich(request);
         } catch (IOException e) {
             throw new RuntimeException(e);
