@@ -6,14 +6,14 @@ import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
 public class RequestEnricher {
     private final ClientAddress clientAddress;
-    private final String protocol;
+    private final Protocol protocol;
 
-    public static RequestEnricher requestEnricher(final ClientAddress clientAddress, String protocol){
+    public static RequestEnricher requestEnricher(final ClientAddress clientAddress, Protocol protocol){
         return new RequestEnricher(clientAddress,protocol);
     }
-    private RequestEnricher(final ClientAddress clientAddress, String protocol) {
+    private RequestEnricher(final ClientAddress clientAddress, Protocol protocol) {
         this.clientAddress = clientAddress;
-        this.protocol = protocol.toLowerCase();
+        this.protocol = protocol;
     }
 
     public Request enrich(Request request){
@@ -23,7 +23,7 @@ public class RequestEnricher {
     private Request withXForwardedProto(Request request) {
         request.headers();
         if (request.headers().contains(X_FORWARDED_PROTO)) return request;
-        return modify(request).header(X_FORWARDED_PROTO, protocol).build();
+        return modify(request).header(X_FORWARDED_PROTO, protocol.name()).build();
     }
     private Request withXForwardedFor(Request request) {
         request.headers();

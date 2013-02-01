@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.Value;
 
 import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.utterlyidle.Protocol.protocol;
 import static java.lang.String.format;
 
 public class BaseUri implements Value<Uri> {
@@ -26,7 +27,7 @@ public class BaseUri implements Value<Uri> {
         if (host == null) {
             return new BaseUri(uri(basePath.toString()));
         }
-        return new BaseUri(uri(format("http://%s%s", host, basePath))); // TODO: Fix detection of Https
+        return new BaseUri(uri(format("%s://%s%s", protocol(request).schemaValue(), host, basePath)));
     }
 
     @Override
