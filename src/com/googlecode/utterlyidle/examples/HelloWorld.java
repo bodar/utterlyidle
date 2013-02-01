@@ -22,6 +22,7 @@ import com.googlecode.utterlyidle.annotations.QueryParam;
 
 import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
+import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 
 @Produces(MediaType.TEXT_PLAIN)
@@ -85,6 +86,12 @@ public class HelloWorld {
     @Path("helloworld/xff")
     public String xForwardedFor(@HeaderParam(X_FORWARDED_FOR) String forwardedFor) {
         return forwardedFor;
+    }
+
+    @GET
+    @Path("helloworld/x-forwarded-proto")
+    public String xForwardedProto(@HeaderParam(X_FORWARDED_PROTO) String forwardedProto) {
+        return forwardedProto;
     }
 
     @POST

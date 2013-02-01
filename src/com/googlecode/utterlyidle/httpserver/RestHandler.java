@@ -22,7 +22,7 @@ import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;
 import static com.googlecode.utterlyidle.Responses.response;
 
 public class RestHandler implements HttpHandler {
@@ -64,13 +64,17 @@ public class RestHandler implements HttpHandler {
         };
     }
 
-    private MemoryRequest request(HttpExchange httpExchange) {
-        return Requests.request(
+    private Request request(HttpExchange httpExchange) {
+        MemoryRequest request = Requests.request(
                 httpExchange.getRequestMethod(),
                 uri(httpExchange.getRequestURI().toString()),
-                withXForwardedFor(clientAddress(httpExchange.getRemoteAddress().getAddress()), headerParameters(httpExchange.getRequestHeaders())),
+                headerParameters(httpExchange.getRequestHeaders()),
                 bytes(httpExchange.getRequestBody())
         );
+        return requestEnricher(
+                clientAddress(httpExchange.getRemoteAddress().getAddress()),
+                httpExchange.getProtocol())
+                .enrich(request);
     }
 
     private Response exceptionResponse(Request request, final Exception e) throws IOException {

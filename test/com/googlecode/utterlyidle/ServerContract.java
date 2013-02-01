@@ -13,6 +13,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
+import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
@@ -90,6 +91,24 @@ public abstract class ServerContract {
         String result = response.entity().toString();
 
         assertThat(result, is("sky.com"));
+    }
+
+    @Test
+    public void setXForwardedProtoIfRequestDoesntHaveOne() throws Exception {
+        Response response = handle(get("helloworld/x-forwarded-proto"), server);
+
+        String result = response.entity().toString();
+
+        assertThat(result, startsWith("http"));
+    }
+
+    @Test
+    public void preservesXForwardedProtoIfRequestHasOne() throws Exception {
+        Response response = handle(get("helloworld/x-forwarded-proto").header(X_FORWARDED_PROTO, "https"), server);
+
+        String result = response.entity().toString();
+
+        assertThat(result, is("https"));
     }
 
     @Test
