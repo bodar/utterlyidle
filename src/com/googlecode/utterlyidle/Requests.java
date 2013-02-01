@@ -96,18 +96,6 @@ public class Requests {
         return CookieParameters.cookies(request.headers());
     }
 
-    public static Callable1<Request, Protocol> protocol() {
-        return new Callable1<Request, Protocol>() {
-            public Protocol call(Request request) throws Exception {
-                return protocol(request);
-            }
-        };
-    }
-
-    public static Protocol protocol(Request request) {
-        return Protocol.protocol(request);
-    }
-
     public static Callable1<Request, HierarchicalPath> path() {
         return new Callable1<Request, HierarchicalPath>() {
             public HierarchicalPath call(Request request) throws Exception {
