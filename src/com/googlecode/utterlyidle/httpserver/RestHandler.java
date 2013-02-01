@@ -22,6 +22,7 @@ import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.Protocol.protocol;
 import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;
 import static com.googlecode.utterlyidle.Responses.response;
 
@@ -73,7 +74,7 @@ public class RestHandler implements HttpHandler {
         );
         return requestEnricher(
                 clientAddress(httpExchange.getRemoteAddress().getAddress()),
-                httpExchange.getProtocol())
+                protocol(httpExchange.getProtocol()))
                 .enrich(request);
     }
 
