@@ -25,8 +25,10 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
+import static com.googlecode.utterlyidle.Protocol.HTTP;
+import static com.googlecode.utterlyidle.Protocol.HTTPS;
+import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 
 public class RestContainer implements Container {
@@ -77,13 +79,17 @@ public class RestContainer implements Container {
         };
     }
 
-    private com.googlecode.utterlyidle.Request request(Request request) throws IOException {
-        return Requests.request(
-                request.getMethod(),
-                request.getPath().toString(),
-                query(request),
-                withXForwardedFor(clientAddress(request.getClientAddress().getAddress()), headers(request)),
-                bytes(request.getInputStream()));
+    private com.googlecode.utterlyidle.Request request(Request frameworkRequest) throws IOException {
+        com.googlecode.utterlyidle.Request request = Requests.request(
+                frameworkRequest.getMethod(),
+                frameworkRequest.getPath().toString(),
+                query(frameworkRequest),
+                headers(frameworkRequest),
+                bytes(frameworkRequest.getInputStream()));
+        return requestEnricher(
+                clientAddress(frameworkRequest.getClientAddress().getAddress()),
+                frameworkRequest.isSecure() ? HTTPS : HTTP)
+                .enrich(request);
     }
 
     private HeaderParameters headers(final Request request) {

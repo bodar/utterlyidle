@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
@@ -22,7 +23,7 @@ import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.forwardOnly;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
-import static com.googlecode.utterlyidle.HeaderParameters.withXForwardedFor;
+import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.getApplication;
 import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplication;
 
@@ -69,14 +70,18 @@ public class ApplicationServlet extends HttpServlet {
         using(resp.getOutputStream(), response.entity().transferFrom());
     }
 
-    public static Request request(HttpServletRequest request) {
+    public static Request request(HttpServletRequest servletRequest) {
         try {
-            return Requests.request(
-                    request.getMethod(),
-                    Uri.uri(request.getRequestURI() + queryString(request.getQueryString())),
-                    withXForwardedFor(clientAddress(request.getRemoteAddr()), convertToHeaderParameters(request)),
-                    bytes(request.getInputStream())
+            MemoryRequest request = Requests.request(
+                    servletRequest.getMethod(),
+                    Uri.uri(servletRequest.getRequestURI() + queryString(servletRequest.getQueryString())),
+                    convertToHeaderParameters(servletRequest),
+                    bytes(servletRequest.getInputStream())
             );
+            return requestEnricher(
+                    clientAddress(servletRequest.getRemoteAddr()),
+                    servletRequest.getProtocol().toLowerCase())
+                    .enrich(request);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

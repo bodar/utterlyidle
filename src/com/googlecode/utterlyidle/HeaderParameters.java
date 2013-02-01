@@ -8,7 +8,6 @@ import java.util.Map;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public class HeaderParameters extends Parameters<String, String, HeaderParameters> {
@@ -66,12 +65,5 @@ public class HeaderParameters extends Parameters<String, String, HeaderParameter
                 return pair.toString(start, separator, end);
             }
         };
-    }
-
-    public static HeaderParameters withXForwardedFor(ClientAddress clientAddress, HeaderParameters headerParameters) {
-        if (!headerParameters.contains(X_FORWARDED_FOR)) {
-            return headerParameters.add(X_FORWARDED_FOR, clientAddress.value());
-        }
-        return headerParameters;
     }
 }
