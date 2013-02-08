@@ -28,11 +28,11 @@ public class ConnectionActivator implements Callable<Connection>, Closeable {
         this.request = request;
     }
 
-    public ConnectionActivator connectionActivator(DataSource dataSource) {
+    public static ConnectionActivator connectionActivator(DataSource dataSource) {
         return new ConnectionActivator(dataSource, Option.<Request>none());
     }
 
-    public ConnectionActivator connectionActivator(DataSource dataSource, Request request) {
+    public static ConnectionActivator connectionActivator(DataSource dataSource, Request request) {
         return new ConnectionActivator(dataSource, Option.option(request));
     }
 
