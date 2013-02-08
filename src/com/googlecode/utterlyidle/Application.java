@@ -12,7 +12,7 @@ public interface Application extends HttpHandler, Closeable, Service {
 
     <T> T usingRequestScope(Callable1<Container, T> callable);
 
-    <T> T usingParameterScope(Request request, Callable1<Container, T> callable);
+    <T> T usingArgumentScope(Request request, Callable1<Container, T> callable);
 
     Application add(Module module);
 }

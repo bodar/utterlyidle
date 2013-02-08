@@ -86,10 +86,10 @@ public class RestApplication implements Application {
     }
 
     public <T> T usingRequestScope(Callable1<Container, T> callable) {
-        return using(createRequestScope(), callable);
+        return using(requestScope(), callable);
     }
 
-    private CloseableContainer createRequestScope() {
+    protected CloseableContainer requestScope() {
         final CloseableContainer requestScope = CloseableContainer.closeableContainer(applicationScope);
         requestScope.add(BindingMatcher.class, DefaultBindingMatcher.class);
         requestScope.add(HttpHandler.class, BaseHandler.class);
@@ -122,11 +122,11 @@ public class RestApplication implements Application {
                 .map(value(Class.class));
     }
 
-    public <T> T usingParameterScope(Request request, Callable1<Container, T> callable) {
-        return using(createArgumentScope(request), callable);
+    public <T> T usingArgumentScope(Request request, Callable1<Container, T> callable) {
+        return using(argumentScope(request), callable);
     }
 
-    private Container createArgumentScope(Request request) {
+    protected Container argumentScope(Request request) {
         final Container argumentScope = new SimpleContainer();
         argumentScope.addInstance(Request.class, request);
         modules.activateArgumentModules(argumentScope);
