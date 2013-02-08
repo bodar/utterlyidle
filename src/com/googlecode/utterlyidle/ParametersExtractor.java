@@ -39,7 +39,7 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
     public Object[] extract(final Request request) {
         return typesWithNamedParameter.map(new Callable1<Pair<Type, Option<Parameter>>, Object>() {
             public Object call(Pair<Type, Option<Parameter>> pair) throws Exception {
-                return application.usingParameterScope(request, resolveParameter(pair));
+                return application.usingArgumentScope(request, resolveParameter(pair));
             }
         }).toArray(Object.class);
     }
