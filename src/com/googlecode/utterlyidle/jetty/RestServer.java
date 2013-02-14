@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.jetty;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
@@ -29,21 +30,25 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private final ServerConfiguration configuration;
     private Server server;
     private Uri uri;
-    private final Function1<Server, Context> createContext;
+    private final Callable1<? super Server, ? extends Context> contextCreator;
 
-    private RestServer(final Application application, final ServerConfiguration configuration, Function1<Server, Context> contextCreator) throws Exception {
+    private RestServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends Context> contextCreator) throws Exception {
         this.application = application;
         this.configuration = configuration;
-        this.createContext = contextCreator;
+        this.contextCreator = contextCreator;
         server = startApp();
     }
 
+    public static RestServer restServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends Context> contextCreator) throws Exception {
+        return new RestServer(application, configuration, contextCreator);
+    }
+
     public static RestServer restServer(final Application application, final ServerConfiguration configuration) throws Exception {
-        return new RestServer(application, configuration, defaultContext(application, configuration));
+        return restServer(application, configuration, defaultContext(application, configuration));
     }
 
     public static RestServer webXmlRestServer(final Application application, final ServerConfiguration configuration, Uri webRoot) throws Exception {
-        return new RestServer(application, configuration, webXmlContext(webRoot, configuration));
+        return restServer(application, configuration, webXmlContext(webRoot, configuration));
     }
 
     public void close() throws IOException {
@@ -69,7 +74,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private Server startUpServer() throws Exception {
         Server server = createServer(configuration);
 
-        Context context = createContext.call(server);
+        Context context = contextCreator.call(server);
         context.setAttribute(Application.class.getCanonicalName(), application);
 
         server.start();
