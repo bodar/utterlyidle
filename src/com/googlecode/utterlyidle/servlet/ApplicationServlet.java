@@ -12,6 +12,7 @@ import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,18 +30,20 @@ import static com.googlecode.utterlyidle.servlet.ApplicationContext.removeApplic
 
 public class ApplicationServlet extends HttpServlet {
     public static final String KEY = "application";
-    private Application application = null;
+    private String initParameter;
+    private ServletContext servletContext;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        application = getApplication(config.getServletContext(), config.getInitParameter(KEY));
+        initParameter = config.getInitParameter(KEY);
+        servletContext = config.getServletContext();
     }
 
     @Override
     public void destroy() {
         try {
-            application.close();
+            application().close();
             removeApplication(getServletContext());
         } catch (IOException e) {
             throw lazyException(e);
@@ -50,7 +53,7 @@ public class ApplicationServlet extends HttpServlet {
     @Override
     public void service(final HttpServletRequest httpServletRequest, HttpServletResponse resp) throws ServletException {
         try {
-            Response response = application.handle(request(httpServletRequest));
+            Response response = application().handle(request(httpServletRequest));
             mapTo(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
@@ -99,5 +102,9 @@ public class ApplicationServlet extends HttpServlet {
             }
         }
         return result;
+    }
+
+    private Application application() {
+        return getApplication(servletContext, initParameter);
     }
 }
