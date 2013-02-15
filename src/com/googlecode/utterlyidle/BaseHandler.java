@@ -37,6 +37,9 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Response success(final Request request, final Binding binding) throws Exception {
+        if (container.contains(MatchedBinding.class)) {
+            container.remove(MatchedBinding.class);
+        }
         container.addInstance(MatchedBinding.class, matchedBinding(binding));
         return setContentType(accept(request).bestMatch(binding.produces()),
                 wrapInResponse(
