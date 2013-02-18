@@ -5,5 +5,5 @@ mvn:cglib:cglib-nodep:jar:2.2
 mvn:org.objenesis:objenesis:jar:1.2
 
 s3://repo.bodar.com/com.googlecode.totallylazy:totallylazy:jar|sources:1020
-s3://repo.bodar.com/com.googlecode.funclate:funclate:jar|sources:101
+s3://repo.bodar.com/com.googlecode.funclate:funclate:jar|sources:102
 s3://repo.bodar.com/com.googlecode.yadic:yadic:jar|sources:153
