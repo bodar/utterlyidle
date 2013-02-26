@@ -14,9 +14,13 @@ public class SmartHttpClient implements HttpClient {
 
     @Override
     public Response handle(Request request) throws Exception {
-        if(request.uri().isFullyQualified()){
+        if(request.uri().isFullyQualified() || isForFile(request)){
             return httpClient.handle(request);
         }
         return internalHttpHandler.handle(request);
+    }
+
+    private boolean isForFile(Request request) {
+        return "file".equalsIgnoreCase(request.uri().scheme());
     }
 }
