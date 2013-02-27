@@ -16,6 +16,7 @@ public class MediaType {
     public static final String TEXT_HTML = "text/html";
     public static final String TEXT_CSS = "text/css";
     public static final String TEXT_JAVASCRIPT = "text/javascript";
+    public static final String TEXT_CACHE_MANIFEST = "text/cache-manifest";
     public static final String IMAGE_PNG = "image/png";
     public static final String IMAGE_GIF = "image/gif";
     public static final String IMAGE_X_ICON = "image/x-icon";
