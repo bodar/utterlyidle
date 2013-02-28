@@ -1,6 +1,8 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Debug;
 import com.googlecode.totallylazy.Files;
+import com.googlecode.totallylazy.Streams;
 import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.Zip;
@@ -105,7 +107,7 @@ public class ClientHttpHandlerTest {
     }
 
     public static Response handle(int timeout, final RequestBuilder request, final Server server) throws Exception {
-        HttpHandler urlHandler = new ClientHttpHandler(timeout);
+        HttpHandler urlHandler = new AuditHandler(new ClientHttpHandler(timeout), new PrintAuditor(Debug.debugging() ? System.out : Streams.nullPrintStream()));
         Uri uri = request.uri();
         Uri path = server.uri().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
         return urlHandler.handle(request.uri(path).build());

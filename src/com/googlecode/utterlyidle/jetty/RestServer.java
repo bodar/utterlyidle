@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ServerConfiguration;
+import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
@@ -22,6 +23,7 @@ import static com.googlecode.totallylazy.callables.TimeCallable.calculateMillise
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.lang.System.nanoTime;
 import static org.mortbay.jetty.servlet.Context.NO_SESSIONS;
 
@@ -86,12 +88,17 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return new Function1<Server, Context>() {
             @Override
             public Context call(Server server) throws Exception {
-                Context context = new Context(server, configuration.basePath().toString(), NO_SESSIONS);
+                Context context = new Context(server, removeTrailingSlash(configuration.basePath().toString()), NO_SESSIONS);
                 application.add(new ServletModule(context.getServletContext()));
                 context.addServlet(ApplicationServlet.class, "/*");
                 return context;
             }
         };
+    }
+
+    private static String removeTrailingSlash(final String value) {
+        if(!value.endsWith("/")) return value;
+        return value.substring(0, value.length() - 1);
     }
 
     public static Function1<Server, Context> webXmlContext(final Uri webRoot, final ServerConfiguration configuration) {
