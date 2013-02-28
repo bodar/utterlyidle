@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
@@ -89,12 +90,16 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return new Function1<Server, Context>() {
             @Override
             public Context call(Server server) throws Exception {
-                Context context = new Context(server, removeTrailingSlash(configuration.basePath().toString()), NO_SESSIONS);
+                Context context = new Context(server, contextPath(configuration.basePath()), NO_SESSIONS);
                 application.add(new ServletModule(context.getServletContext()));
                 context.addServlet(ApplicationServlet.class, "/*");
                 return context;
             }
         };
+    }
+
+    private static String contextPath(BasePath basePath) {
+        return removeTrailingSlash(basePath.toString());
     }
 
     private static String removeTrailingSlash(final String value) {
@@ -106,7 +111,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return new Function1<Server, Context>() {
             @Override
             public Context call(Server server) throws Exception {
-                return new WebAppContext(server, webRoot.toString(), configuration.basePath().toString());
+                return new WebAppContext(server, webRoot.toString(), contextPath(configuration.basePath()));
             }
         };
     }
