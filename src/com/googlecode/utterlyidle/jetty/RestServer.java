@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ServerConfiguration;
-import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
@@ -16,6 +15,7 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.thread.QueuedThreadPool;
 
+import javax.servlet.ServletContext;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -33,6 +33,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private Server server;
     private Uri uri;
     private final Callable1<? super Server, ? extends Context> contextCreator;
+    private Context context;
 
     private RestServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends Context> contextCreator) throws Exception {
         this.application = application;
@@ -76,11 +77,11 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private Server startUpServer() throws Exception {
         Server server = createServer(configuration);
 
-        Context context = contextCreator.call(server);
+        context = contextCreator.call(server);
         context.setAttribute(Application.class.getCanonicalName(), application);
 
         server.start();
-        uri = configuration.port(getPortNumber(server)).toUrl();
+        uri = configuration.port(portNumber(server)).toUrl();
         return server;
     }
 
@@ -120,11 +121,15 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return server;
     }
 
-    private int getPortNumber(Server server) {
+    private int portNumber(Server server) {
         return sequence(server.getConnectors()).head().getLocalPort();
     }
 
     public Uri uri() {
         return uri;
+    }
+
+    public ServletContext servletContext() {
+        return context.getServletContext();
     }
 }
