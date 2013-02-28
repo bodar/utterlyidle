@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
@@ -36,7 +37,7 @@ public abstract class ServerContract {
 
     @Before
     public void start() throws Exception {
-        server = application(HelloWorldApplication.class).start(defaultConfiguration().serverClass(server()));
+        server = application(HelloWorldApplication.class).start(defaultConfiguration().basePath(basePath("base/path")).serverClass(server()));
     }
 
     @After
