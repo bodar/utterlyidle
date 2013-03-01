@@ -32,12 +32,12 @@ import static com.googlecode.utterlyidle.html.browser.BrowserState.constructors.
 
 public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserState {
     private final HttpHandler handler;
+    private final BrowserCookies<BrowserCookies> cookies = browserCookies();
     private String acceptHeader = TEXT_HTML;
     private BrowserState state = BrowserState.constructors.empty();
-    private BrowserCookies<BrowserCookies> cookies = browserCookies();
 
-    public Browser(Application application) {
-        this.handler = new RelativeUrlHandler(application);
+    public Browser(HttpHandler handler) {
+        this.handler = new RelativeUrlHandler(handler);
     }
 
     @Override
