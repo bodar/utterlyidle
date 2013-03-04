@@ -79,9 +79,9 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         Server server = createServer(configuration);
 
         context = contextCreator.call(server);
-        servletContext().setAttribute(Application.class.getCanonicalName(), application);
-
         server.start();
+
+        servletContext().setAttribute(Application.class.getCanonicalName(), application);
         uri = configuration.port(portNumber(server)).toUrl();
         return server;
     }

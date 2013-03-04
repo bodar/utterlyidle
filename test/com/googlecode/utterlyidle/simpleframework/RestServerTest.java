@@ -13,9 +13,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
-public class RestServerTest extends ServerContract {
+public class RestServerTest extends ServerContract<RestServer> {
     @Override
-    protected Class<? extends Server> server() throws Exception {
+    protected Class<RestServer> server() throws Exception {
         return RestServer.class;
     }
 
