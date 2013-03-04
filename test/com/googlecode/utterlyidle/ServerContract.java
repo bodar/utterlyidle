@@ -1,12 +1,14 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.servlet.ApplicationContext;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
@@ -31,13 +33,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
 
-public abstract class ServerContract {
-    protected Server server;
-    protected abstract Class<? extends Server> server() throws Exception;
+public abstract class ServerContract<T extends Server> {
+    protected T server;
+    protected abstract Class<T> server() throws Exception;
 
     @Before
     public void start() throws Exception {
-        server = application(HelloWorldApplication.class).start(defaultConfiguration().basePath(basePath("base/path")).serverClass(server()));
+        server = cast(application(HelloWorldApplication.class).start(defaultConfiguration().basePath(basePath("base/path")).serverClass(server())));
     }
 
     @After
