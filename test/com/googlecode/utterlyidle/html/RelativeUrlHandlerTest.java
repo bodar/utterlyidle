@@ -42,6 +42,14 @@ public class RelativeUrlHandlerTest {
         assertThat(delegate.lastUriReceived, is(uri("/foo/bar?some=param")));
     }
 
+    @Test
+    public void shouldAddQueryParameterWhenPostToNoUrl() throws Exception {
+        RelativeUrlHandler relativeUrlHandler = new RelativeUrlHandler(delegate);
+        relativeUrlHandler.handle(get("/foo/bar").build());
+        relativeUrlHandler.handle(post("").query("some", "param").build());
+        assertThat(delegate.lastUriReceived, is(uri("/foo/bar?some=param")));
+    }
+
     private static class RecordRequestHandler implements HttpHandler {
 
         public Uri lastUriReceived;
