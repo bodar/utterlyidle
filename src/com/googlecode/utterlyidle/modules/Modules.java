@@ -146,6 +146,14 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         };
     }
 
+    public static  <I, C extends I> Module applicationInstance(final Class<I> anInterface, final C instance) {
+        return new ApplicationScopedModule() {
+            public Container addPerApplicationObjects(Container container) {
+                return container.addInstance(anInterface, instance);
+            }
+        };
+    }
+
     public static Module requestScopedClass(final Class<?> aClass) {
         return new RequestScopedModule() {
             public Container addPerRequestObjects(Container container) {
