@@ -34,6 +34,7 @@ import static com.googlecode.utterlyidle.bindings.actions.Action.functions.metaD
 public class RestApplication implements Application {
     private final CloseableContainer applicationScope = CloseableContainer.closeableContainer();
     private final Modules modules;
+    private boolean closed = false;
 
     public RestApplication(BasePath basePath) {
         this(basePath, new UtterlyIdleProperties());
@@ -62,6 +63,7 @@ public class RestApplication implements Application {
     }
 
     public Application add(final Module module) {
+        checkNotClosed();
         modules.activateApplicationModule(module, applicationScope);
         usingRequestScope(activateStartupModule(module));
         return this;
@@ -78,14 +80,17 @@ public class RestApplication implements Application {
     }
 
     public Container applicationScope() {
+        checkNotClosed();
         return applicationScope;
     }
 
     public Response handle(final Request request) throws Exception {
+        checkNotClosed();
         return usingRequestScope(handleRequest(request));
     }
 
     public <T> T usingRequestScope(Callable1<Container, T> callable) {
+        checkNotClosed();
         return using(requestScope(), callable);
     }
 
@@ -123,6 +128,7 @@ public class RestApplication implements Application {
     }
 
     public <T> T usingArgumentScope(Request request, Callable1<Container, T> callable) {
+        checkNotClosed();
         return using(argumentScope(request), callable);
     }
 
@@ -154,16 +160,25 @@ public class RestApplication implements Application {
     }
 
     public void close() throws IOException {
+        checkNotClosed();
+        stop();
         applicationScope.close();
+        closed = true;
     }
 
     @Override
     public void start() {
+        checkNotClosed();
         applicationScope.get(Services.class).start();
     }
 
     @Override
     public void stop() {
+        checkNotClosed();
         applicationScope.get(Services.class).stop();
+    }
+
+    protected void checkNotClosed(){
+        if(closed == true) throw new IllegalStateException("The application has been closed and can not be reused");
     }
 }
