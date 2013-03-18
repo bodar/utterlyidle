@@ -160,7 +160,7 @@ public class RestApplication implements Application {
     }
 
     public void close() throws IOException {
-        checkNotClosed();
+        if(closed) return;
         stop();
         applicationScope.close();
         closed = true;
@@ -174,7 +174,7 @@ public class RestApplication implements Application {
 
     @Override
     public void stop() {
-        checkNotClosed();
+        if(closed) return;
         applicationScope.get(Services.class).stop();
     }
 
