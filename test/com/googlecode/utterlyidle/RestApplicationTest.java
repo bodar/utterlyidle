@@ -20,6 +20,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RestApplicationTest {
 
+    @Test(expected = IllegalStateException.class )
+    public void shouldThrowIfApplicationIsClosedAndThenAccessed() throws Exception {
+        Application application = application().build();
+        application.close();
+        application.handle(get("should/not/be/handled").build());
+    }
+
+    @Test
+    public void shouldNotThrowIfCloseIsCalledMultipleTimesOrShutDown() throws Exception {
+        Application application = application().build();
+        application.close();
+        application.close();
+        application.stop();
+    }
 
     @Test
     public void willCloseApplicationScopedInstances() throws Exception {
