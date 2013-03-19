@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.concurrent.NamedExecutors;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
@@ -13,11 +14,11 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.totallylazy.concurrent.NamedExecutors.newFixedThreadPool;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
-import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class RestServer implements Server {
     private HttpServer server;
@@ -52,7 +53,7 @@ public class RestServer implements Server {
         HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.port()), 0);
         server.createContext(configuration.basePath().toString(),
                 new RestHandler(application));
-        server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber()));
+        server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber(), getClass()));
         server.start();
         ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
         uri = updatedConfiguration.toUrl();
