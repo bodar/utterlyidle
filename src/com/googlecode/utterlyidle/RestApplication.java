@@ -161,7 +161,6 @@ public class RestApplication implements Application {
 
     public void close() throws IOException {
         if(closed) return;
-        stop();
         applicationScope.close();
         closed = true;
     }
