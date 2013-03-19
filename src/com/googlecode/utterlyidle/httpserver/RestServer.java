@@ -12,6 +12,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.totallylazy.concurrent.NamedExecutors.newFixedThreadPool;
@@ -23,12 +24,14 @@ import static java.lang.System.nanoTime;
 public class RestServer implements Server {
     private HttpServer server;
     private Uri uri;
+    private ExecutorService executorService;
 
     public RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
         server = startApp(application, configuration);
     }
 
     public void close() throws IOException {
+        if(executorService != null) executorService.shutdownNow();
         server.stop(0);
     }
 
@@ -53,7 +56,8 @@ public class RestServer implements Server {
         HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.port()), 0);
         server.createContext(configuration.basePath().toString(),
                 new RestHandler(application));
-        server.setExecutor(newFixedThreadPool(configuration.maxThreadNumber(), getClass()));
+        executorService = newFixedThreadPool(configuration.maxThreadNumber(), getClass());
+        server.setExecutor(executorService);
         server.start();
         ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
         uri = updatedConfiguration.toUrl();
