@@ -41,12 +41,8 @@ public class ResponseBuilder {
     }
 
     public ResponseBuilder header(String name, Object value) {
-        if (value == null) {
-            return this;
-        }
-        if (value instanceof Date) {
-            header(name, Dates.RFC822().format((Date) value));
-        }
+        if (value == null) return this;
+        if (value instanceof Date) return header(name, Dates.RFC822().format((Date) value));
         headers.add(pair(name, value.toString()));
         return this;
     }
@@ -60,7 +56,7 @@ public class ResponseBuilder {
         return header(HttpHeaders.SET_COOKIE, toHttpHeader(cookie));
     }
 
-    public Response build(){
+    public Response build() {
         return Responses.response(status, HeaderParameters.headerParameters(headers), entity);
     }
 
@@ -70,11 +66,11 @@ public class ResponseBuilder {
         return this;
     }
 
-    public ResponseBuilder entity(Object value){
+    public ResponseBuilder entity(Object value) {
         entity = Entity.entity(value);
         return this;
     }
-    
+
     public ResponseBuilder removeEntity() {
         entity = Entity.empty();
         return this;
