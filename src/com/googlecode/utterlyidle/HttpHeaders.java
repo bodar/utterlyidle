@@ -31,4 +31,5 @@ public class HttpHeaders {
     public static final String X_FORWARDED_FOR = "X-Forwarded-For";
     public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
     public static final String TRANSFER_ENCODING = "Transfer-Encoding";
+    public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
 }
