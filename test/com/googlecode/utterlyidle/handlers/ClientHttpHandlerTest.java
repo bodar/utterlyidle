@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.totallylazy.Debug;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Streams;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.Zip;
@@ -20,11 +21,15 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Date;
 
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.RequestBuilder.put;
+import static com.googlecode.utterlyidle.Response.methods.header;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -58,12 +63,29 @@ public class ClientHttpHandlerTest {
     }
 
     @Test
+    public void supportsPutWithFileUrls() throws Exception {
+        File file = new File(Files.temporaryDirectory(), Files.randomFilename());
+        file.deleteOnExit();
+        assertThat(file.exists(), is(false));
+        HttpClient client = new ClientHttpHandler();
+        Date lastModified = Dates.date(2001, 1, 1);
+        Uri uri = uri(file);
+        String content = "hairy monkey";
+        Response response = client.handle(put(uri).header(LAST_MODIFIED, lastModified).entity(content).build());
+        assertThat(response.status(), is(Status.CREATED));
+        assertThat(header(response, HttpHeaders.LOCATION), is(uri.toString()));
+        assertThat(file.exists(), is(true));
+        assertThat(file.lastModified(), is(lastModified.getTime()));
+        assertThat(Strings.toString(file), is(content));
+    }
+
+    @Test
     public void supportsLastModifiedOnFileUrls() throws Exception {
         File file = Files.temporaryFile();
         HttpHandler urlHandler = new ClientHttpHandler();
-        Response response = urlHandler.handle(get(file.toURI().toString()).build());
+        Response response = urlHandler.handle(get(uri(file)).build());
         assertThat(response.status(), is(Status.OK));
-        assertThat(Response.methods.header(response, HttpHeaders.LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
+        assertThat(header(response, LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
     }
 
     @Test
@@ -76,7 +98,7 @@ public class ClientHttpHandlerTest {
         String jarUrl = String.format("jar:%s!/%s", zipFile.toURI(), Files.relativePath(parentTempDir, file));
         Response response = urlHandler.handle(get(jarUrl).build());
         assertThat(response.status(), is(Status.OK));
-        assertThat(Response.methods.header(response, HttpHeaders.LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
+        assertThat(header(response, LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
     }
 
     @Test
