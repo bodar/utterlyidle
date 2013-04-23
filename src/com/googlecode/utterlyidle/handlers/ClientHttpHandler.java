@@ -3,18 +3,25 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.totallylazy.Bytes;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Files;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.annotations.multimethod;
+import com.googlecode.totallylazy.multi;
+import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
+import sun.net.www.protocol.file.FileURLConnection;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.JarURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -30,6 +37,7 @@ import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.Responses.response;
@@ -54,13 +62,19 @@ public class ClientHttpHandler implements HttpClient {
         connection.setConnectTimeout(milliseconds);
         connection.setUseCaches(false);
         connection.setReadTimeout(milliseconds);
-        if (connection instanceof HttpURLConnection) {
-            return handle(request, (HttpURLConnection) connection);
-        }
         return handle(request, connection);
     }
 
-    private Response handle(Request request, URLConnection connection) throws IOException {
+    private Response handle(final Request request, final URLConnection connection) throws IOException {
+        return new multi(){}.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
+            @Override
+            public Response call() throws Exception {
+                return defaultHandle(request, connection);
+            }
+        });
+    }
+
+    private Response defaultHandle(final Request request, final URLConnection connection) throws IOException {
         try {
             sendRequest(request, connection);
             return createResponse(connection, OK, using(connection.getInputStream(), bytes()));
@@ -69,12 +83,24 @@ public class ClientHttpHandler implements HttpClient {
         }
     }
 
+    @multimethod
+    private Response handle(Request request, FileURLConnection connection) throws IOException {
+        if (request.method().equals(HttpMethod.PUT)) {
+            File file = uri(connection.getURL()).toFile();
+            Files.write(request.entity().asBytes(), file);
+            file.setLastModified(Dates.parse(request.headers().getValue(LAST_MODIFIED)).getTime());
+            return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, connection.getURL()).build();
+        }
+        return defaultHandle(request, connection);
+    }
+
+    @multimethod
     private Response handle(Request request, HttpURLConnection connection) throws IOException {
         try {
             connection.setInstanceFollowRedirects(false);
             connection.setRequestMethod(request.method());
             sendRequest(request, connection);
-            Status status = status(connection); // request is actually sent now
+            Status status = sendRequest(connection);
             byte[] bytes = using(inputStream(connection), bytes());
             return createResponse(connection, status, bytes);
         } catch (SocketException ex) {
@@ -82,6 +108,10 @@ public class ClientHttpHandler implements HttpClient {
         } catch (SocketTimeoutException ex) {
             return response(Status.CLIENT_TIMEOUT);
         }
+    }
+
+    private Status sendRequest(final HttpURLConnection connection) throws IOException {
+        return status(connection);
     }
 
     public static InputStream inputStream(HttpURLConnection urlConnection) throws IOException {
@@ -98,7 +128,7 @@ public class ClientHttpHandler implements HttpClient {
                 fold(ResponseBuilder.response(status).entity(bytes),
                         responseHeaders());
         builder.replaceHeaders(LAST_MODIFIED, new Date(connection.getLastModified()));
-        if(!builder.build().headers().contains(CONTENT_LENGTH)){
+        if (!builder.build().headers().contains(CONTENT_LENGTH)) {
             return builder.header(CONTENT_LENGTH, bytes.length).build();
         }
         return builder.build();
