@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
@@ -30,7 +31,14 @@ public interface Response {
         }
 
         public static String asString(Response response) {
-            return String.format("HTTP/1.1 %s\r\n%s\r\n\r\n%s", response.status(), response.headers(), response.entity().toString());
+            return String.format("HTTP/1.1 %s%s\r\n\r\n%s", response.status(), pad(response.headers()), response.entity().toString());
+        }
+
+        private static String pad(final HeaderParameters headers) {
+            if (headers.size() == 0) {
+                return Strings.EMPTY;
+            }
+            return "\r\n" + headers;
         }
     }
 

@@ -6,11 +6,14 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.regex.Regex;
 
 import java.io.StringReader;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -25,10 +28,18 @@ public class HttpMessageParser {
         return buildRequest(trim(httpRequestLines.first()).first(), trim(httpRequestLines.second()), httpRequestLines.last());
     }
 
+    static final Pattern pattern = Pattern.compile("(.+?)(?:\r\n\r\n|\n\n)(.*)", Pattern.DOTALL);
     public static Response parseResponse(String responseMessage) {
-        Sequence<Sequence<String>> httpResponseLines = httpMessageLines(responseMessage);
+        final Matcher matcher = pattern.matcher(responseMessage);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("A response must have a blank line between the headers and the body.");
+        }
+        final MatchResult matchResult = matcher.toMatchResult();
+        final Sequence<String> statusAndHeaders = Strings.lines(new StringReader(matchResult.group(1)));
+        final String body = matchResult.group(2);
 
-        return buildResponse(trim(httpResponseLines.first()).first(), trim(httpResponseLines.second()), httpResponseLines.last());
+
+        return buildResponse(statusAndHeaders.first().trim(), trim(statusAndHeaders.tail()), body);
     }
 
     private static Request buildRequest(String requestLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
@@ -38,10 +49,10 @@ public class HttpMessageParser {
         return requestBuilder.build();
     }
 
-    private static Response buildResponse(String statusLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
+    private static Response buildResponse(String statusLine, Sequence<String> headerLines, String body) {
         ResponseBuilder responseBuilder = ResponseBuilder.response(toStatus(statusLine));
         headerLines.fold(responseBuilder, responseHeader());
-        return responseBuilder.entity(messageBodyLines.toString("", "", "")).build();
+        return responseBuilder.entity(body).build();
     }
 
     private static Sequence<Sequence<String>> httpMessageLines(String requestMessage) {
