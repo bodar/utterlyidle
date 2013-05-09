@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Uri.uri;
@@ -65,12 +66,12 @@ public class HttpMessageParserTest {
     }
 
     @Test
-    public void parseResponseWithoutBodyAndWithoutSeparatorLine() {
+    public void parseResponseWithoutBody() {
         String response =
                 "HTTP/1.1 303 See Other\n" +
                 "Transfer-Encoding: chunked\n" +
                 "Content-Type: text/html\n" +
-                "Location: http://localhost:8899/waitrest/order";
+                "Location: http://localhost:8899/waitrest/order\r\n\r\n";
         HeaderParameters headers = HttpMessageParser.parseResponse(response).headers();
         assertThat(headers.size(), is(3));
     }
@@ -86,12 +87,6 @@ public class HttpMessageParserTest {
     private void canParseResponse(ResponseBuilder builder) {
         Response response = builder.build();
         assertThat(response, is(HttpMessageParser.parseResponse(response.toString())));
-    }
-
-    @Test
-    public void parseResponseWithoutBodyWithoutCRLF() {
-        assertThat(Responses.response(status(426, "Upgrade Required")),
-                is(HttpMessageParser.parseResponse("HTTP/1.1 426 Upgrade Required")));
     }
 
     @Test
@@ -150,21 +145,25 @@ public class HttpMessageParserTest {
 
     @Test
     public void invalidResponseParsingErrors() {
-        invalidResponseWithError("HTTP/1.1 ", "Response without a status code");
-        invalidResponseWithError("HTTP/1.0 OK", "Response without a status code");
+        invalidResponseWithError("HTTP/1.1 \r\n\r\n", "Response without a status code");
+        invalidResponseWithError("HTTP/1.0 OK\r\n\r\n", "Response without a status code");
     }
 
     @Test
     public void reasonPhaseIsOptional() {
-        assertThat(parseResponse("HTTP/1.1 200").status().code(), is(200));
+        assertThat(parseResponse(ResponseBuilder.response(status(200, "")).build().toString()).status().code(), is(200));
     }
 
     @Test
-    public void preserveSpacesWhenParsingResponse() {
-        assertEquals(parseResponse("HTTP/1.1 200 OK").toString(), response(OK).toString());
+    public void preserveNewlinesWhenParsingResponseBody() {
+        Response responseWithStandardNewlines = parseResponse("HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello\r\n\r\nJoe");
+        assertThat(responseWithStandardNewlines.entity().toString(), is("Hello\r\n\r\nJoe"));
+
+        Response responseWithUnixNewlines = parseResponse("HTTP/1.1 200 OK\nContent-Type: text/plain\n\nHello\n\nJoe");
+        assertThat(responseWithUnixNewlines.entity().toString(), is("Hello\n\nJoe"));
     }
 
-    private void invalidRequestWithError(String request, String exceptionMessage) {
+        private void invalidRequestWithError(String request, String exceptionMessage) {
         try {
             parseRequest(request);
             fail("Should not parse invalid request");

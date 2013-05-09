@@ -1,7 +1,9 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.matchers.NumberMatcher;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
@@ -26,7 +28,7 @@ public class HtmlTest {
     @Test
     public void toStringFormatsHtml() throws Exception{
         Html html = html("   <html><body></body></html>   ");
-        assertThat(html.toString(), is("<html>\n<body></body>\n</html>\n"));
+        assertThat(html.toString(), isIgnoringNewlines("<html>\n<body></body>\n</html>\n"));
     }
 
     @Test
@@ -34,8 +36,8 @@ public class HtmlTest {
         Html html = html("<html><form id=\"form1\"><input name=\"one\"/></form><form id=\"form2\"><input name=\"two\"/></form></html>");
         Sequence<Form> forms = html.forms();
         assertThat(forms.size(), is(equalTo(2)));
-        assertThat(forms.first().toString(), is(equalTo("<form id=\"form1\">\n    <input name=\"one\"/>\n</form>\n")));
-        assertThat(forms.second().toString(), is(equalTo("<form id=\"form2\">\n    <input name=\"two\"/>\n</form>\n")));
+        assertThat(forms.first().toString(), isIgnoringNewlines("<form id=\"form1\">\n    <input name=\"one\"/>\n</form>\n"));
+        assertThat(forms.second().toString(), isIgnoringNewlines("<form id=\"form2\">\n    <input name=\"two\"/>\n</form>\n"));
     }
 
     @Test
@@ -63,6 +65,10 @@ public class HtmlTest {
         Html html = html("<html><head><title>Title1</title><title>Title2</title></head><body></body></html>");
         assertThat(html.selectValues("//title"), hasExactly("Title1", "Title2"));
 
+    }
+
+    private Matcher<? super String> isIgnoringNewlines(final String value) {
+        return is(value.replaceAll("\n", System.getProperty("line.separator")));
     }
 
 
