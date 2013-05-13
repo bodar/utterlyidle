@@ -1,5 +1,9 @@
 package com.googlecode.utterlyidle.servlet;
 
+import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Callers;
+import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.UtterlyIdleProperties;
@@ -10,7 +14,7 @@ import com.googlecode.yadic.SimpleContainer;
 import javax.servlet.ServletContext;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.utterlyidle.modules.Modules.autoStart;
+import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.servlet.ServletApiWrapper.basePath;
 
 public class ApplicationContext {
@@ -25,11 +29,24 @@ public class ApplicationContext {
     }
 
     public static synchronized Application getApplication(final ServletContext servletContext, final String className) {
+        return getApplication(servletContext, className, new Block<Application>() {
+            @Override
+            protected void execute(final Application application) throws Exception {
+                if (Modules.autoStart(application.applicationScope().get(UtterlyIdleProperties.class))) {
+                    Service.functions.start().callConcurrently(application);
+                }
+            }
+        });
+    }
+
+    public static synchronized Application getApplication(final ServletContext servletContext, final String className, boolean start) {
+        return getApplication(servletContext, className, start ? Service.functions.start() : Runnables.<Service>doNothing());
+    }
+
+    private static synchronized Application getApplication(final ServletContext servletContext, final String className, Callable1<? super Application, ?> onStart) {
         if (servletContext.getAttribute(KEY) == null) {
             Application application = createApplication(servletContext, getClass(className));
-            if (autoStart(application.applicationScope().get(UtterlyIdleProperties.class))) {
-                Service.functions.start().callConcurrently(application);
-            }
+            Callers.call(onStart, application);
             setApplication(servletContext, application);
         }
         return (Application) servletContext.getAttribute(KEY);
@@ -47,7 +64,7 @@ public class ApplicationContext {
                     "' with fully qualified name of a class the implements " + Application.class.getCanonicalName());
         }
         try {
-            return (Class<? extends Application>) Class.forName(className);
+            return cast(Class.forName(className));
         } catch (ClassNotFoundException e) {
             throw new UnsupportedOperationException(e);
         }
