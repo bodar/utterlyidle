@@ -56,7 +56,7 @@ public class BindingBuilder implements Callable<Binding> {
     }
 
     public Binding build() {
-        return new Binding(action, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden);
+        return new Binding(action, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden, Option.none(String.class));
     }
 
     public BindingBuilder path(String value) {

@@ -26,6 +26,7 @@ public class Binding  {
     private final Sequence<Pair<Type, Option<Parameter>>> parameters;
     private final int priority;
     private final boolean hidden;
+    private final Option<String> view;
 
     public Binding(Action action,
                    UriTemplate uriTemplate,
@@ -34,12 +35,13 @@ public class Binding  {
                    Sequence<String> produces,
                    Sequence<Pair<Type, Option<Parameter>>> parameters,
                    int priority,
-                   boolean hidden) {
+                   boolean hidden, final Option<String> view) {
         this.action = action;
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
         this.consumes = consumes;
         this.produces = produces;
+        this.view = view;
         this.parameters = parameters.realise();
         this.priority = priority;
         this.hidden = hidden;
@@ -111,6 +113,10 @@ public class Binding  {
     @Override
     public String toString() {
         return String.format("%s %s -> %s", httpMethod, uriTemplate, action.description());
+    }
+
+    public Option<String> view() {
+        return view;
     }
 
     public static class functions {
