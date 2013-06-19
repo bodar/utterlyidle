@@ -35,8 +35,8 @@ public class BindingBuilderTest {
                 sequence(APPLICATION_JSON),
                 parameters,
                 10,
-                true
-        );
+                true,
+                Option.none(String.class));
 
         Binding built = modify(original).build();
 
