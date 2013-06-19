@@ -62,7 +62,7 @@ public class BaseUriRedirector implements Redirector {
     public Uri resourceUriOf(Invocation invocation) {
         Option<Binding> methodBinding = bindings.find(invocation.method());
         if(methodBinding.isEmpty())
-            throw new NoSuchElementException(String.format("Not binding found for %s", invocation.method()));
+            throw new NoSuchElementException(String.format("No binding found for %s", invocation.method()));
         return methodBinding.
                 map(resourceUriOf(invocation.arguments())).
                 get();
