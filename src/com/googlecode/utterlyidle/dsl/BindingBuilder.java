@@ -37,6 +37,7 @@ public class BindingBuilder implements Callable<Binding> {
     private int priority = 0;
     private Sequence<Pair<Type,Option<Parameter>>> typesWithParameter = Sequences.empty();
     private boolean hidden = false;
+    private Option<String> view;
 
 
     public static BindingBuilder modify(Binding binding) {
@@ -48,7 +49,8 @@ public class BindingBuilder implements Callable<Binding> {
                 produces(binding.produces()).
                 priority(binding.priority()).
                 parameters(binding.parameters()).
-                hidden(binding.hidden());
+                hidden(binding.hidden()).
+                view(binding.view());
     }
 
     public Binding call() throws Exception {
@@ -56,7 +58,7 @@ public class BindingBuilder implements Callable<Binding> {
     }
 
     public Binding build() {
-        return new Binding(action, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden, Option.none(String.class));
+        return new Binding(action, uriTemplate, httpMethod, consumes, produces, sequence(typesWithParameter), priority, hidden, view);
     }
 
     public BindingBuilder path(String value) {
@@ -123,6 +125,16 @@ public class BindingBuilder implements Callable<Binding> {
 
     public BindingBuilder httpMethod(String value){
         httpMethod = value;
+        return this;
+    }
+
+    public BindingBuilder view(final String value) {
+        Option<String> some = some(value);
+        return view(some);
+    }
+
+    private BindingBuilder view(final Option<String> some) {
+        this.view = some;
         return this;
     }
 

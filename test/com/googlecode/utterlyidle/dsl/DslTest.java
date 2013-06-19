@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
@@ -8,6 +9,7 @@ import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
@@ -20,6 +22,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class DslTest {
+    @Test
+    public void supportsDefiningTheView() throws Exception {
+        Binding binding = get("bar").view("foo").resource(method(on(Bar.class).hello())).build();
+        assertThat(binding.view(), is(some("foo")));
+    }
+
     @Test
     public void supportsRedirection() throws Exception {
         ApplicationBuilder application = application().
