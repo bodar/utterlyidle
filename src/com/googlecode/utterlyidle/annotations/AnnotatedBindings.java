@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -54,9 +56,13 @@ public class AnnotatedBindings {
     private static Callable1<HttpMethod, Binding> asBinding(final Method method) {
         return new Callable1<HttpMethod, Binding>() {
             public Binding call(HttpMethod httpMethod) throws Exception {
-                return new Binding(invokeResourceMethod(method), uriTemplate(method), httpMethod.value(), consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method));
+                return new Binding(invokeResourceMethod(method), uriTemplate(method), httpMethod.value(), consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method), extractView(method));
             }
         };
+    }
+
+    private static Option<String> extractView(final Method method) {
+        return option(method.getAnnotation(View.class)).map(Param.<String>toValue());
     }
 
     private static Sequence<String> producesMimeMatcher(Method method) {
