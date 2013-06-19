@@ -18,8 +18,10 @@ import com.googlecode.utterlyidle.annotations.PathParam;
 import com.googlecode.utterlyidle.annotations.Priority;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
+import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
+import com.googlecode.utterlyidle.rendering.ViewName;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;
 import org.hamcrest.Matchers;
@@ -77,6 +79,13 @@ public class RestTest {
         application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(renderer));
         assertThat(application.responseAsString(get("path")), is("foobar"));
 
+    }
+
+    @Test
+    public void supportViewNames() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(ViewNameResource.class);
+        assertThat(application.responseAsString(get("convention")), is("convention"));
+        assertThat(application.responseAsString(get("override")), is("explicit"));
     }
 
     @Test
@@ -919,4 +928,26 @@ public class RestTest {
             return matchedResource.forClass().getSimpleName();
         }
     }
+
+    public static class ViewNameResource {
+        private final ViewName viewName;
+
+        public ViewNameResource(final ViewName viewName) {
+            this.viewName = viewName;
+        }
+
+        @GET
+        @Path("convention")
+        public String convention() {
+            return viewName.value();
+        }
+
+        @GET
+        @Path("override")
+        @View("explicit")
+        public String explicit() {
+            return viewName.value();
+        }
+    }
+
 }
