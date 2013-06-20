@@ -3,7 +3,10 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.annotations.multimethod;
+import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.proxy.Invocation;
+import com.googlecode.totallylazy.proxy.MethodInvocation;
 
 import java.util.NoSuchElementException;
 
@@ -60,6 +63,11 @@ public class BaseUriRedirector implements Redirector {
 
     @Override
     public Uri resourceUriOf(Invocation invocation) {
+        return new multi(){}.method(invocation);
+    }
+
+    @multimethod
+    public Uri resourceUriOf(MethodInvocation invocation) {
         Option<Binding> methodBinding = bindings.find(invocation.method());
         if(methodBinding.isEmpty())
             throw new NoSuchElementException(String.format("No binding found for %s", invocation.method()));
