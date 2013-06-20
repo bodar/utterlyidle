@@ -4,8 +4,12 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.annotations.multimethod;
+import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.proxy.CallOn;
 import com.googlecode.totallylazy.proxy.Invocation;
+import com.googlecode.totallylazy.proxy.MethodInvocation;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.FormParameters;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -107,7 +111,12 @@ public class BindingBuilder implements Callable<Binding> {
         return action(invokeResourceMethod(value));
     }
 
-    public BindingBuilder resource(Invocation invocation) {
+    public BindingBuilder resource(final Invocation invocation) {
+        return new multi(){}.method(invocation);
+    }
+
+    @multimethod
+    public BindingBuilder resource(final MethodInvocation invocation) {
         parameters(parameters.get());
         parameters.remove();
         return action(invokeResourceMethod(invocation.method()));
