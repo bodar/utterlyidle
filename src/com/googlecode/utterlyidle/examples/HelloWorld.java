@@ -16,9 +16,12 @@ import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.HeaderParam;
 import com.googlecode.utterlyidle.annotations.POST;
+import com.googlecode.utterlyidle.annotations.PUT;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
+
+import java.io.InputStream;
 
 import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
@@ -98,6 +101,12 @@ public class HelloWorld {
     @Path("helloworld/formparam")
     public String post(@FormParam("name") @DefaultValue("Dan") String name) {
         return hello(name);
+    }
+
+    @PUT
+    @Path("echo")
+    public InputStream echo(InputStream input) {
+        return input;
     }
 
     @GET

@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.annotations.Consumes;
 import com.googlecode.utterlyidle.annotations.CookieParam;
 import com.googlecode.utterlyidle.annotations.DELETE;
@@ -19,6 +20,7 @@ import com.googlecode.utterlyidle.annotations.Priority;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.annotations.View;
+import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
@@ -26,6 +28,7 @@ import com.googlecode.yadic.generics.TypeFor;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Formatter;
@@ -278,6 +281,12 @@ public class RestTest {
 
         mimeTypes = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
         assertThat(application.responseAsString(put("path/foo").accepting(mimeTypes).entity("input")), is("input"));
+    }
+
+    @Test
+    public void canEcho() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(HelloWorld.class);
+        assertThat(application.responseAsString(put("echo").entity(new ByteArrayInputStream(Strings.bytes("Hello")))), is("Hello"));
     }
 
     @Test

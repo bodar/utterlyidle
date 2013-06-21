@@ -79,7 +79,7 @@ public class ApplicationServlet extends HttpServlet {
                     servletRequest.getMethod(),
                     Uri.uri(servletRequest.getRequestURI() + queryString(servletRequest.getQueryString())),
                     convertToHeaderParameters(servletRequest),
-                    bytes(servletRequest.getInputStream())
+                    servletRequest.getInputStream()
             );
             return requestEnricher(
                     clientAddress(servletRequest.getRemoteAddr()),
