@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.pattern;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.SystemClock;
 import com.googlecode.utterlyidle.Application;
@@ -57,7 +58,6 @@ import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.UUID;
@@ -74,6 +74,7 @@ import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.status;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CoreModule implements ModuleDefiner, RequestScopedModule, ApplicationScopedModule, ResourcesModule, ResponseHandlersModule, ArgumentScopedModule {
     @Override
@@ -123,8 +124,9 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
     @Override
     public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) {
         return handlers.
-                addGuard(where(entity(), nullOrEmptyString()), NoContentHandler.class).
-                addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).or(instanceOf(StreamingOutput.class))), IdentityHandler.class).
+                addGuard(where(entity(), empty()), NoContentHandler.class).
+                addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).
+                        or(instanceOf(StreamingOutput.class)).or(instanceOf(InputStream.class))), IdentityHandler.class).
                 addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class)).
                 addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class)).
                 addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class)).
@@ -140,18 +142,23 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 addInstance(FormParameters.class, Requests.form(request)).
                 addInstance(CookieParameters.class, Requests.cookies(request)).
                 addInstance(Entity.class, request.entity()).
-                addInstance(InputStream.class, new ByteArrayInputStream(request.entity().asBytes())).
+                addInstance(InputStream.class, request.entity().inputStream()).
                 addActivator(UUID.class, UUIDActivator.class).
-                addType(new TypeFor<Option<?>>() {}.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class))).
-                addType(new TypeFor<Either<?, ?>>() {}.get(), EitherResolver.class).
-                addType(new TypeFor<Iterable<UUID>>() {}.get(), new TypedIterableResolver<UUID>(argumentScope, UUIDActivator.fromString()));
+                addType(new TypeFor<Option<?>>() {
+                }.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class))).
+                addType(new TypeFor<Either<?, ?>>() {
+                }.get(), EitherResolver.class).
+                addType(new TypeFor<Iterable<UUID>>() {
+                }.get(), new TypedIterableResolver<UUID>(argumentScope, UUIDActivator.fromString()));
     }
 
-    private Predicate<Object> nullOrEmptyString() {
+    private Predicate<Object> empty() {
         return new Predicate<Object>() {
             @Override
             public boolean matches(Object other) {
-                return other == null || ((other instanceof String) && ((String) other).isEmpty());
+                if(other instanceof String) return ((String) other).isEmpty();
+                if(other instanceof byte[]) return ((byte[]) other).length == 0;
+                return false;
             }
         };
     }

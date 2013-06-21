@@ -69,7 +69,7 @@ public class RestHandler implements HttpHandler {
                 httpExchange.getRequestMethod(),
                 uri(httpExchange.getRequestURI().toString()),
                 headerParameters(httpExchange.getRequestHeaders()),
-                bytes(httpExchange.getRequestBody())
+                httpExchange.getRequestBody()
         );
         return requestEnricher(
                 clientAddress(httpExchange.getRemoteAddress().getAddress()),
