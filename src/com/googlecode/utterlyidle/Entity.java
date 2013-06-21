@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Characters;
 import com.googlecode.totallylazy.Value;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ import static com.googlecode.totallylazy.Strings.string;
 
 public class Entity implements Value<Object> {
     private static final Entity EMPTY = new Entity("");
-    private final Object value;
+    private Object value;
 
     private Entity(Object value) {
         this.value = value;
@@ -46,11 +47,13 @@ public class Entity implements Value<Object> {
     }
 
     public byte[] asBytes() {
-        return writeTo(this, new ByteArrayOutputStream()).toByteArray();
+        byte[] bytes = writeTo(this, new ByteArrayOutputStream()).toByteArray();
+        value = bytes;
+        return bytes;
     }
 
     public boolean isStreaming() {
-        return value instanceof StreamingWriter || value instanceof StreamingOutput;
+        return value instanceof StreamingWriter || value instanceof StreamingOutput || value instanceof InputStream;
     }
 
     public static final CompositeEntityWriter WRITERS = new CompositeEntityWriter();
@@ -152,4 +155,10 @@ public class Entity implements Value<Object> {
     }
 
 
+    public InputStream inputStream() {
+        if (value instanceof byte[]) return new ByteArrayInputStream((byte[]) value);
+        if (value instanceof InputStream) return (InputStream) value;
+        if (value instanceof String) return new ByteArrayInputStream(((String) value).getBytes(Entity.DEFAULT_CHARACTER_SET));
+        throw new UnsupportedOperationException("Unsupported entity type: " + value.getClass());
+    }
 }

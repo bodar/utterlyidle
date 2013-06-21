@@ -85,7 +85,7 @@ public class RestContainer implements Container {
                 frameworkRequest.getPath().toString(),
                 query(frameworkRequest),
                 headers(frameworkRequest),
-                bytes(frameworkRequest.getInputStream()));
+                frameworkRequest.getInputStream());
         return requestEnricher(
                 clientAddress(frameworkRequest.getClientAddress().getAddress()),
                 frameworkRequest.isSecure() ? HTTPS : HTTP)

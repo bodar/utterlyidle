@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
@@ -145,10 +146,19 @@ public class ClientHttpHandler implements HttpClient {
 
     private void sendRequest(Request request, URLConnection connection) throws IOException {
         sequence(request.headers()).fold(connection, requestHeaders());
-        if (Integer.valueOf(request.headers().getValue(CONTENT_LENGTH)) > 0) {
+        if (request.headers().valueOption(CONTENT_LENGTH).map(integer()).getOrElse(0) > 0 || request.entity().isStreaming()) {
             connection.setDoOutput(true);
             using(connection.getOutputStream(), request.entity().transferFrom());
         }
+    }
+
+    private static Mapper<String, Integer> integer() {
+        return new Mapper<String, Integer>() {
+            @Override
+            public Integer call(final String s) throws Exception {
+                return Integer.valueOf(s);
+            }
+        };
     }
 
     private static Callable2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {

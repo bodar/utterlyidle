@@ -61,7 +61,7 @@ public class RequestBuilderTest {
     @Test
     public void replacingACookiePreservesHeaderOrder() throws Exception {
         Request request = RequestBuilder.get("/").header("path", "/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie2", "penguin").build();
-        assertThat(request.headers(), is(headerParameters(sequence(pair("path", "/"), pair("Cookie", "cookie1=\"value1\""), pair("Cookie", "cookie2=\"penguin\""), pair("Content-Length", "0")))));
+        assertThat(request.headers(), is(headerParameters(sequence(pair("path", "/"), pair("Cookie", "cookie1=\"value1\""), pair("Cookie", "cookie2=\"penguin\"")))));
     }
 
     @Test
