@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Rules;
 
 import java.io.OutputStream;
+import java.util.Set;
 
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.EntityWriter.functions.asFunction;

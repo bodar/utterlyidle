@@ -15,17 +15,25 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.annotations.View.constructors.view;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
+import static com.googlecode.utterlyidle.rendering.ViewName.viewName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class DslTest {
     @Test
+    public void supportsDefaultingViewToMethodName() throws Exception {
+        Binding binding = get("bar").resource(method(on(Bar.class).hello())).build();
+        assertThat(binding.view(), is(view("hello")));
+    }
+
+    @Test
     public void supportsDefiningTheView() throws Exception {
         Binding binding = get("bar").view("foo").resource(method(on(Bar.class).hello())).build();
-        assertThat(binding.view(), is(some("foo")));
+        assertThat(binding.view(), is(view("foo")));
     }
 
     @Test

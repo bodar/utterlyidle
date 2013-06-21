@@ -20,8 +20,10 @@ import com.googlecode.utterlyidle.PathParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.UriTemplate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
+import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.bindings.actions.Action;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
+import com.googlecode.utterlyidle.rendering.ViewName;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -41,7 +43,7 @@ public class BindingBuilder implements Callable<Binding> {
     private int priority = 0;
     private Sequence<Pair<Type,Option<Parameter>>> typesWithParameter = Sequences.empty();
     private boolean hidden = false;
-    private Option<String> view;
+    private View view;
 
 
     public static BindingBuilder modify(Binding binding) {
@@ -117,6 +119,7 @@ public class BindingBuilder implements Callable<Binding> {
 
     @multimethod
     public BindingBuilder resource(final MethodInvocation invocation) {
+        if(view == null) view = View.constructors.view(invocation.method().getName());
         parameters(parameters.get());
         parameters.remove();
         return action(invokeResourceMethod(invocation.method()));
@@ -138,13 +141,12 @@ public class BindingBuilder implements Callable<Binding> {
     }
 
     public BindingBuilder view(final String value) {
-        Option<String> some = some(value);
-        return view(some);
+        view  = View.constructors.view(value);
+        return this;
     }
 
-    private BindingBuilder view(final Option<String> some) {
-        this.view = some;
-        return this;
+    private BindingBuilder view(final View some) {
+        return view(some.value());
     }
 
     public static BindingBuilder get(String path) {

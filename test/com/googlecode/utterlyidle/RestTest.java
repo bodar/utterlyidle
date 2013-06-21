@@ -21,7 +21,6 @@ import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.utterlyidle.rendering.ViewName;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;
 import org.hamcrest.Matchers;
@@ -82,10 +81,10 @@ public class RestTest {
     }
 
     @Test
-    public void supportViewNames() throws Exception {
-        ApplicationBuilder application = application().addAnnotated(ViewNameResource.class);
+    public void supportViews() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(ViewResource.class);
         assertThat(application.responseAsString(get("convention")), is("convention"));
-        assertThat(application.responseAsString(get("override")), is("explicit"));
+        assertThat(application.responseAsString(get("ignored")), is("explicit"));
     }
 
     @Test
@@ -929,10 +928,10 @@ public class RestTest {
         }
     }
 
-    public static class ViewNameResource {
-        private final ViewName viewName;
+    public static class ViewResource {
+        private final View viewName;
 
-        public ViewNameResource(final ViewName viewName) {
+        public ViewResource(final View viewName) {
             this.viewName = viewName;
         }
 
@@ -943,7 +942,7 @@ public class RestTest {
         }
 
         @GET
-        @Path("override")
+        @Path("ignored")
         @View("explicit")
         public String explicit() {
             return viewName.value();

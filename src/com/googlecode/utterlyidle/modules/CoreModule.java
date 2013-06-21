@@ -33,6 +33,7 @@ import com.googlecode.utterlyidle.SmartHttpClient;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.StreamingWriter;
 import com.googlecode.utterlyidle.UUIDActivator;
+import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.ApplicationId;
 import com.googlecode.utterlyidle.handlers.Auditor;
@@ -48,8 +49,7 @@ import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.rendering.MatchFailureRenderer;
 import com.googlecode.utterlyidle.rendering.ObjectRenderer;
 import com.googlecode.utterlyidle.rendering.SeeOtherRenderer;
-import com.googlecode.utterlyidle.rendering.ViewName;
-import com.googlecode.utterlyidle.rendering.ViewNameConvention;
+import com.googlecode.utterlyidle.rendering.ViewConvention;
 import com.googlecode.utterlyidle.services.Services;
 import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
@@ -91,7 +91,7 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
     @Override
     public Container addPerRequestObjects(Container container) {
         return container.
-                addActivator(ViewName.class, ViewNameConvention.class).
+                addActivator(View.class, ViewConvention.class).
                 addActivator(ResourcePath.class, ResourcePathActivator.class).
                 addActivator(BaseUri.class, BaseUriActivator.class).
                 add(Redirector.class, BaseUriRedirector.class).

@@ -7,7 +7,9 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.bindings.actions.Action;
+import com.googlecode.utterlyidle.rendering.ViewName;
 import com.googlecode.yadic.Container;
 
 import java.lang.reflect.Method;
@@ -16,6 +18,7 @@ import java.lang.reflect.Type;
 import static com.googlecode.totallylazy.Option.identity;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.NamedParameter.methods.defaultValue;
+import static com.googlecode.utterlyidle.rendering.ViewName.viewName;
 
 public class Binding  {
     private final Action action;
@@ -26,7 +29,7 @@ public class Binding  {
     private final Sequence<Pair<Type, Option<Parameter>>> parameters;
     private final int priority;
     private final boolean hidden;
-    private final Option<String> view;
+    private final View view;
 
     public Binding(Action action,
                    UriTemplate uriTemplate,
@@ -35,7 +38,8 @@ public class Binding  {
                    Sequence<String> produces,
                    Sequence<Pair<Type, Option<Parameter>>> parameters,
                    int priority,
-                   boolean hidden, final Option<String> view) {
+                   boolean hidden,
+                   final View view) {
         this.action = action;
         this.uriTemplate = uriTemplate;
         this.httpMethod = httpMethod;
@@ -115,7 +119,7 @@ public class Binding  {
         return String.format("%s %s -> %s", httpMethod, uriTemplate, action.description());
     }
 
-    public Option<String> view() {
+    public View view() {
         return view;
     }
 
