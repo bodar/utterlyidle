@@ -37,6 +37,7 @@ import static com.googlecode.utterlyidle.annotations.HttpMethodExtractor.httpMet
 import static com.googlecode.utterlyidle.annotations.Param.param;
 import static com.googlecode.utterlyidle.annotations.Param.toParam;
 import static com.googlecode.utterlyidle.annotations.UriTemplateExtractor.uriTemplate;
+import static com.googlecode.utterlyidle.annotations.View.constructors.view;
 import static com.googlecode.utterlyidle.bindings.actions.InvokeResourceMethod.constructors.invokeResourceMethod;
 
 public class AnnotatedBindings {
@@ -69,8 +70,8 @@ public class AnnotatedBindings {
         };
     }
 
-    private static Option<String> extractView(final Method method) {
-        return option(method.getAnnotation(View.class)).map(Param.<String>toValue());
+    private static View extractView(final Method method) {
+        return view(option(method.getAnnotation(View.class)).map(Param.<String>toValue()).getOrElse(method.getName()));
     }
 
     private static Sequence<String> producesMimeMatcher(Method method) {

@@ -17,6 +17,7 @@ import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_ATOM_XML;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_JSON;
 import static com.googlecode.utterlyidle.UriTemplate.uriTemplate;
+import static com.googlecode.utterlyidle.annotations.View.constructors.view;
 import static com.googlecode.utterlyidle.bindings.actions.InvokeResourceMethod.constructors.invokeResourceMethod;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.modify;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -36,7 +37,7 @@ public class BindingBuilderTest {
                 parameters,
                 10,
                 true,
-                Option.none(String.class));
+                view("view"));
 
         Binding built = modify(original).build();
 
