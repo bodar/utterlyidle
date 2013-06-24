@@ -29,4 +29,8 @@ public class RecordingHttpHandler implements HttpHandler {
     public PersistentList<Request> requests() {
         return reverse(requests);
     }
+
+    public Request lastRequest() {
+        return requests.head();
+    }
 }
