@@ -32,7 +32,11 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
         return new CookieParameters(values);
     }
 
-    /** Cookies from a request's COOKIE header */
+    public static CookieParameters cookies() {
+        return new CookieParameters(PersistentList.constructors.<Pair<String,String>>empty());
+    }
+
+        /** Cookies from a request's COOKIE header */
     public static CookieParameters cookies(final HeaderParameters headerParameters) {
         // In a request header every NAME=VALUE pair is a cookie value
         return new CookieParameters(
