@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -12,15 +11,15 @@ public class Browser implements HttpClient {
     private final HttpHandler httpHandler;
 
     private Browser(HttpHandler httpHandler) {
-        this.httpHandler = new RedirectHttpHandler(new RelativeUrlHandler(httpHandler));
+        this.httpHandler = new RedirectHttpHandler(new RelativeUrlHandler(new CookieHandler(httpHandler)));
     }
 
     public static Browser browser() {
-        return new Browser(new ClientHttpHandler());
+        return browser(new ClientHttpHandler());
     }
 
-    public static Browser browser(Application application) {
-        return new Browser(application);
+    public static Browser browser(HttpHandler handler) {
+        return new Browser(handler);
     }
 
     @Override

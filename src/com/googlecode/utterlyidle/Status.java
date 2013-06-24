@@ -115,6 +115,10 @@ public class Status {
         return SUCCESSFUL.contains(code);
     }
 
+    public boolean isRedirect() {
+        return REDIRECTION.contains(code);
+    }
+
     private static PersistentSet<Integer> set(int start, int end) {
         return sortedSet(range(start, end).map(Numbers.intValue));
     }

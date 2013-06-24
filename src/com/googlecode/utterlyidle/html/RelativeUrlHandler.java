@@ -20,22 +20,22 @@ public class RelativeUrlHandler implements HttpHandler {
     }
 
     public Response handle(Request request) throws Exception {
-        RequestBuilder requestBuilder = modify(request);
+        RequestBuilder builder = modify(request);
         if (currentUri != null) {
-            Uri newUri = requestBuilder.uri();
+            Uri newUri = builder.uri();
             if (isEmpty(newUri.path())) {
                 if (Strings.isEmpty(newUri.query())) {
-                    requestBuilder.uri(currentUri);
+                    builder.uri(currentUri);
                 } else {
-                    requestBuilder.uri(currentUri.query(newUri.query()));
+                    builder.uri(currentUri.query(newUri.query()));
                 }
             } else if (newUri.isRelative()) {
                 String absolutePath = currentUri.mergePath(newUri.path()).path();
-                requestBuilder.uri(newUri.mergePath(absolutePath));
+                builder.uri(newUri.mergePath(absolutePath));
             }
         }
-        currentUri = requestBuilder.uri();
-        return httpHandler.handle(requestBuilder.build());
+        currentUri = builder.uri();
+        return httpHandler.handle(builder.build());
     }
 
     public Uri getCurrentUri() {
