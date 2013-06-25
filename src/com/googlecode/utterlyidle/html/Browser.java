@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -15,10 +16,10 @@ public class Browser implements HttpClient {
     }
 
     public static Browser browser() {
-        return browser(new ClientHttpHandler());
+        return new Browser(new ClientHttpHandler());
     }
 
-    public static Browser browser(HttpHandler handler) {
+    public static Browser browser(Application handler) {
         return new Browser(handler);
     }
 
