@@ -27,9 +27,9 @@ public class MemoryRequestTest {
                         "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\r\n" +
                                 "Accept: text/html\r\n" +
                                 "Content-Type: application/x-www-form-urlencoded; charset=UTF-8\r\n" +
-                                "Content-Length: 26\r\n" +
                                 "Cookie: size=diciptive\r\n" +
                                 "Referer: http://google.com\r\n" +
+                                "Content-Length: 26\r\n" +
                                 "\r\n" +
                                 "chups=nah+bru&plinkton=nom"
                 ));
