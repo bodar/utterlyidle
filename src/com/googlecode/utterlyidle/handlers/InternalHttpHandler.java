@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
@@ -17,10 +18,11 @@ import com.googlecode.utterlyidle.Response;
 import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 
 public class InternalHttpHandler implements HttpHandler {
-    private static final Sequence<String> HEADER_WHITE_LIST = sequence(COOKIE);
+    private static final Sequence<String> HEADER_WHITE_LIST = sequence(COOKIE, AUTHORIZATION);
 
     private final InternalRequestMarker marker;
     private final Application application;
