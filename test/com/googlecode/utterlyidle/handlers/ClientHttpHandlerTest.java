@@ -27,6 +27,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Date;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
@@ -38,6 +39,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
+    @Test(timeout = 500)
+    public void correctlyHandlesStreamedResponse() throws Exception {
+        final Response response = handle(get(uri("primes")), server);
+        assertThat(response.status(), is(Status.OK));
+        assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(false));
+        assertThat(Strings.lines(response.entity().inputStream()).take(3), is(sequence("2", "3", "5")));
+    }
 
     @Test
     public void canPutAString() throws Exception {
@@ -54,8 +62,9 @@ public class ClientHttpHandlerTest {
     @Test
     public void correctlyHandlesChunkedTransferEncoding() throws Exception {
         Response response = handle(get(uri("chunk")), server);
+        assertThat(response.entity().isStreaming(), is(true));
         assertThat(response.headers().contains(HttpHeaders.TRANSFER_ENCODING), is(false));
-        assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(true));
+        assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(false));
     }
 
     @Test

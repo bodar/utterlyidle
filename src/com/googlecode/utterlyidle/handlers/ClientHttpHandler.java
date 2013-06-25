@@ -76,7 +76,8 @@ public class ClientHttpHandler implements HttpClient {
     }
 
     private Response handle(final Request request, final URLConnection connection) throws IOException {
-        return new multi(){}.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
+        return new multi() {
+        }.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
             @Override
             public Response call() throws Exception {
                 return defaultHandle(request, connection);
@@ -87,7 +88,7 @@ public class ClientHttpHandler implements HttpClient {
     private Response defaultHandle(final Request request, final URLConnection connection) throws IOException {
         try {
             sendRequest(request, connection);
-            return createResponse(connection, OK, using(connection.getInputStream(), bytes()));
+            return createResponse(connection, OK, connection.getInputStream());
         } catch (FileNotFoundException e) {
             return createResponse(connection, NOT_FOUND, new byte[0]);
         }
@@ -109,10 +110,8 @@ public class ClientHttpHandler implements HttpClient {
         try {
             connection.setInstanceFollowRedirects(false);
             connection.setRequestMethod(request.method());
-            sendRequest(request, connection);
-            Status status = sendRequest(connection);
-            byte[] bytes = using(inputStream(connection), bytes());
-            return createResponse(connection, status, bytes);
+            Status status = sendHttpRequest(request, connection);
+            return createResponse(connection, status, entity(connection));
         } catch (SocketException ex) {
             return response(Status.CONNECTION_REFUSED);
         } catch (SocketTimeoutException ex) {
@@ -120,11 +119,13 @@ public class ClientHttpHandler implements HttpClient {
         }
     }
 
-    private Status sendRequest(final HttpURLConnection connection) throws IOException {
+    private Status sendHttpRequest(final Request request, final HttpURLConnection connection) throws IOException {
+        sendRequest(request, connection);
         return status(connection);
     }
 
-    public static InputStream inputStream(HttpURLConnection urlConnection) throws IOException {
+    public static Object entity(HttpURLConnection urlConnection) throws IOException {
+        if ("0".equals(urlConnection.getHeaderField(CONTENT_LENGTH))) return new byte[0];
         if (urlConnection.getResponseCode() >= 400) {
             return urlConnection.getErrorStream();
         } else {
@@ -132,15 +133,12 @@ public class ClientHttpHandler implements HttpClient {
         }
     }
 
-    private Response createResponse(URLConnection connection, Status status, byte[] bytes) {
+    private Response createResponse(URLConnection connection, Status status, Object entity) {
         final ResponseBuilder builder = pairs(connection.getHeaderFields()).
                 filter(where(first(String.class), is(not(equalIgnoringCase(HttpHeaders.TRANSFER_ENCODING))))).
-                fold(ResponseBuilder.response(status).entity(bytes),
+                fold(ResponseBuilder.response(status).entity(entity),
                         responseHeaders());
         builder.replaceHeaders(LAST_MODIFIED, new Date(connection.getLastModified()));
-        if (!builder.build().headers().contains(CONTENT_LENGTH)) {
-            return builder.header(CONTENT_LENGTH, bytes.length).build();
-        }
         return builder.build();
     }
 
