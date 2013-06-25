@@ -72,7 +72,7 @@ public class Entity implements Value<Object> {
             WRITERS.write(entity.value(), stream);
             return stream;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new UnsupportedOperationException("Unknown entity type " + empty().value());
         }
     }
 
