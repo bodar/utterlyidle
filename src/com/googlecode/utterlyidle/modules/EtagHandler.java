@@ -45,7 +45,8 @@ public class EtagHandler implements HttpHandler {
         Digest digest = md5(response.entity().asBytes());
         String etag = strongEtag(digest);
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
-            return copySafeHeaders(response, response(NOT_MODIFIED)).build();
+            Response notModified = copySafeHeaders(response, response(NOT_MODIFIED)).build();
+            return notModified;
         }
         return modify(response).header(ETAG, etag).header(Content_MD5, digest.asBase64()).build();
     }

@@ -67,7 +67,7 @@ public abstract class ServerContract<T extends Server> {
 
         assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
         assertThat(header(response, CONTENT_LENGTH), CoreMatchers.is("0"));
-        assertThat(response.entity().asBytes().length, CoreMatchers.is(0));
+        assertThat(response.entity().length(), CoreMatchers.is(0));
     }
 
     @Test
