@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.cookies.Cookie;
@@ -8,6 +9,7 @@ import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.BasePath.basePath;
+import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -21,13 +23,14 @@ public class InternalHttpHandlerTest {
     @Test
     public void shouldPassWhitelistedHeadersThrough() throws Exception {
         Cookie cookie = cookie("monster", "chocolate");
-        Request cookieRequest = get("/foo").cookie(cookie).build();
+        Request cookieRequest = get("/foo").cookie(cookie).header(AUTHORIZATION,"basic auth string").build();
         Request sitemeshRequest = get("/bar").build();
         SnoopingRequestMarker snoopingRequestMarker = new SnoopingRequestMarker(applicationId());
 
         new InternalHttpHandler(snoopingRequestMarker, new HelloWorldApplication(basePath("base")), cookieRequest).handle(sitemeshRequest);
 
         assertThat(snoopingRequestMarker.request.headers().getValue(COOKIE), is(toHttpHeader(cookie)));
+        assertThat(snoopingRequestMarker.request.headers().getValue(AUTHORIZATION), is("basic auth string"));
     }
 
     @Test
