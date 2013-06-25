@@ -8,17 +8,21 @@ import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.Zip;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URL;
 import java.util.Date;
@@ -34,6 +38,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
+
+    @Test
+    public void canPutAString() throws Exception {
+        Response response = handle(put("echo").entity("Hello"), server);
+        assertThat(response.entity().toString(), Matchers.is("Hello"));
+    }
+
+    @Test
+    public void canPutByteArray() throws Exception {
+        Response response = handle(put("echo").entity(Strings.bytes("Hello")), server);
+        assertThat(response.entity().toString(), Matchers.is("Hello"));
+    }
 
     @Test
     public void correctlyHandlesChunkedTransferEncoding() throws Exception {

@@ -22,6 +22,7 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Requests.request;
@@ -121,7 +122,7 @@ public class RequestBuilder implements Callable<Request> {
     public RequestBuilder forms(FormParameters formParameters) {
         String body = formParameters.toString();
         replaceHeader(HttpHeaders.CONTENT_TYPE, format("%s; charset=%s", MediaType.APPLICATION_FORM_URLENCODED, Entity.DEFAULT_CHARACTER_SET));
-        replaceHeader(HttpHeaders.CONTENT_LENGTH, body.getBytes(Entity.DEFAULT_CHARACTER_SET).length);
+        replaceHeader(CONTENT_LENGTH, body.getBytes(Entity.DEFAULT_CHARACTER_SET).length);
         entity = Entity.entity(body);
         return this;
     }
@@ -144,6 +145,10 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public Request build() {
+        if (!entity.isStreaming()) {
+            int length = entity.asBytes().length;
+            if (length > 0) replaceHeader(CONTENT_LENGTH, length);
+        }
         return request(method, uri, headerParameters(headers), entity);
     }
 
@@ -252,14 +257,14 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder copyFormParamsToQuery() {
-        return sequence(queryParameters(FormParameters.parse(entity))).fold(this,addQuery());
+        return sequence(queryParameters(FormParameters.parse(entity))).fold(this, addQuery());
     }
 
     private Callable2<RequestBuilder, Pair<String, String>, RequestBuilder> addQuery() {
         return new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
             @Override
             public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> pair) throws Exception {
-                return requestBuilder.query(pair.first(),pair.second());
+                return requestBuilder.query(pair.first(), pair.second());
             }
         };
     }
