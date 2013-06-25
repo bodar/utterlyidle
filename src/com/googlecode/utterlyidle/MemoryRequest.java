@@ -17,7 +17,7 @@ public class MemoryRequest implements Request {
         this.method = method.toUpperCase();
         this.uri = uri;
         this.entity = entity;
-        this.headers = headers;
+        this.headers = setContentLength(headers);
     }
 
     static MemoryRequest memoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
@@ -25,7 +25,10 @@ public class MemoryRequest implements Request {
     }
 
     private HeaderParameters setContentLength(HeaderParameters headers) {
-        return headers.remove(CONTENT_LENGTH).add(CONTENT_LENGTH, String.valueOf(entity().asBytes().length));
+        if (entity.length() > 0) {
+            return headers.remove(CONTENT_LENGTH).add(CONTENT_LENGTH, String.valueOf(entity().length()));
+        }
+        return headers;
     }
 
     public String method() {

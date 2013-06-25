@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RequestBuilderTest {
+
     @Test
     public void alwaysSetsContentLengthForNonStreamingEntity() throws Exception {
         assertThat(RequestBuilder.get("/home").entity("Hello").build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));

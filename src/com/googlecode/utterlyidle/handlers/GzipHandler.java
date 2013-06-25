@@ -36,7 +36,7 @@ public class GzipHandler implements HttpHandler {
         Response response = httpHandler.handle(request);
         if (clientAcceptsGZip(request.headers()) &&
                 !marker.isInternal(request) &&
-                !response.entity().isStreaming() &&
+                response.entity().length() > 0 &&
                 gZipPolicy.matches(pair(request, response))) {
             return modify(response).header(CONTENT_ENCODING, GZIP).entity(gzip(response.entity().asBytes())).build();
         }

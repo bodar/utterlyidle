@@ -145,10 +145,6 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public Request build() {
-        if (!entity.isStreaming()) {
-            int length = entity.asBytes().length;
-            if (length > 0) replaceHeader(CONTENT_LENGTH, length);
-        }
         return request(method, uri, headerParameters(headers), entity);
     }
 
