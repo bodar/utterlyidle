@@ -146,7 +146,7 @@ public class ClientHttpHandler implements HttpClient {
 
     private void sendRequest(Request request, URLConnection connection) throws IOException {
         sequence(request.headers()).fold(connection, requestHeaders());
-        if (request.headers().valueOption(CONTENT_LENGTH).map(integer()).getOrElse(0) > 0 || request.entity().isStreaming()) {
+        if (request.entity().length() > 0) {
             connection.setDoOutput(true);
             using(connection.getOutputStream(), request.entity().transferFrom());
         }

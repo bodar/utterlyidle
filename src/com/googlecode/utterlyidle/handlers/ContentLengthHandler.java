@@ -17,8 +17,8 @@ public class ContentLengthHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        if((!response.entity().isStreaming())) {
-            return setContentLength(response, response.entity().asBytes().length);
+        if(response.entity().length() > 0) {
+            return setContentLength(response, response.entity().length());
         }
         return response;
     }
