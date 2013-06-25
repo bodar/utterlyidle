@@ -144,10 +144,10 @@ public class ClientHttpHandler implements HttpClient {
 
     private void sendRequest(Request request, URLConnection connection) throws IOException {
         sequence(request.headers()).fold(connection, requestHeaders());
-        if (request.entity().length() > 0) {
-            connection.setDoOutput(true);
-            using(connection.getOutputStream(), request.entity().transferFrom());
-        }
+        if (request.entity().length() == 0) return;
+
+        connection.setDoOutput(true);
+        using(connection.getOutputStream(), request.entity().transferFrom());
     }
 
     private static Mapper<String, Integer> integer() {

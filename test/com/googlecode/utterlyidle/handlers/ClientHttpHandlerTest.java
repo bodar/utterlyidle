@@ -15,6 +15,7 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.hamcrest.Matchers;
@@ -24,10 +25,14 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
@@ -39,6 +44,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ClientHttpHandlerTest {
+    @Test(timeout = 500)
+    public void correctlyHandlesStreamedRequest() throws Exception {
+        final Response response = handle(put("echo").entity(new ByteArrayInputStream(bytes("Hello"))), server);
+        assertThat(response.status(), is(Status.OK));
+        assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(false));
+        assertThat(response.entity().toString(), is("Hello"));
+    }
+
     @Test(timeout = 500)
     public void correctlyHandlesStreamedResponse() throws Exception {
         final Response response = handle(get(uri("primes")), server);
@@ -55,7 +68,7 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void canPutByteArray() throws Exception {
-        Response response = handle(put("echo").entity(Strings.bytes("Hello")), server);
+        Response response = handle(put("echo").entity(bytes("Hello")), server);
         assertThat(response.entity().toString(), Matchers.is("Hello"));
     }
 
