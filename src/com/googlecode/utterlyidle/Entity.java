@@ -161,4 +161,9 @@ public class Entity implements Value<Object> {
         if (value instanceof String) return new ByteArrayInputStream(((String) value).getBytes(Entity.DEFAULT_CHARACTER_SET));
         throw new UnsupportedOperationException("Unsupported entity type: " + value.getClass());
     }
+
+    public int length() {
+        if(isStreaming()) return -1;
+        return asBytes().length;
+    }
 }

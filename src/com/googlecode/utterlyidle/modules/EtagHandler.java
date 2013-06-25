@@ -38,7 +38,7 @@ public class EtagHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        if (!request.method().equals(GET) || !response.status().equals(Status.OK) || response.entity().isStreaming()) {
+        if (!request.method().equals(GET) || !response.status().equals(Status.OK) || response.entity().length() < 0) {
             return response;
         }
 
