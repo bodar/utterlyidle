@@ -64,8 +64,8 @@ public class Entity implements Value<Object> {
 
     static {
         WRITERS.add(instanceOf(byte[].class), bytesEntityWriter());
-        WRITERS.add(instanceOf(InputStream.class), inputStreamEntityWriter());
         WRITERS.add(instanceOf(String.class), stringEntityWriter());
+        WRITERS.add(instanceOf(InputStream.class), inputStreamEntityWriter());
         WRITERS.add(instanceOf(StreamingWriter.class), streamingWriterEntityWriter());
         WRITERS.add(instanceOf(StreamingOutput.class), streamingOutputEntityWriter());
     }
@@ -75,7 +75,7 @@ public class Entity implements Value<Object> {
             WRITERS.write(entity.value(), stream);
             return stream;
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Unknown entity type " + empty().value());
+            throw new UnsupportedOperationException("Unknown entity type " + empty().value().getClass());
         }
     }
 
