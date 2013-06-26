@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -17,7 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
@@ -50,7 +48,7 @@ public class RestHandler implements HttpHandler {
             httpExchange.getResponseHeaders().add(pair.first(), pair.second());
         }
 
-        httpExchange.sendResponseHeaders(response.status().code(), Responses.contentLength(response).map(fixWeirdContentLength()).getOrElse(0));
+        httpExchange.sendResponseHeaders(response.status().code(), response.entity().length().map(fixWeirdContentLength()).getOrElse(0));
         using(httpExchange.getResponseBody(), response.entity().transferFrom());
         httpExchange.close();
     }

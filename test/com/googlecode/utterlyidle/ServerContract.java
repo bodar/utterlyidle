@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
@@ -67,7 +68,7 @@ public abstract class ServerContract<T extends Server> {
 
         assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
         assertThat(header(response, CONTENT_LENGTH), CoreMatchers.is("0"));
-        assertThat(response.entity().length(), CoreMatchers.is(0));
+        assertThat(response.entity().length(), CoreMatchers.is(some(0)));
     }
 
     @Test

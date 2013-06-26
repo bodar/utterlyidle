@@ -1,7 +1,9 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.numbers.Numbers;
 
+import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
@@ -25,8 +27,8 @@ public class MemoryRequest implements Request {
     }
 
     static HeaderParameters setContentLength(Entity entity, HeaderParameters headers) {
-        if (entity.length() > 0) {
-            return headers.remove(CONTENT_LENGTH).add(CONTENT_LENGTH, String.valueOf(entity.length()));
+        if (entity.length().exists(greaterThan(0))) {
+            return headers.replace(CONTENT_LENGTH, String.valueOf(entity.length().get()));
         }
         return headers;
     }
