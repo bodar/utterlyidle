@@ -38,17 +38,16 @@ public class EtagHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        if (!request.method().equals(GET) || !response.status().equals(Status.OK) || response.entity().length() < 0) {
+        if (!request.method().equals(GET) || !response.status().equals(Status.OK) || response.entity().length().isEmpty()) {
             return response;
         }
 
         Digest digest = md5(response.entity().asBytes());
         String etag = strongEtag(digest);
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
-            Response notModified = copySafeHeaders(response, response(NOT_MODIFIED)).build();
-            return notModified;
+            return copySafeHeaders(response, response(NOT_MODIFIED)).build();
         }
-        return modify(response).header(ETAG, etag).header(Content_MD5, digest.asBase64()).build();
+        return modify(response).headhg er(ETAG, etag).header(Content_MD5, digest.asBase64()).build();
     }
 
     private ResponseBuilder copySafeHeaders(final Response source, ResponseBuilder destination) {

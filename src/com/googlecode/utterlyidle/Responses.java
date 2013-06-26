@@ -55,17 +55,4 @@ public class Responses {
     public static LogicalPredicate<Pair<Request, Response>> status(final Status status) {
         return where(second(Response.class), where(Responses.status(), is(status)));
     }
-
-    public static Option<Integer> contentLength(Response response) {
-        return option(response.entity().length()).filter(greaterThan(0));
-    }
-
-    private static Function1<String, Integer> asInteger() {
-        return new Function1<String, Integer>() {
-            @Override
-            public Integer call(String value) throws Exception {
-                return Integer.parseInt(value);
-            }
-        };
-    }
 }

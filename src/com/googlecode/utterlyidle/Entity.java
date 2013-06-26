@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Characters;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Value;
 
 import java.io.ByteArrayInputStream;
@@ -14,6 +15,8 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.Strings.string;
@@ -162,8 +165,8 @@ public class Entity implements Value<Object> {
         throw new UnsupportedOperationException("Unsupported entity type: " + value.getClass());
     }
 
-    public int length() {
-        if(isStreaming()) return -1;
-        return asBytes().length;
+    public Option<Integer> length() {
+        if(isStreaming()) return none();
+        return some(asBytes().length);
     }
 }

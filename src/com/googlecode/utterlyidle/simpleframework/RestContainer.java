@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Responses;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Exceptions.printStackTrace;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -64,7 +62,7 @@ public class RestContainer implements Container {
     private void mapTo(com.googlecode.utterlyidle.Response applicationResponse, Response response) throws IOException {
         response.setCode(applicationResponse.status().code());
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
-        for (Integer integer : Responses.contentLength(applicationResponse)) {
+        for (Integer integer : applicationResponse.entity().length()) {
             response.setContentLength(integer);
         }
         using(response.getOutputStream(), applicationResponse.entity().transferFrom());

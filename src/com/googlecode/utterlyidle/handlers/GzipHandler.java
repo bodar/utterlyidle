@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.LazyException;
+import com.googlecode.totallylazy.numbers.Numbers;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.InternalRequestMarker;
@@ -15,6 +16,7 @@ import java.util.zip.GZIPOutputStream;
 
 import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT_ENCODING;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_ENCODING;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
@@ -36,7 +38,7 @@ public class GzipHandler implements HttpHandler {
         Response response = httpHandler.handle(request);
         if (clientAcceptsGZip(request.headers()) &&
                 !marker.isInternal(request) &&
-                response.entity().length() > 0 &&
+                response.entity().length().exists(greaterThan(0)) &&
                 gZipPolicy.matches(pair(request, response))) {
             return modify(response).header(CONTENT_ENCODING, GZIP).entity(gzip(response.entity().asBytes())).build();
         }

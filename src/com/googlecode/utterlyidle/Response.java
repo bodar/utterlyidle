@@ -1,11 +1,13 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 
 public interface Response {
@@ -92,6 +94,15 @@ public interface Response {
                 @Override
                 public String call(Response response) throws Exception {
                     return response.headers().getValue(name);
+                }
+            };
+        }
+
+        public static Function2<Response, Object, Response> replaceHeader(final String name) {
+            return new Function2<Response, Object, Response>() {
+                @Override
+                public Response call(final Response response, final Object value) throws Exception {
+                    return modify(response).replaceHeaders(name, value).build();
                 }
             };
         }
