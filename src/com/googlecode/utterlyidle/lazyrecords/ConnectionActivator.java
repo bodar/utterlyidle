@@ -47,6 +47,6 @@ public class ConnectionActivator implements Callable<Connection>, Closeable {
     }
 
     private Connection connection() throws SQLException {
-        return request.exists(where(method(), in(GET, HEAD))) ? new ReadOnlyConnection(dataSource) : dataSource.getConnection();
+        return request.is(where(method(), in(GET, HEAD))) ? new ReadOnlyConnection(dataSource) : dataSource.getConnection();
     }
 }

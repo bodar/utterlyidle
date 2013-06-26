@@ -40,7 +40,7 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.Uri.uri;
-import static com.googlecode.totallylazy.numbers.Numbers.isZero;
+import static com.googlecode.totallylazy.numbers.Numbers.zero;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.Responses.response;
@@ -146,7 +146,7 @@ public class ClientHttpHandler implements HttpClient {
 
     private void sendRequest(Request request, URLConnection connection) throws IOException {
         sequence(request.headers()).fold(connection, requestHeaders());
-        if (request.entity().length().exists(isZero)) return;
+        if (request.entity().length().is(zero)) return;
 
         connection.setDoOutput(true);
         using(connection.getOutputStream(), request.entity().transferFrom());
