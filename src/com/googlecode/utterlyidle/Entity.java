@@ -134,6 +134,14 @@ public class Entity implements Value<Object>, Closeable {
         };
     }
 
+    public static InputStream inputStreamOf(String value) {
+        return inputStreamOf(value.getBytes(DEFAULT_CHARACTER_SET));
+    }
+
+    public static InputStream inputStreamOf(final byte[] bytes) {
+        return new ByteArrayInputStream(bytes);
+    }
+
     public static StreamingOutput streamingOutputOf(final String value) {
         return new StreamingOutput() {
             @Override
@@ -155,9 +163,9 @@ public class Entity implements Value<Object>, Closeable {
     private final Lazy<InputStream> inputStream = new Lazy<InputStream>() {
         @Override
         protected InputStream get() throws Exception {
-            if (value instanceof byte[]) return new ByteArrayInputStream((byte[]) value);
+            if (value instanceof byte[]) return inputStreamOf((byte[]) value);
             if (value instanceof InputStream) return (InputStream) value;
-            if (value instanceof String) return new ByteArrayInputStream(((String) value).getBytes(Entity.DEFAULT_CHARACTER_SET));
+            if (value instanceof String) return inputStreamOf((String) value);
             throw new UnsupportedOperationException("Unsupported entity type: " + value.getClass());
         }
     };

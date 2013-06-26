@@ -73,7 +73,7 @@ public class ApplicationServlet extends HttpServlet {
 
     public static Request request(HttpServletRequest servletRequest) {
         try {
-            MemoryRequest request = Requests.request(
+            Request request = Requests.request(
                     servletRequest.getMethod(),
                     Uri.uri(servletRequest.getRequestURI() + queryString(servletRequest.getQueryString())),
                     convertToHeaderParameters(servletRequest),

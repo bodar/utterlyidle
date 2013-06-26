@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 
-import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 import static java.lang.String.format;
@@ -18,11 +17,11 @@ public class MemoryRequest implements Request {
         this.method = method.toUpperCase();
         this.uri = uri;
         this.entity = entity;
-        this.headers = ContentLengthHandler.setContentLength(entity, headers);
+        this.headers = headers;
     }
 
-    static MemoryRequest memoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
-        return new MemoryRequest(method, uri, headers, entity);
+    static Request memoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
+        return new MemoryRequest(method, uri, ContentLengthHandler.setContentLength(entity, headers), entity);
     }
 
     public String method() {

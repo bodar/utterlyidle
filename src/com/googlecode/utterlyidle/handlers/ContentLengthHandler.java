@@ -24,11 +24,16 @@ public class ContentLengthHandler implements HttpHandler {
     }
 
     public static Response setContentLength(Response response) {
-        return response.entity().length().fold(response, replaceHeader(CONTENT_LENGTH));
+        return response.entity().length().fold(response, Response.functions.replaceHeader(CONTENT_LENGTH));
     }
 
     public static HeaderParameters setContentLength(Entity entity, HeaderParameters headers) {
-        if (entity.length().is(greaterThan(0))) {
+        if(headers.contains(CONTENT_LENGTH)) {
+            byte[] bytes = entity.asBytes();
+            headers.replace(CONTENT_LENGTH, String.valueOf(bytes.length));
+        }
+
+        if (entity.length().is(greaterThanOrEqualTo(0))) {
             return headers.replace(CONTENT_LENGTH, String.valueOf(entity.length().get()));
         }
         return headers;

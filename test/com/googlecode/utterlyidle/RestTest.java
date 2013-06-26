@@ -286,7 +286,7 @@ public class RestTest {
     @Test
     public void canEcho() throws Exception {
         ApplicationBuilder application = application().addAnnotated(HelloWorld.class);
-        assertThat(application.responseAsString(put("echo").entity(new ByteArrayInputStream(Strings.bytes("Hello")))), is("Hello"));
+        assertThat(application.responseAsString(put("echo").entity(Entity.inputStreamOf("Hello"))), is("Hello"));
     }
 
     @Test
