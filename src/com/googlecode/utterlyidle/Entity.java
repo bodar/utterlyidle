@@ -119,8 +119,11 @@ public class Entity implements Value<Object>, Closeable {
         return new EntityWriter<InputStream>() {
             @Override
             public void write(InputStream input, OutputStream output) throws IOException {
-                Streams.copy(input, output);
-                Closeables.safeClose(input);
+                try {
+                    Streams.copy(input, output);
+                } finally {
+                    Closeables.safeClose(input);
+                }
             }
         };
     }
