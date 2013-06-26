@@ -1,10 +1,9 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.totallylazy.numbers.Numbers;
+import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 import static java.lang.String.format;
@@ -19,18 +18,11 @@ public class MemoryRequest implements Request {
         this.method = method.toUpperCase();
         this.uri = uri;
         this.entity = entity;
-        this.headers = setContentLength(entity, headers);
+        this.headers = ContentLengthHandler.setContentLength(entity, headers);
     }
 
     static MemoryRequest memoryRequest(String method, Uri uri, HeaderParameters headers, Entity entity) {
         return new MemoryRequest(method, uri, headers, entity);
-    }
-
-    static HeaderParameters setContentLength(Entity entity, HeaderParameters headers) {
-        if (entity.length().exists(greaterThan(0))) {
-            return headers.replace(CONTENT_LENGTH, String.valueOf(entity.length().get()));
-        }
-        return headers;
     }
 
     public String method() {

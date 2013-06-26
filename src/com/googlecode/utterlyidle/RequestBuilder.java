@@ -122,7 +122,6 @@ public class RequestBuilder implements Callable<Request> {
     public RequestBuilder forms(FormParameters formParameters) {
         String body = formParameters.toString();
         replaceHeader(HttpHeaders.CONTENT_TYPE, format("%s; charset=%s", MediaType.APPLICATION_FORM_URLENCODED, Entity.DEFAULT_CHARACTER_SET));
-        replaceHeader(CONTENT_LENGTH, body.getBytes(Entity.DEFAULT_CHARACTER_SET).length);
         entity = Entity.entity(body);
         return this;
     }
