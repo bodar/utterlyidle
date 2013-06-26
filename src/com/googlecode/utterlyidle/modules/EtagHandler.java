@@ -47,7 +47,7 @@ public class EtagHandler implements HttpHandler {
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
             return copySafeHeaders(response, response(NOT_MODIFIED)).build();
         }
-        return modify(response).headhg er(ETAG, etag).header(Content_MD5, digest.asBase64()).build();
+        return modify(response).header(ETAG, etag).header(Content_MD5, digest.asBase64()).build();
     }
 
     private ResponseBuilder copySafeHeaders(final Response source, ResponseBuilder destination) {
