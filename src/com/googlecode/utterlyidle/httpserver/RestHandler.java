@@ -60,7 +60,7 @@ public class RestHandler implements HttpHandler {
     }
 
     private Request request(HttpExchange httpExchange) {
-        MemoryRequest request = Requests.request(
+        Request request = Requests.request(
                 httpExchange.getRequestMethod(),
                 uri(httpExchange.getRequestURI().toString()),
                 headerParameters(httpExchange.getRequestHeaders()),

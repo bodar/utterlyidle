@@ -3,14 +3,15 @@ package com.googlecode.utterlyidle;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
-import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.utterlyidle.Entity.entity;
+import static com.googlecode.utterlyidle.Entity.inputStreamOf;
+import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
+import static com.googlecode.utterlyidle.Entity.streamingWriterOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -20,7 +21,7 @@ public class EntityTest {
     public void ensureSameInputStreamIsAlwaysReturns() throws Exception {
         assertSameInputStream(entity(""));
         assertSameInputStream(entity("Hello"));
-        assertSameInputStream(entity(new ByteArrayInputStream(bytes("Hello"))));
+        assertSameInputStream(entity(inputStreamOf("Hello")));
     }
 
     private void assertSameInputStream(final Entity entity) {
@@ -58,14 +59,14 @@ public class EntityTest {
     public void supportsLength() throws Exception {
         assertThat(entity("").length(), is(some(0)));
         assertThat(entity("Hello").length(), is(some(5)));
-        assertThat(entity(new ByteArrayInputStream(bytes("Hello"))).length(), is(none(Integer.class)));
-        assertThat(entity(Entity.streamingWriterOf("Hello")).length(), is(none(Integer.class)));
-        assertThat(entity(Entity.streamingOutputOf("Hello")).length(), is(none(Integer.class)));
+        assertThat(entity(inputStreamOf("Hello")).length(), is(none(Integer.class)));
+        assertThat(entity(streamingWriterOf("Hello")).length(), is(none(Integer.class)));
+        assertThat(entity(streamingOutputOf("Hello")).length(), is(none(Integer.class)));
     }
 
     @Test
     public void shouldSupportInputStream() throws Exception {
-        assertThat(entity(new ByteArrayInputStream(bytes("Foo"))).toString(), is("Foo"));
+        assertThat(entity(inputStreamOf("Foo")).toString(), is("Foo"));
     }
 
     @Test
@@ -80,12 +81,12 @@ public class EntityTest {
 
     @Test
     public void shouldSupportStreamingWriter() throws Exception {
-        assertThat(entity(Entity.streamingWriterOf("bar")).toString(), is("bar"));
+        assertThat(entity(streamingWriterOf("bar")).toString(), is("bar"));
     }
 
     @Test
     public void shouldSupportStreamingOutput() throws Exception {
-        assertThat(entity(Entity.streamingOutputOf("foobar")).toString(), is("foobar"));
+        assertThat(entity(streamingOutputOf("foobar")).toString(), is("foobar"));
     }
 
 }

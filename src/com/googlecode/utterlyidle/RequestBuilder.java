@@ -22,7 +22,6 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Requests.request;
@@ -197,6 +196,10 @@ public class RequestBuilder implements Callable<Request> {
 
     public Uri uri() {
         return uri;
+    }
+
+    public RequestBuilder replaceHeaders(String name, Object value) {
+        return replaceHeader(name, value);
     }
 
     public RequestBuilder replaceHeader(String name, Object value) {
