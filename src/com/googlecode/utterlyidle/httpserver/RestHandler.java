@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
@@ -55,8 +54,8 @@ public class RestHandler implements HttpHandler {
     }
 
     private long fixBadApiDesign(final Option<Integer> length) {
-        if(length.isEmpty()) return 0;
-        if(length.get() == 0) return -1;
+        if (length.isEmpty()) return 0;
+        if (length.get() == 0) return -1;
         return length.get();
     }
 
