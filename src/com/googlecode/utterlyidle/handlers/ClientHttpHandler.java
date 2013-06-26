@@ -3,13 +3,14 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.totallylazy.Bytes;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.CloseableList;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
-import com.googlecode.totallylazy.numbers.Numbers;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
@@ -19,6 +20,7 @@ import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import sun.net.www.protocol.file.FileURLConnection;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import java.util.List;
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Maps.pairs;
+import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
@@ -48,9 +51,10 @@ import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
 
-public class ClientHttpHandler implements HttpClient {
+public class ClientHttpHandler implements HttpClient, Closeable {
     private final int connectTimeoutMillis;
     private final int readTimeoutMillis;
+    private final CloseableList closeables = new CloseableList();
 
     public ClientHttpHandler() {
         this(0);
@@ -90,7 +94,7 @@ public class ClientHttpHandler implements HttpClient {
     private Response defaultHandle(final Request request, final URLConnection connection) throws IOException {
         try {
             sendRequest(request, connection);
-            return createResponse(connection, OK, connection.getInputStream());
+            return createResponse(connection, OK, entity(connection));
         } catch (FileNotFoundException e) {
             return createResponse(connection, NOT_FOUND, new byte[0]);
         }
@@ -121,18 +125,44 @@ public class ClientHttpHandler implements HttpClient {
         }
     }
 
+    private void sendRequest(Request request, URLConnection connection) throws IOException {
+        sequence(request.headers()).fold(connection, requestHeaders());
+        if (request.entity().length().is(zero)) return;
+
+        connection.setDoOutput(true);
+        using(connection.getOutputStream(), request.entity().transferFrom());
+    }
+
     private Status sendHttpRequest(final Request request, final HttpURLConnection connection) throws IOException {
         sendRequest(request, connection);
         return status(connection);
     }
 
-    public static Object entity(HttpURLConnection urlConnection) throws IOException {
-        if ("0".equals(urlConnection.getHeaderField(CONTENT_LENGTH))) return new byte[0];
-        if (urlConnection.getResponseCode() >= 400) {
-            return urlConnection.getErrorStream();
-        } else {
-            return urlConnection.getInputStream();
+    private Object entity(final URLConnection connection) throws IOException {
+        Option<Integer> length = contentLength(connection);
+        return handleStreamingContent(length, connection.getInputStream());
+    }
+
+    private Object entity(final HttpURLConnection connection) throws IOException {
+        Option<Integer> length = contentLength(connection);
+        if (connection.getResponseCode() >= 400) {
+            return handleStreamingContent(length, connection.getErrorStream());
         }
+        return handleStreamingContent(length, connection.getInputStream());
+    }
+
+    private Object handleStreamingContent(final Option<Integer> length, final InputStream inputStream) {
+        if (length.isEmpty()) return closeables.manage(inputStream);
+        return using(inputStream, bytes());
+    }
+
+    private static Option<Integer> contentLength(final URLConnection urlConnection) {
+        return option(urlConnection.getHeaderField(CONTENT_LENGTH)).flatMap(new Mapper<String, Integer>() {
+            @Override
+            public Integer call(final String s) throws Exception {
+                return Integer.valueOf(s.trim());
+            }
+        }.optional());
     }
 
     private Response createResponse(URLConnection connection, Status status, Object entity) {
@@ -142,23 +172,6 @@ public class ClientHttpHandler implements HttpClient {
                         responseHeaders());
         builder.replaceHeaders(LAST_MODIFIED, new Date(connection.getLastModified()));
         return builder.build();
-    }
-
-    private void sendRequest(Request request, URLConnection connection) throws IOException {
-        sequence(request.headers()).fold(connection, requestHeaders());
-        if (request.entity().length().is(zero)) return;
-
-        connection.setDoOutput(true);
-        using(connection.getOutputStream(), request.entity().transferFrom());
-    }
-
-    private static Mapper<String, Integer> integer() {
-        return new Mapper<String, Integer>() {
-            @Override
-            public Integer call(final String s) throws Exception {
-                return Integer.valueOf(s);
-            }
-        };
     }
 
     private static Callable2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {
@@ -195,5 +208,10 @@ public class ClientHttpHandler implements HttpClient {
                 return Bytes.bytes(stream);
             }
         };
+    }
+
+    @Override
+    public void close() throws IOException {
+        closeables.close();
     }
 }

@@ -2,11 +2,15 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Characters;
+import com.googlecode.totallylazy.Closeables;
+import com.googlecode.totallylazy.Lazy;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Streams;
 import com.googlecode.totallylazy.Value;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,7 +25,7 @@ import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.Strings.string;
 
-public class Entity implements Value<Object> {
+public class Entity implements Value<Object>, Closeable {
     private static final Entity EMPTY = new Entity("");
     private Object value;
 
@@ -115,19 +119,10 @@ public class Entity implements Value<Object> {
         return new EntityWriter<InputStream>() {
             @Override
             public void write(InputStream input, OutputStream output) throws IOException {
-                copy(input, output);
+                Streams.copy(input, output);
+                Closeables.safeClose(input);
             }
         };
-    }
-
-    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
-
-    public static void copy(InputStream input, OutputStream output) throws IOException {
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        int n;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-        }
     }
 
     private static EntityWriter<String> stringEntityWriter() {
@@ -157,16 +152,30 @@ public class Entity implements Value<Object> {
         };
     }
 
+    private final Lazy<InputStream> inputStream = new Lazy<InputStream>() {
+        @Override
+        protected InputStream get() throws Exception {
+            if (value instanceof byte[]) return new ByteArrayInputStream((byte[]) value);
+            if (value instanceof InputStream) return (InputStream) value;
+            if (value instanceof String) return new ByteArrayInputStream(((String) value).getBytes(Entity.DEFAULT_CHARACTER_SET));
+            throw new UnsupportedOperationException("Unsupported entity type: " + value.getClass());
+        }
+    };
 
-    public InputStream inputStream() {
-        if (value instanceof byte[]) return new ByteArrayInputStream((byte[]) value);
-        if (value instanceof InputStream) return (InputStream) value;
-        if (value instanceof String) return new ByteArrayInputStream(((String) value).getBytes(Entity.DEFAULT_CHARACTER_SET));
-        throw new UnsupportedOperationException("Unsupported entity type: " + value.getClass());
-    }
+    public InputStream inputStream() { return inputStream.apply(); }
 
     public Option<Integer> length() {
         if(isStreaming()) return none();
         return some(asBytes().length);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        close();
+    }
+
+    @Override
+    public void close() throws IOException {
+        Closeables.safeClose(value);
     }
 }

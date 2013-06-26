@@ -8,15 +8,12 @@ import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.Zip;
 import com.googlecode.totallylazy.time.Dates;
-import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.StreamingOutput;
-import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -26,14 +23,13 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
@@ -42,8 +38,27 @@ import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class ClientHttpHandlerTest {
+    @Test
+    public void canCloseClient() throws Exception {
+        ClientHttpHandler client = new ClientHttpHandler();
+        final Response response = handle(client, get(uri("chunk")), server);
+        assertThat(response.status(), is(Status.OK));
+        assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(false));
+        assertThat(response.entity().inputStream().read(), is(greaterThan(0)));
+
+        client.close();
+
+        try {
+            response.entity().inputStream().read();
+            fail("Should have closed");
+        } catch (IOException e) {
+
+        }
+    }
+
     @Test(timeout = 500)
     public void correctlyHandlesStreamedRequest() throws Exception {
         final Response response = handle(put("echo").entity(new ByteArrayInputStream(bytes("Hello"))), server);
@@ -163,11 +178,15 @@ public class ClientHttpHandlerTest {
     }
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {
-        return handle(0, request, server);
+        return handle(new ClientHttpHandler(0), request, server);
     }
 
     public static Response handle(int timeout, final RequestBuilder request, final Server server) throws Exception {
-        HttpHandler urlHandler = new AuditHandler(new ClientHttpHandler(timeout), new PrintAuditor(Debug.debugging() ? System.out : Streams.nullPrintStream()));
+        return handle(new ClientHttpHandler(timeout), request, server);
+    }
+
+    public static Response handle(final ClientHttpHandler client, final RequestBuilder request, final Server server) throws Exception {
+        HttpHandler urlHandler = new AuditHandler(client, new PrintAuditor(Debug.debugging() ? System.out : Streams.nullPrintStream()));
         Uri uri = request.uri();
         Uri path = server.uri().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
         return urlHandler.handle(request.uri(path).build());
