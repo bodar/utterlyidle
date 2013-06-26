@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 
 import javax.servlet.ServletConfig;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Sequences.forwardOnly;
@@ -67,7 +65,7 @@ public class ApplicationServlet extends HttpServlet {
         for (Pair<String, String> pair : response.headers()) {
             resp.setHeader(pair.first(), pair.second());
         }
-        for (Integer length : Responses.contentLength(response)) {
+        for (Integer length : response.entity().length()) {
             resp.setContentLength(length);
         }
         using(resp.getOutputStream(), response.entity().transferFrom());

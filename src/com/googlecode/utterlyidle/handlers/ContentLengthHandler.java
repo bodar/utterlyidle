@@ -4,8 +4,9 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
+import static com.googlecode.totallylazy.numbers.Numbers.greaterThanOrEqualTo;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
+import static com.googlecode.utterlyidle.Response.functions.replaceHeader;
 
 public class ContentLengthHandler implements HttpHandler {
     private final HttpHandler httpHandler;
@@ -16,14 +17,10 @@ public class ContentLengthHandler implements HttpHandler {
 
     @Override
     public Response handle(Request request) throws Exception {
-        Response response = httpHandler.handle(request);
-        if(response.entity().length() >= 0) {
-            return setContentLength(response, response.entity().length());
-        }
-        return response;
+        return setContentLength(httpHandler.handle(request));
     }
 
-    public static Response setContentLength(Response response, int length) {
-        return modify(response).replaceHeaders(CONTENT_LENGTH, length).build();
+    public static Response setContentLength(Response response) {
+        return response.entity().length().fold(response, replaceHeader(CONTENT_LENGTH));
     }
 }
