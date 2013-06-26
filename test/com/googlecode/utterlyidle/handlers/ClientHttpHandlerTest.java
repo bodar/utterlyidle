@@ -31,6 +31,7 @@ import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.Entity.inputStreamOf;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
@@ -61,7 +62,7 @@ public class ClientHttpHandlerTest {
 
     @Test(timeout = 500)
     public void correctlyHandlesStreamedRequest() throws Exception {
-        final Response response = handle(put("echo").entity(new ByteArrayInputStream(bytes("Hello"))), server);
+        final Response response = handle(put("echo").entity(inputStreamOf("Hello")), server);
         assertThat(response.status(), is(Status.OK));
         assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(false));
         assertThat(response.entity().toString(), is("Hello"));

@@ -5,17 +5,18 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.bytes;
+import static com.googlecode.utterlyidle.Entity.inputStreamOf;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Requests.form;
 import static com.googlecode.utterlyidle.Requests.query;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -33,10 +34,10 @@ public class RequestBuilderTest {
 
     @Test
     public void alwaysSetsContentLengthForNonStreamingEntity() throws Exception {
-        assertThat(get("/home").entity("Hello").build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
-        assertThat(get("/home").entity(bytes("Hello")).build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
-        assertThat(get("/home").entity(new ByteArrayInputStream(bytes("Hello"))).build().headers().contains(CONTENT_LENGTH), equalTo(false));
-        assertThat(get("/home").build().headers().contains(CONTENT_LENGTH), equalTo(false));
+        assertThat(put("/home").entity("").build().headers().getValue(CONTENT_LENGTH), equalTo("0"));
+        assertThat(put("/home").entity("Hello").build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
+        assertThat(put("/home").entity(bytes("Hello")).build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
+        assertThat(put("/home").entity(inputStreamOf("Hello")).build().headers().contains(CONTENT_LENGTH), equalTo(false));
     }
 
     @Test
@@ -81,8 +82,8 @@ public class RequestBuilderTest {
 
     @Test
     public void replacingACookiePreservesHeaderOrder() throws Exception {
-        Request request = get("/").header("path", "/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie2", "penguin").build();
-        assertThat(request.headers(), is(headerParameters(sequence(pair("path", "/"), pair(COOKIE, "cookie1=\"value1\""), pair(COOKIE, "cookie2=\"penguin\"")))));
+        Request request = put("/").header("path", "/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie2", "penguin").build();
+        assertThat(request.headers(), is(headerParameters(sequence(pair("path", "/"), pair(COOKIE, "cookie1=\"value1\""), pair(COOKIE, "cookie2=\"penguin\""), pair(CONTENT_LENGTH, "0")))));
     }
 
     @Test

@@ -12,7 +12,7 @@ import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 
 public class Requests {
-    public static MemoryRequest request(String method, Uri requestUri, HeaderParameters headers, Object input) {
+    public static Request request(String method, Uri requestUri, HeaderParameters headers, Object input) {
         return MemoryRequest.memoryRequest(method, requestUri, headers, Entity.entity(input));
     }
 
