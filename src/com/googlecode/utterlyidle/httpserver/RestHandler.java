@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.MemoryRequest;
@@ -48,18 +49,15 @@ public class RestHandler implements HttpHandler {
             httpExchange.getResponseHeaders().add(pair.first(), pair.second());
         }
 
-        httpExchange.sendResponseHeaders(response.status().code(), response.entity().length().map(fixWeirdContentLength()).getOrElse(0));
+        httpExchange.sendResponseHeaders(response.status().code(), fixBadApiDesign(response.entity().length()));
         using(httpExchange.getResponseBody(), response.entity().transferFrom());
         httpExchange.close();
     }
 
-    private Callable1<Integer, Integer> fixWeirdContentLength() {
-        return new Callable1<Integer, Integer>() {
-            @Override
-            public Integer call(Integer actualContentLength) throws Exception {
-                return actualContentLength == 0 ? -1: actualContentLength;
-            }
-        };
+    private long fixBadApiDesign(final Option<Integer> length) {
+        if(length.isEmpty()) return 0;
+        if(length.get() == 0) return -1;
+        return length.get();
     }
 
     private Request request(HttpExchange httpExchange) {
