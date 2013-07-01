@@ -7,6 +7,7 @@ public class MediaType {
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
     public static final String APPLICATION_SVG_XML = "application/svg+xml";
     public static final String APPLICATION_JSON = "application/json";
+    public static final String APPLICATION_PDF = "application/pdf";
     public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String MULTIPART_FORM_DATA = "multipart/form-data";
     public static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
