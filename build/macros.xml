@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <macrodef name="embed.libs">
+    <macrodef name="embed.apache.libs">
         <sequential>
             <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
                      classpathref="all.dependancies"/>
@@ -13,6 +13,23 @@
             </jarjar>
             <delete file="${release.jar.path}"/>
             <move file="${release.no.libs.jar}" tofile="${release.jar.path}"/>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="create.nodeps.lib">
+        <sequential>
+            <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+                     classpathref="all.dependancies"/>
+            <jarjar jarfile="${release.nodeps.jar.path}">
+                <zipfileset src="${release.jar.path}"/>
+                <zipgroupfileset dir="${runtime.dependencies.dir}" includes="totallylazy-*.jar, funclate-*.jar, yadic-*.jar" />
+                <rule pattern="com.googlecode.totallylazy.*" result="com.googlecode.utterlyidle.internal.totallylazy.$@1"/>
+                <rule pattern="com.googlecode.totallylazy.**.*" result="com.googlecode.utterlyidle.internal.totallylazy.@1.$@2"/>
+                <rule pattern="com.googlecode.funclate.*" result="com.googlecode.utterlyidle.internal.funclate.$@1"/>
+                <rule pattern="com.googlecode.funclate.**.*" result="com.googlecode.utterlyidle.internal.funclate.@1.$@2"/>
+                <rule pattern="com.googlecode.yadic.*" result="com.googlecode.utterlyidle.internal.yadic.$@1"/>
+                <rule pattern="com.googlecode.yadic.**.*" result="com.googlecode.utterlyidle.internal.yadic.@1.$@2"/>
+            </jarjar>
         </sequential>
     </macrodef>
 
