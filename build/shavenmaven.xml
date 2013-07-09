@@ -21,6 +21,8 @@
             <mkdir dir="@{directory}"/>
             <java classname="com.googlecode.shavenmaven.Dependencies" classpath="@{shavenmaven.jar}" fork="true"
                   failonerror="true">
+                <!--<jvmarg value="-Dhttp.proxyHost=proxy.server"/>-->
+                <!--<jvmarg value="-Dhttp.proxyPort=8080"/>-->
                 <arg value="@{dependencies}"/>
                 <arg value="@{directory}"/>
             </java>
