@@ -75,11 +75,15 @@ public class Entity implements Value<Object>, Closeable {
     }
 
     public static <T extends OutputStream> T writeTo(Entity entity, T stream) {
+        writeEntityToStream(entity, stream);
+        return stream;
+    }
+
+    private static <T extends OutputStream> void writeEntityToStream(final Entity entity, final T stream) {
         try {
             WRITERS.write(entity.value(), stream);
-            return stream;
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Unknown entity type " + empty().value().getClass());
+            throw new RuntimeException("Error writing entity of type " + entity.value().getClass(), e);
         }
     }
 
