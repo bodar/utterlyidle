@@ -181,11 +181,6 @@ public class Entity implements Value<Object>, Closeable {
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        close();
-    }
-
-    @Override
     public void close() throws IOException {
         Closeables.safeClose(value);
     }
