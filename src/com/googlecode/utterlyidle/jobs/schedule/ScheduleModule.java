@@ -19,7 +19,8 @@ public class ScheduleModule implements ResourcesModule, ApplicationScopedModule,
 
     public Container addPerRequestObjects(Container container) throws Exception {
         return container.
-                add(HttpScheduler.class);
+                add(HttpScheduler.class).
+                add(Schedules.class);
     }
 
     public Container addPerApplicationObjects(Container container) throws Exception {

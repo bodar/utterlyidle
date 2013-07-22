@@ -3,10 +3,10 @@ package com.googlecode.utterlyidle.jobs;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Request;
 
-public interface Queues {
+public interface Jobs {
     Sequence<CompletedJob> completed();
 
-    void queue(Request request);
+    void run(Request request);
 
     Sequence<RunningJob> running();
 

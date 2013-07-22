@@ -19,14 +19,14 @@ import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 
-public class RequestQueues implements Queues {
+public class RequestJobs implements Jobs {
     private final List<RunningJob> running = new CopyOnWriteArrayList<RunningJob>();
     private final LinkedBlockingQueue<CompletedJob> completed = new CappedLinkedBlockingQueue<CompletedJob>(20);
     private final Application application;
     private final Clock clock;
     private final Completer completer;
 
-    public RequestQueues(Application application, Clock clock, Completer completer) {
+    public RequestJobs(Application application, Clock clock, Completer completer) {
         this.application = application;
         this.clock = clock;
         this.completer = completer;
@@ -38,7 +38,7 @@ public class RequestQueues implements Queues {
     }
 
     @Override
-    public void queue(final Request request) {
+    public void run(final Request request) {
         completer.complete(handle(request));
     }
 
