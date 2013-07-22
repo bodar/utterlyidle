@@ -27,25 +27,24 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.COMPLETED;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.DURATION;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.INTERVAL;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.JOB_ID;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.REQUEST;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.RESPONSE;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.RUNNING;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.START;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.STARTED;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.job;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.COMPLETED;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.DURATION;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.INTERVAL;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.SCHEDULE_ID;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.REQUEST;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.RESPONSE;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.RUNNING;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.START;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.STARTED;
 
 @Path("jobs")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
-public class JobsResource {
+public class ScheduleResource {
     private final HttpScheduler scheduler;
     private final Request request;
     private final Redirector redirector;
 
-    public JobsResource(HttpScheduler scheduler, Request request, Redirector redirector, InternalRequestMarker internalRequestMarker) {
+    public ScheduleResource(HttpScheduler scheduler, Request request, Redirector redirector, InternalRequestMarker internalRequestMarker) {
         this.scheduler = scheduler;
         this.request = internalRequestMarker.markAsInternal(request);
         this.redirector = redirector;
@@ -56,7 +55,7 @@ public class JobsResource {
     public Response schedule(@PathParam("id") UUID id, @PathParam("interval") Long intervalInSeconds, @PathParam("$") String endOfUrl) throws Exception {
         Request scheduledRequest = modify(request).uri(request.uri().path(endOfUrl)).build();
 
-        scheduler.schedule(job(id).interval(intervalInSeconds).request(scheduledRequest.toString()));
+        scheduler.schedule(Schedule.schedule(id).interval(intervalInSeconds).request(scheduledRequest.toString()));
 
         return redirectToList();
     }
@@ -66,7 +65,7 @@ public class JobsResource {
     public Response schedule(@PathParam("id") UUID id, @PathParam("start") String start, @PathParam("interval") Long intervalInSeconds, @PathParam("$") String endOfUrl) throws Exception {
         Request scheduledRequest = modify(request).uri(request.uri().path(endOfUrl)).build();
 
-        scheduler.schedule(job(id).start(start).interval(intervalInSeconds).request(scheduledRequest.toString()));
+        scheduler.schedule(Schedule.schedule(id).start(start).interval(intervalInSeconds).request(scheduledRequest.toString()));
 
         return redirectToList();
     }
@@ -74,15 +73,15 @@ public class JobsResource {
     @POST
     @Path("reschedule")
     public Response reschedule(@FormParam("id") UUID id, @FormParam("seconds") Long seconds, @FormParam("start") String start) throws Exception {
-        scheduler.schedule(job(id).interval(seconds).start(start));
+        scheduler.schedule(Schedule.schedule(id).interval(seconds).start(start));
         return redirectToList();
     }
 
     @GET
     @Path("edit")
     public Model edit(@QueryParam("id") UUID id) {
-        Record job = scheduler.job(id).get();
-        return model().add("id", id.toString()).add("seconds", job.get(INTERVAL)).add("start", job.get(START));
+        Record schedule = scheduler.schedule(id).get();
+        return model().add("id", id.toString()).add("seconds", schedule.get(INTERVAL)).add("start", schedule.get(START));
     }
 
     @POST
@@ -95,23 +94,23 @@ public class JobsResource {
     @GET
     @Path("list")
     public Model list() {
-        List<Model> models = jobsModel(scheduler.jobs());
-        return model().add("jobs", models).add("anyExists", !models.isEmpty());
+        List<Model> models = schedulesModel(scheduler.schedules());
+        return model().add("schedules", models).add("anyExists", !models.isEmpty());
     }
 
     private Response redirectToList() {
         return redirector.seeOther(method(on(getClass()).list()));
     }
 
-    public static List<Model> jobsModel(Sequence<Record> jobs) {
-        return jobs.map(toModel()).toList();
+    public static List<Model> schedulesModel(Sequence<Record> schedules) {
+        return schedules.map(toModel()).toList();
     }
 
     public static Callable1<? super Record, Model> toModel() {
         return new Callable1<Record, Model>() {
             public Model call(Record record) throws Exception {
                 return model().
-                        add("id", record.get(JOB_ID)).
+                        add("id", record.get(SCHEDULE_ID)).
                         add("status", Boolean.TRUE.equals(record.get(RUNNING)) ? "running" : "idle").
                         add("start", record.get(START)).
                         add("seconds", record.get(INTERVAL)).

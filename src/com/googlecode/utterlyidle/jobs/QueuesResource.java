@@ -25,7 +25,7 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
-import com.googlecode.utterlyidle.jobs.schedule.JobsResource;
+import com.googlecode.utterlyidle.jobs.schedule.ScheduleResource;
 
 @Path("queues")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
@@ -62,7 +62,7 @@ public class QueuesResource {
                         add("started", runningJob.started).
                         add("completed", "").
                         add("duration", runningJob.duration()).
-                        add("request", JobsResource.asModel(runningJob.request)).
+                        add("request", ScheduleResource.asModel(runningJob.request)).
                         add("response", model());
             }
         };
@@ -77,8 +77,8 @@ public class QueuesResource {
                         add("started", completedJob.started).
                         add("completed", completedJob.completed).
                         add("duration", completedJob.duration()).
-                        add("request", JobsResource.asModel(completedJob.request)).
-                        add("response", JobsResource.asModel(completedJob.response));
+                        add("request", ScheduleResource.asModel(completedJob.request)).
+                        add("response", ScheduleResource.asModel(completedJob.response));
             }
         };
     }

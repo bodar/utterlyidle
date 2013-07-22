@@ -20,7 +20,7 @@ import static com.googlecode.totallylazy.time.Seconds.between;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FixedScheduler implements Scheduler, Closeable, Service {
-    private final Map<UUID, Cancellable> jobs = new HashMap<UUID, Cancellable>();
+    private final Map<UUID, Cancellable> schedule = new HashMap<UUID, Cancellable>();
     private volatile ScheduledExecutorService service;
     private final Clock clock;
 
@@ -32,8 +32,8 @@ public class FixedScheduler implements Scheduler, Closeable, Service {
     public void schedule(UUID id, Callable<?> command, Option<Date> start, long numberOfSeconds) {
         cancel(id);
         Date now = clock.now();
-        FutureJob job = new FutureJob(service().scheduleAtFixedRate(function(command), between(now, start.getOrElse(now)), numberOfSeconds, SECONDS));
-        jobs.put(id, job);
+        FutureSchedule futureSchedule = new FutureSchedule(service().scheduleAtFixedRate(function(command), between(now, start.getOrElse(now)), numberOfSeconds, SECONDS));
+        schedule.put(id, futureSchedule);
     }
 
     synchronized private ScheduledExecutorService service() {
@@ -41,17 +41,17 @@ public class FixedScheduler implements Scheduler, Closeable, Service {
     }
 
     public void cancel(UUID id) {
-        Cancellable job = jobs.remove(id);
-        if (job != null) {
-            job.cancel();
+        Cancellable schedule = this.schedule.remove(id);
+        if (schedule != null) {
+            schedule.cancel();
         }
     }
 
     @Override
     public void close() throws IOException {
         try {
-            while (!jobs.keySet().isEmpty()) {
-                cancel(sequence(jobs.keySet()).first());
+            while (!schedule.keySet().isEmpty()) {
+                cancel(sequence(schedule.keySet()).first());
             }
         } catch (Exception ignore) {
         }

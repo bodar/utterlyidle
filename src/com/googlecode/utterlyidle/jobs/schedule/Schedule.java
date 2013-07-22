@@ -12,8 +12,8 @@ import static com.googlecode.lazyrecords.Keyword.constructors.keyword;
 import static com.googlecode.lazyrecords.Record.constructors.record;
 import static com.googlecode.utterlyidle.jobs.schedule.NextTime.nextTime;
 
-public class Job {
-    public static final Keyword<UUID> JOB_ID = keyword("jobs_id", UUID.class);
+public class Schedule {
+    public static final Keyword<UUID> SCHEDULE_ID = keyword("schedule_id", UUID.class);
     public static final Keyword<String> REQUEST = keyword("request", String.class);
     public static final Keyword<String> RESPONSE = keyword("response", String.class);
     public static final Keyword<String> START = keyword("start", String.class);
@@ -25,35 +25,35 @@ public class Job {
 
     private final Record record;
 
-    private Job(Record record) {
+    private Schedule(Record record) {
         this.record = record;
     }
 
-    public static Job job(UUID id) {
-        return new Job(record().set(JOB_ID, id));
+    public static Schedule schedule(UUID id) {
+        return new Schedule(record().set(SCHEDULE_ID, id));
     }
 
-    public Job interval(Long interval) {
+    public Schedule interval(Long interval) {
         return set(INTERVAL, interval);
     }
 
-    public Job request(String request) {
+    public Schedule request(String request) {
         return set(REQUEST, request);
     }
 
-    public Job response(String response) {
+    public Schedule response(String response) {
         return set(RESPONSE, response);
     }
 
-    public Job started(Date started) {
+    public Schedule started(Date started) {
         return set(STARTED, started);
     }
 
-    public Job completed(Date completed) {
+    public Schedule completed(Date completed) {
         return set(COMPLETED, completed);
     }
 
-    public Job start(String start) {
+    public Schedule start(String start) {
         return set(START, start);
     }
 
@@ -61,11 +61,11 @@ public class Job {
         return nextTime(time, clock).value();
     }
 
-    public Job running(boolean running) {
+    public Schedule running(boolean running) {
         return set(RUNNING, running);
     }
 
-    public Job duration(Long duration) {
+    public Schedule duration(Long duration) {
         return set(DURATION, duration);
     }
 
@@ -77,15 +77,15 @@ public class Job {
         return record.get(keyword);
     }
 
-    public static Callable1<Record, UUID> asJobId() {
+    public static Callable1<Record, UUID> asScheduleId() {
         return new Callable1<Record, UUID>() {
             public UUID call(Record record) throws Exception {
-                return record.get(JOB_ID);
+                return record.get(SCHEDULE_ID);
             }
         };
     }
 
-    private <T> Job set(Keyword<T> keyword, T value) {
-        return new Job(record.set(keyword, value));
+    private <T> Schedule set(Keyword<T> keyword, T value) {
+        return new Schedule(record.set(keyword, value));
     }
 }
