@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.schedule;
+package com.googlecode.utterlyidle.jobs.schedule;
 
 import com.googlecode.totallylazy.time.FixedClock;
 import org.junit.Test;

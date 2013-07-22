@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.schedule;
+package com.googlecode.utterlyidle.jobs.schedule;
 
 import com.googlecode.lazyrecords.Keyword;
 import com.googlecode.lazyrecords.Record;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static com.googlecode.lazyrecords.Keyword.constructors.keyword;
 import static com.googlecode.lazyrecords.Record.constructors.record;
-import static com.googlecode.utterlyidle.schedule.NextTime.nextTime;
+import static com.googlecode.utterlyidle.jobs.schedule.NextTime.nextTime;
 
 public class Job {
     public static final Keyword<UUID> JOB_ID = keyword("jobs_id", UUID.class);
