@@ -27,7 +27,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
 import com.googlecode.utterlyidle.jobs.schedule.ScheduleResource;
 
-@Path("queues")
+@Path("jobs")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 public class JobsResource {
     private final Jobs jobs;
@@ -45,6 +45,22 @@ public class JobsResource {
         return model().
                 add("anyExists", !items.isEmpty()).
                 add("items", items);
+    }
+
+    @POST
+    @Path("run")
+    @Produces(TEXT_PLAIN)
+    public Response run(Request request, @PathParam("$") String endOfUrl) throws Exception {
+        Request requestToQueue = modify(request).uri(request.uri().path(endOfUrl)).build();
+        jobs.run(requestToQueue);
+        return ResponseBuilder.response(Status.ACCEPTED.description("Queued HttpJob")).entity("You HttpJob has been accepted").build();
+    }
+
+    @POST
+    @Path("deleteAll")
+    public Response deleteAll() throws Exception {
+        jobs.deleteAll();
+        return redirector.seeOther(method(on(JobsResource.class).list()));
     }
 
     private List<Model> items() {
@@ -81,21 +97,5 @@ public class JobsResource {
                         add("response", ScheduleResource.asModel(completedJob.response));
             }
         };
-    }
-
-    @POST
-    @Path("queue")
-    @Produces(TEXT_PLAIN)
-    public Response run(Request request, @PathParam("$") String endOfUrl) throws Exception {
-        Request requestToQueue = modify(request).uri(request.uri().path(endOfUrl)).build();
-        jobs.run(requestToQueue);
-        return ResponseBuilder.response(Status.ACCEPTED.description("Queued HttpJob")).entity("You HttpJob has been accepted").build();
-    }
-
-    @POST
-    @Path("deleteAll")
-    public Response deleteAll() throws Exception {
-        jobs.deleteAll();
-        return redirector.seeOther(method(on(JobsResource.class).list()));
     }
 }
