@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.schedule;
+package com.googlecode.utterlyidle.jobs.schedule;
 
 import com.googlecode.lazyrecords.Record;
 import com.googlecode.totallylazy.Block;
@@ -25,10 +25,10 @@ import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Strings.isEmpty;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
-import static com.googlecode.utterlyidle.schedule.Job.INTERVAL;
-import static com.googlecode.utterlyidle.schedule.Job.JOB_ID;
-import static com.googlecode.utterlyidle.schedule.Job.REQUEST;
-import static com.googlecode.utterlyidle.schedule.Job.START;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.INTERVAL;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.JOB_ID;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.REQUEST;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.START;
 
 public class HttpScheduler implements Service {
     private final Jobs jobs;

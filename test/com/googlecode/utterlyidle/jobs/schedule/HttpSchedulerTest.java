@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.schedule;
+package com.googlecode.utterlyidle.jobs.schedule;
 
 import com.googlecode.lazyrecords.memory.MemoryRecords;
 import com.googlecode.totallylazy.Option;
@@ -13,7 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.matchers.NumberMatcher.is;
-import static com.googlecode.utterlyidle.schedule.Job.INTERVAL;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.INTERVAL;
 import static org.junit.Assert.assertThat;
 
 public class HttpSchedulerTest {
