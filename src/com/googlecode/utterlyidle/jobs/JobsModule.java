@@ -9,20 +9,14 @@ import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 
-public class QueuesModule implements ResourcesModule, ApplicationScopedModule, RequestScopedModule {
+public class JobsModule implements ResourcesModule, ApplicationScopedModule {
     public Resources addResources(Resources resources) throws Exception {
-        return resources.add(annotatedClass(QueuesResource.class));
+        return resources.add(annotatedClass(JobsResource.class));
     }
 
     public Container addPerApplicationObjects(Container container) throws Exception {
         return container.
-                add(Queues.class, RequestQueues.class).
+                add(Jobs.class, RequestJobs.class).
                 add(Completer.class, CpuBoundedCompleter.class);
-    }
-
-    @Override
-    public Container addPerRequestObjects(final Container container) throws Exception {
-        return container.
-                add(Schedules.class);
     }
 }

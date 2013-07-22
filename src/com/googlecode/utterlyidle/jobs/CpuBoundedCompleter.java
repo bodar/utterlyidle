@@ -1,7 +1,5 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.concurrent.NamedExecutors;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -9,13 +7,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 import static com.googlecode.totallylazy.Functions.function;
+import static com.googlecode.totallylazy.concurrent.NamedExecutors.newCpuThreadPool;
 
 public class CpuBoundedCompleter implements Completer, Closeable {
     private volatile ExecutorService executor;
 
     @Override
-    public void complete(Callable<?> task) {
-        executors().execute(function(task));
+    public void complete(Callable<?> job) {
+        executors().execute(function(job));
     }
 
     private synchronized Executor executors() {
@@ -37,7 +36,7 @@ public class CpuBoundedCompleter implements Completer, Closeable {
     }
 
     public synchronized void start() {
-        if (executor == null) executor = NamedExecutors.newCpuThreadPool(CpuBoundedCompleter.class);
+        if (executor == null) executor = newCpuThreadPool(CpuBoundedCompleter.class);
     }
 
     @Override

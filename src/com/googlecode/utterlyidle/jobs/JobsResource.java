@@ -29,12 +29,12 @@ import com.googlecode.utterlyidle.jobs.schedule.ScheduleResource;
 
 @Path("queues")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
-public class QueuesResource {
-    private final Queues queues;
+public class JobsResource {
+    private final Jobs jobs;
     private final Redirector redirector;
 
-    public QueuesResource(Queues queues, Redirector redirector) {
-        this.queues = queues;
+    public JobsResource(Jobs jobs, Redirector redirector) {
+        this.jobs = jobs;
         this.redirector = redirector;
     }
 
@@ -48,8 +48,8 @@ public class QueuesResource {
     }
 
     private List<Model> items() {
-        return queues.running().sortBy(descending(started())).map(asRunningModel()).
-                join(queues.completed().sortBy(descending(completed())).map(asCompletedModel())).
+        return jobs.running().sortBy(descending(started())).map(asRunningModel()).
+                join(jobs.completed().sortBy(descending(completed())).map(asCompletedModel())).
                 toList();
     }
 
@@ -86,16 +86,16 @@ public class QueuesResource {
     @POST
     @Path("queue")
     @Produces(TEXT_PLAIN)
-    public Response queue(Request request, @PathParam("$") String endOfUrl) throws Exception {
+    public Response run(Request request, @PathParam("$") String endOfUrl) throws Exception {
         Request requestToQueue = modify(request).uri(request.uri().path(endOfUrl)).build();
-        queues.queue(requestToQueue);
-        return ResponseBuilder.response(Status.ACCEPTED.description("Queued HttpJob")).entity("You HttpJob has been accepted and is now in the queue").build();
+        jobs.run(requestToQueue);
+        return ResponseBuilder.response(Status.ACCEPTED.description("Queued HttpJob")).entity("You HttpJob has been accepted").build();
     }
 
     @POST
     @Path("deleteAll")
     public Response deleteAll() throws Exception {
-        queues.deleteAll();
-        return redirector.seeOther(method(on(QueuesResource.class).list()));
+        jobs.deleteAll();
+        return redirector.seeOther(method(on(JobsResource.class).list()));
     }
 }
