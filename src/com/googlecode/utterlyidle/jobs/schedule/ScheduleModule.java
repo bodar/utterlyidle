@@ -10,17 +10,16 @@ import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 
-public class JobsModule implements ResourcesModule, ApplicationScopedModule, RequestScopedModule, ServicesModule {
+public class ScheduleModule implements ResourcesModule, ApplicationScopedModule, RequestScopedModule, ServicesModule {
     public Resources addResources(Resources resources) throws Exception {
         return resources.
-                add(annotatedClass(JobsResource.class)).
-                add(annotatedClass(BatchJobsResource.class));
+                add(annotatedClass(ScheduleResource.class)).
+                add(annotatedClass(BatchScheduleResource.class));
     }
 
     public Container addPerRequestObjects(Container container) throws Exception {
         return container.
-                add(HttpScheduler.class).
-                add(Jobs.class);
+                add(HttpScheduler.class);
     }
 
     public Container addPerApplicationObjects(Container container) throws Exception {

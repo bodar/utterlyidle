@@ -14,19 +14,19 @@ import java.util.UUID;
 
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.jobs.schedule.Job.asJobId;
+import static com.googlecode.utterlyidle.jobs.schedule.Schedule.asScheduleId;
 
 @Path("jobs")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
-public class BatchJobsResource {
+public class BatchScheduleResource {
     private InvocationHandler invocationHandler;
-    private Jobs jobs;
+    private Schedules schedules;
     private HttpScheduler scheduler;
     private Redirector redirector;
 
-    public BatchJobsResource(final InvocationHandler invocationHandler, final Jobs jobs, final HttpScheduler scheduler, final Redirector redirector) {
+    public BatchScheduleResource(final InvocationHandler invocationHandler, final Schedules schedules, final HttpScheduler scheduler, final Redirector redirector) {
         this.invocationHandler = invocationHandler;
-        this.jobs = jobs;
+        this.schedules = schedules;
         this.scheduler = scheduler;
         this.redirector = redirector;
     }
@@ -35,14 +35,14 @@ public class BatchJobsResource {
     @Path("start")
     public Response start() {
         scheduler.start();
-        return redirector.seeOther(method(on(JobsResource.class).list()));
+        return redirector.seeOther(method(on(ScheduleResource.class).list()));
     }
 
     @POST
     @Path("stop")
     public Response stop() {
         scheduler.stop();
-        return redirector.seeOther(method(on(JobsResource.class).list()));
+        return redirector.seeOther(method(on(ScheduleResource.class).list()));
     }
 
     @POST
@@ -55,12 +55,12 @@ public class BatchJobsResource {
     public Callable1<UUID, Response> delete() {
         return new Callable1<UUID, Response>() {
             public Response call(UUID uuid) throws Exception {
-                return invocationHandler.handle(method(on(JobsResource.class).delete(uuid)));
+                return invocationHandler.handle(method(on(ScheduleResource.class).delete(uuid)));
             }
         };
     }
 
     private Sequence<UUID> ids() {
-        return jobs.jobs().map(asJobId());
+        return schedules.schedules().map(asScheduleId());
     }
 }
