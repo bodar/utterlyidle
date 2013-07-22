@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.plugin.tagsoup;
+package com.googlecode.utterlyidle.tagsoup;
 
 import com.googlecode.totallylazy.Xml;
 import org.junit.Test;
