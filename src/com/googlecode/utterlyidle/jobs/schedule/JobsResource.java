@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.schedule;
+package com.googlecode.utterlyidle.jobs.schedule;
 
 import com.googlecode.funclate.Model;
 import com.googlecode.lazyrecords.Record;
@@ -27,16 +27,16 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
-import static com.googlecode.utterlyidle.schedule.Job.COMPLETED;
-import static com.googlecode.utterlyidle.schedule.Job.DURATION;
-import static com.googlecode.utterlyidle.schedule.Job.INTERVAL;
-import static com.googlecode.utterlyidle.schedule.Job.JOB_ID;
-import static com.googlecode.utterlyidle.schedule.Job.REQUEST;
-import static com.googlecode.utterlyidle.schedule.Job.RESPONSE;
-import static com.googlecode.utterlyidle.schedule.Job.RUNNING;
-import static com.googlecode.utterlyidle.schedule.Job.START;
-import static com.googlecode.utterlyidle.schedule.Job.STARTED;
-import static com.googlecode.utterlyidle.schedule.Job.job;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.COMPLETED;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.DURATION;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.INTERVAL;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.JOB_ID;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.REQUEST;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.RESPONSE;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.RUNNING;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.START;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.STARTED;
+import static com.googlecode.utterlyidle.jobs.schedule.Job.job;
 
 @Path("jobs")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
