@@ -37,7 +37,7 @@ import static com.googlecode.utterlyidle.jobs.schedule.Schedule.RUNNING;
 import static com.googlecode.utterlyidle.jobs.schedule.Schedule.START;
 import static com.googlecode.utterlyidle.jobs.schedule.Schedule.STARTED;
 
-@Path("jobs")
+@Path("schedules")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 public class ScheduleResource {
     private final HttpScheduler scheduler;
