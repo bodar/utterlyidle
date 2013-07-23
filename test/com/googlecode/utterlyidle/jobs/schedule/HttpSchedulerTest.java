@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.StoppedClock;
 import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class HttpSchedulerTest {
     private String request = RequestBuilder.get("/test").build().toString();
     private Schedule schedule = Schedule.schedule(UUID.randomUUID()).interval(10L).request(request);
     private final StubScheduler stub = new StubScheduler();
-    private final HttpScheduler httpScheduler = new HttpScheduler(new Schedules(new MemoryRecords()), stub, null, new StoppedClock(Dates.date(2001, 1, 1)));
+    private final HttpScheduler httpScheduler = new HttpScheduler(new Schedules(new UtterlyIdleRecords(new MemoryRecords())), stub, null, new StoppedClock(Dates.date(2001, 1, 1)));
 
     @Test
     public void scheduleRequest() throws Exception {
