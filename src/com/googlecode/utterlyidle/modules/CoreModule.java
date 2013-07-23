@@ -43,6 +43,8 @@ import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 import com.googlecode.utterlyidle.handlers.HttpClient;
 import com.googlecode.utterlyidle.handlers.IdentityHandler;
 import com.googlecode.utterlyidle.handlers.InternalHttpHandler;
+import com.googlecode.utterlyidle.handlers.InternalInvocationHandler;
+import com.googlecode.utterlyidle.handlers.InvocationHandler;
 import com.googlecode.utterlyidle.handlers.NoContentHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
@@ -102,7 +104,8 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 addActivator(Auditor.class, container.getActivator(Auditors.class)).
                 add(HttpClient.class, ClientHttpHandler.class).
                 add(InternalHttpHandler.class).
-                decorate(HttpClient.class, SmartHttpClient.class);
+                decorate(HttpClient.class, SmartHttpClient.class).
+                add(InvocationHandler.class, InternalInvocationHandler.class);
     }
 
     @Override
