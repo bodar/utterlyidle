@@ -27,15 +27,6 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.COMPLETED;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.DURATION;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.INTERVAL;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.SCHEDULE_ID;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.REQUEST;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.RESPONSE;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.RUNNING;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.START;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.STARTED;
 
 @Path("schedules")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
@@ -81,7 +72,7 @@ public class ScheduleResource {
     @Path("edit")
     public Model edit(@QueryParam("id") UUID id) {
         Record schedule = scheduler.schedule(id).get();
-        return model().add("id", id.toString()).add("seconds", schedule.get(INTERVAL)).add("start", schedule.get(START));
+        return model().add("id", id.toString()).add("seconds", schedule.get(SchedulesDefinition.interval)).add("start", schedule.get(SchedulesDefinition.start));
     }
 
     @POST
@@ -110,21 +101,21 @@ public class ScheduleResource {
         return new Callable1<Record, Model>() {
             public Model call(Record record) throws Exception {
                 return model().
-                        add("id", record.get(SCHEDULE_ID)).
-                        add("status", Boolean.TRUE.equals(record.get(RUNNING)) ? "running" : "idle").
-                        add("start", record.get(START)).
-                        add("seconds", record.get(INTERVAL)).
+                        add("id", record.get(SchedulesDefinition.scheduleId)).
+                        add("status", Boolean.TRUE.equals(record.get(SchedulesDefinition.running)) ? "running" : "idle").
+                        add("start", record.get(SchedulesDefinition.start)).
+                        add("seconds", record.get(SchedulesDefinition.interval)).
                         add("request", addRequest(record)).
                         add("response", addResponse(record)).
-                        add("started", record.get(STARTED)).
-                        add("completed", record.get(COMPLETED)).
-                        add("duration", record.get(DURATION));
+                        add("started", record.get(SchedulesDefinition.started)).
+                        add("completed", record.get(SchedulesDefinition.completed)).
+                        add("duration", record.get(SchedulesDefinition.duration));
             }
         };
     }
 
     public static Model addRequest(Record record) {
-        String requestMessage = record.get(REQUEST);
+        String requestMessage = record.get(SchedulesDefinition.request);
         if (requestMessage == null) {
             return null;
         }
@@ -141,7 +132,7 @@ public class ScheduleResource {
     }
 
     public static Model addResponse(Record record) {
-        String responseMessage = record.get(RESPONSE);
+        String responseMessage = record.get(SchedulesDefinition.response);
         if (responseMessage == null) {
             return null;
         }

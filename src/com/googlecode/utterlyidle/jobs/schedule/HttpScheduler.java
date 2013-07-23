@@ -25,10 +25,6 @@ import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Strings.isEmpty;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.INTERVAL;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.SCHEDULE_ID;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.REQUEST;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.START;
 
 public class HttpScheduler implements Service {
     private final Schedules schedules;
@@ -46,7 +42,7 @@ public class HttpScheduler implements Service {
     public UUID schedule(Schedule schedule) {
         schedules.put(schedule);
 
-        UUID id = schedule.get(SCHEDULE_ID);
+        UUID id = schedule.get(SchedulesDefinition.scheduleId);
         schedule(schedule(id).get());
         return id;
     }
@@ -72,7 +68,7 @@ public class HttpScheduler implements Service {
     }
 
     public Option<Record> schedule(UUID id) {
-        return schedules().find(where(SCHEDULE_ID, is(id)));
+        return schedules().find(where(SchedulesDefinition.scheduleId, is(id)));
     }
 
     private Callable<Void> httpTask(final UUID id, final Application application, final Request request) {
@@ -111,7 +107,7 @@ public class HttpScheduler implements Service {
         return new Block<Record>() {
             @Override
             protected void execute(Record record) throws Exception {
-                scheduler.cancel(record.get(SCHEDULE_ID));
+                scheduler.cancel(record.get(SchedulesDefinition.scheduleId));
             }
         };
     }
@@ -126,8 +122,8 @@ public class HttpScheduler implements Service {
     }
 
     private void schedule(Record record) {
-        Option<String> start = option(isEmpty(record.get(START)) ? null : record.get(START));
-        scheduler.schedule(record.get(SCHEDULE_ID), httpTask(record.get(SCHEDULE_ID), application, parseRequest(record.get(REQUEST))), start.map(toStart()), record.get(INTERVAL));
+        Option<String> start = option(isEmpty(record.get(SchedulesDefinition.start)) ? null : record.get(SchedulesDefinition.start));
+        scheduler.schedule(record.get(SchedulesDefinition.scheduleId), httpTask(record.get(SchedulesDefinition.scheduleId), application, parseRequest(record.get(SchedulesDefinition.request))), start.map(toStart()), record.get(SchedulesDefinition.interval));
     }
 
     private Function1<String, Date> toStart() {
