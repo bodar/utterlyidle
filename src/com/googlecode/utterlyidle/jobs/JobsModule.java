@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
+import static com.googlecode.yadic.Containers.addIfAbsent;
 
 public class JobsModule implements ResourcesModule, ApplicationScopedModule, RequestScopedModule {
     public Resources addResources(Resources resources) throws Exception {
@@ -21,6 +22,6 @@ public class JobsModule implements ResourcesModule, ApplicationScopedModule, Req
 
     @Override
     public Container addPerRequestObjects(final Container container) throws Exception {
-        return container.add(UtterlyIdleRecords.class);
+        return addIfAbsent(container, UtterlyIdleRecords.class);
     }
 }
