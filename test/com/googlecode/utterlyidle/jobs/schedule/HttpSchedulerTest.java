@@ -14,7 +14,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.matchers.NumberMatcher.is;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.INTERVAL;
 import static org.junit.Assert.assertThat;
 
 public class HttpSchedulerTest {
@@ -28,7 +27,7 @@ public class HttpSchedulerTest {
         UUID id = httpScheduler.schedule(schedule);
 
         assertThat(httpScheduler.schedules().size(), is(1));
-        assertThat(httpScheduler.schedule(id).get().get(INTERVAL), CoreMatchers.is(10L));
+        assertThat(httpScheduler.schedule(id).get().get(SchedulesDefinition.interval), CoreMatchers.is(10L));
         assertThat(stub.delay, CoreMatchers.is(10L));
     }
 
@@ -40,7 +39,7 @@ public class HttpSchedulerTest {
         httpScheduler.schedule(schedule.interval(20L));
 
         assertThat(httpScheduler.schedules().size(), is(1));
-        assertThat(httpScheduler.schedule(id).get().get(INTERVAL), CoreMatchers.is(20L));
+        assertThat(httpScheduler.schedule(id).get().get(SchedulesDefinition.interval), CoreMatchers.is(20L));
         assertThat(stub.delay, CoreMatchers.is(20L));
     }
 
