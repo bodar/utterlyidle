@@ -4,9 +4,11 @@ import com.googlecode.lazyrecords.Definition;
 import com.googlecode.lazyrecords.Record;
 import com.googlecode.lazyrecords.Records;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
 
 import java.util.UUID;
 
+import static com.googlecode.lazyrecords.Definition.constructors.definition;
 import static com.googlecode.lazyrecords.Using.using;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
@@ -15,10 +17,10 @@ import static com.googlecode.totallylazy.Strings.empty;
 
 public class Schedules {
     private final Records records;
-    private static final Definition SCHEDULES = Definition.constructors.definition("schedule", Schedule.SCHEDULE_ID, Schedule.REQUEST, Schedule.RESPONSE, Schedule.START, Schedule.INTERVAL, Schedule.DURATION, Schedule.STARTED, Schedule.COMPLETED, Schedule.RUNNING);
+    private static final Definition SCHEDULES = definition("schedule", Schedule.SCHEDULE_ID, Schedule.REQUEST, Schedule.RESPONSE, Schedule.START, Schedule.INTERVAL, Schedule.DURATION, Schedule.STARTED, Schedule.COMPLETED, Schedule.RUNNING);
 
-    public Schedules(final Records records) {
-        this.records = records;
+    public Schedules(final UtterlyIdleRecords records) {
+        this.records = records.value();
     }
 
     public void put(Schedule schedule) {
