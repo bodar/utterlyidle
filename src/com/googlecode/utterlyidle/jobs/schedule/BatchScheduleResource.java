@@ -16,7 +16,7 @@ import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.jobs.schedule.Schedule.asScheduleId;
 
-@Path("jobs")
+@Path("schedules")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 public class BatchScheduleResource {
     private InvocationHandler invocationHandler;
