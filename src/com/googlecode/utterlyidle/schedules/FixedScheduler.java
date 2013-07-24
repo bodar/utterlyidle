@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.jobs.schedule;
+package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.concurrent.NamedExecutors;

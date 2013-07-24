@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.jobs.schedule;
+package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.totallylazy.Value;
 import com.googlecode.totallylazy.time.Clock;

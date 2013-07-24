@@ -25,7 +25,7 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
-import com.googlecode.utterlyidle.jobs.schedule.ScheduleResource;
+import com.googlecode.utterlyidle.schedules.ScheduleResource;
 
 @Path("jobs")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})

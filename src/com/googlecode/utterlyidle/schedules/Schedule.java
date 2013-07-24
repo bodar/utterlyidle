@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.jobs.schedule;
+package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Keyword;
 import com.googlecode.lazyrecords.Record;
@@ -9,8 +9,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import static com.googlecode.lazyrecords.Record.constructors.record;
-import static com.googlecode.utterlyidle.jobs.schedule.NextTime.nextTime;
-import static com.googlecode.utterlyidle.jobs.schedule.SchedulesDefinition.scheduleId;
+import static com.googlecode.utterlyidle.schedules.NextTime.nextTime;
+import static com.googlecode.utterlyidle.schedules.SchedulesDefinition.scheduleId;
 
 public class Schedule {
     private final Record record;
