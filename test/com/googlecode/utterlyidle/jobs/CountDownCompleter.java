@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle.jobs;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
-import static com.googlecode.utterlyidle.jobs.schedule.CountDownScheduler.decorate;
+import static com.googlecode.utterlyidle.schedules.CountDownScheduler.decorate;
 
 public class CountDownCompleter implements Completer {
     private final Completer delegate;

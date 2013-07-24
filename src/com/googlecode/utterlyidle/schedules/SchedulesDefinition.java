@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.jobs.schedule;
+package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Definition;
 import com.googlecode.lazyrecords.Keyword;

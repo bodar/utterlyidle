@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.jobs.schedule;
+package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.jobs.schedule.Schedule.asScheduleId;
+import static com.googlecode.utterlyidle.schedules.Schedule.asScheduleId;
 
 @Path("schedules")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
