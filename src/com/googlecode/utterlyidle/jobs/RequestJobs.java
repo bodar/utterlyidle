@@ -21,12 +21,13 @@ import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 
 public class RequestJobs implements Jobs {
     private final List<RunningJob> running = new CopyOnWriteArrayList<RunningJob>();
-    private final LinkedBlockingQueue<CompletedJob> completed = new CappedLinkedBlockingQueue<CompletedJob>(20);
+    private final LinkedBlockingQueue<CompletedJob> completed;
     private final Application application;
     private final Clock clock;
     private final Completer completer;
 
-    public RequestJobs(Application application, Clock clock, Completer completer) {
+    public RequestJobs(Application application, Clock clock, Completer completer, JobsHistoryCapacity capacity) {
+        this.completed = new CappedLinkedBlockingQueue<CompletedJob>(capacity.value());
         this.application = application;
         this.clock = clock;
         this.completer = completer;

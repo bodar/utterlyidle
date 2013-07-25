@@ -8,6 +8,7 @@ import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static com.googlecode.funclate.Model.persistent.parse;
 import static com.googlecode.totallylazy.Strings.string;
@@ -32,7 +33,7 @@ public class JobsResourceTest extends ApplicationTests {
         assertThat(numberOfCompletedJobs(), is(0));
 
         assertThat(run(post("some/url").build()).status(), is(ACCEPTED));
-        latch.await();
+        latch.await(1, TimeUnit.SECONDS);
 
         assertThat(numberOfCompletedJobs(), is(1));
     }
@@ -40,11 +41,12 @@ public class JobsResourceTest extends ApplicationTests {
     @Test
     public void canDeleteAllRunningJobs() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        application.applicationScope().addInstance(CountDownLatch.class, latch).
+        application.applicationScope().
+                addInstance(CountDownLatch.class, latch).
                 decorate(Completer.class, CountDownCompleter.class);
 
         run(post("some/url").build());
-        latch.await();
+        latch.await(1, TimeUnit.SECONDS);
         assertThat(numberOfCompletedJobs(), is(1));
 
         deleteAll();
