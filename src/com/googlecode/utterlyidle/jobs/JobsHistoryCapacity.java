@@ -11,8 +11,12 @@ public class JobsHistoryCapacity implements Value<Integer> {
     public static final int DEFAULT = 20;
     private final int value;
 
+    public JobsHistoryCapacity(int capacity) {
+        this.value = capacity;
+    }
+
     public JobsHistoryCapacity(UtterlyIdleProperties properties) {
-        this.value = parseInt(properties.getProperty(PROPERTY_NAME, valueOf(DEFAULT)));
+        this(parseInt(properties.getProperty(PROPERTY_NAME, valueOf(DEFAULT))));
     }
 
     @Override
