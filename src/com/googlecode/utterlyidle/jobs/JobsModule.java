@@ -16,10 +16,9 @@ public class JobsModule implements ResourcesModule, ApplicationScopedModule, Req
 
     @Override
     public Container addPerApplicationObjects(Container container) throws Exception {
-        return container.
+        return addIfAbsent(container, JobsHistoryCapacity.class).
                 add(Jobs.class, RequestJobs.class).
-                add(Completer.class, CpuBoundedCompleter.class).
-                add(JobsHistoryCapacity.class);
+                add(Completer.class, CpuBoundedCompleter.class);
     }
 
     @Override
