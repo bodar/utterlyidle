@@ -14,10 +14,12 @@ public class JobsModule implements ResourcesModule, ApplicationScopedModule, Req
         return resources.add(annotatedClass(JobsResource.class));
     }
 
+    @Override
     public Container addPerApplicationObjects(Container container) throws Exception {
         return container.
                 add(Jobs.class, RequestJobs.class).
-                add(Completer.class, CpuBoundedCompleter.class);
+                add(Completer.class, CpuBoundedCompleter.class).
+                add(JobsHistoryCapacity.class);
     }
 
     @Override
