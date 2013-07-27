@@ -23,6 +23,7 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
     private Map<String, String> extensionToMimeType = new HashMap<String, String>() {{
         put("png", MediaType.IMAGE_PNG);
         put("gif", MediaType.IMAGE_GIF);
+        put("jpg", MediaType.IMAGE_JPEG);
         put("jpeg", MediaType.IMAGE_JPEG);
         put("ico", MediaType.IMAGE_X_ICON);
         put("svg", MediaType.IMAGE_SVG);
