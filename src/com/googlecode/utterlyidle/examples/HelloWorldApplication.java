@@ -7,9 +7,11 @@ import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.StreamingWriter;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
+import com.googlecode.utterlyidle.jobs.JobsModule;
 import com.googlecode.utterlyidle.modules.PerformanceModule;
 import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.utterlyidle.profiling.ProfilingModule;
+import com.googlecode.utterlyidle.schedules.ScheduleModule;
 
 import java.io.IOException;
 import java.io.Writer;
