@@ -19,6 +19,7 @@ import com.googlecode.yadic.Container;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Predicates.is;
@@ -31,6 +32,7 @@ public class HttpScheduler implements Service {
     private final Scheduler scheduler;
     private final Application application;
     private final Clock clock;
+    private final AtomicBoolean running = new AtomicBoolean(false);
 
     public HttpScheduler(final Schedules schedules, final Scheduler scheduler, final Application application, final Clock clock) {
         this.schedules = schedules;
@@ -43,18 +45,26 @@ public class HttpScheduler implements Service {
         schedules.put(schedule);
 
         UUID id = schedule.get(SchedulesDefinition.scheduleId);
-        schedule(schedule(id).get());
+        if (running.get()) schedule(schedule(id).get());
         return id;
     }
 
     public void start() {
-        schedules().each(schedule());
+        synchronized (this) {
+            if (!running.get()) {
+                running.getAndSet(true);
+                schedules().each(schedule());
+            }
+        }
     }
 
     public void stop() {
-        try {
-            schedules().each(cancel());
-        } catch (Exception ignored) {
+        synchronized (this) {
+            try {
+                schedules().each(cancel());
+            } catch (Exception ignored) {
+            }
+            running.getAndSet(false);
         }
     }
 
