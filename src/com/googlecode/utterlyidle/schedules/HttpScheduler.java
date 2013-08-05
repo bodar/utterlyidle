@@ -28,13 +28,14 @@ import static com.googlecode.totallylazy.Strings.isEmpty;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 
 public class HttpScheduler implements Service {
+    private final SchedulerState schedulerState;
     private final Schedules schedules;
     private final Scheduler scheduler;
     private final Application application;
     private final Clock clock;
-    private final AtomicBoolean running = new AtomicBoolean(false);
 
-    public HttpScheduler(final Schedules schedules, final Scheduler scheduler, final Application application, final Clock clock) {
+    public HttpScheduler(final SchedulerState schedulerState, final Schedules schedules, final Scheduler scheduler, final Application application, final Clock clock) {
+        this.schedulerState = schedulerState;
         this.schedules = schedules;
         this.scheduler = scheduler;
         this.application = application;
@@ -45,26 +46,26 @@ public class HttpScheduler implements Service {
         schedules.put(schedule);
 
         UUID id = schedule.get(SchedulesDefinition.scheduleId);
-        if (running.get()) schedule(schedule(id).get());
+        if (schedulerState.isRunning()) schedule(schedule(id).get());
         return id;
     }
 
     public void start() {
-        synchronized (this) {
-            if (!running.get()) {
-                running.getAndSet(true);
+        synchronized (schedulerState) {
+            if (!schedulerState.isRunning()) {
+                schedulerState.setRunning(true);
                 schedules().each(schedule());
             }
         }
     }
 
     public void stop() {
-        synchronized (this) {
+        synchronized (schedulerState) {
             try {
                 schedules().each(cancel());
             } catch (Exception ignored) {
             }
-            running.getAndSet(false);
+            schedulerState.setRunning(false);
         }
     }
 
