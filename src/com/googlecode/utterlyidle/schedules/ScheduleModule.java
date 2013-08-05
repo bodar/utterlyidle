@@ -26,6 +26,7 @@ public class ScheduleModule implements ResourcesModule, ApplicationScopedModule,
     public Container addPerApplicationObjects(Container container) throws Exception {
         return container.
                 add(FixedScheduler.class).
+                add(SchedulerState.class).
                 addActivator(Scheduler.class, container.getActivator(FixedScheduler.class));
     }
 
