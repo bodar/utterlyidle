@@ -86,7 +86,10 @@ public class ScheduleResource {
     @Path("list")
     public Model list() {
         List<Model> models = schedulesModel(scheduler.schedules());
-        return model().add("schedules", models).add("anyExists", !models.isEmpty());
+        return model().
+                add("schedules", models).
+                add("anyExists", !models.isEmpty()).
+                add("schedulerIsRunning", scheduler.isRunning());
     }
 
     private Response redirectToList() {
