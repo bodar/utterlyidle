@@ -50,6 +50,10 @@ public class HttpScheduler implements Service {
         return id;
     }
 
+    public boolean isRunning() {
+        return schedulerState.isRunning();
+    }
+
     public void start() {
         synchronized (schedulerState) {
             if (!schedulerState.isRunning()) {
