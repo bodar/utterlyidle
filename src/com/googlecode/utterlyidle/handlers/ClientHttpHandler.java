@@ -72,8 +72,8 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     public Response handle(final Request request) throws Exception {
         URL url = new URL(request.uri().toString());
         URLConnection connection = url.openConnection();
-        connection.setConnectTimeout(connectTimeoutMillis);
         connection.setUseCaches(false);
+        connection.setConnectTimeout(connectTimeoutMillis);
         connection.setReadTimeout(readTimeoutMillis);
         if (connection instanceof HttpURLConnection) {
             return handle(request, (HttpURLConnection) connection);
