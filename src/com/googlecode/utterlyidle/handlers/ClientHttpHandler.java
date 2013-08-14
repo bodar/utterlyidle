@@ -105,7 +105,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         if (request.method().equals(HttpMethod.PUT)) {
             File file = uri(connection.getURL()).toFile();
             Files.write(request.entity().asBytes(), file);
-            file.setLastModified(Dates.parse(request.headers().getValue(LAST_MODIFIED)).getTime());
+            for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
             return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, connection.getURL()).build();
         }
         return defaultHandle(request, connection);
