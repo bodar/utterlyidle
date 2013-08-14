@@ -11,6 +11,7 @@ import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.annotations.ANY;
+import com.googlecode.utterlyidle.annotations.DELETE;
 import com.googlecode.utterlyidle.annotations.DefaultValue;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
@@ -138,6 +139,12 @@ public class HelloWorld {
     @Path("any")
     public Response any() {
         return response().header("x-custom-header", "smile").entity(hello("everyone")).build();
+    }
+
+    @DELETE
+    @Path("delete")
+    public String delete() {
+        return "The contents of your hard drive have been deleted";
     }
 
     private String hello(String name) {
