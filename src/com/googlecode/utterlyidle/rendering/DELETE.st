@@ -1,0 +1,1 @@
+<p><span class="method">DELETE</span> $resource.path$</p>
