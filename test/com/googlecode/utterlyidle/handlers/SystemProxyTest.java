@@ -23,9 +23,9 @@ public class SystemProxyTest {
 
     @AfterClass
     public static void clearProperties() {
-        System.setProperty("http.proxyHost", null);
-        System.setProperty("http.proxyPort", null);
-        System.setProperty("http.nonProxyHosts", null);
+        System.clearProperty("http.proxyHost");
+        System.clearProperty("http.proxyPort");
+        System.clearProperty("http.nonProxyHosts");
     }
 
     @Test
