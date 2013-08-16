@@ -74,6 +74,11 @@ public class RequestBuilder implements Callable<Request> {
         return header(HttpHeaders.ACCEPT, value);
     }
 
+    public RequestBuilder headers(Iterable<? extends Pair<String, ?>> newHeaders) {
+        for (Pair<String, ?> pair : newHeaders) header(pair.first(), pair.second());
+        return this;
+    }
+
     public RequestBuilder header(String name, Object value) {
         if (value == null) {
             return this;
