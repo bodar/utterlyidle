@@ -9,30 +9,33 @@ import com.googlecode.totallylazy.collections.PersistentSortedSet;
 import java.net.Proxy;
 import java.net.ProxySelector;
 
-import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
+import static com.googlecode.totallylazy.Predicates.second;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.handlers.HttpProxy.httpProxy;
 import static java.net.Proxy.Type.DIRECT;
 import static java.net.ProxySelector.getDefault;
 
-public class SystemProxy implements ProxyFor {
-    private final PersistentSet<String> allowed = PersistentSortedSet.constructors.sortedSet("http", "https");
-    private final ProxySelector system = getDefault();
+public class ProxyAdapter implements ProxyFor {
+    private final ProxySelector selector;
 
-    private SystemProxy() {}
+    private ProxyAdapter(final ProxySelector selector) {
+        this.selector = selector;
+    }
 
-    public static SystemProxy systemProxy() {
-        return new SystemProxy();
+    public static ProxyFor proxyAdapter(final ProxySelector selector) {
+        return new ProxyAdapter(selector);
+    }
+
+    public static ProxyFor systemProxy() {
+        return httpProxy(proxyAdapter(getDefault()));
     }
 
     @Override
     public Option<Proxy> proxyFor(final Uri uri) {
-        if (allowed.contains(uri.scheme().toLowerCase())) {
-            return sequence(system.select(uri.toURI())).find(where(type, is(not(DIRECT))));
-        }
-        return none();
+        return sequence(selector.select(uri.toURI())).find(where(type, is(not(DIRECT))));
     }
 
     public static Mapper<Proxy, Proxy.Type> type = new Mapper<Proxy, Proxy.Type>() {

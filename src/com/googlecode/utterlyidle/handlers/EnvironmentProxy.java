@@ -18,6 +18,7 @@ import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.Uri.functions.uri;
 import static com.googlecode.totallylazy.regex.Regex.regex;
+import static com.googlecode.utterlyidle.handlers.HttpProxy.httpProxy;
 
 public class EnvironmentProxy implements ProxyFor {
     private final Option<Proxy> http_proxy;
@@ -28,12 +29,12 @@ public class EnvironmentProxy implements ProxyFor {
         noProxy = find(env, equalIgnoringCase("no_proxy")).toSequence().flatMap(split(regex(","))).toSet();
     }
 
-    public static EnvironmentProxy environmentProxy(final Map<String, String> env) {
-        return new EnvironmentProxy(env);
+    public static ProxyFor environmentProxy(final Map<String, String> env) {
+        return httpProxy(new EnvironmentProxy(env));
     }
 
-    public static EnvironmentProxy environmentProxy() {
-        return new EnvironmentProxy(System.getenv());
+    public static ProxyFor environmentProxy() {
+        return environmentProxy(System.getenv());
     }
 
     @Override

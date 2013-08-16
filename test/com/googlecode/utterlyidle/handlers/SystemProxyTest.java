@@ -9,7 +9,7 @@ import java.net.Proxy;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Uri.uri;
-import static com.googlecode.utterlyidle.handlers.SystemProxy.systemProxy;
+import static com.googlecode.utterlyidle.handlers.ProxyAdapter.systemProxy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
