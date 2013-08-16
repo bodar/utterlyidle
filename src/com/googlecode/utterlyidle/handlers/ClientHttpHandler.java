@@ -68,7 +68,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis) {
-        this(connectTimeoutMillis, readTimeoutMillis, new DefaultProxySelector());
+        this(connectTimeoutMillis, readTimeoutMillis, SystemProxy.systemProxy());
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies) {

@@ -17,9 +17,15 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.net.Proxy.Type.DIRECT;
 import static java.net.ProxySelector.getDefault;
 
-public class DefaultProxySelector implements ProxyFor {
+public class SystemProxy implements ProxyFor {
     private final PersistentSet<String> allowed = PersistentSortedSet.constructors.sortedSet("http", "https");
     private final ProxySelector system = getDefault();
+
+    private SystemProxy() {}
+
+    public static SystemProxy systemProxy() {
+        return new SystemProxy();
+    }
 
     @Override
     public Option<Proxy> proxyFor(final Uri uri) {
