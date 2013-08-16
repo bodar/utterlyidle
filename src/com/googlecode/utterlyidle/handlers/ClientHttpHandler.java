@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
@@ -26,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -54,6 +56,7 @@ import static com.googlecode.utterlyidle.Status.status;
 public class ClientHttpHandler implements HttpClient, Closeable {
     private final int connectTimeoutMillis;
     private final int readTimeoutMillis;
+    private final ProxyFor proxies;
     private final CloseableList closeables = new CloseableList();
 
     public ClientHttpHandler() {
@@ -65,13 +68,17 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis) {
+        this(connectTimeoutMillis, readTimeoutMillis, new DefaultProxySelector());
+    }
+
+    public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies) {
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
+        this.proxies = proxies;
     }
 
     public Response handle(final Request request) throws Exception {
-        URL url = new URL(request.uri().toString());
-        URLConnection connection = url.openConnection();
+        URLConnection connection = openConnection(request.uri());
         connection.setUseCaches(false);
         connection.setConnectTimeout(connectTimeoutMillis);
         connection.setReadTimeout(readTimeoutMillis);
@@ -81,9 +88,23 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         return handle(request, connection);
     }
 
+    private URLConnection openConnection(final Uri uri) {
+        final URL url = uri.toURL();
+        return proxies.proxyFor(uri).map(new Mapper<Proxy, URLConnection>() {
+            @Override
+            public URLConnection call(final Proxy proxy) throws Exception {
+                return url.openConnection(proxy);
+            }
+        }).getOrElse(new Function<URLConnection>() {
+            @Override
+            public URLConnection call() throws Exception {
+                return url.openConnection();
+            }
+        });
+    }
+
     private Response handle(final Request request, final URLConnection connection) throws IOException {
-        return new multi() {
-        }.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
+        return new multi() {}.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
             @Override
             public Response call() throws Exception {
                 return defaultHandle(request, connection);
