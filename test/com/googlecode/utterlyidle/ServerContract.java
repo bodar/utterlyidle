@@ -1,15 +1,17 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
-import com.googlecode.utterlyidle.servlet.ApplicationContext;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Unchecked.cast;
+import static com.googlecode.totallylazy.time.Dates.LEXICAL;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
@@ -36,6 +38,7 @@ import static org.hamcrest.Matchers.startsWith;
 
 public abstract class ServerContract<T extends Server> {
     protected T server;
+
     protected abstract Class<T> server() throws Exception;
 
     @Before
@@ -184,5 +187,12 @@ public abstract class ServerContract<T extends Server> {
 
         assertThat(response.status(), is(Status.INTERNAL_SERVER_ERROR));
         assertThat(response.entity().toString(), allOf(containsString("Exception"), containsString("goes_bang")));
+    }
+
+    @Test
+    public void canHandleOptionalDate() throws Exception {
+        assertThat(handle(get("optionalDate"), server).entity().toString(), is("no date"));
+        assertThat(handle(get("optionalDate?date="), server).entity().toString(), is("no date"));
+        assertThat(handle(get("optionalDate?date=" + LEXICAL().format(Dates.date(1974, 10, 29))), server).entity().toString(), is("19741029000000000"));
     }
 }

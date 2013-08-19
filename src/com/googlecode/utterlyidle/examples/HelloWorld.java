@@ -1,7 +1,10 @@
 package com.googlecode.utterlyidle.examples;
 
+import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.numbers.Numbers;
+import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
@@ -23,7 +26,10 @@ import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 
 import java.io.InputStream;
+import java.util.Date;
 
+import static com.googlecode.totallylazy.Callables.toString;
+import static com.googlecode.totallylazy.time.Dates.format;
 import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
@@ -145,6 +151,18 @@ public class HelloWorld {
     @Path("delete")
     public String delete() {
         return "The contents of your hard drive have been deleted";
+    }
+
+    @GET
+    @Path("optionalDate")
+    public String optionalDate(@QueryParam("date") Option<Date> date) {
+        return date.map(Dates.format(Dates.LEXICAL())).getOrElse("no date");
+    }
+
+    @GET
+    @Path("optionalInteger")
+    public String optionalInteger(@QueryParam("integer") Option<Integer> integer) {
+        return integer.map(toString).getOrElse("no integer");
     }
 
     private String hello(String name) {

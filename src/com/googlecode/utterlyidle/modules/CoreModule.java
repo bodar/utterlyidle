@@ -2,10 +2,13 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.pattern;
 import com.googlecode.totallylazy.time.Clock;
+import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.SystemClock;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BaseUri;
@@ -62,7 +65,9 @@ import com.googlecode.yadic.resolvers.OptionResolver;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.is;
@@ -147,6 +152,7 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 addInstance(Entity.class, request.entity()).
                 addInstance(InputStream.class, request.entity().inputStream()).
                 addActivator(UUID.class, UUIDActivator.class).
+                addActivator(Date.class, DateActivator.class).
                 addType(new TypeFor<Option<?>>() {
                 }.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class))).
                 addType(new TypeFor<Either<?, ?>>() {
@@ -180,6 +186,19 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
             Iterable<String> values = cast(container.resolve(new TypeFor<Iterable<String>>() {
             }.get()));
             return sequence(values).map(mapper).realise();
+        }
+    }
+
+    public static class DateActivator implements Callable<Date> {
+        private final String date;
+
+        public DateActivator(String date) {
+            this.date = date;
+        }
+
+        @Override
+        public Date call() throws Exception {
+            return Dates.parse(date);
         }
     }
 }
