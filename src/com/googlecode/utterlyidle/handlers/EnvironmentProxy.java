@@ -26,7 +26,9 @@ public class EnvironmentProxy implements ProxyFor {
 
     private EnvironmentProxy(final Map<String, String> env) {
         http_proxy = find(env, equalIgnoringCase("http_proxy")).map(uri).map(proxyFor);
-        noProxy = find(env, equalIgnoringCase("no_proxy")).toSequence().flatMap(split(regex(","))).toSet();
+        noProxy = find(env, equalIgnoringCase("no_proxy")).toSequence().flatMap(split(regex(","))).
+                add("127.0.0.1").
+                add("localhost").toSet();
     }
 
     public static ProxyFor environmentProxy(final Map<String, String> env) {
