@@ -130,4 +130,13 @@ public class AnnotatedBindings {
     private static Option<String> defaultValue(Annotation[] annotations) {
         return sequence(annotations).find(instanceOf(DefaultValue.class)).map(Param.<String>toValue());
     }
+
+    public static class functions {
+        public static Mapper<Method, Option<Binding>> binding = new Mapper<Method, Option<Binding>>() {
+            @Override
+            public Option<Binding> call(Method method) throws Exception {
+                return AnnotatedBindings.binding(method);
+            }
+        };
+    }
 }
