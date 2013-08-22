@@ -11,7 +11,7 @@ import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 public class Browser implements HttpClient {
     private final HttpHandler httpHandler;
 
-    private Browser(HttpHandler httpHandler) {
+    protected Browser(HttpHandler httpHandler) {
         this.httpHandler = new RedirectHttpHandler(new RelativeUrlHandler(new CookieHandler(httpHandler)));
     }
 
