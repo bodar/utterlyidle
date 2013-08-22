@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.proxies;
 
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
@@ -18,7 +18,7 @@ import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.Uri.functions.uri;
 import static com.googlecode.totallylazy.regex.Regex.regex;
-import static com.googlecode.utterlyidle.handlers.HttpProxy.httpProxy;
+import static com.googlecode.utterlyidle.proxies.HttpProxy.httpProxy;
 
 public class EnvironmentProxy implements ProxyFor {
     private final Option<Proxy> http_proxy;

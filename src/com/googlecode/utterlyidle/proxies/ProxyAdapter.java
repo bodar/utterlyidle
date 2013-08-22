@@ -1,20 +1,16 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.proxies;
 
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.totallylazy.collections.PersistentSet;
-import com.googlecode.totallylazy.collections.PersistentSortedSet;
 
 import java.net.Proxy;
 import java.net.ProxySelector;
 
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
-import static com.googlecode.totallylazy.Predicates.second;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.handlers.HttpProxy.httpProxy;
 import static java.net.Proxy.Type.DIRECT;
 import static java.net.ProxySelector.getDefault;
 
@@ -30,7 +26,7 @@ public class ProxyAdapter implements ProxyFor {
     }
 
     public static ProxyFor systemProxy() {
-        return httpProxy(proxyAdapter(getDefault()));
+        return HttpProxy.httpProxy(proxyAdapter(getDefault()));
     }
 
     @Override

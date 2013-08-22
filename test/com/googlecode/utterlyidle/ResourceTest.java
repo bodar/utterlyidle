@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.proxy;
+package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.BaseUriRedirector;
 import com.googlecode.utterlyidle.Redirector;

@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.proxies;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -9,7 +9,7 @@ import java.net.Proxy;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Uri.uri;
-import static com.googlecode.utterlyidle.handlers.ProxyAdapter.systemProxy;
+import static com.googlecode.utterlyidle.proxies.ProxyAdapter.systemProxy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

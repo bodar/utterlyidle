@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.proxies;
 
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
