@@ -1,16 +1,15 @@
-package com.googlecode.utterlyidle.handlers;
+package com.googlecode.utterlyidle.proxies;
 
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 
 import java.net.Proxy;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.handlers.EnvironmentProxy.environmentProxy;
-import static com.googlecode.utterlyidle.handlers.HttpProxy.httpProxy;
-import static com.googlecode.utterlyidle.handlers.ProxyAdapter.systemProxy;
+import static com.googlecode.utterlyidle.proxies.EnvironmentProxy.environmentProxy;
 
 public class Proxies implements ProxyFor {
     private final Sequence<ProxyFor> proxies;
@@ -20,11 +19,11 @@ public class Proxies implements ProxyFor {
     }
 
     public static ProxyFor proxies(final Iterable<? extends ProxyFor> proxies) {
-        return httpProxy(new Proxies(proxies));
+        return HttpProxy.httpProxy(new Proxies(proxies));
     }
 
-    public static ProxyFor proxies() {
-        return proxies(sequence(environmentProxy(), systemProxy()));
+    public static ProxyFor autodetectProxies() {
+        return proxies(Sequences.sequence(EnvironmentProxy.environmentProxy(), ProxyAdapter.systemProxy()));
     }
 
     @Override

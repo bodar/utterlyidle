@@ -19,6 +19,8 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
+import com.googlecode.utterlyidle.proxies.Proxies;
+import com.googlecode.utterlyidle.proxies.ProxyFor;
 import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.Closeable;
@@ -52,6 +54,7 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
+import static com.googlecode.utterlyidle.proxies.NoProxy.noProxy;
 
 public class ClientHttpHandler implements HttpClient, Closeable {
     private final int connectTimeoutMillis;
@@ -67,8 +70,12 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         this(timeoutMillis, timeoutMillis);
     }
 
+    public ClientHttpHandler(int timeoutMillis, ProxyFor proxyFor) {
+        this(timeoutMillis, timeoutMillis, proxyFor);
+    }
+
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis) {
-        this(connectTimeoutMillis, readTimeoutMillis, Proxies.proxies());
+        this(connectTimeoutMillis, readTimeoutMillis, noProxy());
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies) {
