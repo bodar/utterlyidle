@@ -13,40 +13,44 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RelativeUrlHandlerTest {
-
     RecordRequestHandler delegate = new RecordRequestHandler();
+    RelativeUrlHandler handler = new RelativeUrlHandler(delegate);
+
+    @Test
+    public void preservesSchemeAndAuthority() throws Exception {
+        String fullyQualified = "http://localhost:1234/foo/bar?q=123";
+        handler.handle(get(fullyQualified).build());
+        handler.handle(post("/bar").build());
+        assertThat(delegate.lastUriReceived.toString(), is("http://localhost:1234/bar"));
+    }
 
     @Test
     public void preserveQueryParameters() throws Exception {
-        RelativeUrlHandler relativeUrlHandler = new RelativeUrlHandler(delegate);
         String urlWithQueryParameter = "/foo/bar?q=123";
-        relativeUrlHandler.handle(get(urlWithQueryParameter).build());
-        relativeUrlHandler.handle(post("").build());
-        assertThat(relativeUrlHandler.getCurrentUri().toString(), is(urlWithQueryParameter));
+        handler.handle(get(urlWithQueryParameter).build());
+        handler.handle(post("").build());
+        assertThat(handler.getCurrentUri().toString(), is(urlWithQueryParameter));
     }
 
     @Test
     public void preserveAbsolutePath() throws Exception {
-        RelativeUrlHandler relativeUrlHandler = new RelativeUrlHandler(delegate);
-        relativeUrlHandler.handle(get("/foo/bar").build());
-        assertThat(relativeUrlHandler.getCurrentUri().toString(), is("/foo/bar"));
-        relativeUrlHandler.handle(get("baz").build());
-        assertThat(relativeUrlHandler.getCurrentUri().toString(), is("/foo/baz"));
+        handler.handle(get("/foo/bar").build());
+        assertThat(handler.getCurrentUri().toString(), is("/foo/bar"));
+        handler.handle(get("baz").build());
+        assertThat(handler.getCurrentUri().toString(), is("/foo/baz"));
     }
 
     @Test
     public void rebuildsRelativeUrlWithQuery() throws Exception {
-        RelativeUrlHandler relativeUrlHandler = new RelativeUrlHandler(delegate);
-        relativeUrlHandler.handle(get("/foo/bar").build());
-        relativeUrlHandler.handle(get("").query("some", "param").build());
+        handler.handle(get("/foo/bar").build());
+        handler.handle(get("").query("some", "param").build());
         assertThat(delegate.lastUriReceived, is(uri("/foo/bar?some=param")));
     }
 
     @Test
     public void shouldAddQueryParameterWhenPostToNoUrl() throws Exception {
-        RelativeUrlHandler relativeUrlHandler = new RelativeUrlHandler(delegate);
-        relativeUrlHandler.handle(get("/foo/bar").build());
-        relativeUrlHandler.handle(post("").query("some", "param").build());
+        handler.handle(get("/foo/bar").build());
+        handler.handle(post("").query("some", "param").build());
         assertThat(delegate.lastUriReceived, is(uri("/foo/bar?some=param")));
     }
 
