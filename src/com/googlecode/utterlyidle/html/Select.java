@@ -1,23 +1,21 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Escaper;
+import com.googlecode.totallylazy.Randoms;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
-import static com.googlecode.totallylazy.Xml.expectElement;
-import static com.googlecode.totallylazy.Xml.removeAttribute;
 import static com.googlecode.totallylazy.Xml.selectContents;
-import static com.googlecode.totallylazy.Xml.selectElements;
 import static java.lang.String.format;
 
-public class Select implements NameValue {
+public class Select extends AbstractElement implements NameValue {
     public static final String SELECTED = "selected";
     public static final String SELECTED_OPTION = "option[@selected='selected']";
     private final Element select;
 
     public Select(Element select) {
+        super(select);
         this.select = select;
     }
 
@@ -47,9 +45,17 @@ public class Select implements NameValue {
         return valueWithXPath("option[" + (index + 1) + "]");
     }
 
+    public Select valueRandomly() {
+        return valueByIndex(Randoms.between(0, size() - 1).head());
+    }
+
+    public int size() {
+        return count("option").intValue();
+    }
+
     public Select valueWithXPath(String optionExpression) {
-        selectElements(select, SELECTED_OPTION).each(removeAttribute(SELECTED));
-        expectElement(select, optionExpression).setAttribute(SELECTED, SELECTED);
+        selectElements(SELECTED_OPTION).each(Xml.removeAttribute(SELECTED));
+        expectElement(optionExpression).setAttribute(SELECTED, SELECTED);
         return this;
     }
 
