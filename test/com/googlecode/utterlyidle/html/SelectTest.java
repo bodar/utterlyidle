@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
@@ -7,6 +8,7 @@ import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.html.Html.html;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isOneOf;
 
 public class SelectTest {
     @Test
@@ -51,6 +53,15 @@ public class SelectTest {
         assertThat(select.valueByIndex(1).value(), is("Bar"));
     }
 
+    @Test
+    public void canSelectRandomly() throws Exception {
+        Html html = html("<select>" +
+                "<option value=\"Foo\">First</option>" +
+                "<option value=\"Bar\">Second</option>" +
+                "</select>");
+        Select select = html.select("//select");
+        assertThat(select.valueRandomly().value(), isOneOf("Foo", "Bar"));
+    }
 
     @Test
     public void supportsEntries() throws Exception {
