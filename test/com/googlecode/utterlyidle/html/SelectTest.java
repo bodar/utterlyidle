@@ -40,6 +40,17 @@ public class SelectTest {
         assertThat(select.valueWithText("Second \" Dan").value(), is("Bar"));
     }
 
+    @Test
+    public void canSelectByIndex() throws Exception {
+        Html html = html("<select>" +
+                "<option value=\"Foo\">First</option>" +
+                "<option value=\"Bar\">Second</option>" +
+                "</select>");
+        Select select = html.select("//select");
+        assertThat(select.valueByIndex(0).value(), is("Foo"));
+        assertThat(select.valueByIndex(1).value(), is("Bar"));
+    }
+
 
     @Test
     public void supportsEntries() throws Exception {
