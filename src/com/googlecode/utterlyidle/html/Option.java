@@ -46,7 +46,7 @@ public class Option extends AbstractElement {
     }
 
     public String value() {
-        return attribute("value");
+        return hasAttribute("value") ? attribute("value") : text();
     }
 
     public String text() {
