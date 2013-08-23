@@ -18,6 +18,10 @@ public class AbstractElement {
         this.node = node;
     }
 
+    public boolean hasAttribute(String attributeName) {
+        return Xml.matches(node, format("@%s", attributeName));
+    }
+
     public String attribute(String attributeName) {
         return Xml.selectContents(node, format("@%s", attributeName));
     }

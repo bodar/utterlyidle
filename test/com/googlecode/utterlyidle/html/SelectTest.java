@@ -1,26 +1,36 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.Xml;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
+import static com.googlecode.utterlyidle.html.Html.html;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SelectTest {
+    @Test
+    public void whenOptionHasNoValueAttributeUseText() throws Exception {
+        Html html = html("<select>" +
+                "<option>First</option>" +
+                "<option value=\"\">Second</option>" +
+                "</select>");
+        Select select = html.select("//select");
+        assertThat(select.options().map(Option.asEntry()),
+                hasExactly(pair("First", "First"), pair("", "Second")));
+    }
 
-    public static final String XML = "<html><select><option value=\"first\">First</option><option value=\"second\">Second</option></select></html>";
+
 
     @Test
     public void supportsEntries() throws Exception {
-        Select select = new Select(Xml.selectElement(Xml.document(XML), "//select").get());
+        Html html = html("<select>" +
+                "<option value=\"first\">First</option>" +
+                "<option value=\"second\">Second</option>" +
+                "</select>");
+        Select select = html.select("//select");
 
-        Iterable<Pair<String,String>> entries = Sequences.sequence(select.options()).
-                map(Option.asEntry());
-
-        assertThat(entries, hasExactly(Pair.pair("first", "First"), Pair.pair("second", "Second")));
-
+        assertThat(select.options().map(Option.asEntry()),
+                hasExactly(pair("first", "First"), pair("second", "Second")));
     }
 
 }
