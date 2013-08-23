@@ -43,9 +43,8 @@ public class Select implements NameValue {
         return valueWithXPath("option[text()=" + quote(text) + "]");
     }
 
-    private String quote(final String text) {
-        // Simple fix until we TL supports XPath variables
-        return text.contains("'") ? "\"" + text + "\"" : "'" + text + "'";
+    public Select valueByIndex(final int index) {
+        return valueWithXPath("option[" + (index + 1) + "]");
     }
 
     public Select valueWithXPath(String optionExpression) {
@@ -61,4 +60,10 @@ public class Select implements NameValue {
     public String attribute(String attributeName) {
         return selectContents(select, format("@%s", attributeName));
     }
+
+    private String quote(final String text) {
+        // Simple fix until we TL supports XPath variables
+        return text.contains("'") ? "\"" + text + "\"" : "'" + text + "'";
+    }
+
 }
