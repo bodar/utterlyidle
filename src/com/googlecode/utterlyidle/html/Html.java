@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 
 import static java.lang.String.format;
 
-public class Html extends ContainerElement {
+public class Html extends BlockLevelElement {
     public Html(Node node) {
         super(node);
     }

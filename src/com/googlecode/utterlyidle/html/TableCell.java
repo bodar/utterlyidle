@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Value;
 import org.w3c.dom.Element;
 
-public class TableCell extends ContainerElement implements Value<String> {
+public class TableCell extends BlockLevelElement implements Value<String> {
 
     public TableCell(Element element) {
         super(element);
