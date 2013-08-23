@@ -29,6 +29,17 @@ public class SelectTest {
         assertThat(select.valueWithText("First").value(), is("Foo"));
     }
 
+    @Test
+    public void canSelectByTextWithQuotes() throws Exception {
+        Html html = html("<select>" +
+                "<option value=\"Foo\">First ' Dan</option>" +
+                "<option value=\"Bar\">Second \" Dan</option>" +
+                "</select>");
+        Select select = html.select("//select");
+        assertThat(select.valueWithText("First ' Dan").value(), is("Foo"));
+        assertThat(select.valueWithText("Second \" Dan").value(), is("Bar"));
+    }
+
 
     @Test
     public void supportsEntries() throws Exception {

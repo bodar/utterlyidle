@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.Escaper;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Xml;
@@ -39,7 +40,12 @@ public class Select implements NameValue {
     }
 
     public Select valueWithText(String text) {
-        return valueWithXPath("option[text()='" + text + "']");
+        return valueWithXPath("option[text()=" + quote(text) + "]");
+    }
+
+    private String quote(final String text) {
+        // Simple fix until we TL supports XPath variables
+        return text.contains("'") ? "\"" + text + "\"" : "'" + text + "'";
     }
 
     public Select valueWithXPath(String optionExpression) {
