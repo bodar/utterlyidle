@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
+import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.html.Html.html;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -19,6 +20,14 @@ public class SelectTest {
                 hasExactly(pair("First", "First"), pair("", "Second")));
     }
 
+    @Test
+    public void canSelectByText() throws Exception {
+        Html html = html("<select>" +
+                "<option value=\"Foo\">First</option>" +
+                "</select>");
+        Select select = html.select("//select");
+        assertThat(select.valueWithText("First").value(), is("Foo"));
+    }
 
 
     @Test
