@@ -4,7 +4,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class ElementAttributeMatcher extends TypeSafeMatcher<ContainerElement> {
+public class ElementAttributeMatcher extends TypeSafeMatcher<BlockLevelElement> {
     private final String name;
     private final Matcher<? super String> matcher;
 
@@ -18,7 +18,7 @@ public class ElementAttributeMatcher extends TypeSafeMatcher<ContainerElement> {
     }
 
     @Override
-    protected boolean matchesSafely(ContainerElement node) {
+    protected boolean matchesSafely(BlockLevelElement node) {
         return matcher.matches(node.attribute(name));
     }
 

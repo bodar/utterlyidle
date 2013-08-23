@@ -12,7 +12,7 @@ import static com.googlecode.totallylazy.Xml.functions.selectContents;
 import static com.googlecode.totallylazy.numbers.Numbers.range;
 import static com.googlecode.utterlyidle.html.TableRow.functions.toTableRow;
 
-public class Table extends ContainerElement {
+public class Table extends BlockLevelElement {
     private final Sequence<TableRow> allRows;
     private final Sequence<TableRow> bodyRows;
     private final Sequence<TableRow> headerRows;
