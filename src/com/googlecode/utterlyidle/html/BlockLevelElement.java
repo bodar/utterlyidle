@@ -5,8 +5,8 @@ import org.w3c.dom.Node;
 
 import static com.googlecode.utterlyidle.html.Form.fromElement;
 
-public abstract class ContainerElement extends AbstractElement {
-    public ContainerElement(Node node) {
+public abstract class BlockLevelElement extends AbstractElement {
+    public BlockLevelElement(Node node) {
         super(node);
     }
 

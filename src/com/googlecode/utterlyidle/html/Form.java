@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.String.format;
 
-public class Form extends ContainerElement {
+public class Form extends BlockLevelElement {
     public static final String DESCENDANT = "descendant::";
 
     public Form(Element form) {
