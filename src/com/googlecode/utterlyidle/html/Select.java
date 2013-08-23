@@ -39,7 +39,7 @@ public class Select implements NameValue {
     }
 
     public Select valueWithText(String text) {
-        return valueWithXPath("option[@text='" + text + "']");
+        return valueWithXPath("option[text()='" + text + "']");
     }
 
     public Select valueWithXPath(String optionExpression) {
