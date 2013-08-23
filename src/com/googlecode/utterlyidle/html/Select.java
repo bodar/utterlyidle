@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
@@ -19,9 +20,8 @@ public class Select implements NameValue {
         this.select = select;
     }
 
-    public Iterable<Option> options() {
+    public Sequence<Option> options() {
         return Xml.selectNodes(select, "option").map(Option.asNode());
-
     }
 
     public String value() {
