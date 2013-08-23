@@ -18,8 +18,9 @@ public class SelectTest {
                 "<option value=\"\">Second</option>" +
                 "</select>");
         Select select = html.select("//select");
-        assertThat(select.options().map(Option.asEntry()),
-                hasExactly(pair("First", "First"), pair("", "Second")));
+        assertThat(select.valueByIndex(0).value(), is("First"));
+        assertThat(select.options().map(OptionElement.functions.pair),
+                hasExactly(pair("First", "First"), pair("Second", "")));
     }
 
     @Test
@@ -71,8 +72,7 @@ public class SelectTest {
                 "</select>");
         Select select = html.select("//select");
 
-        assertThat(select.options().map(Option.asEntry()),
-                hasExactly(pair("first", "First"), pair("second", "Second")));
+        assertThat(select.options().map(OptionElement.functions.pair),
+                hasExactly(pair("First", "first"), pair("Second", "second")));
     }
-
 }

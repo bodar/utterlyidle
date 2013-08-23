@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Randoms;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
@@ -7,6 +8,8 @@ import com.googlecode.totallylazy.Xml;
 import org.w3c.dom.Element;
 
 import static com.googlecode.totallylazy.Xml.selectContents;
+import static com.googlecode.totallylazy.Xml.selectElement;
+import static com.googlecode.utterlyidle.html.OptionElement.functions.option;
 import static java.lang.String.format;
 
 public class Select extends AbstractElement implements NameValue {
@@ -19,18 +22,20 @@ public class Select extends AbstractElement implements NameValue {
         this.select = select;
     }
 
-    public Sequence<Option> options() {
-        return Xml.selectNodes(select, "option").map(Option.asNode());
+    public Sequence<OptionElement> options() {
+        return Xml.selectNodes(select, "option").map(option);
+    }
+
+    public Option<OptionElement> selected() {
+        return selectElement(select, SELECTED_OPTION).map(option);
     }
 
     public String value() {
-        String selected = selectContents(select, SELECTED_OPTION + "/@value");
-        return selected.equals(Strings.EMPTY) ? selectContents(select, "option[1]/@value") : selected;
+        return selected().getOrElse(options().get(0)).value();
     }
 
     public String text() {
-        String text = selectContents(select, SELECTED_OPTION + "/text()");
-        return text.equals(Strings.EMPTY) ? selectContents(select, "option[1]/text()") : text;
+        return selected().getOrElse(options().get(0)).text();
     }
 
     public Select value(String value) {
