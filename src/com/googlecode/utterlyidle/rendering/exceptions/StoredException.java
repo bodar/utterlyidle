@@ -12,8 +12,13 @@ public class StoredException {
 
     public StoredException(Date date, Request request, String exception) {
         this.date = date;
-        this.request = request;
+        this.request = forceInMemory(request);
         this.exception = exception;
+    }
+
+    private Request forceInMemory(final Request request) {
+        request.toString();
+        return request;
     }
 
     public Date getDate() {
