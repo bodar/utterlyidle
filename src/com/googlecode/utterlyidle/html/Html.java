@@ -26,7 +26,8 @@ public class Html extends BlockLevelElement {
         try {
             return Xml.document(html);
         } catch (LazyException e) {
-            throw new IllegalArgumentException(format("Could not parse html: %s", html), e);
+            Throwable cause = e.getCause();
+            throw new IllegalArgumentException(format("Could not parse html because: %s\n%s", cause.getMessage(), html), cause);
         }
     }
 
