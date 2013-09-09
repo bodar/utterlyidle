@@ -18,7 +18,7 @@ public class RedirectHttpHandler implements HttpClient {
 
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        if (response.status().isRedirect()) {
+        if (response.status().isRedirect() && header(response, LOCATION) != null) {
             return handle(get(header(response, LOCATION)).build());
         }
         return response;
