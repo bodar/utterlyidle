@@ -17,6 +17,13 @@ public class RelativeUrlHandlerTest {
     RelativeUrlHandler handler = new RelativeUrlHandler(delegate);
 
     @Test
+    public void ifTheFirstRequestIsRelativeTreatItRelativeToTheRoot() throws Exception {
+        String relative = "foo";
+        handler.handle(get(relative).build());
+        assertThat(delegate.lastUriReceived.toString(), is("/foo"));
+    }
+
+    @Test
     public void preservesSchemeAndAuthority() throws Exception {
         String fullyQualified = "http://localhost:1234/foo/bar?q=123";
         handler.handle(get(fullyQualified).build());
