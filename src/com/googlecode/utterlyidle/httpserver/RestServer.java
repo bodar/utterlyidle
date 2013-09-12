@@ -1,12 +1,10 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.totallylazy.concurrent.NamedExecutors;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
-import com.googlecode.utterlyidle.modules.BasicAuditing;
 import com.googlecode.utterlyidle.services.Service;
 import com.sun.net.httpserver.HttpServer;
 
@@ -52,7 +50,6 @@ public class RestServer implements Server {
     }
 
     private HttpServer startUpServer(Application application, ServerConfiguration configuration) throws Exception {
-        application.add(new BasicAuditing());
         HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.port()), 0);
         server.createContext(configuration.basePath().toString(),
                 new RestHandler(application));
