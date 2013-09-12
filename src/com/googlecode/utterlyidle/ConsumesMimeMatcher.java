@@ -16,9 +16,8 @@ public class ConsumesMimeMatcher implements Predicate<Request> {
         }
         if (request.headers().contains(HttpHeaders.CONTENT_TYPE)) {
             return mimeTypes.exists(new Predicate<String>() {
-                @Override
-                public boolean matches(String other) {
-                    return other.startsWith(request.headers().getValue(HttpHeaders.CONTENT_TYPE));
+                public boolean matches(String mimeType) {
+                    return request.headers().getValue(HttpHeaders.CONTENT_TYPE).startsWith(mimeType);
                 }
             });
         }

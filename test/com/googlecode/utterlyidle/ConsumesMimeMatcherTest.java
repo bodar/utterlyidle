@@ -33,9 +33,9 @@ public class ConsumesMimeMatcherTest {
     }
 
     @Test
-    public void matchesIgnoringCharset() throws Exception {
-        Predicate<Request> matcher = new ConsumesMimeMatcher(sequence(APPLICATION_ATOM_XML, APPLICATION_FORM_URLENCODED + "; charset=UTF-8", APPLICATION_JSON));
-        assertThat(matcher.matches(request), is(true));
+    public void matchesPartialContentType() throws Exception {
+        Predicate<Request> matcher = new ConsumesMimeMatcher(sequence(APPLICATION_ATOM_XML, APPLICATION_FORM_URLENCODED, APPLICATION_JSON));
+        assertThat(matcher.matches(request("GET", uri, headerParameters().add(CONTENT_TYPE, APPLICATION_FORM_URLENCODED + "; charset=UTF-8"), null)), is(true));
     }
 
     @Test
