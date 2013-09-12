@@ -23,7 +23,5 @@ public interface Request {
                 }
             };
         }
-
-
     }
 }

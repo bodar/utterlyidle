@@ -10,12 +10,17 @@ public class ConsumesMimeMatcher implements Predicate<Request> {
         this.mimeTypes = mimeTypes;
     }
 
-    public boolean matches(Request request) {
+    public boolean matches(final Request request) {
         if (mimeTypes.contains(MediaType.WILDCARD)) {
             return true;
         }
         if (request.headers().contains(HttpHeaders.CONTENT_TYPE)) {
-            return mimeTypes.contains(request.headers().getValue(HttpHeaders.CONTENT_TYPE));
+            return mimeTypes.exists(new Predicate<String>() {
+                @Override
+                public boolean matches(String other) {
+                    return other.startsWith(request.headers().getValue(HttpHeaders.CONTENT_TYPE));
+                }
+            });
         }
         return true;
     }
