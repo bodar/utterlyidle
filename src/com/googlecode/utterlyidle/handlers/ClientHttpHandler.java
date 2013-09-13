@@ -47,6 +47,7 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.totallylazy.numbers.Numbers.zero;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
@@ -61,6 +62,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     private final int readTimeoutMillis;
     private final ProxyFor proxies;
     private final CloseableList closeables = new CloseableList();
+    private final Integer streamingSize = Integer.getInteger("utterlyidle.client.stream.size", 4000);
 
     public ClientHttpHandler() {
         this(0);
@@ -180,7 +182,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private Object handleStreamingContent(final Option<Integer> length, final InputStream inputStream) {
-        if (length.isEmpty()) return closeables.manage(inputStream);
+        if (length.isEmpty() || length.is(greaterThan(streamingSize))) return closeables.manage(inputStream);
         return using(inputStream, bytes());
     }
 
