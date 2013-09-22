@@ -2,11 +2,8 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
-import com.googlecode.totallylazy.Function;
-import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.pattern;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.SystemClock;
@@ -81,7 +78,6 @@ import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.status;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CoreModule implements ModuleDefiner, RequestScopedModule, ApplicationScopedModule, ResourcesModule, ResponseHandlersModule, ArgumentScopedModule {
     @Override
