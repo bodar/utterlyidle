@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Left;
 import com.googlecode.totallylazy.None;
 import com.googlecode.totallylazy.Option;
@@ -42,6 +43,7 @@ public class Extractors {
     }
 
     private static Iterable asIterable(Object value) {
+        if(value instanceof Either) return one(value);
         if(value instanceof Iterable) return (Iterable) value;
         return one(value);
     }
