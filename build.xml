@@ -18,19 +18,13 @@
     <property name="tests.jar" value="${release.name}-tests.jar"/>
     <property name="tests.src" value="${release.name}-test-sources.jar"/>
     <property name="tests.jar.path" value="${artifacts}/${tests.jar}"/>
-    <property name="build.dependencies.dir" value="lib/build"/>
-    <property name="runtime.dependencies.dir" value="lib/runtime"/>
-    <property name="optional.dependencies.dir" value="lib/optional"/>
-    <property name="manual.dependencies.dir" value="lib/manual"/>
+    <property name="lib.dir" value="lib"/>
 
     <import file="${build}/macros.xml"/>
     <import file="${build}/shavenmaven.xml"/>
 
     <path id="all.dependancies">
-        <fileset dir="${build.dependencies.dir}" includes="**/*.jar"/>
-        <fileset dir="${runtime.dependencies.dir}" includes="**/*.jar"/>
-        <fileset dir="${optional.dependencies.dir}" includes="**/*.jar"/>
-        <fileset dir="${manual.dependencies.dir}" includes="**/*.jar"/>
+        <fileset dir="${lib.dir}" includes="**/*.jar" excludes="shavenmaven.jar"/>
     </path>
 
     <path id="all.jars">
@@ -42,12 +36,7 @@
     <target name="update" description="Update library dependencies">
         <!--<install version="79"/>-->
         <parallel>
-            <update dependencies="build/build.dependencies"
-                    directory="${build.dependencies.dir}"/>
-            <update dependencies="build/runtime.dependencies"
-                    directory="${runtime.dependencies.dir}"/>
-            <update dependencies="build/optional.dependencies"
-                    directory="${optional.dependencies.dir}"/>
+            <update dependencies="build" directory="${lib.dir}"/>
         </parallel>
     </target>
 
