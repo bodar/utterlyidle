@@ -7,7 +7,7 @@
             <property name="release.no.libs.jar" value="${artifacts}/${release.name}-nolibs.jar"/>
             <jarjar jarfile="${release.no.libs.jar}">
                 <zipfileset src="${release.jar.path}"/>
-                <zipgroupfileset dir="${build.dependencies.dir}" includes="commons-codec-*.jar" />
+                <zipgroupfileset dir="${build.dependencies.dir}" includes="commons-codec-*.jar" excludes="*-sources.jar"/>
                 <rule pattern="org.apache.commons.codec.*" result="com.googlecode.utterlyidle.internal.codec.$@1"/>
                 <rule pattern="org.apache.commons.codec.**.*" result="com.googlecode.utterlyidle.internal.codec.@1.$@2"/>
             </jarjar>
