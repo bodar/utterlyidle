@@ -7,7 +7,7 @@
             <property name="release.no.libs.jar" value="${artifacts}/${release.name}-nolibs.jar"/>
             <jarjar jarfile="${release.no.libs.jar}">
                 <zipfileset src="${release.jar.path}"/>
-                <zipgroupfileset dir="${build.dependencies.dir}" includes="commons-codec-*.jar" excludes="*-sources.jar"/>
+                <zipgroupfileset dir="${lib.dir}" includes="**/commons-codec-*.jar" excludes="*-sources.jar"/>
                 <rule pattern="org.apache.commons.codec.*" result="com.googlecode.utterlyidle.internal.codec.$@1"/>
                 <rule pattern="org.apache.commons.codec.**.*" result="com.googlecode.utterlyidle.internal.codec.@1.$@2"/>
             </jarjar>
@@ -22,7 +22,7 @@
                      classpathref="all.dependancies"/>
             <jarjar jarfile="${release.nodeps.jar.path}">
                 <zipfileset src="${release.jar.path}"/>
-                <zipgroupfileset dir="${runtime.dependencies.dir}" includes="totallylazy-*.jar, funclate-*.jar, yadic-*.jar" />
+                <zipgroupfileset dir="${lib.dir}"  includes="**/totallylazy-*.jar, **/funclate-*.jar, **/yadic-*.jar"  excludes="*-sources.jar"/>
                 <rule pattern="com.googlecode.totallylazy.*" result="com.googlecode.utterlyidle.internal.totallylazy.$@1"/>
                 <rule pattern="com.googlecode.totallylazy.**.*" result="com.googlecode.utterlyidle.internal.totallylazy.@1.$@2"/>
                 <rule pattern="com.googlecode.funclate.*" result="com.googlecode.utterlyidle.internal.funclate.$@1"/>
