@@ -31,6 +31,14 @@ public class EnvironmentProxyTest {
         Map<String, String> env = Maps.map(pair("http_proxy", "http://proxy:8080/"), pair("no_proxy", "localhost,127.0.0.0/8"));
         assertThat(environmentProxy(env).proxyFor(uri("http://localhost")), is(none(Proxy.class)));
     }
+    @Test
+
+    public void supportsNoProxyEnvironmentVariableWithWildcard() throws Exception {
+        Map<String, String> env = Maps.map(pair("http_proxy", "http://proxy:8080/"), pair("no_proxy", "localhost,*.abc.com"));
+        assertThat(environmentProxy(env).proxyFor(uri("http://localhost")), is(none(Proxy.class)));
+        assertThat(environmentProxy(env).proxyFor(uri("http://www.abc.com")), is(none(Proxy.class)));
+        assertThat(environmentProxy(env).proxyFor(uri("http://fooo")).isDefined(), is(true));
+    }
 
     @Test
     public void whenNoEnvironmentVariableGoDirect() throws Exception {
