@@ -40,4 +40,8 @@ public class ProxyAdapter implements ProxyFor {
             return proxy.type();
         }
     };
+
+    public ProxySelector selector() {
+        return selector;
+    }
 }
