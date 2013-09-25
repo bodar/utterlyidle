@@ -22,8 +22,8 @@ public class Proxies implements ProxyFor {
         return HttpProxy.httpProxy(new Proxies(proxies));
     }
 
-    public static ProxyFor autodetectProxies() {
-        return proxies(Sequences.sequence(EnvironmentProxy.environmentProxy(), ProxyAdapter.systemProxy()));
+    public static ProxyFor autodetectProxies() { // Use system properties first, then environment variables
+        return proxies(Sequences.sequence(ProxyAdapter.systemProxy(), EnvironmentProxy.environmentProxy()));
     }
 
     @Override
@@ -34,5 +34,9 @@ public class Proxies implements ProxyFor {
                 return proxyFor.proxyFor(uri);
             }
         }).headOption();
+    }
+
+    public Sequence<ProxyFor> proxies() {
+        return proxies;
     }
 }
