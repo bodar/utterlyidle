@@ -22,8 +22,10 @@ public class Proxies implements ProxyFor {
         return HttpProxy.httpProxy(new Proxies(proxies));
     }
 
-    public static ProxyFor autodetectProxies() { // Use system properties first, then environment variables
-        return proxies(Sequences.sequence(ProxyAdapter.systemProxy(), EnvironmentProxy.environmentProxy()));
+    public static ProxyFor autodetectProxies() {
+        if(System.getProperty("http.proxyHost") != null) return ProxyAdapter.systemProxy();
+        if(EnvironmentProxy.httpProxy(System.getenv()).isDefined()) return EnvironmentProxy.environmentProxy();
+        return NoProxy.instance;
     }
 
     @Override
