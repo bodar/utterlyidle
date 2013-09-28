@@ -25,14 +25,6 @@ public class RegisteredResources implements Resources {
     }
 
     @Override
-    @Deprecated
-    /**
-     * Bindings are being decoupled from just invoking methods.
-     *
-     * Do this instead:
-     *
-     * sequence(bindings).find(Binding.functions.isForMethod(method))
-     */
     public Option<Binding> find(Method method) {
         return sequence(bindings)
                 .find(isForMethod(method));
