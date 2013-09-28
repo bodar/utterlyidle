@@ -24,7 +24,7 @@ public class Form extends BlockLevelElement {
         if (new Input(expectElement(submitXpath)).disabled()){
             throw new IllegalStateException(format("Attempt to invoke disabled input for [%s]", submitXpath));
         }
-        return submitXpath(fieldExpressions().add(sanitise(submitXpath)));
+        return submitXpath(fieldExpressions().append(sanitise(submitXpath)));
     }
 
     public Request submit() throws IllegalStateException {

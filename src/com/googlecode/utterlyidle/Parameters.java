@@ -33,7 +33,7 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
     protected abstract Self self(PersistentList<Pair<K, V>> values);
 
     public Self add(K name, V value) {
-        return self(values.add(pair(name, value)));
+        return self(values.append(pair(name, value)));
     }
 
     public Self joinTo(Self self) {
@@ -41,7 +41,7 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
     }
 
     public Self remove(K name) {
-        return self(values.removeAll(filterByKey(name)));
+        return self(values.deleteAll(filterByKey(name)));
     }
 
     public Self replace(K name, V value) {
