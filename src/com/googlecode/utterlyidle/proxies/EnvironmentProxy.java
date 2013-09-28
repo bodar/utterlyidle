@@ -31,8 +31,8 @@ public class EnvironmentProxy implements ProxyFor {
         noProxy = find(env, equalIgnoringCase("no_proxy")).toSequence().
                 flatMap(split(regex(","))).
                 map(toPredicate).
-                add(is("127.0.0.1")).
-                add(is("localhost")).
+                cons(is("127.0.0.1")).
+                cons(is("localhost")).
                 realise();
     }
 
