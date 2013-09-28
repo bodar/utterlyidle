@@ -82,7 +82,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
         if (fileExtension(uri).isEmpty()) return uri;
         String file = hierarchicalPath(uri.path()).file();
         String fileWithoutExtension = file.substring(0, file.lastIndexOf("."));
-        return uri.path(hierarchicalPath(uri.path()).segments().init().add(fileWithoutExtension).toString("/"));
+        return uri.path(hierarchicalPath(uri.path()).segments().init().append(fileWithoutExtension).toString("/"));
     }
 
     private Callable2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {

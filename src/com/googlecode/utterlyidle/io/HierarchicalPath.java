@@ -46,7 +46,7 @@ public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
     }
 
     public HierarchicalPath subDirectory(String name) {
-        return new HierarchicalPath(joinDirectories(segments().add(name)));
+        return new HierarchicalPath(joinDirectories(segments().append(name)));
     }
 
     public HierarchicalPath subDirectory(Path name) {
@@ -58,7 +58,7 @@ public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
     }
 
     public HierarchicalPath file(String name) {
-        return new HierarchicalPath(join(segments().add(name)));
+        return new HierarchicalPath(join(segments().append(name)));
     }
 
     public String toString() {

@@ -25,7 +25,7 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
     }
 
     public Services add(Class<? extends Service> service) {
-        services = services.put(service, Status.status(Status.State.stopped, ""));
+        services = services.insert(service, Status.status(Status.State.stopped, ""));
         return this;
     }
 
