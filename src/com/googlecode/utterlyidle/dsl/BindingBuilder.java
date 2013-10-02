@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.proxy.CallOn;
@@ -23,7 +22,7 @@ import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.bindings.actions.Action;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import com.googlecode.utterlyidle.rendering.ViewName;
+import com.googlecode.yadic.generics.TypeFor;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -187,8 +186,19 @@ public class BindingBuilder implements Callable<Binding> {
     }
 
     public static InputStream entity() {
-        Pair<Type,Option<Parameter>> pair = Pair.<Type, Option<Parameter>>pair(InputStream.class, none(Parameter.class));
-        parameters.get().add(pair);
+        return param(InputStream.class);
+    }
+
+    public static <T> T param(Class<T> type) {
+        return param((Type)type);
+    }
+
+    public static <T> T param(TypeFor<T> typeFor) {
+        return param(typeFor.get());
+    }
+
+    public static <T> T param(Type type) {
+        parameters.get().add(Pair.<Type, Option<Parameter>>pair(type, none(Parameter.class)));
         return null;
     }
 
