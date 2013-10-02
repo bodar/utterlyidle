@@ -9,7 +9,10 @@ import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
+import java.io.InputStream;
+
 import static com.googlecode.totallylazy.Option.some;
+import static com.googlecode.totallylazy.Strings.string;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
@@ -17,13 +20,23 @@ import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.annotations.View.constructors.view;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.entity;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.put;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static com.googlecode.utterlyidle.rendering.ViewName.viewName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class DslTest {
+    @Test
+    public void supportsEntityInputStream() throws Exception {
+        ApplicationBuilder application = application().
+                add(put("baz").resource(method(on(Baz.class).input(entity()))));
+        String response = application.responseAsString(RequestBuilder.put("/baz").entity("Hello"));
+        assertThat(response, is("Hello"));
+    }
+
     @Test
     public void supportsDefaultingViewToMethodName() throws Exception {
         Binding binding = get("bar").resource(method(on(Bar.class).hello())).build();
@@ -86,6 +99,11 @@ public class DslTest {
         assertThat(application.handle(RequestBuilder.get("/bar").accepting("text/plain")).status(), is(Status.NOT_ACCEPTABLE));
     }
 
+    public static class Baz {
+        public String input(InputStream inputStream){
+            return string(inputStream);
+        }
+    }
 
     public static class Bar {
         public String hello() {
