@@ -25,10 +25,12 @@ import com.googlecode.utterlyidle.bindings.actions.Action;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.rendering.ViewName;
 
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
 
+import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
@@ -180,6 +182,12 @@ public class BindingBuilder implements Callable<Binding> {
     public static <T> T definedParam(final Type type, final T value) {
         Option<Parameter> some = Option.<Parameter>some(new DefinedParameter<T>(type, value));
         Pair<Type,Option<Parameter>> pair = Pair.pair(type, some);
+        parameters.get().add(pair);
+        return null;
+    }
+
+    public static InputStream entity() {
+        Pair<Type,Option<Parameter>> pair = Pair.<Type, Option<Parameter>>pair(InputStream.class, none(Parameter.class));
         parameters.get().add(pair);
         return null;
     }
