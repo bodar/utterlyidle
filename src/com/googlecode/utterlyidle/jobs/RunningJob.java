@@ -1,33 +1,27 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Seconds;
-import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
 
-import java.util.Date;
+import static com.googlecode.totallylazy.Option.some;
 
-public class RunningJob {
-    public final Request request;
-    public final Date started;
+public class RunningJob extends CreatedJob {
     private final Clock clock;
 
-    public RunningJob(Request request, Date started, Clock clock) {
-        this.request = request;
-        this.started = started;
+    public RunningJob(CreatedJob job, Clock clock) {
+        super(job.id(), job.request(), job.response(), job.created(), some(clock.now()), job.completed());
         this.clock = clock;
     }
 
-    public static Callable1<RunningJob, Date> started() {
-        return new Callable1<RunningJob, Date>() {
-            @Override
-            public Date call(RunningJob runningJob) throws Exception {
-                return runningJob.started;
-            }
-        };
-    }
 
     public long duration() {
-        return Seconds.between(started, clock.now());
+        return Seconds.between(super.started().get(), clock.now());
     }
+
+    public CompletedJob complete(final Response response) {
+        return new CompletedJob(this, response, clock.now());
+    }
+
+
 }
