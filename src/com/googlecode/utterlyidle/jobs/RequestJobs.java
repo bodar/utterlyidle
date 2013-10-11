@@ -40,7 +40,14 @@ public class RequestJobs implements Jobs {
 
     @Override
     public void run(final Request request) {
-        completer.complete(handle(request));
+        create(request);
+    }
+
+    @Override
+    public Job create(final Request request) {
+        CreatedJob job = CreatedJob.createJob(request, clock.now());
+        completer.complete(handle(job));
+        return job;
     }
 
     @Override
@@ -55,14 +62,13 @@ public class RequestJobs implements Jobs {
         completed.clear();
     }
 
-    private void complete(Request request) {
-        Date started = clock.now();
-        RunningJob runningJob = new RunningJob(request, started, clock);
+
+    private void complete(CreatedJob job) {
+        RunningJob runningJob = job.start(clock);
         running.add(runningJob);
-        Response response = responseFor(request);
+        Response response = responseFor(runningJob.request());
         running.remove(runningJob);
-        Date completedDate = clock.now();
-        completed.add(new CompletedJob(request, response, started, completedDate));
+        completed.add(runningJob.complete(response));
     }
 
     private Response responseFor(Request request) {
@@ -76,11 +82,11 @@ public class RequestJobs implements Jobs {
         }
     }
 
-    private Callable<Void> handle(final Request request) {
+    private Callable<Void> handle(final CreatedJob job) {
         return new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                complete(request);
+                complete(job);
                 return VOID;
             }
         };

@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.jobs;
 
 import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Mapper;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
@@ -16,8 +17,8 @@ import com.googlecode.utterlyidle.annotations.Produces;
 
 import java.util.List;
 
-import static com.googlecode.utterlyidle.jobs.CompletedJob.completed;
-import static com.googlecode.utterlyidle.jobs.RunningJob.started;
+import static com.googlecode.utterlyidle.jobs.Job.functions.completed;
+import static com.googlecode.utterlyidle.jobs.Job.functions.started;
 import static com.googlecode.funclate.Model.mutable.model;
 import static com.googlecode.totallylazy.Callables.descending;
 import static com.googlecode.totallylazy.proxy.Call.method;
@@ -53,7 +54,7 @@ public class JobsResource {
     public Response run(Request request, @PathParam("$") String endOfUrl) throws Exception {
         Request requestToQueue = modify(request).uri(request.uri().path(endOfUrl)).build();
         jobs.run(requestToQueue);
-        return ResponseBuilder.response(Status.ACCEPTED.description("Queued HttpJob")).entity("You HttpJob has been accepted").build();
+        return ResponseBuilder.response(Status.ACCEPTED.description("Queued HttpJob")).entity("Your HttpJob has been accepted").build();
     }
 
     @POST
@@ -69,32 +70,32 @@ public class JobsResource {
                 toList();
     }
 
-    private Function1<RunningJob, Model> asRunningModel() {
-        return new Function1<RunningJob, Model>() {
+    private Mapper<RunningJob, Model> asRunningModel() {
+        return new Mapper<RunningJob, Model>() {
             @Override
             public Model call(RunningJob runningJob) throws Exception {
                 return model().
                         add("status", "running").
-                        add("started", runningJob.started).
+                        add("started", runningJob.started().get()).
                         add("completed", "").
                         add("duration", runningJob.duration()).
-                        add("request", ScheduleResource.asModel(runningJob.request)).
+                        add("request", ScheduleResource.asModel(runningJob.request())).
                         add("response", model());
             }
         };
     }
 
-    private Function1<CompletedJob, Model> asCompletedModel() {
-        return new Function1<CompletedJob, Model>() {
+    private Mapper<CompletedJob, Model> asCompletedModel() {
+        return new Mapper<CompletedJob, Model>() {
             @Override
             public Model call(CompletedJob completedJob) throws Exception {
                 return model().
                         add("status", "idle").
-                        add("started", completedJob.started).
-                        add("completed", completedJob.completed).
+                        add("started", completedJob.started().get()).
+                        add("completed", completedJob.completed().get()).
                         add("duration", completedJob.duration()).
-                        add("request", ScheduleResource.asModel(completedJob.request)).
-                        add("response", ScheduleResource.asModel(completedJob.response));
+                        add("request", ScheduleResource.asModel(completedJob.request())).
+                        add("response", ScheduleResource.asModel(completedJob.response().get()));
             }
         };
     }
