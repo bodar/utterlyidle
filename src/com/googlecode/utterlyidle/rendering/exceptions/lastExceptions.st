@@ -41,7 +41,7 @@
                 <tr>
                     <td>$exception.date$</td>
                     <td>$exception.request$</td>
-                    <td>$exception.exception$</td>
+                    <td>$exception.exceptionAsString$</td>
                 </tr>
             }$
         </tbody>

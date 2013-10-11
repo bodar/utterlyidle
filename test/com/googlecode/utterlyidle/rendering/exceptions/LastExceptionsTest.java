@@ -3,56 +3,43 @@ package com.googlecode.utterlyidle.rendering.exceptions;
 import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.numbers.Numbers;
+import com.googlecode.totallylazy.time.StoppedClock;
 import com.googlecode.utterlyidle.RequestBuilder;
 import org.junit.Test;
 
-import java.util.Date;
-
+import static com.googlecode.totallylazy.Sequences.repeat;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.time.Dates.date;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class LastExceptionsTest {
-
     private static final int SIZE = 20;
-    private LastExceptions lastExceptions = new LastExceptions(SIZE);
+    private LastExceptions lastExceptions = new LastExceptions(new LastExceptionsSize(SIZE), new StoppedClock(date(2001, 1, 1)));
 
     @Test
-    public void storesNItems() throws Exception {
-        Sequence<Number> numbers = Numbers.range(1, SIZE).memorise();
+    public void storesOnlyLastExceptions() throws Exception {
+        Sequence<RuntimeException> exceptions = repeat(new RuntimeException()).take(SIZE * 2);
 
-        addNumbersToLastExceptions(numbers);
+        addNumbersToLastExceptions(exceptions);
 
-        verifyLastExceptionsContains(numbers);
+        verifyLastExceptionsContains(exceptions.drop(SIZE));
     }
 
-    @Test
-    public void storesLastNItems() throws Exception {
-        Sequence<Number> numbers = Numbers.range(1, SIZE * 2).memorise();
-
-        addNumbersToLastExceptions(numbers);
-
-        verifyLastExceptionsContains(numbers.drop(SIZE));
-    }
-
-    private void verifyLastExceptionsContains(Sequence<Number> expected) {
-        Sequence<StoredException> exceptions = sequence(lastExceptions).memorise();
+    private void verifyLastExceptionsContains(Sequence<? extends Exception> expected) {
+        Sequence<StoredException> exceptions = sequence(lastExceptions);
         assertThat(exceptions.size(), is(expected.size()));
 
-        expected.zip(exceptions.map(StoredException.exception())).forEach(new Block<Pair<Number, String>>() {
-            @Override
-            protected void execute(Pair<Number, String> pair) throws Exception {
-                assertThat(pair.first().toString(), is(pair.second()));
-            }
-        });
+        for (Pair<? extends Exception, Exception> pair : expected.zip(exceptions.map(StoredException.exception()))) {
+            assertThat(pair.first(), is(pair.second()));
+        }
     }
 
-    private void addNumbersToLastExceptions(Sequence<Number> numbers) {
-        numbers.forEach(new Block<Number>() {
+    private void addNumbersToLastExceptions(Sequence<? extends Exception> numbers) {
+        numbers.forEach(new Block<Exception>() {
             @Override
-            protected void execute(Number number) throws Exception {
-                lastExceptions.put(new Date(), RequestBuilder.get("/foo").build(), number.toString());
+            protected void execute(Exception exception) throws Exception {
+                lastExceptions.put(RequestBuilder.get("/foo").build(), exception);
             }
         });
     }

@@ -15,6 +15,7 @@ import com.googlecode.utterlyidle.handlers.HeadRequestHandler;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
+import com.googlecode.utterlyidle.rendering.exceptions.LastExceptionsHandler;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptionsModule;
 import com.googlecode.utterlyidle.services.Services;
 import com.googlecode.yadic.Container;
@@ -101,6 +102,7 @@ public class RestApplication implements Application {
         requestScope.decorate(HttpHandler.class, DateHandler.class);
         modules.activateRequestModules(requestScope);
         requestScope.decorate(HttpHandler.class, BasePathHandler.class);
+        requestScope.decorate(HttpHandler.class, LastExceptionsHandler.class);
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, ContentLengthHandler.class);
         requestScope.decorate(HttpHandler.class, HeadRequestHandler.class);
