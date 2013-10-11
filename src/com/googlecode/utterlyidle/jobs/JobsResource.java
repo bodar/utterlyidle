@@ -1,8 +1,10 @@
 package com.googlecode.utterlyidle.jobs;
 
 import com.googlecode.funclate.Model;
+import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Mapper;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
@@ -13,10 +15,14 @@ import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.PathParam;
+import com.googlecode.utterlyidle.annotations.Priority;
 import com.googlecode.utterlyidle.annotations.Produces;
 
 import java.util.List;
+import java.util.UUID;
 
+import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.utterlyidle.jobs.Job.functions.completed;
 import static com.googlecode.utterlyidle.jobs.Job.functions.started;
 import static com.googlecode.funclate.Model.mutable.model;
@@ -49,12 +55,20 @@ public class JobsResource {
     }
 
     @POST
-    @Path("run")
+    @Path("create")
     @Produces(TEXT_PLAIN)
-    public Response run(Request request, @PathParam("$") String endOfUrl) throws Exception {
+    public Response create(Request request, @PathParam("$") String endOfUrl) throws Exception {
         Request requestToQueue = modify(request).uri(request.uri().path(endOfUrl)).build();
-        jobs.run(requestToQueue);
-        return ResponseBuilder.response(Status.ACCEPTED.description("Queued HttpJob")).entity("Your HttpJob has been accepted").build();
+        Job job = jobs.create(requestToQueue);
+        return redirector.seeOther(method(on(JobsResource.class).get(job.id())));
+    }
+
+    @GET
+    @Priority(Priority.Low)
+    @Path("{id}")
+    public Response get(@PathParam("id") final UUID id) {
+        return jobs.jobs().find(where(Job.functions.id, is(id))).get().response().
+                getOrElse(ResponseBuilder.response(Status.ACCEPTED).build());
     }
 
     @POST
@@ -65,8 +79,8 @@ public class JobsResource {
     }
 
     private List<Model> items() {
-        return jobs.running().sortBy(descending(started())).map(asRunningModel()).
-                join(jobs.completed().sortBy(descending(completed())).map(asCompletedModel())).
+        return jobs.running().sortBy(descending(started)).map(asRunningModel()).
+                join(jobs.completed().sortBy(descending(completed)).map(asCompletedModel())).
                 toList();
     }
 

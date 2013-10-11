@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 
 import static com.googlecode.utterlyidle.schedules.CountDownScheduler.decorate;
 
+// Move back to BGB ?
 public class CountDownCompleter implements Completer {
     private final Completer delegate;
     private final CountDownLatch latch;

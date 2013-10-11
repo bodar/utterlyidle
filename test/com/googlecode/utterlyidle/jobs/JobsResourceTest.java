@@ -3,12 +3,10 @@ package com.googlecode.utterlyidle.jobs;
 import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.ApplicationTests;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static com.googlecode.funclate.Model.persistent.parse;
 import static com.googlecode.totallylazy.Strings.string;
@@ -19,34 +17,50 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.Status.ACCEPTED;
+import static com.googlecode.utterlyidle.Status.NOT_FOUND;
+import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.relativeUriOf;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class JobsResourceTest extends ApplicationTests {
     @Test
-    public void canRunARequest() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        application.applicationScope().
-                addInstance(CountDownLatch.class, latch).
-                decorate(Completer.class, CountDownCompleter.class);
+    public void canCreateAJobAndInspectIt() throws Exception {
+        ManualCompleter completer = stepCompleter();
 
         assertThat(numberOfCompletedJobs(), is(0));
 
-        assertThat(run(post("some/url").build()).status(), is(ACCEPTED));
-        latch.await(1, TimeUnit.SECONDS);
+        Response response = create(post("some/url").build());
+        assertThat(response.status(), is(SEE_OTHER));
+        String location = response.headers().getValue(HttpHeaders.LOCATION);
+        assertThat(application.handle(get(location).build()).status(), is(ACCEPTED));
+
+        assertThat(application.handle(get(location).build()).status(), is(ACCEPTED));
+
+        completer.job.call();
 
         assertThat(numberOfCompletedJobs(), is(1));
+
+        assertThat(application.handle(get(location).build()).status(), is(NOT_FOUND));
+
     }
+
+    private ManualCompleter stepCompleter() {
+        application.applicationScope().remove(Completer.class);
+        ManualCompleter completer = new ManualCompleter();
+        application.applicationScope().addInstance(Completer.class, completer);
+        return completer;
+    }
+
 
     @Test
     public void canDeleteAllRunningJobs() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        application.applicationScope().
-                addInstance(CountDownLatch.class, latch).
-                decorate(Completer.class, CountDownCompleter.class);
+        ManualCompleter completer = stepCompleter();
 
-        run(post("some/url").build());
-        latch.await(1, TimeUnit.SECONDS);
+        create(post("some/url").build());
+
+        completer.job.call();
+
         assertThat(numberOfCompletedJobs(), is(1));
 
         deleteAll();
@@ -63,9 +77,9 @@ public class JobsResourceTest extends ApplicationTests {
         return model.getValues("items").size();
     }
 
-    private Response run(Request request) throws Exception {
+    private Response create(Request request) throws Exception {
         Uri resource = request.uri();
-        String queuedPath = "/" + relativeUriOf(method(on(JobsResource.class).run(request, "/" + resource.path()))).toString();
+        String queuedPath = "/" + relativeUriOf(method(on(JobsResource.class).create(request, "/" + resource.path()))).toString();
         return application.handle(modify(request).uri(resource.path(queuedPath)).build());
     }
 }
