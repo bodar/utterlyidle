@@ -10,10 +10,10 @@ public interface StreamingWriter {
     void write(Writer writer) throws IOException;
 
     public static class functions {
-        public static Block<OutputStreamWriter> write(final StreamingWriter entity) {
-            return new Block<OutputStreamWriter>() {
+        public static Block<Writer> write(final StreamingWriter entity) {
+            return new Block<Writer>() {
                 @Override
-                protected void execute(OutputStreamWriter writer) throws Exception {
+                protected void execute(Writer writer) throws Exception {
                     entity.write(writer);
                 }
             };

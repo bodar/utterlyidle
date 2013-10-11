@@ -6,10 +6,8 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
-import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 
 import static com.googlecode.totallylazy.Debug.debugging;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
@@ -18,12 +16,10 @@ import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 public class ExceptionHandler implements HttpHandler {
     private final HttpHandler httpHandler;
     private final ResponseHandlersFinder handlers;
-    private LastExceptions exceptions;
 
-    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlersFinder handlers, LastExceptions exceptions) {
+    public ExceptionHandler(HttpHandler httpHandler, ResponseHandlersFinder handlers) {
         this.httpHandler = httpHandler;
         this.handlers = handlers;
-        this.exceptions = exceptions;
     }
 
     public Response handle(Request request) throws Exception {
@@ -40,7 +36,6 @@ public class ExceptionHandler implements HttpHandler {
 
     private Response findAndHandle(Request request, Throwable throwable) {
         if (debugging()) throwable.printStackTrace();
-        exceptions.put(new Date(), request, ExceptionRenderer.toString(throwable));
         ResponseBuilder response = ResponseBuilder.response(INTERNAL_SERVER_ERROR).
                 contentType(TEXT_PLAIN).
                 entity(throwable);
