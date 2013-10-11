@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.utterlyidle.Request;
 
 import java.util.Date;
@@ -8,15 +9,15 @@ import java.util.Date;
 public class StoredException {
     private final Date date;
     private final Request request;
-    private final String exception;
+    private final Exception exception;
 
-    public StoredException(Date date, Request request, String exception) {
+    public StoredException(Date date, Request request, Exception exception) {
         this.date = date;
         this.request = forceInMemory(request);
         this.exception = exception;
     }
 
-    private Request forceInMemory(final Request request) {
+    private static Request forceInMemory(final Request request) {
         request.toString();
         return request;
     }
@@ -29,14 +30,18 @@ public class StoredException {
         return request;
     }
 
-    public String getException() {
+    public Exception getException() {
         return exception;
     }
 
-    public static Callable1<? super StoredException, String> exception() {
-        return new Callable1<StoredException, String>() {
+    public String getExceptionAsString() {
+        return  Exceptions.asString(exception);
+    }
+
+    public static Callable1<? super StoredException, Exception> exception() {
+        return new Callable1<StoredException, Exception>() {
             @Override
-            public String call(StoredException e) throws Exception {
+            public Exception call(StoredException e) throws Exception {
                 return e.getException();
             }
         };

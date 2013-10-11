@@ -32,7 +32,9 @@ public class LastExceptionsModule implements ResourcesModule, ApplicationScopedM
 
     @Override
     public Container addPerApplicationObjects(Container container) throws Exception {
-        return container.addInstance(LastExceptions.class, new LastExceptions(20));
+        return container.
+                add(LastExceptionsSize.class).
+                add(LastExceptions.class);
     }
 
     @Override

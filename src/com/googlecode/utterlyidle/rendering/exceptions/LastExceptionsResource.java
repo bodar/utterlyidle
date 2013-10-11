@@ -25,6 +25,9 @@ public class LastExceptionsResource {
 
     @GET
     public Model allRecordedExceptions() {
-        return model().add("base", basePath).add("exceptions", sequence(lastExceptions).reverse().toList()).add("maximumSize", lastExceptions.getMaximumSize());
+        return model().
+                add("base", basePath).
+                add("exceptions", sequence(lastExceptions).reverse().toList()).
+                add("maximumSize", lastExceptions.getMaximumSize());
     }
 }

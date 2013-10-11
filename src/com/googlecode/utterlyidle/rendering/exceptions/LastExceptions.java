@@ -1,36 +1,36 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
+import com.googlecode.totallylazy.Exceptions;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.utterlyidle.Request;
 
-import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LastExceptions implements Iterable<StoredException> {
+    private final Clock clock;
+    private final List<StoredException> cache;
+    private final int maximumSize;
 
-    private final LinkedHashMap<UUID, StoredException> cache;
-    private int maximumSize;
-
-    public LastExceptions(final int maximumSize) {
-        this.maximumSize = maximumSize;
-        this.cache = new LinkedHashMap<UUID, StoredException>(maximumSize) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<UUID, StoredException> eldest) {
-                return this.size() > maximumSize;
-            }
-        };
+    public LastExceptions(final LastExceptionsSize maximumSize, final Clock clock) {
+        this.maximumSize = maximumSize.value();
+        this.clock = clock;
+        this.cache = new CopyOnWriteArrayList<StoredException>();
     }
 
-    public synchronized void put(Date date, Request request, String exception) {
-        cache.put(UUID.randomUUID(), new StoredException(date, request, exception));
+    public synchronized void put(Request request, Exception exception) {
+        cache.add(new StoredException(clock.now(), request, exception));
+        while (cache.size() > maximumSize) cache.remove(0);
     }
 
     @Override
     public Iterator<StoredException> iterator() {
-         return Sequences.sequence(cache.values()).memorise().iterator();
+        return Sequences.sequence(cache).iterator();
     }
 
     public int getMaximumSize() {
