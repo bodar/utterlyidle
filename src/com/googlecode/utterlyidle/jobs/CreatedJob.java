@@ -33,12 +33,18 @@ public class CreatedJob implements Job {
     }
 
     public static CreatedJob createJob(final Request request, final Date created) {
+        request.toString(); // memorize
         return new CreatedJob(UUID.randomUUID(), request, none(Response.class), created, none(Date.class), none(Date.class));
     }
 
     @Override
     public Date created() {
         return created;
+    }
+
+    @Override
+    public String status() {
+        return getClass().getSimpleName().replace("Job", "").toLowerCase();
     }
 
     @Override
@@ -67,6 +73,6 @@ public class CreatedJob implements Job {
     }
 
     public RunningJob start(Clock clock) {
-        return new RunningJob(this, clock);
+        return new RunningJob(this, clock.now());
     }
 }

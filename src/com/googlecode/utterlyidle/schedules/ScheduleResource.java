@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.schedules;
 import com.googlecode.funclate.Model;
 import com.googlecode.lazyrecords.Record;
 import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.MediaType;
@@ -88,7 +89,6 @@ public class ScheduleResource {
         List<Model> models = schedulesModel(scheduler.schedules());
         return model().
                 add("schedules", models).
-                add("anyExists", !models.isEmpty()).
                 add("schedulerIsRunning", scheduler.isRunning());
     }
 
@@ -150,4 +150,11 @@ public class ScheduleResource {
                 add("status", response.status().description()).
                 add("entity", response.entity().toString());
     }
+
+    public static Mapper<Response,Model> asModel = new Mapper<Response, Model>() {
+        @Override
+        public Model call(final Response response) throws Exception {
+            return asModel(response);
+        }
+    };
 }

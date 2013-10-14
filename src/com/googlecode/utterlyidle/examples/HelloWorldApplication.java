@@ -31,6 +31,10 @@ import static com.googlecode.utterlyidle.modules.Modules.bindingsModule;
 import static com.googlecode.utterlyidle.modules.Modules.requestInstance;
 
 public class HelloWorldApplication extends RestApplication {
+    public HelloWorldApplication() {
+        this(BasePath.basePath(""));
+    }
+
     public HelloWorldApplication(BasePath basePath) {
         super(basePath,
                 bindingsModule(annotatedClass(HelloWorld.class)),
@@ -44,7 +48,8 @@ public class HelloWorldApplication extends RestApplication {
                 bindingsModule(binding(get("/dsl").
                         resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))))),
                 requestInstance(System.getProperties()),
-                new PerformanceModule());
+                new PerformanceModule(),
+                new JobsModule());
     }
 
     private static <T> ResponseHandler streamingRenderer(final WritingRenderer<T> writingRenderer) {
