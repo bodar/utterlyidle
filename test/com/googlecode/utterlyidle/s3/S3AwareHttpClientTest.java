@@ -30,6 +30,7 @@ public class S3AwareHttpClientTest {
     }
 
     @Test
+    // http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#d0e4151
     public void signsS3Requests() throws Exception {
         assertThat(
                 delegatedRequest(get("http://johnsmith.s3.amazonaws.com/photos/puppy.jpg")).headers().getValue(AUTHORIZATION),
