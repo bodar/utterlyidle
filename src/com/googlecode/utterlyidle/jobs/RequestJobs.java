@@ -35,11 +35,6 @@ public class RequestJobs implements Jobs {
     }
 
     @Override
-    public Sequence<CompletedJob> completed() {
-        return sequence(completed);
-    }
-
-    @Override
     public Job create(final Request request) {
         CreatedJob job = CreatedJob.createJob(request, clock.now());
         created.add(job);
@@ -50,11 +45,6 @@ public class RequestJobs implements Jobs {
     @Override
     public Sequence<Job> jobs() {
         return Sequences.<Job>join(created, running, completed);
-    }
-
-    @Override
-    public Sequence<RunningJob> running() {
-        return sequence(running);
     }
 
     @Override
@@ -71,7 +61,7 @@ public class RequestJobs implements Jobs {
         running.add(runningJob);
         Response response = responseFor(runningJob.request());
         running.remove(runningJob);
-        completed.add(runningJob.complete(response));
+        completed.add(runningJob.complete(response, clock));
     }
 
     private Response responseFor(Request request) {
