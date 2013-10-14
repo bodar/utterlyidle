@@ -1,65 +1,61 @@
 package com.googlecode.utterlyidle.jobs;
 
 import com.googlecode.funclate.Model;
-import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Mapper;
-import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.annotations.ANY;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.PathParam;
 import com.googlecode.utterlyidle.annotations.Priority;
 import com.googlecode.utterlyidle.annotations.Produces;
+import com.googlecode.utterlyidle.schedules.ScheduleResource;
 
-import java.util.List;
 import java.util.UUID;
 
+import static com.googlecode.funclate.Model.persistent.model;
+import static com.googlecode.totallylazy.Callables.descending;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.where;
-import static com.googlecode.utterlyidle.jobs.Job.functions.completed;
-import static com.googlecode.utterlyidle.jobs.Job.functions.started;
-import static com.googlecode.funclate.Model.mutable.model;
-import static com.googlecode.totallylazy.Callables.descending;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
-
-import com.googlecode.utterlyidle.schedules.ScheduleResource;
+import static com.googlecode.utterlyidle.jobs.Job.functions.created;
 
 @Path("jobs")
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 public class JobsResource {
     private final Jobs jobs;
     private final Redirector redirector;
+    private final Clock clock;
 
-    public JobsResource(Jobs jobs, Redirector redirector) {
+    public JobsResource(Jobs jobs, Redirector redirector, final Clock clock) {
         this.jobs = jobs;
         this.redirector = redirector;
+        this.clock = clock;
     }
 
     @GET
     @Path("list")
     public Model list() {
-        List<Model> items = items();
         return model().
-                add("anyExists", !items.isEmpty()).
-                add("items", items);
+                add("items", jobs.jobs().
+                        sortBy(descending(created)).
+                        map(jobModel));
     }
 
-    @POST
+    @ANY
     @Path("create")
-    @Produces(TEXT_PLAIN)
-    public Response create(Request request, @PathParam("$") String endOfUrl) throws Exception {
-        Request requestToQueue = modify(request).uri(request.uri().path(endOfUrl)).build();
-        Job job = jobs.create(requestToQueue);
+    public Response create(Request original, @PathParam("$") String endOfUrl) throws Exception {
+        Request request = modify(original).uri(original.uri().path(endOfUrl)).build();
+        Job job = jobs.create(request);
         return redirector.seeOther(method(on(JobsResource.class).get(job.id())));
     }
 
@@ -67,8 +63,9 @@ public class JobsResource {
     @Priority(Priority.Low)
     @Path("{id}")
     public Response get(@PathParam("id") final UUID id) {
-        return jobs.jobs().find(where(Job.functions.id, is(id))).get().response().
-                getOrElse(ResponseBuilder.response(Status.ACCEPTED).build());
+        return jobs.jobs().find(where(Job.functions.id, is(id))).
+                map(jobResponse).
+                get();
     }
 
     @POST
@@ -78,39 +75,30 @@ public class JobsResource {
         return redirector.seeOther(method(on(JobsResource.class).list()));
     }
 
-    private List<Model> items() {
-        return jobs.running().sortBy(descending(started)).map(asRunningModel()).
-                join(jobs.completed().sortBy(descending(completed)).map(asCompletedModel())).
-                toList();
-    }
+    private Mapper<Job, Model> jobModel = new Mapper<Job, Model>() {
+        @Override
+        public Model call(Job job) throws Exception {
+            return jobModel(job);
+        }
+    };
 
-    private Mapper<RunningJob, Model> asRunningModel() {
-        return new Mapper<RunningJob, Model>() {
-            @Override
-            public Model call(RunningJob runningJob) throws Exception {
-                return model().
-                        add("status", "running").
-                        add("started", runningJob.started().get()).
-                        add("completed", "").
-                        add("duration", runningJob.duration()).
-                        add("request", ScheduleResource.asModel(runningJob.request())).
-                        add("response", model());
-            }
-        };
-    }
+    private Mapper<Job,Response> jobResponse = new Mapper<Job, Response>() {
+        @Override
+        public Response call(final Job job) throws Exception {
+            return ResponseBuilder.response(job.completed().isEmpty() ? Status.ACCEPTED : Status.OK).
+                    entity(jobModel(job)).
+                    build();
+        }
+    };
 
-    private Mapper<CompletedJob, Model> asCompletedModel() {
-        return new Mapper<CompletedJob, Model>() {
-            @Override
-            public Model call(CompletedJob completedJob) throws Exception {
-                return model().
-                        add("status", "idle").
-                        add("started", completedJob.started().get()).
-                        add("completed", completedJob.completed().get()).
-                        add("duration", completedJob.duration()).
-                        add("request", ScheduleResource.asModel(completedJob.request())).
-                        add("response", ScheduleResource.asModel(completedJob.response().get()));
-            }
-        };
+    private Model jobModel(final Job job) {
+        return model().
+                add("status", job.status()).
+                add("created", job.created()).
+                addOptionally("started", job.started()).
+                addOptionally("completed", job.completed()).
+                addOptionally("duration", Job.methods.duration(job, clock)).
+                add("request", ScheduleResource.asModel(job.request())).
+                addOptionally("response", job.response().map(ScheduleResource.asModel));
     }
 }
