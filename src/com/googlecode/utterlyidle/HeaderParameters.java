@@ -1,14 +1,13 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.collections.PersistentList;
 
 import java.util.Map;
 
+import static com.googlecode.totallylazy.Pair.functions.pairToString;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public class HeaderParameters extends Parameters<String, String, HeaderParameters> {
     public HeaderParameters() {
@@ -56,14 +55,6 @@ public class HeaderParameters extends Parameters<String, String, HeaderParameter
 
     @Override
     public String toString() {
-        return sequence(this).map(pairToString("", ": ", "")).toString(HTTP_LINE_SEPARATOR);
-    }
-
-    private Callable1<? super Pair<String, String>, String> pairToString(final String start, final String separator, final String end) {
-        return new Callable1<Pair<String, String>, String>() {
-            public String call(Pair<String, String> pair) throws Exception {
-                return pair.toString(start, separator, end);
-            }
-        };
+        return sequence(this).map(pairToString("", ": ", "")).toString("\n");
     }
 }
