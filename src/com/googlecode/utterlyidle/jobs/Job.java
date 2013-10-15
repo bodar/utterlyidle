@@ -43,17 +43,31 @@ public interface Job {
             }
         };
 
-        public static Mapper<Job, Date> started = new Mapper<Job, Date>() {
+        public static Mapper<Job, Option<Date>> started = new Mapper<Job, Option<Date>>() {
             @Override
-            public Date call(Job job) throws Exception {
-                return job.started().get();
+            public Option<Date> call(Job job) throws Exception {
+                return job.started();
             }
         };
 
-        public static Mapper<Job, Date> completed = new Mapper<Job, Date>() {
+        public static Mapper<Job, Option<Date>> completed = new Mapper<Job, Option<Date>>() {
             @Override
-            public Date call(Job job) throws Exception {
-                return job.completed().get();
+            public Option<Date> call(Job job) throws Exception {
+                return job.completed();
+            }
+        };
+
+        public static Mapper<Job, Request> request = new Mapper<Job, Request>() {
+            @Override
+            public Request call(final Job job) throws Exception {
+                return job.request();
+            }
+        };
+
+        public static Mapper<Job, Option<Response>> response = new Mapper<Job, Option<Response>>() {
+            @Override
+            public Option<Response> call(final Job job) throws Exception {
+                return job.response();
             }
         };
     }

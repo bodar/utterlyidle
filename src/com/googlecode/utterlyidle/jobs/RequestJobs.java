@@ -36,7 +36,7 @@ public class RequestJobs implements Jobs {
 
     @Override
     public Job create(final Request request) {
-        CreatedJob job = CreatedJob.createJob(request, clock.now());
+        CreatedJob job = CreatedJob.createJob(request, clock);
         created.add(job);
         completer.complete(handle(job));
         return job;
