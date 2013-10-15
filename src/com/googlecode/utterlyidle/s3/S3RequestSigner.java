@@ -15,7 +15,6 @@ import static com.googlecode.utterlyidle.HttpHeaders.DATE;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.functions.credentials;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
-import static com.googlecode.utterlyidle.s3.S3RequestStringifier.x_amz_date;
 
 public class S3RequestSigner {
     private final Sequence<AwsCredentialsRule> rules;
@@ -71,7 +70,7 @@ public class S3RequestSigner {
     }
 
     private Request ensureDate(final Request request) {
-        return request.headers().valueOption(DATE).isEmpty() && request.headers().valueOption(x_amz_date).isEmpty()
+        return request.headers().valueOption(DATE).isEmpty() && request.headers().valueOption(S3.dateHeader).isEmpty()
                 ? addDate(request)
                 : request;
     }

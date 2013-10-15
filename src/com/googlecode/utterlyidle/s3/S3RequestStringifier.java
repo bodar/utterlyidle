@@ -5,13 +5,9 @@ import com.googlecode.totallylazy.Group;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.second;
@@ -27,8 +23,6 @@ import static com.googlecode.totallylazy.Strings.blank;
 import static com.googlecode.totallylazy.Strings.isBlank;
 import static com.googlecode.totallylazy.Strings.startsWith;
 import static com.googlecode.totallylazy.Strings.toLowerCase;
-import static com.googlecode.totallylazy.UrlEncodedMessage.decode;
-import static com.googlecode.totallylazy.UrlEncodedMessage.encode;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.Content_MD5;
 import static com.googlecode.utterlyidle.HttpHeaders.HOST;
@@ -36,10 +30,8 @@ import static java.lang.String.format;
 import static java.util.regex.Pattern.quote;
 
 public class S3RequestStringifier {
-    public static final String s3 = "s3.amazonaws.com";
-    public static final String x_amz_date = "x-amz-date";
     // see http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#d0e3773
-    private final Sequence<String> canonicalResourceQueryParams = sequence("acl", "lifecycle", "location", "logging", "notification", "partNumber", "policy", "requestPayment", "torrent", "uploadId", "uploads", "versionId", "versioning", "versions", "website");
+    public static final Sequence<String> canonicalResourceQueryParams = sequence("acl", "lifecycle", "location", "logging", "notification", "partNumber", "policy", "requestPayment", "torrent", "uploadId", "uploads", "versionId", "versioning", "versions", "website");
 
     public String stringToSign(Request request) {
         return format("%s\n%s\n%s\n%s\n%s%s",
@@ -55,7 +47,7 @@ public class S3RequestStringifier {
         String result = sequence(request.headers()).
                 map(replaceFirst(toLowerCase(), String.class)).
                 filter(where(first(String.class), startsWith("x-amz-"))).
-                filter(where(first(String.class), not(x_amz_date))).
+                filter(where(first(String.class), not(S3.dateHeader))).
                 groupBy(first(String.class)).
                 map(mergeHeaders()).
                 sortBy(first(String.class)).
@@ -78,10 +70,10 @@ public class S3RequestStringifier {
 
     private String date(Request request) {
         return sequence(
-                request.headers().getValue(x_amz_date),
+                request.headers().getValue(S3.dateHeader),
                 request.headers().getValue(HttpHeaders.DATE))
                 .find(not(nullValue()))
-                .getOrThrow(new RuntimeException(format("No Date or %s header in request:\n%s", x_amz_date, request)));
+                .getOrThrow(new RuntimeException(format("No Date or %s header in request:\n%s", S3.dateHeader, request)));
     }
 
     private String canonicalizedResource(Request request) {
@@ -105,10 +97,10 @@ public class S3RequestStringifier {
         Option<String> bucket = sequence(
                 request.uri().authority(),
                 hostHeaderAuthority(request))
-                .find(not(s3).and(not(blank())));
+                .find(not(S3.baseAuthority).and(not(blank())));
         return bucket.isEmpty()
                 ? ""
-                : "/" + bucket.get().split(quote("." + s3))[0];
+                : "/" + bucket.get().split(quote("." + S3.baseAuthority))[0];
     }
 
     public static String hostHeaderAuthority(final Request request) {
