@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -9,14 +8,11 @@ import com.googlecode.utterlyidle.handlers.HttpClient;
 import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Strings.isBlank;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static com.googlecode.utterlyidle.s3.AnyS3Request.anyS3Request;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
-import static com.googlecode.utterlyidle.s3.S3RequestStringifier.s3;
 
 public class S3HttpClient implements HttpClient {
-    public static final String s3Scheme = "s3";
 
     private final HttpHandler httpClient;
     private final S3RequestSigner signer;
@@ -44,20 +40,6 @@ public class S3HttpClient implements HttpClient {
     }
 
     private Request s3ToHttp(final Request request) {
-        return s3Scheme.equalsIgnoreCase(request.uri().scheme())
-                ? modify(request).uri(expandS3Uri(request.uri())).build()
-                : request;
-    }
-
-    private Uri expandS3Uri(final Uri uri) {
-        return isBlank(uri.authority()) ?
-                uri.
-                        scheme("https").
-                        authority(s3).
-                        path("/")
-                :
-                uri.
-                        scheme("https").
-                        authority(uri.authority() + "." + s3);
+        return modify(request).uri(S3.toHttpUri(request.uri())).build();
     }
 }
