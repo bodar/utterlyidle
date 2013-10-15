@@ -42,6 +42,11 @@ public class S3RealTest {
         properties = new Properties();
         properties.load(properties());
 
+        assertThat(
+                "Developer should understand what this test does",
+                properties.getProperty("signMyLifeAway"),
+                is("I've checked the code of this test and understand that it creates and deletes buckets and keys using my credentials"));
+
         client = new S3AwareHttpClient(
                 new AuditHandler(new ClientHttpHandler(), new FullRequestPrintAuditor()),
                 new AwsCredentials(properties.getProperty("accessKey"), properties.getProperty("secretKey")));
