@@ -10,11 +10,10 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.endsWith;
 import static com.googlecode.totallylazy.Strings.toLowerCase;
 import static com.googlecode.utterlyidle.s3.S3RequestStringifier.hostHeaderAuthority;
-import static com.googlecode.utterlyidle.s3.S3RequestStringifier.s3;
 
 public class AnyS3Request extends LogicalPredicate<Request> {
     public static final LogicalPredicate<Request> anyS3Request = new AnyS3Request();
-    private static final LogicalPredicate<String> endsWithS3 = endsWith(s3);
+    private static final LogicalPredicate<String> endsWithS3 = endsWith(S3.baseAuthority);
 
     @Override
     public boolean matches(final Request request) {
