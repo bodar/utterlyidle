@@ -66,7 +66,7 @@ public abstract class ServerContract<T extends Server> {
     public void shouldCaptureStreamingExceptions() throws Exception {
         final Sequence<StoredException> exceptions = sequence(server.application().applicationScope().get(LastExceptions.class));
         assertThat(exceptions.size(), is(0));
-        handle(get("stream-exception"), server);
+        handle(get("stream-exception"), server).toString();
         assertThat(exceptions.size(), is(1));
     }
 
