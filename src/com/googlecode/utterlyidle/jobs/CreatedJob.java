@@ -32,9 +32,9 @@ public class CreatedJob implements Job {
         this.started = started;
     }
 
-    public static CreatedJob createJob(final Request request, final Date created) {
+    public static CreatedJob createJob(final Request request, final Clock clock) {
         request.toString(); // memorize
-        return new CreatedJob(UUID.randomUUID(), request, none(Response.class), created, none(Date.class), none(Date.class));
+        return new CreatedJob(UUID.randomUUID(), request, none(Response.class), clock.now(), none(Date.class), none(Date.class));
     }
 
     @Override

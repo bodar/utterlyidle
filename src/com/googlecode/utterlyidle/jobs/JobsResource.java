@@ -1,13 +1,18 @@
 package com.googlecode.utterlyidle.jobs;
 
 import com.googlecode.funclate.Model;
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.time.Clock;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.ANY;
 import com.googlecode.utterlyidle.annotations.GET;
@@ -63,9 +68,19 @@ public class JobsResource {
     @Priority(Priority.Low)
     @Path("{id}")
     public Response get(@PathParam("id") final UUID id) {
+        return jobResponse(id, jobResponse.optional());
+    }
+
+    @GET
+    @Path("{id}/result")
+    public Response result(@PathParam("id") final UUID id) {
+        return jobResponse(id, Job.functions.response);
+    }
+
+    private Response jobResponse(final UUID id, final Callable1<? super Job, ? extends Option<Response>> mapper) {
         return jobs.jobs().find(where(Job.functions.id, is(id))).
-                map(jobResponse).
-                get();
+                flatMap(mapper).
+                getOrElse(Responses.response(Status.NOT_FOUND));
     }
 
     @POST
@@ -85,16 +100,40 @@ public class JobsResource {
     private Mapper<Job,Response> jobResponse = new Mapper<Job, Response>() {
         @Override
         public Response call(final Job job) throws Exception {
-            return ResponseBuilder.response(job.completed().isEmpty() ? Status.ACCEPTED : Status.OK).
-                    entity(jobModel(job)).
-                    build();
+            return response(job);
         }
     };
 
+    private Response response(final Job job) {
+        return setResultLocation(job, ResponseBuilder.response(status(job)).
+                entity(jobModel(job)).
+                build());
+    }
+
+    private Response setResultLocation(final Job job, final Response response) {
+        if(response.status().equals(Status.OK)) {
+            return ResponseBuilder.modify(response).
+                    header(HttpHeaders.CONTENT_LOCATION, resultUri(job)).build();
+        }
+        return response;
+    }
+
+    private Uri resultUri(final Job job) {
+        return redirector.uriOf(method(on(JobsResource.class).result(job.id())));
+    }
+
+    public static Status status(final Job job) {
+        if(job.completed().isDefined()) return Status.OK;
+        if(job.started().isDefined()) return Status.ACCEPTED;
+        return Status.CREATED;
+    }
+
     private Model jobModel(final Job job) {
         return model().
+                add("id", job.id()).
                 add("status", job.status()).
                 add("created", job.created()).
+                add("result", resultUri(job)).
                 addOptionally("started", job.started()).
                 addOptionally("completed", job.completed()).
                 addOptionally("duration", Job.methods.duration(job, clock)).
