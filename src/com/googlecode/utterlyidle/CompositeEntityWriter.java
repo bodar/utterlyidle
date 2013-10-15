@@ -20,9 +20,9 @@ public class CompositeEntityWriter implements EntityWriter<Object>, Value<Sequen
         ruleFor(entity).call(outputStream);
     }
 
-    private Block<OutputStream> ruleFor(final Object entity) throws Exception {
+    public Block<OutputStream> ruleFor(final Object entity) {
         try {
-            return rules.call(entity);
+            return rules.apply(entity);
         } catch (NoSuchElementException e) {
             throw new UnsupportedOperationException("Unknown entity type " + entity.getClass(), e);
         }

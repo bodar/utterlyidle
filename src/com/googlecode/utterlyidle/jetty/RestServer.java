@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
@@ -21,10 +22,8 @@ import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
-import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 import static java.lang.System.nanoTime;
 import static org.mortbay.jetty.servlet.Context.NO_SESSIONS;
 
@@ -64,7 +63,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     public static void main(String[] args) throws Exception {
-        application(HelloWorldApplication.class).start(defaultConfiguration().port(8002));
+        ApplicationBuilder.application(HelloWorldApplication.class).start(defaultConfiguration().port(8002));
     }
 
     private Server startApp() throws Exception {
@@ -103,7 +102,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     private static String removeTrailingSlash(final String value) {
-        if(!value.endsWith("/")) return value;
+        if (!value.endsWith("/")) return value;
         return value.substring(0, value.length() - 1);
     }
 
@@ -128,6 +127,11 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
 
     private int portNumber(Server server) {
         return sequence(server.getConnectors()).head().getLocalPort();
+    }
+
+    @Override
+    public Application application() {
+        return application;
     }
 
     public Uri uri() {

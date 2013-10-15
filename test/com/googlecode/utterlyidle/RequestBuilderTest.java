@@ -9,7 +9,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.bytes;
-import static com.googlecode.utterlyidle.Entity.inputStreamOf;
+import static com.googlecode.utterlyidle.Entities.inputStreamOf;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;

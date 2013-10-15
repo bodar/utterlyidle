@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.MemoryRequest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
@@ -68,7 +67,7 @@ public class ApplicationServlet extends HttpServlet {
         for (Integer length : response.entity().length()) {
             resp.setContentLength(length);
         }
-        using(resp.getOutputStream(), response.entity().transferFrom());
+        using(resp.getOutputStream(), response.entity().writer());
     }
 
     public static Request request(HttpServletRequest servletRequest) {
