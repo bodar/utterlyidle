@@ -16,11 +16,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-public class S3AwareHttpClientTest {
+public class S3HttpClientTest {
     private final AuditTest.TestAuditor auditor = new AuditTest.TestAuditor();
     private final S3RequestSigner requestSigner = new S3RequestSigner(exampleCredentials, new StoppedClock(dateInAmazonsExample));
     private final AuditHandler auditHandler = new AuditHandler(new EmptyResponseHandler(), auditor);
-    private final S3AwareHttpClient client = new S3AwareHttpClient(auditHandler, requestSigner);
+    private final S3HttpClient client = new S3HttpClient(auditHandler, requestSigner);
 
     @Test
     public void expandsS3Urls() throws Exception {
@@ -47,7 +47,7 @@ public class S3AwareHttpClientTest {
     @Test
     public void doesNotSignNonS3UrlsByDefault() throws Exception {
         // Testing the constructor that only takes credentials
-        S3AwareHttpClient client = new S3AwareHttpClient( auditHandler, exampleCredentials);
+        S3HttpClient client = new S3HttpClient( auditHandler, exampleCredentials);
         assertThat(
                 delegatedRequest(client, get("http://google.com")).headers().getValue(AUTHORIZATION),
                 is(nullValue()));
@@ -57,7 +57,7 @@ public class S3AwareHttpClientTest {
         return delegatedRequest(client, request);
     }
 
-    private Request delegatedRequest(final S3AwareHttpClient client1, final RequestBuilder request) throws Exception {
+    private Request delegatedRequest(final S3HttpClient client1, final RequestBuilder request) throws Exception {
         client1.handle(request.build());
         return AuditTest.TestAuditor.receivedRequest;
     }

@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assume.assumeTrue;
 
 public class S3RealTest {
-    private S3AwareHttpClient client;
+    private S3HttpClient client;
     private Properties properties;
     private String bucketName;
     private String keyPath;
@@ -47,7 +47,7 @@ public class S3RealTest {
                 properties.getProperty("signMyLifeAway"),
                 is("I've checked the code of this test and understand that it creates and deletes buckets and keys using my credentials"));
 
-        client = new S3AwareHttpClient(
+        client = new S3HttpClient(
                 new AuditHandler(new ClientHttpHandler(), new FullRequestPrintAuditor()),
                 new AwsCredentials(properties.getProperty("accessKey"), properties.getProperty("secretKey")));
 
