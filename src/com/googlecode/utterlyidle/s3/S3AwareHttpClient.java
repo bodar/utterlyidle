@@ -8,6 +8,7 @@ import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.isBlank;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static com.googlecode.utterlyidle.s3.AnyS3Request.anyS3Request;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
@@ -48,8 +49,14 @@ public class S3AwareHttpClient implements HttpHandler {
     }
 
     private Uri expandS3Uri(final Uri uri) {
-        return uri.
-                scheme("https").
-                authority(uri.authority() + "." + s3);
+        return isBlank(uri.authority()) ?
+                uri.
+                        scheme("https").
+                        authority(s3).
+                        path("/")
+                :
+                uri.
+                        scheme("https").
+                        authority(uri.authority() + "." + s3);
     }
 }

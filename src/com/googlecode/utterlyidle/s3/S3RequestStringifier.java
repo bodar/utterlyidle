@@ -22,6 +22,7 @@ import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.nullValue;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.blank;
 import static com.googlecode.totallylazy.Strings.isBlank;
 import static com.googlecode.totallylazy.Strings.startsWith;
 import static com.googlecode.totallylazy.Strings.toLowerCase;
@@ -102,7 +103,7 @@ public class S3RequestStringifier {
         Option<String> bucket = sequence(
                 request.uri().authority(),
                 hostHeaderAuthority(request))
-                .find(not(s3).and(not(nullValue())));
+                .find(not(s3).and(not(blank())));
         return bucket.isEmpty()
                 ? ""
                 : "/" + bucket.get().split(quote("." + s3))[0];

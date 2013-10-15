@@ -30,6 +30,13 @@ public class S3AwareHttpClientTest {
     }
 
     @Test
+    public void expandsS3RootUrl() throws Exception {
+        assertThat(
+                delegatedRequest(get("s3://")).uri(),
+                is(uri("https://s3.amazonaws.com/")));
+    }
+
+    @Test
     // http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#d0e4151
     public void signsS3Requests() throws Exception {
         assertThat(
