@@ -5,6 +5,7 @@ import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 import com.googlecode.utterlyidle.handlers.FullRequestPrintAuditor;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -31,13 +32,15 @@ public class S3RealTest {
     private String key;
     private String bucketPath;
 
+    @BeforeClass
+    public static void checkPropertiesExist(){
+        assumeTrue(properties() != null);
+    }
+
     @Before
     public void createClient() throws IOException {
-        InputStream stream = S3RealTest.class.getResourceAsStream("s3.properties");
-        assumeTrue(stream != null);
-
         properties = new Properties();
-        properties.load(stream);
+        properties.load(properties());
 
         client = new S3AwareHttpClient(
                 new AuditHandler(new ClientHttpHandler(), new FullRequestPrintAuditor()),
@@ -102,5 +105,9 @@ public class S3RealTest {
                 "Bucket should no longer exist in root listing",
                 client.handle(get("s3://").build()).entity().toString(),
                 not(containsString(bucketName)));
+    }
+
+    private static InputStream properties() {
+        return S3RealTest.class.getResourceAsStream("s3.properties");
     }
 }
