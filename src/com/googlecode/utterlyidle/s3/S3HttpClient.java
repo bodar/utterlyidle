@@ -5,6 +5,7 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
+import com.googlecode.utterlyidle.handlers.HttpClient;
 import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -14,21 +15,21 @@ import static com.googlecode.utterlyidle.s3.AnyS3Request.anyS3Request;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
 import static com.googlecode.utterlyidle.s3.S3RequestStringifier.s3;
 
-public class S3AwareHttpClient implements HttpHandler {
+public class S3HttpClient implements HttpClient {
     public static final String s3Scheme = "s3";
 
     private final HttpHandler httpClient;
     private final S3RequestSigner signer;
 
-    public S3AwareHttpClient(final AwsCredentials credentials) {
+    public S3HttpClient(final AwsCredentials credentials) {
         this(new RedirectHttpHandler(new ClientHttpHandler()), new S3RequestSigner(sequence(rule(anyS3Request, credentials))));
     }
 
-    public S3AwareHttpClient(final HttpHandler httpClient, final AwsCredentials credentials) {
+    public S3HttpClient(final HttpHandler httpClient, final AwsCredentials credentials) {
         this(httpClient, new S3RequestSigner(sequence(rule(anyS3Request, credentials))));
     }
 
-    public S3AwareHttpClient(final HttpHandler httpClient, final S3RequestSigner signer) {
+    public S3HttpClient(final HttpHandler httpClient, final S3RequestSigner signer) {
         this.httpClient = httpClient;
         this.signer = signer;
     }
