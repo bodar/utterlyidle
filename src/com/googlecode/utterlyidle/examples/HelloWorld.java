@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.examples;
 
-import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.numbers.Numbers;
@@ -13,6 +12,7 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.StreamingOutput;
+import com.googlecode.utterlyidle.StreamingWriter;
 import com.googlecode.utterlyidle.annotations.ANY;
 import com.googlecode.utterlyidle.annotations.DELETE;
 import com.googlecode.utterlyidle.annotations.DefaultValue;
@@ -25,12 +25,13 @@ import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Callables.toString;
-import static com.googlecode.totallylazy.time.Dates.format;
-import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
+import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
@@ -163,6 +164,18 @@ public class HelloWorld {
     @Path("optionalInteger")
     public String optionalInteger(@QueryParam("integer") Option<Integer> integer) {
         return integer.map(toString).getOrElse("no integer");
+    }
+
+    @GET
+    @Path("stream-exception")
+    public StreamingWriter streamException() {
+        return new StreamingWriter() {
+            @Override
+            public void write(final Writer writer) throws IOException {
+                writer.write("Yes, I'm streaming");
+                throw new RuntimeException("boom from streaming!");
+            }
+        };
     }
 
     private String hello(String name) {

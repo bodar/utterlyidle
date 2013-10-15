@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
@@ -14,17 +15,18 @@ import java.util.concurrent.ExecutorService;
 
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.totallylazy.concurrent.NamedExecutors.newFixedThreadPool;
-import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 
 public class RestServer implements Server {
+    private final Application application;
     private HttpServer server;
     private Uri uri;
     private ExecutorService executorService;
 
     public RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
+        this.application = application;
         server = startApp(application, configuration);
     }
 
@@ -34,7 +36,12 @@ public class RestServer implements Server {
     }
 
     public static void main(String[] args) throws Exception {
-        application(HelloWorldApplication.class).start(defaultConfiguration().port(8001));
+        ApplicationBuilder.application(HelloWorldApplication.class).start(defaultConfiguration().port(8001));
+    }
+
+    @Override
+    public Application application() {
+        return application;
     }
 
     public Uri uri() {

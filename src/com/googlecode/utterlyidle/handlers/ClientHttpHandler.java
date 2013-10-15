@@ -20,7 +20,6 @@ import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.proxies.NoProxy;
-import com.googlecode.utterlyidle.proxies.Proxies;
 import com.googlecode.utterlyidle.proxies.ProxyFor;
 import sun.net.www.protocol.file.FileURLConnection;
 
@@ -160,7 +159,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         if (request.entity().length().is(zero)) return;
 
         connection.setDoOutput(true);
-        using(connection.getOutputStream(), request.entity().transferFrom());
+        using(connection.getOutputStream(), request.entity().writer());
     }
 
     private Status sendHttpRequest(final Request request, final HttpURLConnection connection) throws IOException {
