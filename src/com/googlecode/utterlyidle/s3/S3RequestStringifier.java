@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 
@@ -93,10 +94,11 @@ public class S3RequestStringifier {
     }
 
     private String subresource(final Request request) {
-        return canonicalizedQuery(
-                sequence(parse(request.uri().query()))
+        String result = UrlEncodedMessage.toString(
+                sequence(UrlEncodedMessage.parse(request.uri().query()))
                         .filter(where(first(String.class), in(canonicalResourceQueryParams)))
                         .sortBy(first(String.class)));
+        return result.isEmpty() ? "" : "?" + result;
     }
 
     private String virtualHostBucket(final Request request) {
@@ -114,62 +116,5 @@ public class S3RequestStringifier {
         return header.isEmpty()
                 ? null
                 : header.get().split(":")[0];
-    }
-
-    // Identical to UrlEncodedMessage.toString(), except:
-    //
-    // pair("param", "")
-    // ?param=
-    //
-    // whereas:
-    //
-    // pair("param", null)
-    // ?param
-    //
-    // so that query params are fully reversible
-    private static String canonicalizedQuery(Iterable<? extends Pair<String, String>> pairs) {
-        StringBuilder builder = new StringBuilder();
-        boolean first = true;
-        for (Pair<String, String> pair : pairs) {
-            if (first) {
-                first = false;
-                builder.append("?");
-            } else {
-                builder.append("&");
-            }
-            builder.append(encode(pair.first()));
-            if (pair.second() != null)
-                builder.append("=").append(encode(pair.second()));
-        }
-        return builder.toString();
-    }
-
-    // Identical to UrlEncodedMessage.parse(), except:
-    //
-    // ?param=
-    // pair("param", "")
-    //
-    // whereas:
-    //
-    // ?param
-    // pair("param", null)
-    //
-    // so that query params are fully reversible
-    private static List<Pair<String, String>> parse(String value) {
-        List<Pair<String, String>> result = new ArrayList<Pair<String, String>>();
-        if (Strings.isEmpty(value)) {
-            return result;
-        }
-
-        for (String pair : value.split("&")) {
-            String[] nameValue = pair.split("=");
-            if (nameValue.length == 1) {
-                result.add(pair(decode(nameValue[0]), (String) null));
-            }
-            if (nameValue.length == 2) {
-                result.add(pair(decode(nameValue[0]), decode(nameValue[1])));
-            }
-        }
-        return result;
     }
 }
