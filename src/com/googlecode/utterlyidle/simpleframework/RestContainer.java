@@ -65,7 +65,7 @@ public class RestContainer implements Container {
         for (Integer integer : applicationResponse.entity().length()) {
             response.setContentLength(integer);
         }
-        using(response.getOutputStream(), applicationResponse.entity().transferFrom());
+        using(response.getOutputStream(), applicationResponse.entity().writer());
     }
 
     private Callable2<Response, Pair<String, String>, Response> mapHeaders() {

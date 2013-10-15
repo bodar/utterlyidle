@@ -1,15 +1,18 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
+import com.googlecode.utterlyidle.rendering.exceptions.StoredException;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.time.Dates.LEXICAL;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
@@ -57,6 +60,14 @@ public abstract class ServerContract<T extends Server> {
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("chunk"));
+    }
+
+    @Test
+    public void shouldCaptureStreamingExceptions() throws Exception {
+        final Sequence<StoredException> exceptions = sequence(server.application().applicationScope().get(LastExceptions.class));
+        assertThat(exceptions.size(), is(0));
+        handle(get("stream-exception"), server);
+        assertThat(exceptions.size(), is(1));
     }
 
     @Test

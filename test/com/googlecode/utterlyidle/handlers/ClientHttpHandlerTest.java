@@ -20,7 +20,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +30,7 @@ import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.Entity.inputStreamOf;
+import static com.googlecode.utterlyidle.Entities.inputStreamOf;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;

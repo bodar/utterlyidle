@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.Strings;
 import com.googlecode.utterlyidle.annotations.Consumes;
 import com.googlecode.utterlyidle.annotations.CookieParam;
 import com.googlecode.utterlyidle.annotations.DELETE;
@@ -28,7 +27,6 @@ import com.googlecode.yadic.generics.TypeFor;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Formatter;
@@ -41,8 +39,8 @@ import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.Entity.streamingOutputOf;
-import static com.googlecode.utterlyidle.Entity.streamingWriterOf;
+import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
+import static com.googlecode.utterlyidle.Entities.streamingWriterOf;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
@@ -286,7 +284,7 @@ public class RestTest {
     @Test
     public void canEcho() throws Exception {
         ApplicationBuilder application = application().addAnnotated(HelloWorld.class);
-        assertThat(application.responseAsString(put("echo").entity(Entity.inputStreamOf("Hello"))), is("Hello"));
+        assertThat(application.responseAsString(put("echo").entity(Entities.inputStreamOf("Hello"))), is("Hello"));
     }
 
     @Test

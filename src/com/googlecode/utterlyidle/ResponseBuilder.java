@@ -67,7 +67,12 @@ public class ResponseBuilder {
     }
 
     public ResponseBuilder entity(Object value) {
-        entity = Entity.entity(value);
+        if(value instanceof Entity) return entity((Entity) value);
+        return entity(Entity.entity(value));
+    }
+
+    public ResponseBuilder entity(Entity value) {
+        entity = value;
         return this;
     }
 
