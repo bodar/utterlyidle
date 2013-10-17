@@ -59,8 +59,7 @@ public class S3HttpClientTest {
     }
 
     private Request delegatedRequest(final S3HttpClient client1, final RequestBuilder request) throws Exception {
-        Response response = client1.handle(request.build());
-        response.toString();
+        client1.handle(request.build());
         return AuditTest.TestAuditor.receivedRequest;
     }
 
