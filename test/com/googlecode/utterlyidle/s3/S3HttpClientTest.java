@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.time.StoppedClock;
 import com.googlecode.utterlyidle.AuditTest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import org.junit.Test;
 
@@ -58,7 +59,8 @@ public class S3HttpClientTest {
     }
 
     private Request delegatedRequest(final S3HttpClient client1, final RequestBuilder request) throws Exception {
-        client1.handle(request.build());
+        Response response = client1.handle(request.build());
+        response.toString();
         return AuditTest.TestAuditor.receivedRequest;
     }
 

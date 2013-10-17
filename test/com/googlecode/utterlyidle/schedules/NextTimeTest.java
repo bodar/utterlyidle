@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.schedules;
 
-import com.googlecode.totallylazy.time.FixedClock;
+import com.googlecode.totallylazy.time.StoppedClock;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.time.Dates.date;
@@ -8,7 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 public class NextTimeTest {
-    private static final FixedClock MIDDAY = new FixedClock(date(2012, 1, 1, 12));
+    private static final StoppedClock MIDDAY = new StoppedClock(date(2012, 1, 1, 12));
 
     @Test
     public void shouldCalculateTimeToday() throws Exception {
