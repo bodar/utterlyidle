@@ -20,7 +20,6 @@ public class AuditTest {
 
         Request request = get("").build();
         Response response = application.handle(request);
-        response.toString();
 
         assertThat(TestAuditor.receivedRequest, is(request));
         assertThat(TestAuditor.receivedResponse, is(response));
