@@ -34,22 +34,25 @@ public class AuditHandler implements HttpClient {
 
         final Response response = handler.handle(request);
 
-        final Block<OutputStream> original = response.entity().writer();
-        response.entity().writer(new Block<OutputStream>() {
-            @Override
-            protected void execute(final OutputStream outputStream) throws Exception {
-                auditor.audit(pair(request, started), pair(response(outputStream, response, original), clock.now()));
-            }
-        });
+        if(response.entity().isStreaming()) {
+            final Block<OutputStream> original = response.entity().writer();
+            response.entity().writer(new Block<OutputStream>() {
+                @Override
+                protected void execute(final OutputStream outputStream) throws Exception {
+                    auditor.audit(pair(request, started), pair(streamedResponse(outputStream, response, original), clock.now()));
+                }
+            });
+            return response;
+        }
 
+        auditor.audit(pair(request, started), pair(response, clock.now()));
         return response;
     }
 
-    private Response response(final OutputStream outputStream, final Response response, final Block<OutputStream> writer) throws Exception {
+    private Response streamedResponse(final OutputStream outputStream, final Response response, final Block<OutputStream> writer) throws Exception {
         try {
             writer.call(outputStream);
-            if (response.entity().isStreaming()) modify(response).entity("Streaming succeeded").build();
-            return response;
+            return modify(response).entity("Streaming succeeded").build();
         } catch (Exception e) {
             return modify(response).entity("Streaming failed:\n" + ExceptionRenderer.toString(e)).build();
         }
