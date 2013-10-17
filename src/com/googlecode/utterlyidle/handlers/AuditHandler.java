@@ -1,39 +1,57 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.time.Clock;
+import com.googlecode.totallylazy.time.SystemClock;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 
+import java.io.OutputStream;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 
 public class AuditHandler implements HttpClient {
-
-    private final HttpHandler delegate;
+    private final HttpHandler handler;
     private final Auditor auditor;
+    private final Clock clock;
 
-    public AuditHandler(HttpHandler delegate, Auditor auditor) {
-        this.delegate = delegate;
-        this.auditor = auditor;
+    public AuditHandler(HttpHandler handler, Auditor auditor) {
+        this(handler, auditor, new SystemClock());
     }
 
-    public Response handle(Request request) throws Exception {
-        Date requestDate = new Date();
+    public AuditHandler(HttpHandler handler, Auditor auditor, Clock clock) {
+        this.handler = handler;
+        this.auditor = auditor;
+        this.clock = clock;
+    }
 
-        Response response = delegate.handle(request);
+    public Response handle(final Request request) throws Exception {
+        final Date started = clock.now();
 
-        Date responseDate = new Date();
+        final Response response = handler.handle(request);
 
-        try {
-            auditor.audit(pair(request, requestDate), pair(response, responseDate));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final Block<OutputStream> original = response.entity().writer();
+        response.entity().writer(new Block<OutputStream>() {
+            @Override
+            protected void execute(final OutputStream outputStream) throws Exception {
+                auditor.audit(pair(request, started), pair(response(outputStream, response, original), clock.now()));
+            }
+        });
 
         return response;
-
     }
 
-
+    private Response response(final OutputStream outputStream, final Response response, final Block<OutputStream> writer) throws Exception {
+        try {
+            writer.call(outputStream);
+            if (response.entity().isStreaming()) modify(response).entity("Streaming succeeded").build();
+            return response;
+        } catch (Exception e) {
+            return modify(response).entity("Streaming failed:\n" + ExceptionRenderer.toString(e)).build();
+        }
+    }
 }
