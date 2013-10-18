@@ -29,8 +29,8 @@ public class HttpHeaders {
     public static final String COOKIE = "Cookie";
     public static final String SET_COOKIE = "Set-Cookie";
     public static final String X_FORWARDED_FOR = "X-Forwarded-For";
-    public static final String X_CORRELATION_ID = "X-CorrelationID";
     public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+    public static final String X_CORRELATION_ID = "X-CorrelationID";
     public static final String TRANSFER_ENCODING = "Transfer-Encoding";
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
 }
