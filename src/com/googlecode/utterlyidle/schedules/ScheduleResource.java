@@ -10,6 +10,7 @@ import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.ANY;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
@@ -144,14 +145,16 @@ public class ScheduleResource {
     }
 
     public static Model asModel(Response response) {
+        Status status = response.status();
         return model().
                 add("raw", response.toString()).
-                add("code", response.status().code()).
-                add("status", response.status().description()).
-                add("entity", response.entity().toString());
+                add("code", status.code()).
+                add("status", status.description()).
+                add("entity", response.entity().toString()).
+                add("isOk", status.isSuccessful() || status.isRedirect());
     }
 
-    public static Mapper<Response,Model> asModel = new Mapper<Response, Model>() {
+    public static Mapper<Response, Model> asModel = new Mapper<Response, Model>() {
         @Override
         public Model call(final Response response) throws Exception {
             return asModel(response);
