@@ -62,6 +62,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     private final ProxyFor proxies;
     private final CloseableList closeables = new CloseableList();
     private final Integer streamingSize = Integer.getInteger("utterlyidle.client.stream.size", 4000);
+    private final Boolean disableStreaming = Boolean.getBoolean("utterlyidle.client.stream.disable");
 
     public ClientHttpHandler() {
         this(0);
@@ -181,7 +182,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private Object handleStreamingContent(final Option<Integer> length, final InputStream inputStream) {
-        if (length.isEmpty() || length.is(greaterThan(streamingSize))) return closeables.manage(inputStream);
+        if( !disableStreaming && (length.isEmpty() || length.is(greaterThan(streamingSize)))) return closeables.manage(inputStream);
         return using(inputStream, bytes());
     }
 
