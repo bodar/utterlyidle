@@ -11,6 +11,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_ATOM_XML;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_JSON;
+import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Requests.request;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -19,6 +20,12 @@ public class ConsumesMimeMatcherTest {
     private final HeaderParameters headers = headerParameters().add(CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
     private final Uri uri = Uri.uri("http://example.com");
     private final Request request = request("GET", uri, headers, null);
+
+    @Test
+    public void returnsFalseIfNoMatch() throws Exception {
+        Predicate<Request> matcher = new ConsumesMimeMatcher(sequence(APPLICATION_FORM_URLENCODED));
+        assertThat(matcher.matches(get("").build()), is(false));
+    }
 
     @Test
     public void simpleMatches() throws Exception {
