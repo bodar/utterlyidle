@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 public class ConsumesMimeMatcher implements Predicate<Request> {
     private final Sequence<String> mimeTypes;
@@ -11,17 +12,17 @@ public class ConsumesMimeMatcher implements Predicate<Request> {
     }
 
     public boolean matches(final Request request) {
-        if (mimeTypes.contains(MediaType.WILDCARD)) {
-            return true;
-        }
-        if (request.headers().contains(HttpHeaders.CONTENT_TYPE)) {
-            return mimeTypes.exists(new Predicate<String>() {
-                public boolean matches(String mimeType) {
-                    return request.headers().getValue(HttpHeaders.CONTENT_TYPE).startsWith(mimeType);
-                }
-            });
-        }
-        return true;
+        if (mimeTypes.contains(MediaType.WILDCARD)) return true;
+        return request.headers().valueOption(HttpHeaders.CONTENT_TYPE).exists(new LogicalPredicate<String>() {
+            @Override
+            public boolean matches(final String type) {
+                return mimeTypes.exists(new Predicate<String>() {
+                    public boolean matches(String mimeType) {
+                        return type.startsWith(mimeType);
+                    }
+                });
+            }
+        });
     }
 
     public static Predicate<Binding> contentMatches(final Request request) {
