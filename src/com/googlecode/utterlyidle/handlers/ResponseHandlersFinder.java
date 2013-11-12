@@ -55,7 +55,8 @@ public class ResponseHandlersFinder{
     }
 
     public Response findAndHandle(Request request, Response response) throws Exception {
-        return find(request, response).handle(response);
+        ResponseHandler responseHandler = find(request, response);
+        return responseHandler.handle(response);
     }
 
 

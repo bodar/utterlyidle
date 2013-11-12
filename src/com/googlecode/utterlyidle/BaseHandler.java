@@ -16,19 +16,17 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.bindings.MatchedBinding.constructors.matchedBinding;
 
 public class BaseHandler implements HttpHandler {
-    private final ResponseHandlersFinder handlers;
     private final Container container;
-    private BindingMatcher bindingMatcher;
+    private final BindingMatcher bindingMatcher;
 
-    public BaseHandler(BindingMatcher bindingMatcher, ResponseHandlersFinder handlers, Container container) {
+    public BaseHandler(BindingMatcher bindingMatcher, Container container) {
         this.bindingMatcher = bindingMatcher;
-        this.handlers = handlers;
         this.container = container;
     }
 
     public Response handle(final Request request) throws Exception {
         setupContainer(request);
-        return handlers.findAndHandle(request, getResponse(request));
+        return getResponse(request);
     }
 
     private Response getResponse(final Request request) throws Exception {
