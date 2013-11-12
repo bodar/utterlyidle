@@ -38,11 +38,13 @@ import static com.googlecode.utterlyidle.jobs.Job.functions.created;
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 public class JobsResource {
     private final Jobs jobs;
+    private final JobsStorage storage;
     private final Redirector redirector;
     private final Clock clock;
 
-    public JobsResource(Jobs jobs, Redirector redirector, final Clock clock) {
+    public JobsResource(Jobs jobs, JobsStorage storage, Redirector redirector, final Clock clock) {
         this.jobs = jobs;
+        this.storage = storage;
         this.redirector = redirector;
         this.clock = clock;
     }
@@ -51,7 +53,7 @@ public class JobsResource {
     @Path("list")
     public Model list() {
         return model().
-                add("items", jobs.jobs().
+                add("items", storage.jobs().
                         sortBy(descending(created)).
                         map(jobModel));
     }
@@ -78,7 +80,7 @@ public class JobsResource {
     }
 
     private Response jobResponse(final UUID id, final Callable1<? super Job, ? extends Option<Response>> mapper) {
-        return jobs.jobs().find(where(Job.functions.id, is(id))).
+        return storage.get(id).
                 flatMap(mapper).
                 getOrElse(Responses.response(Status.NOT_FOUND));
     }
