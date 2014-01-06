@@ -28,6 +28,7 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
         put("ico", MediaType.IMAGE_X_ICON);
         put("svg", MediaType.IMAGE_SVG);
         put("js", MediaType.TEXT_JAVASCRIPT);
+        put("map", MediaType.APPLICATION_JAVASCRIPT);
         put("css", MediaType.TEXT_CSS);
         put("less", MediaType.TEXT_CSS);
         put("html", MediaType.TEXT_HTML);
