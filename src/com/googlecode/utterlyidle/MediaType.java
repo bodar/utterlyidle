@@ -6,6 +6,7 @@ public class MediaType {
     public static final String APPLICATION_ATOM_XML = "application/atom+xml";
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
     public static final String APPLICATION_SVG_XML = "application/svg+xml";
+    public static final String APPLICATION_JAVASCRIPT = "application/javascript";
     public static final String APPLICATION_JSON = "application/json";
     public static final String APPLICATION_PDF = "application/pdf";
     public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
