@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.googlecode.totallylazy.Debug.debugging;
 import static com.googlecode.yadic.resolvers.Resolvers.create;
 
 public class ParametersExtractor implements RequestExtractor<Object[]> {
@@ -32,6 +33,7 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
             extract(request);
             return true;
         } catch (Exception e) {
+            if (debugging()) e.printStackTrace();
             return false;
         }
     }
