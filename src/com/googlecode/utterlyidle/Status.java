@@ -52,6 +52,7 @@ public class Status {
     public static final Status UNSUPPORTED_MEDIA_TYPE = status(415, "Unsupported Media Type");
     public static final Status REQUESTED_RANGE_NOT_SATISFIABLE = status(416, "Requested Range Not Satisfiable");
     public static final Status EXPECTATION_FAILED = status(417, "Expectation Failed");
+    public static final Status I_M_A_TEAPOT = status(418, "I'm a teapot"); //RFC2324
 
     public static final PersistentSet<Integer> SERVER_ERROR = set(500, 599);
     public static final Status INTERNAL_SERVER_ERROR = status(500, "Internal Server Error");
