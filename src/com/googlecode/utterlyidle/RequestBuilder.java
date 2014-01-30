@@ -18,6 +18,7 @@ import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.replace;
 import static com.googlecode.totallylazy.Functions.returns1;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
@@ -229,16 +230,33 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder replaceCookie(final String name, final String value) {
+        return mapCookies(setCookie(name, value));
+    }
+
+    public RequestBuilder removeCookie(final String cookieName) {
+        return mapCookies(filterOutCookie(cookieName));
+    }
+
+    private RequestBuilder mapCookies(Function1<String, String> mapper) {
         Sequence<Pair<String, String>> newHeaders = sequence(headers).
                 map(replace(
                         where(first(String.class), equalIgnoringCase(COOKIE)),
-                        Callables.<String, String, String>second(toCookie(name, value)))).realise();
+                        Callables.<String, String, String>second(mapper))).realise();
         headers.clear();
         headers.addAll(newHeaders.toList());
         return this;
     }
 
-    private Function1<String, String> toCookie(final String name, final String value) {
+    private static Function1<String, String> filterOutCookie(final String cookieName) {
+        return new Function1<String, String>() {
+            @Override
+            public String call(String cookieValue) throws Exception {
+                return cookies(cookieValue).filter(where(first(String.class), not(cookieName))).map(toCookieString()).toString("; ");
+            }
+        };
+    }
+
+    private static Function1<String, String> setCookie(final String name, final String value) {
         return new Function1<String, String>() {
             @Override
             public String call(String headerValue) throws Exception {
@@ -250,7 +268,7 @@ public class RequestBuilder implements Callable<Request> {
         };
     }
 
-    private Function1<Pair<String, String>, String> toCookieString() {
+    private static Function1<Pair<String, String>, String> toCookieString() {
         return new Function1<Pair<String, String>, String>() {
             @Override
             public String call(Pair<String, String> cookie) throws Exception {
@@ -271,5 +289,4 @@ public class RequestBuilder implements Callable<Request> {
             }
         };
     }
-
 }
