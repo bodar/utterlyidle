@@ -88,6 +88,13 @@ public class RequestBuilderTest {
     }
 
     @Test
+    public void shouldBeAbleToRemoveAllEvidenceOfCookie() throws Exception {
+        Request request = get("/").cookie("cookie1", "value1").removeCookie("cookie1").build();
+        assertThat(CookieParameters.cookies(request.headers()).contains("cookie1"), is(false));
+        assertThat(request.headers().contains(COOKIE), is(false));
+    }
+
+    @Test
     public void replacingACookiePreservesHeaderOrder() throws Exception {
         Request request = put("/").header("path", "/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie2", "penguin").build();
         assertThat(request.headers(), is(headerParameters(sequence(pair("path", "/"), pair(COOKIE, "cookie1=\"value1\""), pair(COOKIE, "cookie2=\"penguin\""), pair(CONTENT_LENGTH, "0")))));

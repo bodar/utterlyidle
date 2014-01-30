@@ -4,9 +4,11 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.UrlEncodedMessage;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
@@ -16,11 +18,13 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.replace;
+import static com.googlecode.totallylazy.Callables.second;
 import static com.googlecode.totallylazy.Functions.returns1;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Strings.blank;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
@@ -238,10 +242,11 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     private RequestBuilder mapCookies(Function1<String, String> mapper) {
+        final LogicalPredicate<Pair<String, String>> isCookieHeader = where(first(String.class), equalIgnoringCase(COOKIE));
+        final Predicate<Pair<String, String>> hasNoValue = where(second(String.class), blank);
         Sequence<Pair<String, String>> newHeaders = sequence(headers).
-                map(replace(
-                        where(first(String.class), equalIgnoringCase(COOKIE)),
-                        Callables.<String, String, String>second(mapper))).realise();
+                map(replace(isCookieHeader, Callables.<String, String, String>second(mapper))).
+                filter(not(isCookieHeader.and(hasNoValue))).realise();
         headers.clear();
         headers.addAll(newHeaders.toList());
         return this;
