@@ -96,11 +96,6 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
-    @Deprecated //delete after build 637
-    public RequestBuilder cookie(String name, Cookie cookie) {
-        return cookie(cookie);
-    }
-
     public RequestBuilder cookie(Cookie cookie) {
         cookie(cookie.name(), cookie.value());
         return this;
@@ -109,10 +104,6 @@ public class RequestBuilder implements Callable<Request> {
     public RequestBuilder cookie(String name, String value) {
         headers.add(pair(COOKIE, toHttpHeader(Cookie.cookie(name, value))));
         return this;
-    }
-
-    public RequestBuilder removeCookie(String name) {
-        return cookie(Cookie.cookie(name, "", maxAge(0)));
     }
 
     @SuppressWarnings("unchecked")
