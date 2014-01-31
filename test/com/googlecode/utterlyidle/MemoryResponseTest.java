@@ -39,6 +39,17 @@ public class MemoryResponseTest {
     }
 
     @Test
+    public void canRemoveCookieFromBothClientAndResponse() throws Exception {
+        Response response = ResponseBuilder.modify(Responses.seeOther("/go")).cookie(cookie("a", "1")).build();
+        Response shouldClearCookie = ResponseBuilder.modify(response).removeCookie("a").build();
+        assertThat(shouldClearCookie.toString(), is("HTTP/1.1 303 See Other\r\n" +
+                "Location: /go\r\n" +
+                "Set-Cookie: a=\"\"; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC\r\n" +
+                "\r\n" +
+                "/go"));
+    }
+
+    @Test
     public void shouldPrintContent() throws Exception {
         String content = "<blah></blah>";
         Response response = response(Status.OK, one(pair(X_FORWARDED_FOR, "192.168.0.1")), content);
