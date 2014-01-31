@@ -11,6 +11,7 @@ import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
+import com.googlecode.utterlyidle.cookies.CookieAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Requests.request;
+import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static java.lang.String.format;
@@ -106,6 +109,10 @@ public class RequestBuilder implements Callable<Request> {
     public RequestBuilder cookie(String name, String value) {
         headers.add(pair(COOKIE, toHttpHeader(Cookie.cookie(name, value))));
         return this;
+    }
+
+    public RequestBuilder removeCookie(String name) {
+        return cookie(Cookie.cookie(name, "", maxAge(0)));
     }
 
     @SuppressWarnings("unchecked")

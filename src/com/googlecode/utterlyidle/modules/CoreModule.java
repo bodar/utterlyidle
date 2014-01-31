@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.SystemClock;
@@ -34,6 +35,7 @@ import com.googlecode.utterlyidle.SmartHttpClient;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.StreamingWriter;
 import com.googlecode.utterlyidle.UUIDActivator;
+import com.googlecode.utterlyidle.UriActivator;
 import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 import com.googlecode.utterlyidle.handlers.ApplicationId;
@@ -149,6 +151,7 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 addInstance(InputStream.class, request.entity().inputStream()).
                 addActivator(UUID.class, UUIDActivator.class).
                 addActivator(Date.class, DateActivator.class).
+                addActivator(Uri.class, UriActivator.class).
                 addType(new TypeFor<Option<?>>() {
                 }.get(), new OptionResolver(argumentScope, instanceOf(IllegalArgumentException.class))).
                 addType(new TypeFor<Either<?, ?>>() {
