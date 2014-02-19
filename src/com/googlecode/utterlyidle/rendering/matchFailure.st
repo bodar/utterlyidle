@@ -1,5 +1,6 @@
 <html>
     <head>
+        <meta charset="utf-8">
         <title>$status$</title>
         <script type="text/javascript" src="$base$utterlyidle/rendering/matchFailure.js"></script>
         <link rel="stylesheet" href="$base$utterlyidle/rendering/style.css" type="text/css"/>
