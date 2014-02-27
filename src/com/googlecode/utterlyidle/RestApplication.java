@@ -34,7 +34,8 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.bindings.actions.Action.functions.metaData;
 
 public class RestApplication implements Application {
-    private final CloseableContainer applicationScope = CloseableContainer.closeableContainer();
+    private final ContainerFactory containerFactory;
+    private final CloseableContainer applicationScope;
     private final Modules modules;
     private boolean closed = false;
 
@@ -51,6 +52,12 @@ public class RestApplication implements Application {
     }
 
     public RestApplication(BasePath basePath, UtterlyIdleProperties properties, Module... modules) {
+        this(basePath, properties, new DefaultContainerFactory(), modules);
+    }
+
+    public RestApplication(BasePath basePath, UtterlyIdleProperties properties, ContainerFactory containerFactory, Module... modules) {
+        this.containerFactory = containerFactory;
+        applicationScope = containerFactory.newCloseableContainer();
         applicationScope.addInstance(BasePath.class, basePath);
         applicationScope.addInstance(UtterlyIdleProperties.class, properties);
         applicationScope.addInstance(Application.class, this);
@@ -97,7 +104,7 @@ public class RestApplication implements Application {
     }
 
     protected CloseableContainer requestScope() {
-        final CloseableContainer requestScope = CloseableContainer.closeableContainer(applicationScope);
+        final CloseableContainer requestScope = containerFactory.newCloseableContainer(applicationScope);
         requestScope.add(BindingMatcher.class, DefaultBindingMatcher.class);
         requestScope.add(HttpHandler.class, BaseHandler.class);
         requestScope.decorate(HttpHandler.class, ResponseHttpHandler.class);
