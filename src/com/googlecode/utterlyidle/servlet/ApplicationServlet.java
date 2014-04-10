@@ -62,7 +62,7 @@ public class ApplicationServlet extends HttpServlet {
         Status status = response.status();
         resp.setStatus(status.code(), status.description());
         for (Pair<String, String> pair : response.headers()) {
-            resp.setHeader(pair.first(), pair.second());
+            resp.addHeader(pair.first(), pair.second());
         }
         for (Integer length : response.entity().length()) {
             resp.setContentLength(length);
