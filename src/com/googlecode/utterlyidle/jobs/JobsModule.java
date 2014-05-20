@@ -7,6 +7,7 @@ import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
+import static com.googlecode.yadic.Containers.addActivatorIfAbsent;
 import static com.googlecode.yadic.Containers.addIfAbsent;
 
 public class JobsModule implements ResourcesModule, ApplicationScopedModule, RequestScopedModule {
@@ -16,17 +17,15 @@ public class JobsModule implements ResourcesModule, ApplicationScopedModule, Req
 
     @Override
     public Container addPerApplicationObjects(Container container) throws Exception {
-        Container result = addIfAbsent(container, JobsHistoryCapacity.class).
-                add(Jobs.class, RequestJobs.class).
+        addIfAbsent(container, JobsStorage.class, InMemoryJobsStorage.class);
+        return addIfAbsent(container, JobsHistoryCapacity.class).
                 add(Completer.class, CpuBoundedCompleter.class);
-        if(!result.contains(JobsStorage.class)){
-            return container.addActivator(JobsStorage.class, JobsStorageActivator.class);
-        }
-        return result;
     }
 
     @Override
     public Container addPerRequestObjects(final Container container) throws Exception {
-        return addIfAbsent(container, UtterlyIdleRecords.class);
+        container.add(Jobs.class, RequestJobs.class);
+        addIfAbsent(container, UtterlyIdleRecords.class);
+        return container;
     }
 }

@@ -27,8 +27,6 @@ import java.util.UUID;
 
 import static com.googlecode.funclate.Model.persistent.model;
 import static com.googlecode.totallylazy.Callables.descending;
-import static com.googlecode.totallylazy.Predicates.is;
-import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
