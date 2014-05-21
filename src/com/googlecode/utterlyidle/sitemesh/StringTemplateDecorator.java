@@ -41,6 +41,7 @@ public class StringTemplateDecorator implements Decorator {
         template.setAttribute("head", content.get("head"));
         template.setAttribute("title", content.get("title"));
         template.setAttribute("body", content.get("body"));
+        template.setAttribute("div", content.get("div"));
         return this;
     }
 
