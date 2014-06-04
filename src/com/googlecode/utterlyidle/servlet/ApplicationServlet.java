@@ -80,7 +80,7 @@ public class ApplicationServlet extends HttpServlet {
             );
             return requestEnricher(
                     clientAddress(servletRequest.getRemoteAddr()),
-                    servletRequest.getProtocol().toLowerCase())
+                    servletRequest.getScheme().toLowerCase())
                     .enrich(request);
         } catch (IOException e) {
             throw new RuntimeException(e);
