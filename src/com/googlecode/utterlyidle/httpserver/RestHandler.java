@@ -67,8 +67,12 @@ public class RestHandler implements HttpHandler {
         );
         return requestEnricher(
                 clientAddress(httpExchange.getRemoteAddress().getAddress()),
-                httpExchange.getProtocol())
+                extractScheme(httpExchange.getProtocol()))
                 .enrich(request);
+    }
+
+    private String extractScheme(final String protocol) {
+        return protocol.toLowerCase().split("/")[0];
     }
 
     private Response exceptionResponse(Request request, final Exception e) throws IOException {
