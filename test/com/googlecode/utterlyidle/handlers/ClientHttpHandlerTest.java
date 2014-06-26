@@ -102,6 +102,12 @@ public class ClientHttpHandlerTest {
     }
 
     @Test
+    public void correctlyHandlesGlobalTimeouts() throws Exception {
+        Response response = handle(new TimeoutClient(10, new ClientHttpHandler(0)), get("slow"), server);
+        assertThat(response.status(), is(Status.CLIENT_TIMEOUT));
+    }
+
+    @Test
     public void correctlyHandlesConnectionRefused() throws Exception {
         Response response = new ClientHttpHandler().handle(get(uri("http://127.0.0.1:0/")).build());
         assertThat(response.status(), is(Status.CONNECTION_REFUSED));
@@ -185,7 +191,7 @@ public class ClientHttpHandlerTest {
         return handle(new ClientHttpHandler(timeout), request, server);
     }
 
-    public static Response handle(final ClientHttpHandler client, final RequestBuilder request, final Server server) throws Exception {
+    public static Response handle(final HttpHandler client, final RequestBuilder request, final Server server) throws Exception {
         HttpHandler urlHandler = new AuditHandler(client, new PrintAuditor(Debug.debugging() ? System.out : Streams.nullPrintStream()));
         Uri uri = request.uri();
         Uri path = server.uri().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
