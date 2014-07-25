@@ -12,7 +12,7 @@ import com.googlecode.utterlyidle.Status;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.handlers.Handlers.asFunction;
 
-public class CompositeHandler implements HttpHandler {
+public class CompositeHandler implements HttpHandler, HttpClient {
     private final Rules<Request, Response> rules;
 
     private CompositeHandler(Rules<Request, Response> rules) {
