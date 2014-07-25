@@ -6,7 +6,6 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.Predicates.in;
-import static com.googlecode.totallylazy.parser.Parsers.isChar;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.WWW_AUTHENTICATE;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
@@ -29,7 +28,7 @@ public class BasicHttpHandler implements HttpHandler {
     public Response handle(final Request request) throws Exception {
         if (notAuthenticated(request)) {
             return response(UNAUTHORIZED).
-                    header(WWW_AUTHENTICATE, format("Basic realm=%s", baseUri.value().host())).
+                    header(WWW_AUTHENTICATE, format("Basic realm=\"%s\"", baseUri.value().host())).
                     build();
         }
         return handler.handle(request);

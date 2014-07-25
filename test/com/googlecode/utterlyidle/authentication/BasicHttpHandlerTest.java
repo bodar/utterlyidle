@@ -24,7 +24,7 @@ public class BasicHttpHandlerTest {
     public void returnsUnauthorizedWhenNoCredentials() throws Exception {
         Response response = basicServer(throwing()).handle(get("/").build());
         assertThat(response.status(), is(UNAUTHORIZED));
-        assertThat(response.headers().getValue(WWW_AUTHENTICATE), is("Basic realm=example.com"));
+        assertThat(response.headers().getValue(WWW_AUTHENTICATE), is("Basic realm=\"example.com\""));
     }
 
     @Test
@@ -32,7 +32,7 @@ public class BasicHttpHandlerTest {
         Response response = basicServer(throwing()).
                 handle(get("/").header(AUTHORIZATION, "Basic " + Base64.encode(bytes("dan:wrong"))).build());
         assertThat(response.status(), is(UNAUTHORIZED));
-        assertThat(response.headers().getValue(WWW_AUTHENTICATE), is("Basic realm=example.com"));
+        assertThat(response.headers().getValue(WWW_AUTHENTICATE), is("Basic realm=\"example.com\""));
     }
 
     @Test
