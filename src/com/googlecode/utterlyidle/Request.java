@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Uri;
 
@@ -20,6 +21,15 @@ public interface Request {
                 @Override
                 public Request call(final Request request, final Object value) throws Exception {
                     return modify(request).replaceHeader(name, value).build();
+                }
+            };
+        }
+
+        public static Function1<Request, String> header(final String name) {
+            return new Function1<Request, String>() {
+                @Override
+                public String call(final Request request) throws Exception {
+                    return request.headers().getValue(name);
                 }
             };
         }
