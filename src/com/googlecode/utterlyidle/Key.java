@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Value;
-import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -38,7 +37,7 @@ public class Key implements Value<String> {
 
     public String encrypt(String value) {
         try {
-            return string(encode(encrypt(gzip(bytes(value)))));
+            return Base64.encode(encrypt(gzip(bytes(value))));
         } catch (Exception e) {
             throw LazyException.lazyException(e);
         }
@@ -46,7 +45,7 @@ public class Key implements Value<String> {
 
     public String decrypt(String value) {
         try {
-            return string(ungzip(decrypt(decode(bytes(value)))));
+            return string(ungzip(decrypt(Base64.decode(value))));
         } catch (Exception e) {
             throw LazyException.lazyException(e);
         }
@@ -61,18 +60,10 @@ public class Key implements Value<String> {
         try {
             KeyGenerator generator = KeyGenerator.getInstance(ALGORITHM);
             generator.init(128);
-            return new String(encode(generator.generateKey().getEncoded()));
+            return Base64.encode(generator.generateKey().getEncoded());
         } catch (NoSuchAlgorithmException e) {
             throw LazyException.lazyException(e);
         }
-    }
-
-    private static byte[] decode(byte[] content) {
-        return new Base64().decode(content);
-    }
-
-    private static byte[] encode(byte[] content) {
-        return new Base64().encode(content);
     }
 
     private byte[] encrypt(byte[] content) throws GeneralSecurityException {
@@ -85,7 +76,7 @@ public class Key implements Value<String> {
 
     private Cipher cipher(int mode) throws GeneralSecurityException {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(mode, new SecretKeySpec(decode(bytes(secret)), ALGORITHM));
+        cipher.init(mode, new SecretKeySpec(Base64.decode(secret), ALGORITHM));
         return cipher;
     }
 
