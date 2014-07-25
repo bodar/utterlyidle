@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Value;
-import org.apache.commons.codec.binary.Base64;
+import com.googlecode.utterlyidle.Base64;
 import org.apache.commons.codec.binary.Hex;
 
 import java.security.MessageDigest;
@@ -23,9 +23,7 @@ public class Digest implements Value<byte[]> {
         return new String(Hex.encodeHex(bytes));
     }
 
-    public String asBase64() {
-        return new String(Base64.encodeBase64(bytes));
-    }
+    public String asBase64() { return Base64.encode(bytes); }
 
     @Override
     public byte[] value() {
