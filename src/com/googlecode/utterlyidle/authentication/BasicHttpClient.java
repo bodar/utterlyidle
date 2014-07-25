@@ -37,9 +37,7 @@ public class BasicHttpClient implements HttpClient {
                                     map(new Function1<Credential, Response>() {
                                         @Override
                                         public Response call(final Credential credential) throws Exception {
-                                            // how/where should we construct the encoded username/password?
-                                            String authorizationHeader = format("Basic %s", Base64.encode(bytes(credential.username + ":" + credential.password)));
-                                            return client.handle(modify(request).header(AUTHORIZATION, authorizationHeader).build());
+                                            return client.handle(modify(request).header(AUTHORIZATION, authorisation(credential)).build());
                                         }
                                     });
                         }
@@ -47,5 +45,9 @@ public class BasicHttpClient implements HttpClient {
                     getOrElse(response);
         }
         return response;
+    }
+
+    private String authorisation(final Credential credential) {
+        return format("Basic %s", Base64.encode(bytes(credential.username + ":" + credential.password)));
     }
 }
