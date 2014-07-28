@@ -1,0 +1,14 @@
+syntax: glob
+out
+*.iws
+build/artifacts
+.idea/workspace.xml
+.idea/inspectionProfiles
+*.orig
+utterlyidle.ipr
+lib/build
+lib/runtime
+lib/optional
+.idea/dictionaries/*
+test/**/s3.properties
+*~
