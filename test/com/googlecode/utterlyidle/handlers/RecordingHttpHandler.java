@@ -9,7 +9,7 @@ import static com.googlecode.totallylazy.collections.PersistentList.constructors
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.empty;
 import static com.googlecode.totallylazy.collections.PersistentList.constructors.reverse;
 
-public class RecordingHttpHandler implements HttpHandler {
+public class RecordingHttpHandler implements HttpHandler, HttpClient {
     private PersistentList<Request> requests = empty();
     private final HttpHandler delegate;
 
