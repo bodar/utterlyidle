@@ -15,17 +15,17 @@ import static com.googlecode.totallylazy.parser.Parsers.ws;
 interface BasicGrammar {
     Parser<Void> Scheme = Parsers.string("Basic").ignore();
 
-    Parser<Credential> BasicCookie = isChar(alphaNumeric.or(in('/', '+', '='))).many1().
+    Parser<com.googlecode.utterlyidle.authentication.Credentials> BasicCookie = isChar(alphaNumeric.or(in('/', '+', '='))).many1().
             map(Parsers.toString).
-            map(new Function1<String, Credential>() {
+            map(new Function1<String, com.googlecode.utterlyidle.authentication.Credentials>() {
                 @Override
-                public Credential call(final String raw) throws Exception {
+                public com.googlecode.utterlyidle.authentication.Credentials call(final String raw) throws Exception {
                     String[] pair = Strings.string(Base64.decode(raw)).split(":");
-                    return Credential.credential(pair[0], pair[1]);
+                    return com.googlecode.utterlyidle.authentication.Credentials.credential(pair[0], pair[1]);
                 }
             });
 
-    Parser<Credential> Credentials = Scheme.next(ws(BasicCookie));
+    Parser<com.googlecode.utterlyidle.authentication.Credentials> Credentials = Scheme.next(ws(BasicCookie));
 
 
     Parser<String> quoted = Parsers.notChar('"').many1().surroundedBy(isChar('"')).map(Parsers.toString);
@@ -39,9 +39,9 @@ interface BasicGrammar {
         }
     };
 
-    Function1<String, Option<Credential>> parseCredential = new Function1<String, Option<Credential>>() {
+    Function1<String, Option<com.googlecode.utterlyidle.authentication.Credentials>> parseCredential = new Function1<String, Option<com.googlecode.utterlyidle.authentication.Credentials>>() {
         @Override
-        public Option<Credential> call(final String auth) throws Exception {
+        public Option<com.googlecode.utterlyidle.authentication.Credentials> call(final String auth) throws Exception {
             return Credentials.parse(auth).option();
         }
     };

@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.authentication;
 
+import com.googlecode.totallylazy.Sets;
 import com.googlecode.utterlyidle.Base64;
 import com.googlecode.utterlyidle.BaseUri;
 import com.googlecode.utterlyidle.HttpHandler;
@@ -15,7 +16,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.UNAUTHORIZED;
-import static com.googlecode.utterlyidle.authentication.Credential.credential;
+import static com.googlecode.utterlyidle.authentication.Credentials.credential;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returns;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -44,8 +45,7 @@ public class BasicHttpHandlerTest {
 
     public static HttpHandler basicServer(final HttpHandler handler) {
         BaseUri baseUri = BaseUri.baseUri("http://example.com/");
-        Credentials credentials = Credentials.credentials(credential("dan", "right"));
-        return new BasicHttpHandler(handler, baseUri, credentials);
+        return new BasicHttpHandler(handler, baseUri, Sets.set(credential("dan", "right")));
     }
 
     public static HttpHandler throwing() {

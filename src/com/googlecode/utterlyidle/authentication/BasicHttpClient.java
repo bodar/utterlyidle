@@ -12,19 +12,19 @@ import static java.lang.String.format;
 
 public class BasicHttpClient implements HttpClient {
     private final HttpClient client;
-    private final Credential credential;
+    private final Credentials credentials;
 
-    public BasicHttpClient(final HttpClient client, final Credential credential) {
-        this.credential = credential;
+    public BasicHttpClient(final HttpClient client, final Credentials credentials) {
+        this.credentials = credentials;
         this.client = client;
     }
 
     @Override
     public Response handle(final Request request) throws Exception {
-        return client.handle(modify(request).header(AUTHORIZATION, authorisation(credential)).build());
+        return client.handle(modify(request).header(AUTHORIZATION, authorisation(credentials)).build());
     }
 
-    private String authorisation(final Credential credential) {
-        return format("Basic %s", Base64.encode(bytes(credential.username + ":" + credential.password)));
+    private String authorisation(final Credentials credentials) {
+        return format("Basic %s", Base64.encode(bytes(credentials.username + ":" + credentials.password)));
     }
 }

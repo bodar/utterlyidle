@@ -19,8 +19,6 @@ import static javax.crypto.Cipher.DECRYPT_MODE;
 import static javax.crypto.Cipher.ENCRYPT_MODE;
 
 public class Key implements Value<String> {
-    public static final String ALGORITHM = "AES";
-
     private final String secret;
 
     private Key(String secret) {
@@ -56,6 +54,7 @@ public class Key implements Value<String> {
         return secret;
     }
 
+    public static final String ALGORITHM = "AES";
     private static String generate() {
         try {
             KeyGenerator generator = KeyGenerator.getInstance(ALGORITHM);
