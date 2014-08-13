@@ -10,6 +10,7 @@ public class CookieAttribute {
     public static final String MAX_AGE = "Max-Age";
     public static final String PATH = "Path";
     public static final String SECURE = "Secure";
+    public static final String HTTP_ONLY = "HttpOnly";
     public static final String EXPIRES = "Expires";
 
     private final String name;
@@ -60,6 +61,9 @@ public class CookieAttribute {
 
     public static CookieAttribute secure() {
         return cookieAttribute(SECURE, "");
+    }
+    public static CookieAttribute httpOnly() {
+        return cookieAttribute(HTTP_ONLY, "");
     }
 
     public static CookieAttribute expires(Date date) {
