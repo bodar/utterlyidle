@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.googlecode.funclate.Model.mutable.model;
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
@@ -54,9 +55,29 @@ public class ScheduleResource {
     }
 
     @ANY
+    @Path("schedule")
+    public Response scheduleWithQueryParams(@QueryParam("id") UUID id, @QueryParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
+        Request scheduledRequest = modify(request).uri(uri(uri)).build();
+
+        scheduler.schedule(Schedule.schedule(id).interval(intervalInSeconds).request(scheduledRequest.toString()));
+
+        return redirectToList();
+    }
+
+    @ANY
     @Path("schedule/{id}/{start}/{interval}")
     public Response schedule(@PathParam("id") UUID id, @PathParam("start") String start, @PathParam("interval") Long intervalInSeconds, @PathParam("$") String endOfUrl) throws Exception {
         Request scheduledRequest = modify(request).uri(request.uri().path(endOfUrl)).build();
+
+        scheduler.schedule(Schedule.schedule(id).start(start).interval(intervalInSeconds).request(scheduledRequest.toString()));
+
+        return redirectToList();
+    }
+
+    @ANY
+    @Path("schedule")
+    public Response scheduleWithQueryParams(@PathParam("id") UUID id, @PathParam("start") String start, @PathParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
+        Request scheduledRequest = modify(request).uri(uri(uri)).build();
 
         scheduler.schedule(Schedule.schedule(id).start(start).interval(intervalInSeconds).request(scheduledRequest.toString()));
 
