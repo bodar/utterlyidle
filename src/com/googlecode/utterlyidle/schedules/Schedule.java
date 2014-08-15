@@ -78,4 +78,24 @@ public class Schedule {
     private <T> Schedule set(Keyword<T> keyword, T value) {
         return new Schedule(record.set(keyword, value));
     }
+
+    @Override
+    public int hashCode() {
+        return record.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Schedule schedule = (Schedule) o;
+
+        return record.equals(schedule.record);
+    }
+
+    @Override
+    public String toString() {
+        return record.toString();
+    }
 }
