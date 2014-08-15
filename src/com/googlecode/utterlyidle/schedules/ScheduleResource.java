@@ -76,7 +76,7 @@ public class ScheduleResource {
 
     @ANY
     @Path("schedule")
-    public Response scheduleWithQueryParams(@PathParam("id") UUID id, @PathParam("start") String start, @PathParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
+    public Response scheduleWithQueryParams(@QueryParam("id") UUID id, @QueryParam("start") String start, @QueryParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
         Request scheduledRequest = modify(request).uri(uri(uri)).build();
 
         scheduler.schedule(Schedule.schedule(id).start(start).interval(intervalInSeconds).request(scheduledRequest.toString()));
