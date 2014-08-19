@@ -53,8 +53,10 @@ public class AnnotatedBindings {
         return httpMethod(method).map(asBinding(method));
     }
 
+    private static multi multi;
     public static Uri relativeUriOf(final Invocation invocation) {
-        return new multi(){}.method(invocation);
+        if(multi == null) multi = new multi(){};
+        return multi.method(invocation);
     }
 
     @multimethod
