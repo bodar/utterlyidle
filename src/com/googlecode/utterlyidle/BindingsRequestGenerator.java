@@ -17,9 +17,11 @@ public class BindingsRequestGenerator implements RequestGenerator {
         this.bindings = bindings;
     }
 
+    private multi multi;
     @Override
     public Request requestFor(final Invocation invocation) {
-        return new multi() {}.method(invocation);
+        if(multi == null) multi = new multi(){};
+        return multi.method(invocation);
     }
 
     @multimethod
