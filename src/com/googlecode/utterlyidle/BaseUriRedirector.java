@@ -61,9 +61,11 @@ public class BaseUriRedirector implements Redirector {
         return trim(uriOf(binding, arguments));
     }
 
+    private multi multi;
     @Override
     public Uri resourceUriOf(Invocation invocation) {
-        return new multi(){}.method(invocation);
+        if(multi == null) multi = new multi(){};
+        return multi.method(invocation);
     }
 
     @multimethod

@@ -112,8 +112,10 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         });
     }
 
+    private multi multi;
     private Response handle(final Request request, final URLConnection connection) throws IOException {
-        return new multi() {}.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
+        if(multi == null) multi = new multi(){};
+        return multi.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
             @Override
             public Response call() throws Exception {
                 return defaultHandle(request, connection);

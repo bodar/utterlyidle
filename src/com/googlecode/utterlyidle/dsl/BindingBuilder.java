@@ -114,8 +114,10 @@ public class BindingBuilder implements Callable<Binding> {
         return action(invokeResourceMethod(value));
     }
 
+    private multi multi;
     public BindingBuilder resource(final Invocation invocation) {
-        return new multi(){}.method(invocation);
+        if(multi == null) multi = new multi(){};
+        return multi.method(invocation);
     }
 
     @multimethod
