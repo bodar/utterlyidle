@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Bytes;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.CloseableList;
+import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Mapper;
@@ -15,6 +16,7 @@ import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
@@ -42,6 +44,7 @@ import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Maps.pairs;
 import static com.googlecode.totallylazy.Option.option;
+import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
@@ -52,6 +55,7 @@ import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.totallylazy.numbers.Numbers.zero;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
@@ -130,7 +134,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
             sendRequest(request, connection);
             return createResponse(connection, OK, entity(connection));
         } catch (FileNotFoundException e) {
-            return createResponse(connection, NOT_FOUND, new byte[0]);
+            return errorResponse(NOT_FOUND, e);
         }
     }
 
@@ -153,9 +157,9 @@ public class ClientHttpHandler implements HttpClient, Closeable {
             Status status = sendHttpRequest(request, connection);
             return createResponse(connection, status, entity(connection));
         } catch (SocketException ex) {
-            return response(Status.CONNECTION_REFUSED, Sequences.<Pair<String, String>>empty(), ex);
+            return errorResponse(Status.CONNECTION_REFUSED, ex);
         } catch (SocketTimeoutException ex) {
-            return response(Status.CLIENT_TIMEOUT, Sequences.<Pair<String, String>>empty(), ex);
+            return errorResponse(Status.CLIENT_TIMEOUT, ex);
         }
     }
 
@@ -197,6 +201,10 @@ public class ClientHttpHandler implements HttpClient, Closeable {
                 return Integer.valueOf(s.trim());
             }
         }.optional());
+    }
+
+    public static Response errorResponse(Status status, Exception e) {
+        return response(status, sequence(pair(CONTENT_TYPE, MediaType.TEXT_PLAIN)), Exceptions.asString(e));
     }
 
     private Response createResponse(URLConnection connection, Status status, Object entity) {

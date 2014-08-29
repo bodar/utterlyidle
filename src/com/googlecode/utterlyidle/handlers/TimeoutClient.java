@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.concurrent.NamedExecutors;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.handlers.ClientHttpHandler.errorResponse;
 
 public class TimeoutClient implements HttpClient {
     private static final ExecutorService service = NamedExecutors.newCachedThreadPool(TimeoutClient.class);
@@ -32,7 +35,7 @@ public class TimeoutClient implements HttpClient {
                 }
             }).get(timeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
-            return response(Status.CLIENT_TIMEOUT);
+            return errorResponse(Status.CLIENT_TIMEOUT, e);
         }
     }
 }
