@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
@@ -44,6 +45,7 @@ import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.Sequences.empty;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.Uri.uri;
@@ -151,9 +153,9 @@ public class ClientHttpHandler implements HttpClient, Closeable {
             Status status = sendHttpRequest(request, connection);
             return createResponse(connection, status, entity(connection));
         } catch (SocketException ex) {
-            return response(Status.CONNECTION_REFUSED);
+            return response(Status.CONNECTION_REFUSED, Sequences.<Pair<String, String>>empty(), ex);
         } catch (SocketTimeoutException ex) {
-            return response(Status.CLIENT_TIMEOUT);
+            return response(Status.CLIENT_TIMEOUT, Sequences.<Pair<String, String>>empty(), ex);
         }
     }
 
