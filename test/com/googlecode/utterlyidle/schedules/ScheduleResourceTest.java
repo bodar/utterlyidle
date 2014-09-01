@@ -1,8 +1,11 @@
 package com.googlecode.utterlyidle.schedules;
 
+import com.googlecode.lazyrecords.memory.MemoryRecords;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.proxy.Invocation;
+import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.ExceptionLogger;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
@@ -10,12 +13,21 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.handlers.ApplicationId;
+import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
+import com.googlecode.utterlyidle.modules.RequestScopedModule;
+import com.googlecode.yadic.Container;
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.UUID;
 
+import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Option.some;
+import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 public class ScheduleResourceTest {
@@ -37,17 +49,44 @@ public class ScheduleResourceTest {
 
     @Test
     public void shouldScheduleWithQueryParameters() throws Exception {
-        scheduleResource.scheduleWithQueryParams(SCHEDULE_ID, 60L, requestToSchedule.uri().toString());
+        scheduleResource.scheduleWithQueryParams(SCHEDULE_ID, none(String.class), 60L, requestToSchedule.uri().toString());
         final Schedule expected = Schedule.schedule(SCHEDULE_ID).interval(60L).request(internalRequestMarker.markAsInternal(requestToSchedule).toString());
         assertThat(stubHttpScheduler.lastSchedule, is(expected));
     }
 
     @Test
     public void shouldScheduleWithSpecifiedStartTimeWithQueryParameters() throws Exception {
-        scheduleResource.scheduleWithQueryParams(SCHEDULE_ID, "0600", 60L, requestToSchedule.uri().toString());
-        final Schedule expected = Schedule.schedule(SCHEDULE_ID).start("0600").interval(60L).request(internalRequestMarker.markAsInternal(requestToSchedule).toString());
+        scheduleResource.scheduleWithQueryParams(SCHEDULE_ID, some("0600"), 60L, requestToSchedule.uri().toString());
+        final Schedule expected = Schedule.schedule(SCHEDULE_ID).interval(60L).request(internalRequestMarker.markAsInternal(requestToSchedule).toString()).start("0600");
         assertThat(stubHttpScheduler.lastSchedule, is(expected));
     }
+
+    @Test
+    public void scheduleResourceShouldNotThrowExceptionsInDebugMode() throws Exception {
+        final ToStringLogger logger = new ToStringLogger();
+        final ApplicationBuilder application = application().add(new RequestScopedModule() {
+            @Override
+            public Container addPerRequestObjects(final Container container) throws Exception {
+                container.remove(ExceptionLogger.class);
+                return container.
+                        addInstance(ExceptionLogger.class, logger).
+                        addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()));
+            }
+        }).add(new ScheduleModule());
+        assertThat(application.handle(get("schedules/schedule").query("id", "93f78f30-d7db-11e1-9b23-0800200c9a66").query("interval", "60").query("uri", "/jobs/create/crawler/crawl").entity("id=93f78f30-d7db-11e1-9b23-0800200c9a66")).status().code(), is(303));
+        assertFalse(logger.hasLogged);
+    }
+
+
+
+    private static class ToStringLogger implements  ExceptionLogger {
+        boolean hasLogged;
+        @Override
+        public void log(final Exception ex) {
+            hasLogged = true;
+        }
+    }
+
 
     private static class StubHttpScheduler extends HttpScheduler {
 

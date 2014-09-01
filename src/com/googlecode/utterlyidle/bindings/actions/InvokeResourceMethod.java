@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.bindings.actions;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.ExceptionLogger;
 import com.googlecode.utterlyidle.MatchedResource;
 import com.googlecode.utterlyidle.ParametersExtractor;
 import com.googlecode.utterlyidle.Request;
@@ -33,7 +34,7 @@ public class InvokeResourceMethod implements Action {
             registerMatchedResource(container, declaringClass);
 
             Object resourceInstance = container.get(declaringClass);
-            Object[] arguments = new ParametersExtractor(binding.uriTemplate(), application, binding.parameters()).extract(request);
+            Object[] arguments = new ParametersExtractor(binding.uriTemplate(), application, binding.parameters(), container.get(ExceptionLogger.class)).extract(request);
             return method.isVarArgs()
                     ? method.invoke(resourceInstance, (Object) arguments)
                     : method.invoke(resourceInstance, arguments);

@@ -4,6 +4,7 @@ import com.googlecode.funclate.Model;
 import com.googlecode.lazyrecords.Record;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.MediaType;
@@ -55,16 +56,6 @@ public class ScheduleResource {
     }
 
     @ANY
-    @Path("schedule")
-    public Response scheduleWithQueryParams(@QueryParam("id") UUID id, @QueryParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
-        Request scheduledRequest = modify(request).uri(uri(uri)).build();
-
-        scheduler.schedule(Schedule.schedule(id).interval(intervalInSeconds).request(scheduledRequest.toString()));
-
-        return redirectToList();
-    }
-
-    @ANY
     @Path("schedule/{id}/{start}/{interval}")
     public Response schedule(@PathParam("id") UUID id, @PathParam("start") String start, @PathParam("interval") Long intervalInSeconds, @PathParam("$") String endOfUrl) throws Exception {
         Request scheduledRequest = modify(request).uri(request.uri().path(endOfUrl)).build();
@@ -76,10 +67,14 @@ public class ScheduleResource {
 
     @ANY
     @Path("schedule")
-    public Response scheduleWithQueryParams(@QueryParam("id") UUID id, @QueryParam("start") String start, @QueryParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
+    public Response scheduleWithQueryParams(@QueryParam("id") UUID id, @QueryParam("start") Option<String> start, @QueryParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
         Request scheduledRequest = modify(request).uri(uri(uri)).build();
 
-        scheduler.schedule(Schedule.schedule(id).start(start).interval(intervalInSeconds).request(scheduledRequest.toString()));
+        Schedule schedule = Schedule.schedule(id).interval(intervalInSeconds).request(scheduledRequest.toString());
+        if (start.isDefined()) {
+            schedule = schedule.start(start.get());
+        }
+        scheduler.schedule(schedule);
 
         return redirectToList();
     }
