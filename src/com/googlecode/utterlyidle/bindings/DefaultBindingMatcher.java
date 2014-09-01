@@ -7,6 +7,7 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.Bindings;
+import com.googlecode.utterlyidle.ExceptionLogger;
 import com.googlecode.utterlyidle.MatchFailure;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Status;
@@ -26,10 +27,12 @@ import static com.googlecode.utterlyidle.ProducesMimeMatcher.producesMatches;
 public class DefaultBindingMatcher implements BindingMatcher {
     private final Bindings bindings;
     private final Application application;
+    private final ExceptionLogger logger;
 
-    public DefaultBindingMatcher(Bindings bindings, Application application) {
+    public DefaultBindingMatcher(Bindings bindings, Application application, final ExceptionLogger logger) {
         this.bindings = bindings;
         this.application = application;
+        this.logger = logger;
     }
 
     @Override
@@ -44,7 +47,7 @@ public class DefaultBindingMatcher implements BindingMatcher {
                     pair(methodMatches(request), Status.METHOD_NOT_ALLOWED),
                     pair(contentMatches(request), Status.UNSUPPORTED_MEDIA_TYPE),
                     pair(producesMatches(request), Status.NOT_ACCEPTABLE),
-                    pair(parametersMatches(request, application), Status.UNSATISFIABLE_PARAMETERS)
+                    pair(parametersMatches(request, application, logger), Status.UNSATISFIABLE_PARAMETERS)
             );
     }
 
