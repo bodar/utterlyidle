@@ -21,11 +21,13 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
     private final UriTemplate uriTemplate;
     private final Application application;
     private final Sequence<Pair<Type, Option<Parameter>>> typesWithNamedParameter;
+    private final ExceptionLogger logger;
 
-    public ParametersExtractor(UriTemplate uriTemplate, Application application, Sequence<Pair<Type, Option<Parameter>>> typesWithNamedParameter) {
+    public ParametersExtractor(UriTemplate uriTemplate, Application application, Sequence<Pair<Type, Option<Parameter>>> typesWithNamedParameter, ExceptionLogger logger) {
         this.uriTemplate = uriTemplate;
         this.application = application;
         this.typesWithNamedParameter = typesWithNamedParameter;
+        this.logger = logger;
     }
 
     public boolean matches(Request request) {
@@ -33,7 +35,7 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
             extract(request);
             return true;
         } catch (Exception e) {
-            if (debugging()) e.printStackTrace();
+            logger.log(e);
             return false;
         }
     }
@@ -99,10 +101,10 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
         throw new UnsupportedOperationException("Does not support " + type.toString());
     }
 
-    public static Predicate<Binding> parametersMatches(final Request request, final Application application) {
+    public static Predicate<Binding> parametersMatches(final Request request, final Application application, final ExceptionLogger logger) {
         return new Predicate<Binding>() {
             public boolean matches(Binding binding) {
-                return new ParametersExtractor(binding.uriTemplate(), application, binding.parameters()).matches(request);
+                return new ParametersExtractor(binding.uriTemplate(), application, binding.parameters(), logger).matches(request);
             }
         };
     }

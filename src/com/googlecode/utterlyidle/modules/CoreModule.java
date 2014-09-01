@@ -14,8 +14,10 @@ import com.googlecode.utterlyidle.BaseUriActivator;
 import com.googlecode.utterlyidle.BaseUriRedirector;
 import com.googlecode.utterlyidle.Bindings;
 import com.googlecode.utterlyidle.BindingsRequestGenerator;
+import com.googlecode.utterlyidle.DebuggingOnlyExceptionLogger;
 import com.googlecode.utterlyidle.EitherResolver;
 import com.googlecode.utterlyidle.Entity;
+import com.googlecode.utterlyidle.ExceptionLogger;
 import com.googlecode.utterlyidle.FormParameters;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.InternalRequestMarker;
@@ -108,7 +110,8 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 add(HttpClient.class, ClientHttpHandler.class).
                 add(InternalHttpHandler.class).
                 decorate(HttpClient.class, SmartHttpClient.class).
-                add(InvocationHandler.class, InternalInvocationHandler.class);
+                add(InvocationHandler.class, InternalInvocationHandler.class).
+                add(ExceptionLogger.class, DebuggingOnlyExceptionLogger.class);
     }
 
     @Override
