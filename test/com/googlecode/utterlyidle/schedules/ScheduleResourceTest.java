@@ -13,6 +13,7 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.handlers.ApplicationId;
+import com.googlecode.utterlyidle.jobs.SpyExceptionLogger;
 import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.yadic.Container;
@@ -63,7 +64,7 @@ public class ScheduleResourceTest {
 
     @Test
     public void scheduleResourceShouldNotThrowExceptionsInDebugMode() throws Exception {
-        final ToStringLogger logger = new ToStringLogger();
+        final SpyExceptionLogger logger = new SpyExceptionLogger();
         final ApplicationBuilder application = application().add(new RequestScopedModule() {
             @Override
             public Container addPerRequestObjects(final Container container) throws Exception {
@@ -76,17 +77,6 @@ public class ScheduleResourceTest {
         assertThat(application.handle(get("schedules/schedule").query("id", "93f78f30-d7db-11e1-9b23-0800200c9a66").query("interval", "60").query("uri", "/jobs/create/crawler/crawl").entity("id=93f78f30-d7db-11e1-9b23-0800200c9a66")).status().code(), is(303));
         assertFalse(logger.hasLogged);
     }
-
-
-
-    private static class ToStringLogger implements  ExceptionLogger {
-        boolean hasLogged;
-        @Override
-        public void log(final Exception ex) {
-            hasLogged = true;
-        }
-    }
-
 
     private static class StubHttpScheduler extends HttpScheduler {
 

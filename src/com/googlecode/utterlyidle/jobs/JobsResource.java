@@ -19,7 +19,6 @@ import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.PathParam;
-import com.googlecode.utterlyidle.annotations.Priority;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.schedules.ScheduleResource;
 
@@ -65,8 +64,7 @@ public class JobsResource {
     }
 
     @GET
-    @Priority(Priority.Low)
-    @Path("{id}")
+    @Path("{id:(?!list$).+}")
     public Response get(@PathParam("id") final UUID id) {
         return jobResponse(id, jobResponse.optional());
     }
@@ -97,7 +95,7 @@ public class JobsResource {
         }
     };
 
-    private Mapper<Job,Response> jobResponse = new Mapper<Job, Response>() {
+    private Mapper<Job, Response> jobResponse = new Mapper<Job, Response>() {
         @Override
         public Response call(final Job job) throws Exception {
             return response(job);
@@ -111,7 +109,7 @@ public class JobsResource {
     }
 
     private Response setResultLocation(final Job job, final Response response) {
-        if(response.status().equals(Status.OK)) {
+        if (response.status().equals(Status.OK)) {
             return ResponseBuilder.modify(response).
                     header(HttpHeaders.CONTENT_LOCATION, resultUri(job)).build();
         }
@@ -123,8 +121,8 @@ public class JobsResource {
     }
 
     public static Status status(final Job job) {
-        if(job.completed().isDefined()) return Status.OK;
-        if(job.started().isDefined()) return Status.ACCEPTED;
+        if (job.completed().isDefined()) return Status.OK;
+        if (job.started().isDefined()) return Status.ACCEPTED;
         return Status.CREATED;
     }
 
