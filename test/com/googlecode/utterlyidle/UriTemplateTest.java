@@ -2,6 +2,8 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.UriTemplate.uriTemplate;
@@ -57,7 +59,7 @@ public class UriTemplateTest {
         assertThat(template.matches("path/123/someotherpath"), is(true));
         assertThat(template.extract("path/123/someotherpath").getValue("$"), is("/someotherpath"));
         assertThat(template.matches("path/123"), is(true));
-        assertThat(template.generate(pathParameters(pair("id", "123"), pair("$","/someotherpath"))), is("path/123/someotherpath"));
+        assertThat(template.generate(pathParameters(pair("id", "123"), pair("$", "/someotherpath"))), is("path/123/someotherpath"));
     }
 
     @Test
