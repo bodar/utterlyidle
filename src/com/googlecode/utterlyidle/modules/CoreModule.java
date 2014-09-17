@@ -72,14 +72,17 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.is;
+import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.HEAD;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
+import static com.googlecode.utterlyidle.handlers.HandlerRule.method;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.status;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 
@@ -133,13 +136,13 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
     @Override
     public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) {
         return handlers.
-                addGuard(where(entity(), empty()), NoContentHandler.class).
-                addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).
-                        or(instanceOf(StreamingOutput.class)).or(instanceOf(InputStream.class))), IdentityHandler.class).
-                addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class)).
-                addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class)).
-                addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class)).
-                addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
+                addGuard(where(entity(), empty()).and(where(method(), is(not(HEAD)))), NoContentHandler.class).
+                        addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).
+                                or(instanceOf(StreamingOutput.class)).or(instanceOf(InputStream.class))), IdentityHandler.class).
+                        addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class)).
+                        addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class)).
+                        addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class)).
+                        addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
     }
 
     @Override

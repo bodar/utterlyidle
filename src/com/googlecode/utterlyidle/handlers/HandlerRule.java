@@ -50,6 +50,15 @@ public class HandlerRule {
         };
     }
 
+    public static Callable1<Pair<Request, Response>, String> method() {
+        return new Callable1<Pair<Request, Response>, String>() {
+            @Override
+            public String call(final Pair<Request, Response> pair) throws Exception {
+                return pair.first().method();
+            }
+        };
+    }
+
     public static <T> Callable1<? super Pair<Request, Response>, T> entity(final Class<T> aClass) {
         return new Callable1<Pair<Request, Response>, T>() {
             public T call(Pair<Request, Response> pair) throws Exception {
