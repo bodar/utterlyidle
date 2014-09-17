@@ -6,17 +6,20 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
+import com.googlecode.utterlyidle.bindings.BindingMatcher;
 
 public class HeadRequestHandler implements HttpHandler {
     private final HttpHandler decorated;
+    private final BindingMatcher matcher;
 
-    public HeadRequestHandler(HttpHandler decorated) {
+    public HeadRequestHandler(HttpHandler decorated, BindingMatcher matcher) {
         this.decorated = decorated;
+        this.matcher = matcher;
     }
 
     @Override
     public Response handle(Request request) throws Exception {
-        if (request.method().equals(HttpMethod.HEAD)) {
+        if (request.method().equals(HttpMethod.HEAD) && matcher.match(request).isLeft()) {
             Response response = decorated.handle(RequestBuilder.modify(request).method(HttpMethod.GET).build());
             return ResponseBuilder.modify(response).removeEntity().build();
         }
