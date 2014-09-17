@@ -1,9 +1,13 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.Either;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.MatchFailure;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.Entity.empty;
@@ -24,19 +28,18 @@ public class HeadRequestHandlerTest {
 
     Request HEAD_REQUEST = new RequestBuilder(HEAD, TARGET).build();
     Request NOT_HEAD_REQUEST = new RequestBuilder(GET, TARGET).build();
+    private RecordingHttpHandler httpHandler;
 
-    private HeadRequestHandler respondsWith(Response response) {
-        return new HeadRequestHandler(RecordingHttpHandler.recordingHttpHandler(returnsResponse(response)));
-    }
 
     @Test
-    public void shouldReturnResponseWithNoEntityWhenTheResponseStatusIsOk() throws Exception {
+    public void shouldReturnResponseWithNoEntityWhenTheResponseStatusIsOkAndNoHeadBindingMatch() throws Exception {
         HeadRequestHandler headHandler = respondsWith(response(OK).entity(ENTITY).build());
 
         Response response = headHandler.handle(HEAD_REQUEST);
 
         assertThat(response.status(), is(OK));
         assertThat(response.entity(), is(empty()));
+        assertThat(httpHandler.lastRequest().method(), is(GET));
     }
 
     @Test
@@ -47,6 +50,7 @@ public class HeadRequestHandlerTest {
 
         assertThat(response.status(), is(NOT_SUCCESSFUL_STATUS));
         assertThat(response.entity(), is(empty()));
+        assertThat(httpHandler.lastRequest().method(), is(GET));
     }
 
     @Test
@@ -57,5 +61,41 @@ public class HeadRequestHandlerTest {
 
         assertThat(response.status(), is(OK));
         assertThat(response.entity(), is(not(empty())));
+        assertThat(httpHandler.lastRequest().method(), is(NOT_HEAD_REQUEST.method()));
     }
+
+    @Test
+    public void shouldReturnResponseForHeadRequestIfTheHeadBindingMatches() throws Exception {
+        HeadRequestHandler headHandler = createHeadRequestHandler(response(OK).build(), new ConstantBindingMatcher(true));
+
+        headHandler.handle(HEAD_REQUEST);
+
+        assertThat(httpHandler.lastRequest().method(), is(HEAD));
+    }
+
+
+    private HeadRequestHandler createHeadRequestHandler(Response response, BindingMatcher bindingMatcher) {
+        httpHandler = RecordingHttpHandler.recordingHttpHandler(returnsResponse(response));
+        return new HeadRequestHandler(httpHandler, bindingMatcher);
+    }
+
+    private HeadRequestHandler respondsWith(Response response) {
+        return createHeadRequestHandler(response, new ConstantBindingMatcher(false));
+    }
+
+    private class ConstantBindingMatcher implements BindingMatcher {
+        private final boolean willMatch;
+
+        private ConstantBindingMatcher(boolean willMatch) {
+            this.willMatch = willMatch;
+        }
+
+        @Override
+        public Either<MatchFailure, Binding> match(final Request request) {
+            return willMatch ?
+                    Either.<MatchFailure, Binding>right(null) :
+                    Either.<MatchFailure, Binding>left(null);
+        }
+    }
+
 }

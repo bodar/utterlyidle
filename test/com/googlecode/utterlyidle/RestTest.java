@@ -11,6 +11,7 @@ import com.googlecode.utterlyidle.annotations.DELETE;
 import com.googlecode.utterlyidle.annotations.DefaultValue;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.HEAD;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.PUT;
 import com.googlecode.utterlyidle.annotations.Path;
@@ -41,16 +42,20 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
 import static com.googlecode.utterlyidle.Entities.streamingWriterOf;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.RequestBuilder.head;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
+import static com.googlecode.utterlyidle.Status.FORBIDDEN;
 import static com.googlecode.utterlyidle.Status.NO_CONTENT;
+import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.annotations.Priority.High;
 import static com.googlecode.utterlyidle.annotations.Priority.Low;
@@ -183,7 +188,7 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
         Sequence<UUID> ids = Sequences.sequence(UUID.randomUUID(), UUID.randomUUID());
         Response response = application.handle(get("/path").query("id", ids.first() + "," + ids.second()));
-        assertThat(response.status(), Matchers.not(Status.OK));
+        assertThat(response.status(), Matchers.not(OK));
     }
 
     @Test
@@ -303,7 +308,14 @@ public class RestTest {
     public void supportsNoContent() throws Exception {
         ApplicationBuilder application = application().addAnnotated(NoContent.class);
         Response response = application.handle(post("foo"));
-        assertThat(response.status(), is(Status.NO_CONTENT));
+        assertThat(response.status(), is(NO_CONTENT));
+    }
+
+    @Test
+    public void doesNotReturnNoContentForHeadRequests() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(Headable.class);
+        Response response = application.handle(head("foo"));
+        assertThat(response.status(), is(OK));
     }
 
     @Test
@@ -323,7 +335,7 @@ public class RestTest {
     public void supportsDelete() throws Exception {
         ApplicationBuilder application = application().addAnnotated(DeleteContent.class);
         Response response = application.handle(delete("path/bar"));
-        assertThat(response.status(), is(Status.NO_CONTENT));
+        assertThat(response.status(), is(NO_CONTENT));
     }
 
     @Test
@@ -466,6 +478,33 @@ public class RestTest {
     public void shouldHandleResourceWithAParameterMissingAnAnnotation() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithParameterButNoAnnotation.class);
         assertThat(application.handle(get("path")).status(), is(Status.UNSATISFIABLE_PARAMETERS));
+    }
+
+    @Test
+    public void shouldSupportHeadIfAlreadyDefined() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(Headable.class);
+        assertThat(application.handle(head("foo/bar")).status(), is(FORBIDDEN));
+    }
+
+    @Test
+    public void shouldSupportHeadIfNotAlreadyDefined() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(Gettable.class);
+        assertThat(application.handle(head("foo")).status(), is(OK));
+    }
+
+    @Path("foo")
+    public static class Headable {
+        @HEAD
+        public Response head() { return ResponseBuilder.response(OK).header(CONTENT_LENGTH, "569").build(); }
+
+        @HEAD
+        @Path("bar")
+        public Response headForbidden() { return ResponseBuilder.response(FORBIDDEN).build(); }
+
+        @GET
+        public Response get() {
+            throw new RuntimeException("GET should not have been called");
+        }
     }
 
     @Path("foo")
