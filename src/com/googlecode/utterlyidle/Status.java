@@ -114,12 +114,24 @@ public class Status {
         return 31 * code * description.hashCode();
     }
 
+    public boolean isInformational() {
+        return INFORMATIONAL.contains(code);
+    }
+
     public boolean isSuccessful() {
         return SUCCESSFUL.contains(code);
     }
 
     public boolean isRedirect() {
         return REDIRECTION.contains(code);
+    }
+
+    public boolean isClientError() {
+        return CLIENT_ERROR.contains(code);
+    }
+
+    public boolean isServerError() {
+        return SERVER_ERROR.contains(code);
     }
 
     private static PersistentSet<Integer> set(int start, int end) {
