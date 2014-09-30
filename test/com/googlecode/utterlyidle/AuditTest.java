@@ -6,6 +6,7 @@ import com.googlecode.utterlyidle.handlers.Auditors;
 import com.googlecode.utterlyidle.modules.AuditModule;
 import org.junit.Test;
 
+import java.net.URI;
 import java.util.Date;
 
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
