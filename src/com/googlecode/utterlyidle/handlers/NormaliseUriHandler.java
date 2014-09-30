@@ -1,11 +1,8 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-
-import java.nio.file.Paths;
 
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
