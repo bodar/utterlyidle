@@ -5,16 +5,22 @@ import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 
 import java.net.URL;
 
+import static com.googlecode.totallylazy.Uri.uri;
+
 public class StaticResources {
     public Response get(URL baseUrl, String filename) {
         try {
-            Uri fileUrl = Uri.uri(baseUrl.toString() + filename);
+            Uri original = uri(baseUrl).mergePath(filename);
+            Uri normalise = original.normalise();
+            if (!original.equals(normalise)) return Responses.response(Status.NOT_FOUND);
             HttpHandler handler = new ClientHttpHandler();
-            return handler.handle(RequestBuilder.get(fileUrl).build());
+            return handler.handle(RequestBuilder.get(original).build());
         } catch (Exception e) {
             throw LazyException.lazyException(e);
         }
