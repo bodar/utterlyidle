@@ -3,6 +3,7 @@ out
 build/artifacts
 .idea/workspace.xml
 .idea/inspectionProfiles
+.ant-targets-build.xml
 *.orig
 utterlyidle.ipr
 lib/build
