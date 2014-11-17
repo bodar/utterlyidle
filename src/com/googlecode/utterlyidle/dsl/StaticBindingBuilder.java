@@ -39,6 +39,9 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
         put("csv", MediaType.TEXT_CSV);
         put("txt", MediaType.TEXT_PLAIN);
         put("appcache", MediaType.TEXT_CACHE_MANIFEST);
+        put("otf", MediaType.FONT_SFNT);
+        put("ttf", MediaType.FONT_SFNT);
+        put("woff", MediaType.FONT_WOFF);
     }};
 
     public StaticBindingBuilder(URL base) {
