@@ -63,20 +63,24 @@
 
         <zip destfile="${artifacts}/${tests.src}" basedir="test"/>
 
-        <exec executable="hg" output="${artifacts}/hg.properties">
-	        <arg line="log -l 1"/>
+        <exec executable="git" output="${artifacts}/commit.properties" error="${artifacts}/commit.error">
+	        <arg line='log -n 1 --pretty=format:"user:%an%ndate:%aD%nsummary:%s%nchangeset:%H"'/>
 	    </exec>
-        <property file="${artifacts}/hg.properties" prefix="hg"/>
+        <property file="${artifacts}/commit.properties" prefix="commit"/>
 
         <propertyfile file="${artifacts}/release.properties">
+            <entry key="commit.user" value="${commit.user}"/>
+            <entry key="commit.summary" value="${commit.summary}"/>
+            <entry key="commit.date" value="${commit.date}"/>
+            <entry key="commit.changeset" value="${commit.changeset}"/>
             <entry key="release.version" value="${release.version}"/>
             <entry key="project.name" value="${ant.project.name}"/>
             <entry key="release.name" value="${release.name}"/>
             <entry key="release.path" value="com/googlecode/${ant.project.name}/${ant.project.name}/${release.version}/"/>
             <entry key="release.files" value="${release.jar},${release.nodeps.jar},${release.pom},${release.src},${tests.jar},${tests.src}"/>
-            <entry key="${release.jar}.description" value="${hg.summary} build:${build.number} "/>
+            <entry key="${release.jar}.description" value="${commit.summary} build:${build.number} "/>
             <entry key="${release.jar}.labels" value="Jar"/>
-            <entry key="${release.nodeps.jar}.description" value="${hg.summary} build:${build.number} No Dependencies"/>
+            <entry key="${release.nodeps.jar}.description" value="${commit.summary} build:${build.number} No Dependencies"/>
             <entry key="${release.nodeps.jar}.labels" value="Jar NoDeps"/>
             <entry key="${release.pom}.description" value="Maven POM file build:${build.number}"/>
             <entry key="${release.pom}.labels" value="POM"/>
