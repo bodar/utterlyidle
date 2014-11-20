@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.services.Services;
 import org.junit.Before;
@@ -14,7 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -91,6 +94,26 @@ public class RestApplicationTest {
         assertThat(service.stops.get(), is(1));
     }
 
+    @Test
+    public void basePathIsStrippedFromRequests() throws Exception {
+        final Response response = new RestApplication(basePath("foo")).add(new ResourcesModule() {
+            @Override
+            public Resources addResources(final Resources resources) throws Exception {
+                return resources.add(annotatedClass(Foo.class));
+            }
+        }).handle(get("/foo/").build());
+
+        assertThat(response.status(), is(Status.OK));
+    }
+
+    public static class Foo {
+        @GET
+        @Path("")
+        public String respond() {
+            return "foo";
+        }
+    }
+
     private int runningInstances() {
         return started[0] - stopped[0];
     }
@@ -122,7 +145,7 @@ public class RestApplicationTest {
         }
 
         @GET
-        @Path("foo")
+        @Path("")
         public void get() {
         }
     }
