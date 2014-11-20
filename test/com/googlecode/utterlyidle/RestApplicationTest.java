@@ -145,7 +145,7 @@ public class RestApplicationTest {
         }
 
         @GET
-        @Path("")
+        @Path("foo")
         public void get() {
         }
     }
