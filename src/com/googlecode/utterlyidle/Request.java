@@ -33,5 +33,14 @@ public interface Request {
                 }
             };
         }
+
+        public static Function1<Request, Uri> uri() {
+            return new Function1<Request, Uri>() {
+                @Override
+                public Uri call(final Request request) throws Exception {
+                    return request.uri();
+                }
+            };
+        }
     }
 }
