@@ -6,15 +6,15 @@ import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
-public class NormaliseUriHandler implements HttpHandler {
+public class RemoveDotSegmentsHandler implements HttpHandler {
     private final HttpHandler httpHandler;
 
-    public NormaliseUriHandler(final HttpHandler httpHandler) {
+    public RemoveDotSegmentsHandler(final HttpHandler httpHandler) {
         this.httpHandler = httpHandler;
     }
 
     @Override
     public Response handle(final Request request) throws Exception {
-        return httpHandler.handle(modify(request).uri(request.uri().normalise()).build());
+        return httpHandler.handle(modify(request).uri(request.uri().removeDotSegments()).build());
     }
 }
