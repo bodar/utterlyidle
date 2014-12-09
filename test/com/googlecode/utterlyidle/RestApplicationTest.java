@@ -96,6 +96,7 @@ public class RestApplicationTest {
 
     @Test
     public void basePathIsStrippedFromRequests() throws Exception {
+
         final Response response = new RestApplication(basePath("foo")).add(new ResourcesModule() {
             @Override
             public Resources addResources(final Resources resources) throws Exception {
