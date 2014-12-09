@@ -12,7 +12,7 @@ import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 import com.googlecode.utterlyidle.handlers.DateHandler;
 import com.googlecode.utterlyidle.handlers.ExceptionHandler;
 import com.googlecode.utterlyidle.handlers.HeadRequestHandler;
-import com.googlecode.utterlyidle.handlers.NormaliseUriHandler;
+import com.googlecode.utterlyidle.handlers.RemoveDotSegmentsHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHttpHandler;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
@@ -116,7 +116,7 @@ public class RestApplication implements Application {
         requestScope.decorate(HttpHandler.class, ExceptionHandler.class);
         requestScope.decorate(HttpHandler.class, ContentLengthHandler.class);
         requestScope.decorate(HttpHandler.class, HeadRequestHandler.class);
-        requestScope.decorate(HttpHandler.class, NormaliseUriHandler.class);
+        requestScope.decorate(HttpHandler.class, RemoveDotSegmentsHandler.class);
         requestScope.decorate(HttpHandler.class, AuditHandler.class);
         addResourcesIfNeeded(requestScope);
         return requestScope;
