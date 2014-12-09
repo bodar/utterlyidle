@@ -17,7 +17,7 @@ public class StaticResources {
     public Response get(URL baseUrl, String filename) {
         try {
             Uri original = uri(baseUrl).mergePath(filename);
-            Uri normalise = original.normalise();
+            Uri normalise = original.removeDotSegments();
             if (!original.equals(normalise)) return Responses.response(Status.NOT_FOUND);
             HttpHandler handler = new ClientHttpHandler();
             return handler.handle(RequestBuilder.get(original).build());
