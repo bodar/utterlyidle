@@ -36,8 +36,6 @@ public class FlashHandler implements HttpHandler {
      * It is expected that this behaviour will be superseded by a
      * more fully-featured implementation in the future.
      *
-	 * @param flash
-	 * @param decorated
 	 */
 	public FlashHandler(Flash flash, HttpHandler decorated, ClearFlashPredicate clearFlashPredicate, BasePath basePath) {
 		this.flash = flash;
@@ -62,17 +60,24 @@ public class FlashHandler implements HttpHandler {
 
 	private Response setFlashCookie(Request request, Response response) {
 		if(shouldClearFlash(request,  response)){
-			return clearCookie(response);
+			return set(request, response, clearCookie());
 		}
-		return modify(response).cookie(flashCookie()).build();
+		return set(request, response, flashCookie());
+	}
+
+	private Response set(final Request request, final Response response, final Cookie cookie) {
+		if (cookie.value().equals(cookies(request).getValue(FLASH_COOKIE))) {
+			return response;
+		}
+		return modify(response).cookie(cookie).build();
 	}
 
 	private boolean shouldClearFlash(Request request, Response response) {
 		return clearFlashPredicate.matches(pair(request, response));
 	}
 
-	private Response clearCookie(Response response) {
-		return modify(response).cookie(flashCookie("")).build();
+	private Cookie clearCookie() {
+		return flashCookie("");
 	}
 
 	private Cookie flashCookie() {
