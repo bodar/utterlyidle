@@ -23,6 +23,7 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_XHTML_XML;
+import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
@@ -32,6 +33,7 @@ import static com.googlecode.utterlyidle.flash.FlashHandler.FLASH_COOKIE;
 import static org.junit.Assert.assertThat;
 
 public class FlashHandlerTest {
+	private static final String CLEARED_FLASH_COOKIE_VALUE = "{}";
 	private final Application application = new RestApplication(basePath("/")).
 			add(new FlashMessagesModule()).
 			add(new ResourcesModule() {
@@ -85,6 +87,12 @@ public class FlashHandlerTest {
 						add("key", "Error 2"))));
 	}
 
+	@Test
+	public void onlySetCookieIfValueChanges() throws Exception {
+		Response response = application.handle(withFlashCookie(CLEARED_FLASH_COOKIE_VALUE,post("/hi")).build());
+		assertThat(cookies(response).contains(FLASH_COOKIE), is(false));
+	}
+
 	private Response followRedirect(Response response) throws Exception {
 		String flash = flashCookie(response);
 		String redirectLocation = response.headers().getValue(LOCATION);
@@ -107,6 +115,13 @@ public class FlashHandlerTest {
 		public FlashResource(Redirector redirector, Flash flash) {
 			this.redirector = redirector;
 			this.flash = flash;
+		}
+
+		@GET
+        @Produces(TEXT_PLAIN)
+		@Path("hi")
+		public String hello(){
+			return "hello";
 		}
 
 		@GET
