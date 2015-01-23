@@ -10,6 +10,7 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Strings.isBlank;
 import static com.googlecode.utterlyidle.Requests.cookies;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
@@ -53,7 +54,7 @@ public class FlashHandler implements HttpHandler {
 	private static void setIncomingFlashValues(Request request, Flash flash) {
 		CookieParameters requestCookies = cookies(request);
 
-		if(!requestCookies.contains(FLASH_COOKIE) || isEmptyJson(requestCookies.getValue(FLASH_COOKIE))) return;
+		if(!requestCookies.contains(FLASH_COOKIE) || isEmptyJson(requestCookies.getValue(FLASH_COOKIE)) || isBlank(requestCookies.getValue(FLASH_COOKIE))) return;
 
 		flash.merge(Model.persistent.parse(requestCookies.getValue(FLASH_COOKIE)));
 	}
