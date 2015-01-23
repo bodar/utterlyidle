@@ -65,7 +65,7 @@ public class FlashHandlerTest {
 		assertThat(
 				"Flash cookie should be removed on successful response so it only displays once",
                 responseFromRedirectLocationCookie,
-				is(""));
+				is("{}"));
 	}
 
 	@Test
@@ -89,7 +89,13 @@ public class FlashHandlerTest {
 
 	@Test
 	public void onlySetCookieIfValueChanges() throws Exception {
-		Response response = application.handle(withFlashCookie(CLEARED_FLASH_COOKIE_VALUE,post("/hi")).build());
+		Response response = application.handle(withFlashCookie(CLEARED_FLASH_COOKIE_VALUE, post("/hi")).build());
+		assertThat(cookies(response).contains(FLASH_COOKIE), is(false));
+	}
+
+	@Test
+	public void thereIsNoNeedToSetTheFlashCookieIfItsValueIsEmptyJsonAndTheIncomingRequestHasNoFlashCookie () throws Exception {
+		Response response = application.handle(post("/hi").build());
 		assertThat(cookies(response).contains(FLASH_COOKIE), is(false));
 	}
 
