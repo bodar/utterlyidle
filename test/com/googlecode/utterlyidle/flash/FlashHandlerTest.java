@@ -27,6 +27,7 @@ import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
 import static com.googlecode.utterlyidle.flash.FlashHandler.FLASH_COOKIE;
@@ -89,14 +90,23 @@ public class FlashHandlerTest {
 
 	@Test
 	public void onlySetCookieIfValueChanges() throws Exception {
-		Response response = application.handle(withFlashCookie(CLEARED_FLASH_COOKIE_VALUE, post("/hi")).build());
+		Response response = application.handle(withFlashCookie(CLEARED_FLASH_COOKIE_VALUE, get("/hi")).build());
+		assertThat(response.status(), is(OK));
 		assertThat(cookies(response).contains(FLASH_COOKIE), is(false));
 	}
 
 	@Test
 	public void thereIsNoNeedToSetTheFlashCookieIfItsValueIsEmptyJsonAndTheIncomingRequestHasNoFlashCookie () throws Exception {
-		Response response = application.handle(post("/hi").build());
+		Response response = application.handle(get("/hi").build());
+		assertThat(response.status(), is(OK));
 		assertThat(cookies(response).contains(FLASH_COOKIE), is(false));
+	}
+
+	@Test
+	public void migratesPreviousEmptyCookieValueToNewEmptyCookieValue () throws Exception {
+		Response response = application.handle(withFlashCookie("", get("/hi")).build());
+		assertThat(response.status(), is(OK));
+		assertThat(cookies(response).getValue(FLASH_COOKIE), is(CLEARED_FLASH_COOKIE_VALUE));
 	}
 
 	private Response followRedirect(Response response) throws Exception {
