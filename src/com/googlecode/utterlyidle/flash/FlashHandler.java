@@ -10,13 +10,13 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Strings.isBlank;
 import static com.googlecode.utterlyidle.Requests.cookies;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 
 public class FlashHandler implements HttpHandler {
 	public static final String FLASH_COOKIE = "f";
+	private static final String EMPTY_FLASH_COOKIE_JSON = "{}";
 	private final HttpHandler decorated;
 	private final Flash flash;
 	private final ClearFlashPredicate clearFlashPredicate;
@@ -53,20 +53,17 @@ public class FlashHandler implements HttpHandler {
 	private static void setIncomingFlashValues(Request request, Flash flash) {
 		CookieParameters requestCookies = cookies(request);
 
-		if(!requestCookies.contains(FLASH_COOKIE) || isBlank(requestCookies.getValue(FLASH_COOKIE))) return;
+		if(!requestCookies.contains(FLASH_COOKIE) || isEmptyJson(requestCookies.getValue(FLASH_COOKIE))) return;
 
 		flash.merge(Model.persistent.parse(requestCookies.getValue(FLASH_COOKIE)));
 	}
 
 	private Response setFlashCookie(Request request, Response response) {
-		if(shouldClearFlash(request,  response)){
-			return set(request, response, clearCookie());
-		}
-		return set(request, response, flashCookie());
+		return set(request, response, shouldClearFlash(request, response) ? clearCookie() : flashCookie());
 	}
 
 	private Response set(final Request request, final Response response, final Cookie cookie) {
-		if (cookie.value().equals(cookies(request).getValue(FLASH_COOKIE))) {
+		if (cookieAlreadyHasSameValue(request, cookie)  || (isEmptyJson(cookie.value()) && !cookies(request).contains(FLASH_COOKIE))) {
 			return response;
 		}
 		return modify(response).cookie(cookie).build();
@@ -76,16 +73,23 @@ public class FlashHandler implements HttpHandler {
 		return clearFlashPredicate.matches(pair(request, response));
 	}
 
+	private boolean cookieAlreadyHasSameValue(final Request request, final Cookie cookie) {
+		return cookie.value().equals(cookies(request).getValue(FLASH_COOKIE));
+	}
+
+	private static boolean isEmptyJson(final String value) {
+		return EMPTY_FLASH_COOKIE_JSON.equals(value);
+	}
+
 	private Cookie clearCookie() {
-		return flashCookie("");
+		return flashCookie(EMPTY_FLASH_COOKIE_JSON);
 	}
 
 	private Cookie flashCookie() {
-        String json = toJson(flash.state());
-		return flashCookie(json);
+		return flashCookie(toJson(flash.state()));
 	}
 
-    private Cookie flashCookie(String json) {
+	private Cookie flashCookie(String json) {
         return new Cookie(FLASH_COOKIE, json, path(basePath.toString()));
     }
 }
