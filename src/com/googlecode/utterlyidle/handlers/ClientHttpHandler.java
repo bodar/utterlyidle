@@ -70,6 +70,10 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     private final Integer streamingSize = Integer.getInteger("utterlyidle.client.stream.size", 4000);
     private final Boolean disableStreaming = Boolean.getBoolean("utterlyidle.client.stream.disable");
 
+    static {
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+    }
+
     public ClientHttpHandler() {
         this(0);
     }
