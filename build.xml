@@ -34,7 +34,7 @@
     </path>
 
     <target name="update" description="Update library dependencies">
-        <!--<install version="79"/>-->
+        <install version="95"/>
         <parallel>
             <update dependencies="build" directory="${lib.dir}"/>
         </parallel>
