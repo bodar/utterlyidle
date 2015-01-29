@@ -312,6 +312,13 @@ public class RestTest {
     }
 
     @Test
+    public void ifResourceSetsStatusCodeButNoContentHonorResource() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(NoContent.class);
+        Response response = application.handle(post("noContentButResponseStatus"));
+        assertThat(response.status(), is(OK));
+    }
+
+    @Test
     public void doesNotReturnNoContentForHeadRequests() throws Exception {
         ApplicationBuilder application = application().addAnnotated(Headable.class);
         Response response = application.handle(head("foo"));
@@ -654,13 +661,19 @@ public class RestTest {
         }
     }
 
-    @Path("foo")
     public static class NoContent {
         public int count = 0;
 
         @POST
-        public void post() {
+        @Path("foo")
+        public void noContent() {
             count = count + 1;
+        }
+
+        @POST
+        @Path("noContentButResponseStatus")
+        public Response post() {
+            return Responses.response(Status.OK);
         }
     }
 

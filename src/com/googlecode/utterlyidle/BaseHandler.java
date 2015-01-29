@@ -42,7 +42,12 @@ public class BaseHandler implements HttpHandler {
         return setContentType(accept(request).bestMatch(binding.produces()),
                 wrapInResponse(
                         unwrapEither(
-                                binding.invoke(container))));
+                                convertNullToNoContent(binding.invoke(container)))));
+    }
+
+    private Object convertNullToNoContent(final Object instance) {
+        if(instance == null) return Responses.response(Status.NO_CONTENT);
+        return instance;
     }
 
     private Callable1<? super Binding, Response> success(final Request request) {

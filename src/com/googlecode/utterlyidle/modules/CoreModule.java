@@ -49,7 +49,6 @@ import com.googlecode.utterlyidle.handlers.IdentityHandler;
 import com.googlecode.utterlyidle.handlers.InternalHttpHandler;
 import com.googlecode.utterlyidle.handlers.InternalInvocationHandler;
 import com.googlecode.utterlyidle.handlers.InvocationHandler;
-import com.googlecode.utterlyidle.handlers.NoContentHandler;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
@@ -72,17 +71,14 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Predicates.is;
-import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.URLs.packageUrl;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
-import static com.googlecode.utterlyidle.annotations.HttpMethod.HEAD;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
-import static com.googlecode.utterlyidle.handlers.HandlerRule.method;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.status;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
 
@@ -136,13 +132,12 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
     @Override
     public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) {
         return handlers.
-                addGuard(where(entity(), empty()).and(where(method(), is(not(HEAD)))), NoContentHandler.class).
-                        addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).
-                                or(instanceOf(StreamingOutput.class)).or(instanceOf(InputStream.class))), IdentityHandler.class).
-                        addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class)).
-                        addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class)).
-                        addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class)).
-                        addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
+                addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).
+                        or(instanceOf(StreamingOutput.class)).or(instanceOf(InputStream.class))), IdentityHandler.class).
+                addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class)).
+                addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class)).
+                addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class)).
+                addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
     }
 
     @Override
@@ -164,17 +159,6 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 }.get(), EitherResolver.class).
                 addType(new TypeFor<Iterable<UUID>>() {
                 }.get(), new TypedIterableResolver<UUID>(argumentScope, UUIDActivator.fromString()));
-    }
-
-    private Predicate<Object> empty() {
-        return new Predicate<Object>() {
-            @Override
-            public boolean matches(Object other) {
-                if(other instanceof String) return ((String) other).isEmpty();
-                if(other instanceof byte[]) return ((byte[]) other).length == 0;
-                return false;
-            }
-        };
     }
 
     public static class TypedIterableResolver<T> implements Resolver<Iterable<T>> {
