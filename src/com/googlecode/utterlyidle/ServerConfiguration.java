@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.httpserver.RestServer;
 
@@ -7,6 +8,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.Uri.uri;
 import static java.lang.Integer.valueOf;
 import static java.lang.String.format;
@@ -105,7 +107,7 @@ public class ServerConfiguration {
 
     private static Class<? extends Server> toServer(String className) {
         try {
-            return (Class<? extends Server>) Class.forName(className);
+            return cast(Class.forName(className));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

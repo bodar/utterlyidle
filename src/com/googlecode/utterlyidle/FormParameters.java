@@ -25,6 +25,7 @@ public class FormParameters extends Parameters<String,String, FormParameters > {
         return new FormParameters();
     }
 
+    @SafeVarargs
     public static FormParameters formParameters(Pair<String, String>... pairs) {
         return formParameters(sequence(pairs));
     }

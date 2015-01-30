@@ -29,6 +29,7 @@ public class QueryParameters extends Parameters<String, String, QueryParameters>
         return new QueryParameters();
     }
 
+    @SafeVarargs
     public static QueryParameters queryParameters(Pair<String, String>... pairs) {
         return queryParameters(sequence(pairs));
     }

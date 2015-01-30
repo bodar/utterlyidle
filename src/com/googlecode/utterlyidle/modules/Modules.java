@@ -24,10 +24,10 @@ import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
 public class Modules implements ModuleDefinitions, ModuleActivator {
     public static final String AUTO_START = "auto.start";
-    private final List<Module> modules = new CopyOnWriteArrayList<Module>();
-    private final List<Class<? extends Module>> applicationModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
-    private final List<Class<? extends Module>> requestModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
-    private final List<Class<? extends Module>> argumentModuleClasses = new CopyOnWriteArrayList<Class<? extends Module>>();
+    private final List<Module> modules = new CopyOnWriteArrayList<>();
+    private final List<Class<? extends Module>> applicationModuleClasses = new CopyOnWriteArrayList<>();
+    private final List<Class<? extends Module>> requestModuleClasses = new CopyOnWriteArrayList<>();
+    private final List<Class<? extends Module>> argumentModuleClasses = new CopyOnWriteArrayList<>();
     private final UtterlyIdleProperties properties;
 
     public Modules(UtterlyIdleProperties properties) {

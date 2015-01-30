@@ -79,14 +79,14 @@ public class BaseUriRedirectorTest {
         assertLocation(response, "http://server/base/redirect?foo=Dan");
     }
 
-    @Test
+    @Test @SuppressWarnings("unchecked")
     public void supportsOption() throws Exception {
         Redirector redirector = redirector(get("/redirect").resource(method(on(RedirectWithFunctionalTypes.class).optional(queryParam(Option.class, "optional")))).build());
         assertLocation(redirector.seeOther(method(on(RedirectWithFunctionalTypes.class).optional(Option.<String>none()))), "http://server/base/redirect");
         assertLocation(redirector.seeOther(method(on(RedirectWithFunctionalTypes.class).optional(Option.<String>some("baz")))), "http://server/base/redirect?optional=baz");
     }
 
-    @Test
+    @Test @SuppressWarnings("unchecked")
     public void supportsEither() throws Exception {
         Redirector redirector = redirector(get("/redirect").resource(method(on(RedirectWithFunctionalTypes.class).either(queryParam(Either.class, "either")))).build());
         assertLocation(redirector.seeOther(method(on(RedirectWithFunctionalTypes.class).either(Left.<String, Integer>left("left")))), "http://server/base/redirect?either=left");

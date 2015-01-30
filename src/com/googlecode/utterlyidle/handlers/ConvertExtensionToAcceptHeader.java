@@ -103,6 +103,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
             this.replacements = sequence(replacements);
         }
 
+        @SafeVarargs
         public static Replacements replacements(Pair<String, String>... replacements) {
             return new Replacements(replacements);
         }

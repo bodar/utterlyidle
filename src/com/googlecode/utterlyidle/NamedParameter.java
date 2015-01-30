@@ -12,6 +12,7 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Callables.callThrows;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Unchecked.cast;
 
 public class NamedParameter implements Parameter {
     private final String name;
@@ -39,7 +40,7 @@ public class NamedParameter implements Parameter {
     public Callable<String> extractValueFrom(final TypeMap typeMap) {
         return new Callable<String>() {
             public String call() throws Exception {
-                Parameters<String, String, ?> parameters = (Parameters<String, String, ?>) typeMap.resolve(parametersClass());
+                Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
                 if (!parameters.contains(name())) {
                     return defaultValueOrThrow();
                 }
@@ -55,7 +56,7 @@ public class NamedParameter implements Parameter {
     public Resolver<Iterable<String>> extractValuesFrom(final TypeMap typeMap) {
         return new Resolver<Iterable<String>>() {
             public Iterable<String> resolve(Type type) throws Exception {
-                Parameters<String, String, ?> parameters = (Parameters<String, String, ?>) typeMap.resolve(parametersClass());
+                Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
                 if (!parameters.contains(name())) {
                     return sequence(defaultValueOrThrow());
                 }

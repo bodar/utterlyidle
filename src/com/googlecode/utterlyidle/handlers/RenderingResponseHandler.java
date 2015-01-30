@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callers;
+import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
@@ -34,7 +35,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     }
 
     public Response handle(Response response) throws Exception {
-        return ResponseBuilder.modify(response).entity(getRenderer().render((T) response.entity().value())).build();
+        return ResponseBuilder.modify(response).entity(getRenderer().render(Unchecked.<T>cast(response.entity().value()))).build();
     }
 
     protected abstract Renderer<T> getRenderer() throws Exception;

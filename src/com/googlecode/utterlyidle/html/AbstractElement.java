@@ -76,7 +76,8 @@ public class AbstractElement {
         }
     }
 
-    public String toString(Pair<String, Object>... attributes) {
+    @SafeVarargs
+    public final String toString(Pair<String, Object>... attributes) {
         try {
             return Xml.format(node, attributes);
         } catch (Exception e) {

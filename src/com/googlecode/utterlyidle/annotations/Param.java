@@ -6,6 +6,8 @@ import com.googlecode.totallylazy.Predicate;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
+import static com.googlecode.totallylazy.Unchecked.cast;
+
 public class Param {
     private final Annotation annotation;
     private static final String METHOD_NAME = "value";
@@ -46,17 +48,13 @@ public class Param {
     }
 
     public <T> T value() {
-        return this.<T>getValue(annotation);
+        return getValue(annotation);
     }
 
     public static <T> T getValue(Annotation annotation) {
         try {
-            return (T) annotation.getClass().getMethod(METHOD_NAME).invoke(annotation);
-        } catch (NoSuchMethodException e) {
-            throw new UnsupportedOperationException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e.getCause());
-        } catch (IllegalAccessException e) {
+            return cast(annotation.getClass().getMethod(METHOD_NAME).invoke(annotation));
+        } catch (ReflectiveOperationException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -68,7 +66,7 @@ public class Param {
     public static <T> Callable1<? super Annotation, T> toValue() {
         return new Callable1<Annotation, T>() {
             public T call(Annotation annotation) throws Exception {
-                return (T) getValue(annotation);
+                return cast(getValue(annotation));
             }
         };
     }

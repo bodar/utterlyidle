@@ -28,6 +28,7 @@ public class HeaderParameters extends Parameters<String, String, HeaderParameter
         return new HeaderParameters();
     }
 
+    @SafeVarargs
     public static HeaderParameters headerParameters(final Pair<String, String>... pairs) {
         return headerParameters(sequence(pairs));
     }

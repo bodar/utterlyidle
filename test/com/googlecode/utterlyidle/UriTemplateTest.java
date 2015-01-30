@@ -10,6 +10,7 @@ import static com.googlecode.utterlyidle.UriTemplate.uriTemplate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@SuppressWarnings("unchecked")
 public class UriTemplateTest {
     @Test
     public void reportsNumberOfSegments() throws Exception {

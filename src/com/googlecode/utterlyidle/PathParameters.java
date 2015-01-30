@@ -24,6 +24,7 @@ public class PathParameters extends Parameters<String, String, PathParameters> {
         return new PathParameters();
     }
 
+    @SafeVarargs
     public static PathParameters pathParameters(Pair<String, String>... pairs) {
         return pathParameters(sequence(pairs));
     }

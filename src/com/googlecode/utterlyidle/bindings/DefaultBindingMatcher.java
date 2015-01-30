@@ -61,7 +61,8 @@ public class DefaultBindingMatcher implements BindingMatcher {
         return bindings.sortBy(matchQuality(request)).head();
     }
 
-    private Either<MatchFailure, Sequence<Binding>> filter(Pair<? extends Predicate<Binding>, Status>... filterAndResult) {
+    @SafeVarargs
+    private final Either<MatchFailure, Sequence<Binding>> filter(Pair<? extends Predicate<Binding>, Status>... filterAndResult) {
         Sequence<Binding> activators = sequence(bindings);
         for (Pair<? extends Predicate<Binding>, Status> pair : filterAndResult) {
             Sequence<Binding> matchesSoFar = activators;
