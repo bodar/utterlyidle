@@ -9,7 +9,6 @@ import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.CloseableList;
@@ -39,7 +38,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
@@ -95,6 +93,10 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
         this.proxies = proxies;
+    }
+
+    public ClientHttpHandler(RequestTimeout requestTimeout) {
+        this(requestTimeout.value());
     }
 
     public Response handle(final Request request) throws Exception {

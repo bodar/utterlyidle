@@ -36,6 +36,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.handlers.RequestTimeout.requestTimeout;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -98,6 +99,12 @@ public class ClientHttpHandlerTest {
     @Test
     public void correctlyHandlesTimeouts() throws Exception {
         Response response = handle(10, get("slow"), server);
+        assertThat(response.status(), is(Status.CLIENT_TIMEOUT));
+    }
+
+    @Test
+    public void correctlyHandlesRequestTimeout() throws Exception {
+        Response response = handle(new ClientHttpHandler(requestTimeout(10)), get("slow"), server);
         assertThat(response.status(), is(Status.CLIENT_TIMEOUT));
     }
 
