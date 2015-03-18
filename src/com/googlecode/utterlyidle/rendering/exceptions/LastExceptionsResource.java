@@ -4,6 +4,7 @@ import com.googlecode.funclate.Model;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.Hidden;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 
@@ -12,6 +13,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 @Produces(MediaType.TEXT_HTML)
 @Path(LastExceptionsResource.PATH)
+@Hidden
 public class LastExceptionsResource {
     public static final String PATH = "utterlyidle/exceptions";
 
