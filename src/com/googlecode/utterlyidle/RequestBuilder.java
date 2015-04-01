@@ -178,6 +178,14 @@ public class RequestBuilder implements Callable<Request> {
         return new RequestBuilder(HttpMethod.PUT, path);
     }
 
+    public static RequestBuilder patch(Uri uri) {
+        return new RequestBuilder(HttpMethod.PATCH, uri);
+    }
+
+    public static RequestBuilder patch(String path) {
+        return new RequestBuilder(HttpMethod.PATCH, path);
+    }
+
     public static RequestBuilder delete(Uri uri) {
         return new RequestBuilder(HttpMethod.DELETE, uri);
     }

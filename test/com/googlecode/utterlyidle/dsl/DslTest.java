@@ -22,6 +22,7 @@ import static com.googlecode.utterlyidle.annotations.View.constructors.view;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.entity;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.patch;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.put;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static com.googlecode.utterlyidle.rendering.ViewName.viewName;
@@ -29,6 +30,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class DslTest {
+    @Test
+    public void supportsPatch() throws Exception {
+        ApplicationBuilder application = application().
+                add(patch("baz").resource(method(on(Baz.class).input(entity()))));
+        String response = application.responseAsString(RequestBuilder.patch("/baz").entity("Hello"));
+        assertThat(response, is("Hello"));
+    }
+
     @Test
     public void supportsEntityInputStream() throws Exception {
         ApplicationBuilder application = application().

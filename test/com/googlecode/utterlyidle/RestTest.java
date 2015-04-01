@@ -12,6 +12,7 @@ import com.googlecode.utterlyidle.annotations.DefaultValue;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.HEAD;
+import com.googlecode.utterlyidle.annotations.PATCH;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.PUT;
 import com.googlecode.utterlyidle.annotations.Path;
@@ -48,6 +49,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.head;
+import static com.googlecode.utterlyidle.RequestBuilder.patch;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
@@ -350,6 +352,13 @@ public class RestTest {
         ApplicationBuilder application = application().addAnnotated(PutContent.class);
 
         assertThat(application.responseAsString(put("path/bar").entity("input")), is("input"));
+    }
+
+    @Test
+    public void supportsPatch() throws Exception {
+        ApplicationBuilder application = application().addAnnotated(PatchContent.class);
+
+        assertThat(application.responseAsString(patch("path/bar").entity("input")), is("input"));
     }
 
     @Test
@@ -691,6 +700,14 @@ public class RestTest {
     public static class PutContent {
         @PUT
         public String put(@PathParam("id") String id, InputStream input) {
+            return asString(input);
+        }
+    }
+
+    @Path("path/{id}")
+    public static class PatchContent {
+        @PATCH
+        public String patch(@PathParam("id") String id, InputStream input) {
             return asString(input);
         }
     }
