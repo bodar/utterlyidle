@@ -13,7 +13,6 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 
 @Produces(MediaType.TEXT_HTML)
 @Path(LastExceptionsResource.PATH)
-@Hidden
 public class LastExceptionsResource {
     public static final String PATH = "utterlyidle/exceptions";
 
@@ -26,6 +25,7 @@ public class LastExceptionsResource {
     }
 
     @GET
+    @Hidden
     public Model allRecordedExceptions() {
         return model().
                 add("base", basePath).
