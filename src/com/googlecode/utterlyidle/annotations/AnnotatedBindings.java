@@ -98,8 +98,8 @@ public class AnnotatedBindings {
         };
     }
 
-    private static boolean hidden(Method method) {
-        return method.getAnnotation(Hidden.class) != null;
+    static boolean hidden(Method method) {
+        return sequence(method.getAnnotation(Hidden.class), method.getDeclaringClass().getAnnotation(Hidden.class)).exists(notNullValue());
     }
 
     private static Sequence<Pair<Type, Option<Parameter>>> extractTypesAndNames(Method method) {
