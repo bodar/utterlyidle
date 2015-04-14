@@ -74,9 +74,19 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
     public static Sequence<Pair<String, String>> cookies(String header) {
         return regex("\\s*;\\s*").
                 split(header).
+                filter(correctlyFormed()).
                 map(splitOnFirst("=")).
                 filter(not(anAttribute())).
                 map(Callables.<String, String, String>second(Rfc2616.toUnquotedString()));
+    }
+
+    private static Predicate<? super String> correctlyFormed() {
+        return new Predicate<String>() {
+            @Override
+            public boolean matches(final String cookie) {
+                return cookie.contains("=");
+            }
+        };
     }
 
     private static Predicate<? super Pair<String, String>> anAttribute() {
