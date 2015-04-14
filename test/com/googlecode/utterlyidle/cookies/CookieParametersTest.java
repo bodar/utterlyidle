@@ -65,6 +65,15 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
     }
 
     @Test
+    public void willIgnoreMalformedCookies() throws Exception {
+        CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "invalidCookie; a=1")))).headers());
+
+        assertThat(cookies.getValue("invalidCookie"), is(nullValue()));
+
+        assertThat(cookies.getValue("a"), is("1"));
+    }
+
+    @Test
     public void copesWithCookieHeaderWithNoCookies() {
         CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "")))).headers());
         assertThat(cookies.size(), is(0));
