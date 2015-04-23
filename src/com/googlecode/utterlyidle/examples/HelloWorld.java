@@ -19,6 +19,7 @@ import com.googlecode.utterlyidle.annotations.DefaultValue;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.HeaderParam;
+import com.googlecode.utterlyidle.annotations.PATCH;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.PUT;
 import com.googlecode.utterlyidle.annotations.Path;
@@ -84,6 +85,12 @@ public class HelloWorld {
     @GET
     @Path("helloworld/queryparam")
     public String get(@QueryParam("name") @DefaultValue("Matt") String name) {
+        return hello(name);
+    }
+
+    @PATCH
+    @Path("helloworld/patch")
+    public String patch(@QueryParam("name") @DefaultValue("James") String name) {
         return hello(name);
     }
 

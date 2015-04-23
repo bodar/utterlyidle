@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.SocketException;
@@ -41,6 +43,10 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Fields.access;
+import static com.googlecode.totallylazy.Fields.fields;
+import static com.googlecode.totallylazy.Fields.name;
+import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Maps.pairs;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -160,13 +166,22 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     private Response handle(Request request, HttpURLConnection connection) throws IOException {
         try {
             connection.setInstanceFollowRedirects(false);
-            connection.setRequestMethod(request.method());
+            setHttpMethod(request, connection);
             Status status = sendHttpRequest(request, connection);
             return createResponse(connection, status, entity(connection));
         } catch (SocketException ex) {
             return errorResponse(Status.CONNECTION_REFUSED, ex);
         } catch (SocketTimeoutException ex) {
             return errorResponse(Status.CLIENT_TIMEOUT, ex);
+        }
+    }
+
+    private static final Field httpMethod = access(fields(HttpURLConnection.class).find(where(name, is("method"))).get());
+    private void setHttpMethod(final Request request, final HttpURLConnection connection) {
+        try {
+            httpMethod.set(connection, request.method());
+        } catch (IllegalAccessException e) {
+            throw lazyException(e);
         }
     }
 
