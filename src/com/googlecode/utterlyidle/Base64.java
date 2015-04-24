@@ -1,15 +1,12 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Strings;
-
-import static com.googlecode.totallylazy.Strings.bytes;
-
+@Deprecated // Please use com.googlecode.totallylazy.security.Base64
 public class Base64 {
     public static byte[] decode(String content) {
-        return new org.apache.commons.codec.binary.Base64().decode(bytes(content));
+        return com.googlecode.totallylazy.security.Base64.decode(content);
     }
 
     public static String encode(byte[] content) {
-        return Strings.toString(new org.apache.commons.codec.binary.Base64().encode(content));
+        return com.googlecode.totallylazy.security.Base64.encode(content);
     }
 }

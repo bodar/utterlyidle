@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Value;
-import com.googlecode.utterlyidle.Base64;
+import com.googlecode.totallylazy.security.Base64;
 import org.apache.commons.codec.binary.Hex;
 
 import java.security.MessageDigest;

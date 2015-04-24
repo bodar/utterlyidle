@@ -18,6 +18,7 @@ import static com.googlecode.utterlyidle.handlers.GzipHandler.ungzip;
 import static javax.crypto.Cipher.DECRYPT_MODE;
 import static javax.crypto.Cipher.ENCRYPT_MODE;
 
+@Deprecated // Please use com.googlecode.totallylazy.security.Key
 public class Key implements Value<String> {
     private final String secret;
 

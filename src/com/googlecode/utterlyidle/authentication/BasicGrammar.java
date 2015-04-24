@@ -5,7 +5,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.parser.Parser;
 import com.googlecode.totallylazy.parser.Parsers;
-import com.googlecode.utterlyidle.Base64;
+import com.googlecode.totallylazy.security.Base64;
 
 import static com.googlecode.totallylazy.Characters.alphaNumeric;
 import static com.googlecode.totallylazy.Predicates.in;

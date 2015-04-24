@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.authentication;
 
 import com.googlecode.totallylazy.Sets;
-import com.googlecode.utterlyidle.Base64;
+import com.googlecode.totallylazy.security.Base64;
 import com.googlecode.utterlyidle.BaseUri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;

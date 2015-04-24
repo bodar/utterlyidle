@@ -1,20 +1,14 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.numbers.Numbers;
+import com.googlecode.totallylazy.security.GZip;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
-import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT_ENCODING;
@@ -53,20 +47,14 @@ public class GzipHandler implements HttpHandler {
         return headers.contains(CONTENT_ENCODING) && headers.getValue(CONTENT_ENCODING).contains(GZIP);
     }
 
+    @Deprecated // please use GZip.gzip in TotallyLazy
     public static byte[] gzip(byte[] data) throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        GZIPOutputStream outputStream = new GZIPOutputStream(stream);
-        outputStream.write(data);
-        outputStream.close();
-        return stream.toByteArray();
+        return GZip.gzip(data);
     }
 
+    @Deprecated // please use GZip.ungzip in TotallyLazy
     public static byte[] ungzip(byte[] input) {
-        try {
-            return bytes(new GZIPInputStream(new ByteArrayInputStream(input)));
-        } catch (IOException e) {
-            throw LazyException.lazyException(e);
-        }
+        return GZip.ungzip(input);
     }
 
 }
