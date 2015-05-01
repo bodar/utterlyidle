@@ -24,3 +24,11 @@ Some of the core features
   * Request and Response can be 'new'd up, 'toString'd and parsed
   * Resources can consume and return Requests and Responses or any Java classes
     * Renderers can be registered for any response object
+
+
+##Versions##
+
+ * 1.x - Stable - Requires Java 7+
+ * 2.x - Development - Requires Java 8+
+  
+ 
