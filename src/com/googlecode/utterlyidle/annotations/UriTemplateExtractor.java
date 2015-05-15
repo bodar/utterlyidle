@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.UriTemplate.trimSlashes;
 
 public class UriTemplateExtractor implements Extractor<Method, UriTemplate> {
     static UriTemplate uriTemplate(Method method) {
@@ -23,7 +24,7 @@ public class UriTemplateExtractor implements Extractor<Method, UriTemplate> {
     public static Callable1<? super Path, String> getValue() {
         return new Callable1<Path, String>() {
             public String call(Path o) throws Exception {
-                return o.value();
+                return trimSlashes(o.value());
             }
         };
     }
