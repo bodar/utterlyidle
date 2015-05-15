@@ -1,11 +1,12 @@
 package com.googlecode.utterlyidle.flash;
 
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.json.Json;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.Response;
@@ -24,8 +25,7 @@ import com.googlecode.utterlyidle.modules.ResourcesModule;
 import com.googlecode.yadic.Container;
 import org.junit.Test;
 
-import static com.googlecode.funclate.Model.persistent.model;
-import static com.googlecode.funclate.json.Json.toJson;
+import static com.googlecode.totallylazy.Arrays.list;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.totallylazy.proxy.Call.method;
@@ -68,7 +68,7 @@ public class FlashHandlerTest {
         assertThat(
                 "Should set flash cookies on non-2xx response",
                 redirectResponseCookie,
-                is(toJson(model().set("key", "Hello world"))));
+				is(Json.json(Maps.map("key", "Hello world"))));
 
         Response responseFromRedirectLocation = followRedirect(redirectResponse);
 
@@ -99,10 +99,8 @@ public class FlashHandlerTest {
         assertThat(
                 "Should append flash cookies on non-2xx response",
                 secondErrorFlashCookie,
-                is(toJson(model().
-                        add("key", "Error 1").
-                        add("key", "Error 2"))));
-    }
+				is(Json.json(Maps.map("key", list("Error 1", "Error 2")))));
+	}
 
     @Test
     public void handlesCorruptedJsonCookie() throws Exception {

@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 
 import static com.googlecode.totallylazy.Unchecked.cast;
 

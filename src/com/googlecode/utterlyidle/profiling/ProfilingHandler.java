@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.profiling;
 
-import com.googlecode.funclate.stringtemplate.EnhancedStringTemplateGroup;
+import com.googlecode.totallylazy.Maps;
+import com.googlecode.totallylazy.template.Templates;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -9,7 +10,6 @@ import com.googlecode.utterlyidle.sitemesh.PropertyMapParser;
 
 import java.io.IOException;
 
-import static com.googlecode.funclate.Model.persistent.model;
 import static com.googlecode.utterlyidle.Requests.query;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.profiling.ProfilingClient.profile;
@@ -39,11 +39,11 @@ public class ProfilingHandler implements HttpHandler {
 
     private Response decorate(Response response) throws IOException {
         PropertyMap html = new PropertyMapParser().parse(response.entity().toString());
-        EnhancedStringTemplateGroup group = new EnhancedStringTemplateGroup(getClass());
-        return modify(response).entity(group.getInstanceOf("profile", model().
-                add("response", html).
-                add("requests", profilingData.requests()).
-                add("queries", profilingData.queries()).
-                toMap()).toString()).build();
+        Templates group = Templates.templates(getClass()).addDefault().extension("html");
+        return modify(response).entity(group.get("profile").render(Maps.map(
+                    "response", html,
+                    "requests", profilingData.requests(),
+                    "queries", profilingData.queries()
+                        ))).build();
     }
 }

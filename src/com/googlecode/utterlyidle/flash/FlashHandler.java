@@ -1,7 +1,8 @@
 package com.googlecode.utterlyidle.flash;
 
-import com.googlecode.funclate.Model;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.json.Json;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -9,7 +10,8 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieAttribute;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
-import static com.googlecode.funclate.json.Json.toJson;
+import java.util.Map;
+
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.isBlank;
@@ -60,12 +62,12 @@ public class FlashHandler implements HttpHandler {
         flash.merge(safelyParse(requestCookies.getValue(FLASH_COOKIE)));
     }
 
-    private static Model safelyParse(final String value) {
+    private static Map<String, Object> safelyParse(final String value) {
         try {
-            return Model.persistent.parse(value);
+            return Json.parseMap(value).value();
         } catch (Exception ignore) {
         }
-        return Model.persistent.model();
+        return Maps.map();
     }
 
     private Response setFlashCookie(Request request, Response response) {
@@ -95,9 +97,9 @@ public class FlashHandler implements HttpHandler {
         return flashCookie(EMPTY_FLASH_COOKIE_JSON);
     }
 
-    private Cookie flashCookie() {
-        return flashCookie(toJson(flash.state()));
-    }
+	private Cookie flashCookie() {
+		return flashCookie(Json.json(flash.state()));
+	}
 
     private Cookie flashCookie(String json) {
         return new Cookie(FLASH_COOKIE, json, cookieAttributes());

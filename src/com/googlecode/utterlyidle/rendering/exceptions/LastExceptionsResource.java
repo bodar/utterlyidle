@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.funclate.Model;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.annotations.GET;
@@ -8,7 +8,8 @@ import com.googlecode.utterlyidle.annotations.Hidden;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 
-import static com.googlecode.funclate.Model.persistent.model;
+import java.util.Map;
+
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 @Produces(MediaType.TEXT_HTML)
@@ -26,10 +27,10 @@ public class LastExceptionsResource {
     }
 
     @GET
-    public Model allRecordedExceptions() {
-        return model().
-                add("base", basePath).
-                add("exceptions", sequence(lastExceptions).reverse().toList()).
-                add("maximumSize", lastExceptions.getMaximumSize());
+    public Map<String, Object> allRecordedExceptions() {
+        return Maps.map(
+                "base", basePath,
+                "exceptions", sequence(lastExceptions).reverse().toList(),
+                "maximumSize", lastExceptions.getMaximumSize());
     }
 }

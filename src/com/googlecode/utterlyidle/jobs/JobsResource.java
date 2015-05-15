@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Exceptions;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.time.Clock;
@@ -22,18 +22,20 @@ import com.googlecode.utterlyidle.annotations.PathParam;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.schedules.ScheduleResource;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
-import static com.googlecode.funclate.Model.persistent.model;
 import static com.googlecode.totallylazy.Callables.descending;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 import static com.googlecode.utterlyidle.jobs.Job.functions.created;
 
-@Path("jobs")
+@Path(JobsResource.JOBS)
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 public class JobsResource {
+    public static final String JOBS = "jobs";
     private final Jobs jobs;
     private final JobsStorage storage;
     private final Redirector redirector;
@@ -48,11 +50,15 @@ public class JobsResource {
 
     @GET
     @Path("list")
-    public Model list() {
-        return model().
-                add("items", storage.jobs().
-                        sortBy(descending(created)).
-                        map(jobModel));
+    public Map<String, Object> list() {
+        return Maps.map("items", (Object) storage.jobs().
+                sortBy(descending(created)).
+                map(new Callable1<Job, Map<String, Object>>() {
+                    @Override
+                    public Map<String, Object> call(final Job job) throws Exception {
+                        return jobModel(job);
+                    }
+                }));
     }
 
     @ANY
@@ -66,7 +72,12 @@ public class JobsResource {
     @GET
     @Path("{id:(?!list$).+}")
     public Response get(@PathParam("id") final UUID id) {
-        return jobResponse(id, jobResponse.optional());
+        return jobResponse(id, Exceptions.optional(new Callable1<Job, Response>() {
+            @Override
+            public Response call(final Job job) throws Exception {
+                return response(job);
+            }
+        }));
     }
 
     @GET
@@ -87,20 +98,6 @@ public class JobsResource {
         jobs.deleteAll();
         return redirector.seeOther(method(on(JobsResource.class).list()));
     }
-
-    private Mapper<Job, Model> jobModel = new Mapper<Job, Model>() {
-        @Override
-        public Model call(Job job) throws Exception {
-            return jobModel(job);
-        }
-    };
-
-    private Mapper<Job, Response> jobResponse = new Mapper<Job, Response>() {
-        @Override
-        public Response call(final Job job) throws Exception {
-            return response(job);
-        }
-    };
 
     private Response response(final Job job) {
         return setResultLocation(job, ResponseBuilder.response(status(job)).
@@ -126,16 +123,28 @@ public class JobsResource {
         return Status.CREATED;
     }
 
-    private Model jobModel(final Job job) {
-        return model().
-                add("id", job.id()).
-                add("status", job.status()).
-                add("created", job.created()).
-                add("result", resultUri(job)).
-                addOptionally("started", job.started()).
-                addOptionally("completed", job.completed()).
-                addOptionally("duration", Job.methods.duration(job, clock)).
-                add("request", ScheduleResource.asModel(job.request())).
-                addOptionally("response", job.response().map(ScheduleResource.asModel));
+    private Map<String, Object> jobModel(final Job job) {
+        return new HashMap<String, Object>() {
+            {
+                put("id", job.id());
+                put("status", job.status());
+                put("created", job.created());
+                put("result", resultUri(job));
+                putOptionally(this, "started", job.started());
+                putOptionally(this, "completed", job.completed());
+                putOptionally(this, "duration", Job.methods.duration(job, clock));
+                put("request", ScheduleResource.asModel(job.request()));
+                putOptionally(this, "response", job.response().map(new Callable1<Response, Map<String, Object>>() {
+                    @Override
+                    public Map<String, Object> call(final Response response) throws Exception {
+                        return ScheduleResource.asModel(response);
+                    }
+                }));
+            }
+        };
+    }
+
+    public static <K> void putOptionally(final Map<K, Object> map, final K key, final Option<?> optional) {
+        for (Object value : optional) map.put(key, value);
     }
 }
