@@ -1,65 +1,53 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Maps;
+import com.googlecode.totallylazy.template.Renderer;
+import com.googlecode.totallylazy.template.Template;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.handlers.HttpClient;
-import org.antlr.stringtemplate.NoIndentWriter;
-import org.antlr.stringtemplate.StringTemplate;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StringTemplateDecorator implements Decorator {
-    private final StringTemplate template;
+    private final Renderer template;
     private final HttpHandler httpHandlerForIncludes;
     private final BasePath base;
     private final QueryParameters queryParameters;
 
-    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
+    public StringTemplateDecorator(Renderer template, HttpClient httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
         this.template = template;
         this.httpHandlerForIncludes = httpHandlerForIncludes;
         this.base = base;
         this.queryParameters = queryParameters;
     }
 
-    public StringTemplateDecorator(StringTemplate template, HttpClient httpHandlerForIncludes, BasePath base, Request request) {
+    public StringTemplateDecorator(Renderer template, HttpClient httpHandlerForIncludes, BasePath base, Request request) {
         this(template, httpHandlerForIncludes, base, Requests.query(request));
     }
 
-    public Decorator setContent(PropertyMap content) throws IOException {
-        template.setAttribute("include", new PageMap(httpHandlerForIncludes));
-        template.setAttribute("base", base);
-        template.setAttribute("query", Maps.multiMap(queryParameters));
-        template.setAttribute("properties", content);
-        template.setAttribute("meta", content.getPropertyMap("meta"));
-        template.setAttribute("head", content.get("head"));
-        template.setAttribute("title", content.get("title"));
-        template.setAttribute("body", content.get("body"));
-        template.setAttribute("div", content.get("div"));
-        return this;
-    }
-
     public String decorate(String content) throws IOException {
-        return setContent(new PropertyMapParser().parse(content)).toString();
-    }
-
-    public void writeTo(Writer writer) {
+        PropertyMap propertyMap = new PropertyMapParser().parse(content);
+        Map<String, Object> map = new HashMap<>();
+        map.put("include", new PageMap(httpHandlerForIncludes));
+        map.put("base", base);
+        map.put("query", Maps.multiMap(queryParameters));
+        map.put("properties", propertyMap);
+        map.put("meta", propertyMap.getPropertyMap("meta"));
+        map.put("head", propertyMap.get("head"));
+        map.put("title", propertyMap.get("title"));
+        map.put("body", propertyMap.get("body"));
+        map.put("div", propertyMap.get("div"));
         try {
-            template.write(new NoIndentWriter(writer));
-        } catch (IOException e) {
-            throw LazyException.lazyException(e);
+            return template.render(map);
+        } catch (Exception e) {
+            throw new IOException(e);
         }
     }
 
-    public String toString() {
-        Writer writer = new StringWriter();
-        writeTo(writer);
-        return writer.toString();
-    }
 }

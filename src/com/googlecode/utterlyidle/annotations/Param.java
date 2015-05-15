@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Predicate;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 
 import static com.googlecode.totallylazy.Unchecked.cast;
 
@@ -17,11 +16,7 @@ public class Param {
     }
 
     public static Predicate<Annotation> isParam() {
-        return new Predicate<Annotation>() {
-            public boolean matches(Annotation annotation) {
-                return isParam(annotation);
-            }
-        };
+        return Param::isParam;
     }
 
     public static boolean isParam(Annotation annotation) {
@@ -33,11 +28,7 @@ public class Param {
     }
 
     public static Callable1<Annotation, Param> toParam() {
-        return new Callable1<Annotation, Param>() {
-            public Param call(Annotation annotation) throws Exception {
-                return param(annotation);
-            }
-        };
+        return Param::param;
     }
 
     public static Param param(Annotation annotation) {
@@ -64,10 +55,6 @@ public class Param {
     }
 
     public static <T> Callable1<? super Annotation, T> toValue() {
-        return new Callable1<Annotation, T>() {
-            public T call(Annotation annotation) throws Exception {
-                return cast(getValue(annotation));
-            }
-        };
+        return annotation1 -> cast(getValue(annotation1));
     }
 }

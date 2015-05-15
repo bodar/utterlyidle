@@ -43,7 +43,7 @@
         <sequential>
             <mkdir dir="@{classes}"/>
             <javac srcdir="@{src}" destdir="@{classes}" classpathref="@{classpathref}"
-                   target="1.7" source="1.7" debug="true"
+                   target="1.8" source="1.8" debug="true"
                    includeantruntime="false" encoding="UTF-8">
                 <compilerarg value="-XDignore.symbol.file=true"/>
             </javac>

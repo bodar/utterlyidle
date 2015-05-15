@@ -10,7 +10,7 @@
     <p>Did you mean one of these?</p>
 
     <ul class="resources">
-        $resources:{ <li class="resource">$(it.method)(resource=it)$</li> }$
+        $resources:{ resource | <li class="resource">$(resource.method)(resource)$</li> }$
     </ul>
 
 </body>

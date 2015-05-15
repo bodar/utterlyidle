@@ -19,35 +19,23 @@ public class PageMap extends UnsupportedMap {
 
     @Override
     public boolean containsKey(Object url) {
-        if (url == null) {
-            return false;
-        }
-
-        String path = url.toString();
-
-        if (!cache.containsKey(path)) {
-            getAndCache(path);
-        }
-        return true;
-
+        return url != null && get(url) != null;
     }
 
     @Override
-    public Object get(Object url) {
-        String path = url.toString();
-        return cache.get(path);
-    }
-
-    private void getAndCache(String url) {
-        try {
-            Response response = httpHandler.handle(RequestBuilder.get(url).build());
-            if(!response.status().isSuccessful()) {
-                if(debugging()) System.err.printf("Failed to include '%s' received '%s'%n", url, response.status());
-                return;
+    public Object get(Object key) {
+        String url = key.toString();
+        return cache.computeIfAbsent(url, n -> {
+            try {
+                Response response = httpHandler.handle(RequestBuilder.get(url).build());
+                if(!response.status().isSuccessful()) {
+                    if(debugging()) System.err.printf("Failed to include '%s' received '%s'%n", url, response.status());
+                    return null;
+                }
+                return new PropertyMapParser().parse(response.entity().toString());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            cache.put(url, new PropertyMapParser().parse(response.entity().toString()));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 }

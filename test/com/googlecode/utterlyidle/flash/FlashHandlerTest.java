@@ -1,9 +1,10 @@
 package com.googlecode.utterlyidle.flash;
 
+import com.googlecode.totallylazy.Maps;
+import com.googlecode.totallylazy.json.Json;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.Status;
@@ -15,8 +16,7 @@ import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.modules.ResourcesModule;
 import org.junit.Test;
 
-import static com.googlecode.funclate.Model.persistent.model;
-import static com.googlecode.funclate.json.Json.toJson;
+import static com.googlecode.totallylazy.Arrays.list;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
@@ -37,12 +37,7 @@ public class FlashHandlerTest {
 	private static final String CLEARED_FLASH_COOKIE_VALUE = "{}";
 	private final Application application = new RestApplication(basePath("/")).
 			add(new FlashMessagesModule()).
-			add(new ResourcesModule() {
-				@Override
-				public Resources addResources(Resources resources) throws Exception {
-					return resources.add(annotatedClass(FlashResource.class));
-				}
-			});
+			add((ResourcesModule) resources -> resources.add(annotatedClass(FlashResource.class)));
 
 	@Test
 	public void shouldReturnFlashStateInCookie() throws Exception {
@@ -52,7 +47,7 @@ public class FlashHandlerTest {
 		assertThat(
 				"Should set flash cookies on non-2xx response",
                 redirectResponseCookie,
-				is(toJson(model().set("key", "Hello world"))));
+				is(Json.json(Maps.map("key", "Hello world"))));
 
 		Response responseFromRedirectLocation = followRedirect(redirectResponse);
 
@@ -83,9 +78,7 @@ public class FlashHandlerTest {
 		assertThat(
 				"Should append flash cookies on non-2xx response",
                 secondErrorFlashCookie,
-				is(toJson(model().
-						add("key", "Error 1").
-						add("key", "Error 2"))));
+				is(Json.json(Maps.map("key", list("Error 1", "Error 2")))));
 	}
 
 	@Test

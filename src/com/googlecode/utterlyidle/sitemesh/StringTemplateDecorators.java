@@ -1,30 +1,33 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.funclate.stringtemplate.EnhancedStringTemplateGroup;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Unchecked;
+import com.googlecode.totallylazy.template.Renderer;
+import com.googlecode.totallylazy.template.Template;
+import com.googlecode.totallylazy.template.Templates;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
-import org.antlr.stringtemplate.StringTemplate;
-import org.antlr.stringtemplate.StringTemplateGroup;
+import com.googlecode.yadic.generics.TypeFor;
 
 import java.net.URL;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.sitemesh.Decorators.add;
 
 public class StringTemplateDecorators implements DecoratorProvider {
-    private final StringTemplateGroup group;
+    private final Templates group;
     private final Resolver resolver;
 
-    public StringTemplateDecorators(final StringTemplateGroup group, final Resolver resolver) {
+    public StringTemplateDecorators(final Templates group, final Resolver resolver) {
         this.group = group;
         this.resolver = resolver;
     }
 
     public StringTemplateDecorators(final URL templatesUrl, final Resolver resolver) {
-        this(new EnhancedStringTemplateGroup(templatesUrl), resolver);
+        this(Templates.defaultTemplates(uri(templatesUrl)), resolver);
     }
 
     public Decorator get(TemplateName templateName, Request request) {
@@ -33,7 +36,7 @@ public class StringTemplateDecorators implements DecoratorProvider {
         }
         return new SimpleContainer(resolver).
                 addInstance(Request.class, request).
-                addInstance(StringTemplate.class, group.getInstanceOf(templateName.value())).
+                addInstance(Renderer.class, group.get(templateName.value())).
                 add(StringTemplateDecorator.class).get(StringTemplateDecorator.class);
     }
 

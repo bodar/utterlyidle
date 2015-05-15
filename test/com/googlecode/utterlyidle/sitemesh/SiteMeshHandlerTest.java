@@ -110,11 +110,7 @@ public class SiteMeshHandlerTest {
     }
 
     private Predicate<Pair<Request, Response>> onlyMatchRequestTo(final String path) {
-        return new Predicate<Pair<Request, Response>>() {
-            public boolean matches(Pair<Request, Response> other) {
-                return other.first().uri().path().equals(path);
-            }
-        };
+        return other -> other.first().uri().path().equals(path);
     }
 
     private void assertDecorationResultsInResponse(final Sequence<DecoratorRule> decorators, final String result) throws Exception {

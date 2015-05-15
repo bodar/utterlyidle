@@ -2,10 +2,5 @@
 mvn:cglib:cglib-nodep:jar:2.2
 mvn:org.objenesis:objenesis:jar:1.2
 
-mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:pack|sources:2.91
+mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:pack|sources:2.102
 mvn://repo.bodar.com/com.googlecode.yadic:yadic:pack|sources:2.26
-
-# TODO: Remove dependency on the following
-mvn:antlr:antlr:jar:2.7.7
-mvn:org.antlr:stringtemplate:jar:3.2.1
-mvn://repo.bodar.com/com.googlecode.funclate:funclate:pack|sources:133

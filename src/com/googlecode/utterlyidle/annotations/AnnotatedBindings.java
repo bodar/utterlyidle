@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
@@ -84,18 +85,14 @@ public class AnnotatedBindings {
         return extractMediaType(method, Consumes.class);
     }
 
-    @SuppressWarnings("unchecked")
     private static Sequence<String> extractMediaType(Method method, Class annotation) {
-        return sequence(method.getAnnotation(annotation), method.getDeclaringClass().getAnnotation(annotation)).
-                find(notNullValue()).map(toParam()).map(asSequence()).getOrElse(sequence(MediaType.WILDCARD));
+        Option<Sequence<String>> map = Sequences.<Annotation>sequence(method.getAnnotation(annotation), method.getDeclaringClass().getAnnotation(annotation)).
+                find(notNullValue()).map(toParam()).map(asSequence());
+        return map.getOrElse(Sequences.<String>sequence(MediaType.WILDCARD));
     }
 
     private static Callable1<Param, Sequence<String>> asSequence() {
-        return new Callable1<Param, Sequence<String>>() {
-            public Sequence<String> call(Param param) throws Exception {
-                return sequence(param.<String[]>value());
-            }
-        };
+        return param -> sequence(param.<String[]>value());
     }
 
     static boolean hidden(Method method) {

@@ -1,11 +1,9 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.funclate.Model;
 import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.json.Json;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.StoppedClock;
@@ -13,8 +11,6 @@ import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.ExceptionLogger;
 import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.RelativeUriExtractor;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
@@ -27,8 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
-import static com.googlecode.funclate.Model.persistent.parse;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.totallylazy.proxy.Call.method;
@@ -47,6 +44,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+
 public class JobsResourceTest {
     private Application application = new HelloWorldApplication();
     private SpyExceptionLogger logger;
@@ -54,12 +52,9 @@ public class JobsResourceTest {
     @Before
     public void setupExceptionLogger() {
         logger = new SpyExceptionLogger();
-        application.add(new RequestScopedModule() {
-            @Override
-            public Container addPerRequestObjects(final Container container) throws Exception {
-                container.remove(ExceptionLogger.class);
-                return container.addInstance(ExceptionLogger.class, logger);
-            }
+        application.add((RequestScopedModule) container -> {
+            container.remove(ExceptionLogger.class);
+            return container.addInstance(ExceptionLogger.class, logger);
         });
     }
 
@@ -97,10 +92,11 @@ public class JobsResourceTest {
         assertThat(job.status(), is(OK));
 
         try {
-            Model json = parse(job.entity().toString());
-            Dates.RFC3339withMilliseconds().parse(json.get("created", String.class));
-            Dates.RFC3339withMilliseconds().parse(json.get("started", String.class));
-            Dates.RFC3339withMilliseconds().parse(json.get("completed", String.class));
+            String jsonResult = job.entity().toString();
+            Map<String,Object> json = Json.map(jsonResult);
+            Dates.RFC3339withMilliseconds().parse((String) json.get("created"));
+            Dates.RFC3339withMilliseconds().parse((String) json.get("started"));
+            Dates.RFC3339withMilliseconds().parse((String) json.get("completed"));
         } catch (ParseException e) {
             fail("Dates should be JSON ISO 8601 / RFC 3339 format");
         }
@@ -168,12 +164,13 @@ public class JobsResourceTest {
     }
 
     private int numberOfJobs() throws Exception {
-        return jobsList().getValues("items").size();
+        List<?> items = (List<?>) jobsList().get("items");
+        return items.size();
     }
 
-    private Model jobsList() throws Exception {
+    private Map<String,Object> jobsList() throws Exception {
         Response response = application.handle(get(relativeUriOf(method(on(JobsResource.class).list()))).build());
-        return parse(response.entity().toString());
+        return Json.map(response.entity().toString());
     }
 
     private Response create(Request request) throws Exception {
@@ -183,11 +180,6 @@ public class JobsResourceTest {
     }
 
     private Predicate<Binding> getBindingWithNoArguments() {
-        return new Predicate<Binding>() {
-            @Override
-            public boolean matches(final Binding binding) {
-                return binding.numberOfArguments() == 0 && "GET".equalsIgnoreCase(binding.httpMethod());
-            }
-        };
+        return binding -> binding.numberOfArguments() == 0 && "GET".equalsIgnoreCase(binding.httpMethod());
     }
 }

@@ -1,9 +1,7 @@
 package com.googlecode.utterlyidle.schedules;
 
-import com.googlecode.funclate.Model;
 import com.googlecode.lazyrecords.Record;
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.InternalRequestMarker;
@@ -21,10 +19,11 @@ import com.googlecode.utterlyidle.annotations.PathParam;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import static com.googlecode.funclate.Model.mutable.model;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
@@ -88,9 +87,9 @@ public class ScheduleResource {
 
     @GET
     @Path("edit")
-    public Model edit(@QueryParam("id") UUID id) {
+    public Map<String,Object> edit(@QueryParam("id") UUID id) {
         Record schedule = scheduler.schedule(id).get();
-        return model().add("id", id.toString()).add("seconds", schedule.get(SchedulesDefinition.interval)).add("start", schedule.get(SchedulesDefinition.start));
+        return Maps.map("id", id.toString(), "seconds", schedule.get(SchedulesDefinition.interval), "start", schedule.get(SchedulesDefinition.start));
     }
 
     @POST
@@ -102,39 +101,31 @@ public class ScheduleResource {
 
     @GET
     @Path("list")
-    public Model list() {
-        List<Model> models = schedulesModel(scheduler.schedules());
-        return model().
-                add("schedules", models).
-                add("schedulerIsRunning", scheduler.isRunning());
+    public Map<String,Object> list() {
+        List<Map<String,Object>> models = schedulesModel(scheduler.schedules());
+        return Maps.map("schedules", models,
+                "schedulerIsRunning", scheduler.isRunning());
     }
 
     private Response redirectToList() {
         return redirector.seeOther(method(on(getClass()).list()));
     }
 
-    public static List<Model> schedulesModel(Sequence<Record> schedules) {
-        return schedules.map(toModel()).toList();
+    public static List<Map<String,Object>> schedulesModel(Sequence<Record> schedules) {
+        return schedules.map(record -> (Map<String, Object>) new HashMap<String,Object>() {{
+            put("id", record.get(SchedulesDefinition.scheduleId));
+            put("status", Boolean.TRUE.equals(record.get(SchedulesDefinition.running)) ? "running" : "idle");
+            put("start", record.get(SchedulesDefinition.start));
+            put("seconds", record.get(SchedulesDefinition.interval));
+            put("request", addRequest(record));
+            put("response", addResponse(record));
+            put("started", record.get(SchedulesDefinition.started));
+            put("completed", record.get(SchedulesDefinition.completed));
+            put("duration", record.get(SchedulesDefinition.duration));
+        }}).toList();
     }
 
-    public static Callable1<? super Record, Model> toModel() {
-        return new Callable1<Record, Model>() {
-            public Model call(Record record) throws Exception {
-                return model().
-                        add("id", record.get(SchedulesDefinition.scheduleId)).
-                        add("status", Boolean.TRUE.equals(record.get(SchedulesDefinition.running)) ? "running" : "idle").
-                        add("start", record.get(SchedulesDefinition.start)).
-                        add("seconds", record.get(SchedulesDefinition.interval)).
-                        add("request", addRequest(record)).
-                        add("response", addResponse(record)).
-                        add("started", record.get(SchedulesDefinition.started)).
-                        add("completed", record.get(SchedulesDefinition.completed)).
-                        add("duration", record.get(SchedulesDefinition.duration));
-            }
-        };
-    }
-
-    public static Model addRequest(Record record) {
+    public static Map<String,Object> addRequest(Record record) {
         String requestMessage = record.get(SchedulesDefinition.request);
         if (requestMessage == null) {
             return null;
@@ -143,15 +134,16 @@ public class ScheduleResource {
         return asModel(request);
     }
 
-    public static Model asModel(Request request) {
-        return model().
-                add("raw", request.toString()).
-                add("method", request.method()).
-                add("uri", request.uri()).
-                add("entity", request.entity().toString());
+    public static Map<String,Object> asModel(Request request) {
+        return new HashMap<String,Object>(){{
+                put("raw", request.toString());
+                put("method", request.method());
+                put("uri", request.uri());
+                put("entity", request.entity().toString());
+            }};
     }
 
-    public static Model addResponse(Record record) {
+    public static Map<String,Object> addResponse(Record record) {
         String responseMessage = record.get(SchedulesDefinition.response);
         if (responseMessage == null) {
             return null;
@@ -160,20 +152,15 @@ public class ScheduleResource {
         return asModel(response);
     }
 
-    public static Model asModel(Response response) {
+    public static Map<String,Object> asModel(Response response) {
         Status status = response.status();
-        return model().
-                add("raw", response.toString()).
-                add("code", status.code()).
-                add("status", status.description()).
-                add("entity", response.entity().toString()).
-                add("isOk", status.isSuccessful() || status.isRedirect());
-    }
-
-    public static Mapper<Response, Model> asModel = new Mapper<Response, Model>() {
-        @Override
-        public Model call(final Response response) throws Exception {
-            return asModel(response);
+        return new HashMap<String,Object>(){ {
+                put("raw", response.toString());
+                put("code", status.code());
+                put("status", status.description());
+                put("entity", response.entity().toString());
+                put("isOk", status.isSuccessful() || status.isRedirect());
+            }};
         }
-    };
+
 }

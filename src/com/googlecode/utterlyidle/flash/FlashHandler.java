@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.flash;
 
-import com.googlecode.funclate.Model;
+import com.googlecode.totallylazy.json.Json;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
-import static com.googlecode.funclate.json.Json.toJson;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Strings.isBlank;
 import static com.googlecode.utterlyidle.Requests.cookies;
@@ -56,7 +55,7 @@ public class FlashHandler implements HttpHandler {
 
 		if(!requestCookies.contains(FLASH_COOKIE) || isEmptyJson(requestCookies.getValue(FLASH_COOKIE)) || isBlank(requestCookies.getValue(FLASH_COOKIE))) return;
 
-		flash.merge(Model.persistent.parse(requestCookies.getValue(FLASH_COOKIE)));
+		flash.merge(Json.parseMap(requestCookies.getValue(FLASH_COOKIE)).value());
 	}
 
 	private Response setFlashCookie(Request request, Response response) {
@@ -87,7 +86,7 @@ public class FlashHandler implements HttpHandler {
 	}
 
 	private Cookie flashCookie() {
-		return flashCookie(toJson(flash.state()));
+		return flashCookie(Json.json(flash.state()));
 	}
 
 	private Cookie flashCookie(String json) {

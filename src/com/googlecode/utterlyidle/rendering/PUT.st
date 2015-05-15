@@ -1,1 +1,1 @@
-<p><span class="method">PUT</span> $resource.path$</p>
+<p><span class="method">PUT</span> $path$</p>
