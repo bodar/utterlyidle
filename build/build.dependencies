@@ -3,5 +3,3 @@ mvn:org.hamcrest:hamcrest-library:jar:1.2
 mvn:junit:junit-dep:jar:4.8.2
 
 mvn://repo.bodar.com/com.googlecode.jarjar:jarjar:pack:1.4.1
-mvn:commons-codec:commons-codec:jar:1.5
-

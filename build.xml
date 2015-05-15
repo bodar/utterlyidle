@@ -47,7 +47,6 @@
     <target name="compile">
         <compile.and.jar src="${src}" jar="${release.jar.path}" classpathref="all.dependancies"
                          version="${release.version}"/>
-        <embed.apache.libs/>
         <compile.and.jar src="${test}" jar="${tests.jar.path}" classpathref="all.jars" version="${release.version}"/>
     </target>
 
