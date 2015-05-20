@@ -239,6 +239,10 @@ public class RequestBuilder implements Callable<Request> {
         return header(HttpHeaders.CONTENT_TYPE, contentType);
     }
 
+    public RequestBuilder replaceCookie(Cookie cookie) {
+        return replaceCookie(cookie.name(), cookie.value());
+    }
+
     public RequestBuilder replaceCookie(final String name, final String value) {
         return mapCookies(setCookie(name, value));
     }

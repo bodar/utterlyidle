@@ -1,5 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
+import com.googlecode.utterlyidle.Request;
+
 import java.util.Date;
 
 import static com.googlecode.totallylazy.time.Dates.RFC822;
@@ -73,5 +75,15 @@ public class CookieAttribute {
     @Override
     public String toString() {
         return String.format("%s=%s", name, value);
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof CookieAttribute && other.toString().equals(toString());
     }
 }
