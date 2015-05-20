@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -37,7 +38,16 @@ public class Cookie {
     public String toString() {
         final String cookieValue = format("%s=%s; ", name, Rfc2616.toQuotedString(value));
         final String attributes = this.attributes.toString("; ");
-
         return cookieValue + attributes;
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Cookie && other.toString().equals(toString());
     }
 }
