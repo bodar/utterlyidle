@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.s3;
 
-import org.apache.commons.codec.binary.Base64;
+import com.googlecode.totallylazy.security.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,7 +16,7 @@ public class S3Signer {
     }
 
     public String sign(final AwsCredentials credentials, final String data) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
-        return Base64.encodeBase64String(mac(credentials).doFinal(data.getBytes("UTF8"))).trim();
+        return Base64.encode(mac(credentials).doFinal(data.getBytes("UTF8"))).trim();
     }
 
     private Mac mac(AwsCredentials credentials) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
