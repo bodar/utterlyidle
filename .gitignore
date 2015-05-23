@@ -6,6 +6,7 @@ build/artifacts
 .ant-targets-build.xml
 *.orig
 utterlyidle.ipr
+lib/jcompilo.jar
 lib/build
 lib/runtime
 lib/optional
