@@ -85,11 +85,11 @@ public class AnnotatedBindings {
         return extractMediaType(method, Consumes.class);
     }
 
-    private static Sequence<String> extractMediaType(Method method, Class annotation) {
-        Option<Param> param = sequence(method.getAnnotation(annotation), method.getDeclaringClass().getAnnotation(annotation)).
-                find(notNullValue(Annotation.class)).
-                map(toParam());
-        return param.map(asSequence()).
+    private static Sequence<String> extractMediaType(Method method, Class<? extends Annotation> annotation) {
+        return sequence(method.getAnnotation(annotation), method.getDeclaringClass().getAnnotation(annotation)).
+                find(notNullValue()).
+                map(toParam()).
+                map(asSequence()).
                 getOrElse(sequence(MediaType.WILDCARD));
     }
 
