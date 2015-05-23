@@ -6,9 +6,7 @@ build/artifacts
 .ant-targets-build.xml
 *.orig
 utterlyidle.ipr
-lib/build
-lib/runtime
-lib/optional
+lib/*
 .idea/dictionaries/*
 test/**/s3.properties
 *~
