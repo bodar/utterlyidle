@@ -1,13 +1,9 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Bytes;
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Files;
-import com.googlecode.totallylazy.Function;
-import com.googlecode.totallylazy.LazyException;
-import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
@@ -21,10 +17,8 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.proxies.NoProxy;
 import com.googlecode.utterlyidle.proxies.ProxyFor;
-import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.Closeable;
 import java.io.File;
@@ -33,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -55,7 +48,6 @@ import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.collections.CloseableList.constructors.closeableList;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.totallylazy.numbers.Numbers.zero;
@@ -106,39 +98,24 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public Response handle(final Request request) throws Exception {
+        if(request.uri().scheme().equals("file") && request.method().equals("PUT")) return putFile(request);
         URLConnection connection = openConnection(request.uri());
         connection.setUseCaches(false);
         connection.setConnectTimeout(connectTimeoutMillis);
         connection.setReadTimeout(readTimeoutMillis);
-        if (connection instanceof HttpURLConnection) {
-            return handle(request, (HttpURLConnection) connection);
-        }
         return handle(request, connection);
     }
 
     private URLConnection openConnection(final Uri uri) {
         final URL url = uri.toURL();
-        return proxies.proxyFor(uri).map(new Mapper<Proxy, URLConnection>() {
-            @Override
-            public URLConnection call(final Proxy proxy) throws Exception {
-                return url.openConnection(proxy);
-            }
-        }).getOrElse(new Function<URLConnection>() {
-            @Override
-            public URLConnection call() throws Exception {
-                return url.openConnection();
-            }
-        });
+        return proxies.proxyFor(uri).map(url::openConnection).getOrElse(url::openConnection);
     }
 
     private multi multi;
     private Response handle(final Request request, final URLConnection connection) throws IOException {
         if(multi == null) multi = new multi(){};
-        return multi.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
-            @Override
-            public Response call() throws Exception {
-                return defaultHandle(request, connection);
-            }
+        return multi.<Response>methodOption(request, connection).getOrElse(() -> {
+            return defaultHandle(request, connection);
         });
     }
 
@@ -151,15 +128,11 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         }
     }
 
-    @multimethod
-    private Response handle(Request request, FileURLConnection connection) throws IOException {
-        if (request.method().equals(HttpMethod.PUT)) {
-            File file = uri(connection.getURL()).toFile();
+    private Response putFile(Request request) throws IOException {
+            File file = request.uri().toFile();
             Files.write(request.entity().asBytes(), file);
             for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
-            return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, connection.getURL()).build();
-        }
-        return defaultHandle(request, connection);
+            return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, request.uri()).build();
     }
 
     @multimethod
@@ -213,16 +186,12 @@ public class ClientHttpHandler implements HttpClient, Closeable {
 
     private Object handleStreamingContent(final Option<Integer> length, final InputStream inputStream) {
         if( !disableStreaming && (length.isEmpty() || length.is(greaterThan(streamingSize)))) return closeables.manage(inputStream);
-        return using(inputStream, bytes());
+        return using(inputStream, Bytes::bytes);
     }
 
     private static Option<Integer> contentLength(final URLConnection urlConnection) {
-        return option(urlConnection.getHeaderField(CONTENT_LENGTH)).flatMap(new Mapper<String, Integer>() {
-            @Override
-            public Integer call(final String s) throws Exception {
-                return Integer.valueOf(s.trim());
-            }
-        }.optional());
+        return option(urlConnection.getHeaderField(CONTENT_LENGTH)).
+                flatMap(Exceptions.optional(s -> Integer.valueOf(s.trim())));
     }
 
     public static Response errorResponse(Status status, Exception e) {
@@ -239,38 +208,20 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private static Callable2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {
-        return new Callable2<URLConnection, Pair<String, String>, URLConnection>() {
-            public URLConnection call(URLConnection connection, Pair<String, String> header) throws Exception {
-                connection.setRequestProperty(header.first(), header.second());
-                return connection;
-            }
+        return (connection, header) -> {
+            connection.setRequestProperty(header.first(), header.second());
+            return connection;
         };
     }
 
     private static Callable2<ResponseBuilder, Pair<String, List<String>>, ResponseBuilder> responseHeaders() {
-        return new Callable2<ResponseBuilder, Pair<String, List<String>>, ResponseBuilder>() {
-            public ResponseBuilder call(ResponseBuilder response, final Pair<String, List<String>> entry) throws Exception {
-                return sequence(entry.second()).fold(response, responseHeader(entry.first()));
-            }
-        };
+        return (response, entry) -> sequence(entry.second()).fold(response, responseHeader(entry.first()));
     }
 
     private static Callable2<ResponseBuilder, String, ResponseBuilder> responseHeader(final String key) {
-        return new Callable2<ResponseBuilder, String, ResponseBuilder>() {
-            public ResponseBuilder call(ResponseBuilder response, String value) throws Exception {
-                if (key != null) {
-                    return response.header(key, value);
-                }
-                return response;
-            }
-        };
-    }
-
-    public static Callable1<InputStream, byte[]> bytes() {
-        return new Callable1<InputStream, byte[]>() {
-            public byte[] call(InputStream stream) throws Exception {
-                return Bytes.bytes(stream);
-            }
+        return (response, value) -> {
+            if (key != null) return response.header(key, value);
+            return response;
         };
     }
 
