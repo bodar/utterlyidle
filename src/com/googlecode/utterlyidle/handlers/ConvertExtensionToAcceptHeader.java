@@ -99,6 +99,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     public static class Replacements implements Iterable<Pair<String, String>> {
         private final Sequence<Pair<String, String>> replacements;
 
+        @SafeVarargs
         private Replacements(Pair<String, String>... replacements) {
             this.replacements = sequence(replacements);
         }

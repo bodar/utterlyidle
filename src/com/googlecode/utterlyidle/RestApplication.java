@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import com.googlecode.utterlyidle.bindings.DefaultBindingMatcher;
@@ -30,6 +29,7 @@ import java.io.IOException;
 import static com.googlecode.totallylazy.Callables.value;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.Binding.functions.action;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.bindings.actions.Action.functions.metaData;
@@ -63,7 +63,7 @@ public class RestApplication implements Application {
         applicationScope.addInstance(UtterlyIdleProperties.class, properties);
         applicationScope.addInstance(Application.class, this);
         applicationScope.removeCloseable(Application.class);
-        this.modules = new Modules(properties);
+        this.modules = new Modules();
         this.modules.setupApplicationScope(applicationScope);
         add(new CoreModule());
         add(new LastExceptionsModule());
@@ -75,18 +75,7 @@ public class RestApplication implements Application {
     public Application add(final Module module) {
         checkNotClosed();
         modules.activateApplicationModule(module, applicationScope);
-        usingRequestScope(activateStartupModule(module));
         return this;
-    }
-
-    private Block<Container> activateStartupModule(final Module module) {
-        return new Block<Container>() {
-            @Override
-            protected void execute(Container container) throws Exception {
-                container.addInstance(Request.class, get("/dummy/request/to/allow/starting/application").build());
-                modules.activateStartupModule(module, container);
-            }
-        };
     }
 
     public Container applicationScope() {
@@ -125,12 +114,7 @@ public class RestApplication implements Application {
     private void addResourcesIfNeeded(Container requestScope) {
         Bindings bindings = requestScope.get(Bindings.class);
         resourceClasses(bindings)
-                .fold(requestScope, new Callable2<Container, Class, Container>() {
-                    @Override
-                    public Container call(Container container, Class aClass) throws Exception {
-                        return Containers.addIfAbsent(container, aClass);
-                    }
-                });
+                .fold(requestScope, Containers::addIfAbsent);
     }
 
     private Sequence<Class> resourceClasses(Bindings bindings) {
@@ -153,22 +137,16 @@ public class RestApplication implements Application {
     }
 
     public static Callable1<Container, Response> handleRequest(final Request request) {
-        return new Callable1<Container, Response>() {
-            public Response call(Container container) throws Exception {
-                return container.addInstance(Request.class, request).
-                        get(HttpHandler.class).handle(request);
-            }
-        };
+        return container -> container.addInstance(Request.class, request).
+                get(HttpHandler.class).handle(request);
     }
 
     public static <T, R> Callable1<Container, R> inject(final T instance, final Callable1<Container, R> handler) {
-        return new Callable1<Container, R>() {
-            public R call(Container container) throws Exception {
-                if (container.contains(instance.getClass())) {
-                    container.remove(instance.getClass());
-                }
-                return handler.call(container.addInstance((Class) instance.getClass(), instance));
+        return container -> {
+            if (container.contains(instance.getClass())) {
+                container.remove(instance.getClass());
             }
+            return handler.call(container.addInstance(cast(instance.getClass()), instance));
         };
     }
 
@@ -191,6 +169,6 @@ public class RestApplication implements Application {
     }
 
     protected void checkNotClosed(){
-        if(closed == true) throw new IllegalStateException("The application has been closed and can not be reused");
+        if(closed) throw new IllegalStateException("The application has been closed and can not be reused");
     }
 }

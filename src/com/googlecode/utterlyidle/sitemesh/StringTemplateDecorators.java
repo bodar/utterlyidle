@@ -12,6 +12,7 @@ import com.googlecode.yadic.SimpleContainer;
 import com.googlecode.yadic.generics.TypeFor;
 
 import java.net.URL;
+import java.util.Map;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Uri.uri;
@@ -34,10 +35,12 @@ public class StringTemplateDecorators implements DecoratorProvider {
         if (templateName.equals(TemplateName.NONE)) {
             return new NoneDecorator();
         }
-        return new SimpleContainer(resolver).
+        SimpleContainer container = new SimpleContainer(resolver);
+        container.addType(new TypeFor<Renderer<Map<String, Object>>>() { }.get(), type -> group.get(templateName.value()));
+        return container.
                 addInstance(Request.class, request).
-                addInstance(Renderer.class, group.get(templateName.value())).
-                add(StringTemplateDecorator.class).get(StringTemplateDecorator.class);
+                add(StringTemplateDecorator.class).
+                get(StringTemplateDecorator.class);
     }
 
     public static ActivateSiteMeshModule stringTemplateDecorators(final URL templatesUrl, final DecoratorRule... decoratorRules) {

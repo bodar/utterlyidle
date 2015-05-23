@@ -3,10 +3,8 @@ package com.googlecode.utterlyidle.modules;
 import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.UtterlyIdleProperties;
 import com.googlecode.utterlyidle.services.Service;
-import com.googlecode.utterlyidle.services.Services;
 import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
@@ -19,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static com.googlecode.totallylazy.Classes.isInstance;
 import static com.googlecode.totallylazy.Methods.methods;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.yadic.Containers.selfRegister;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 
@@ -28,11 +27,6 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     private final List<Class<? extends Module>> applicationModuleClasses = new CopyOnWriteArrayList<>();
     private final List<Class<? extends Module>> requestModuleClasses = new CopyOnWriteArrayList<>();
     private final List<Class<? extends Module>> argumentModuleClasses = new CopyOnWriteArrayList<>();
-    private final UtterlyIdleProperties properties;
-
-    public Modules(UtterlyIdleProperties properties) {
-        this.properties = properties;
-    }
 
     public Modules setupApplicationScope(Container applicationScope) {
         applicationScope.addInstance(Modules.class, this);
@@ -74,14 +68,6 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
         return this;
     }
 
-    @SuppressWarnings("deprecation")
-    public void activateStartupModule(Module module, Container requestScope) {
-        if (autoStart(properties)) {
-            activate(module, requestScope, sequence(StartupModule.class));
-        }
-    }
-
-
     public static <M extends Iterable<? extends Class<? extends Module>>> Block<Module> activate(final Container container, final M modules) {
         return new Block<Module>() {
             @Override
@@ -113,62 +99,34 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     }
 
     public static Module applicationScopedClass(final Class<?> aClass) {
-        return new ApplicationScopedModule() {
-            public Container addPerApplicationObjects(Container container) {
-                return container.add(aClass);
-            }
-        };
+        return (ApplicationScopedModule) container -> container.add(aClass);
     }
 
     public static Module bindingsModule(final Binding... bindings) {
-        return new ResourcesModule() {
-            public Resources addResources(Resources resources) {
-                return resources.add(bindings);
-            }
-        };
+        return (ResourcesModule) resources -> resources.add(bindings);
     }
 
     public static Module requestInstance(final Object instance) {
-        return new RequestScopedModule() {
-            public Container addPerRequestObjects(Container container) {
-                Class aClass = instance.getClass();
-                return container.addInstance(aClass, instance);
-            }
-        };
+        return (RequestScopedModule) container ->
+                container.addInstance(cast(instance.getClass()), instance);
     }
 
     public static Module applicationInstance(final Object instance) {
-        return new ApplicationScopedModule() {
-            public Container addPerApplicationObjects(Container container) {
-                Class aClass = instance.getClass();
-                return container.addInstance(aClass, instance);
-            }
-        };
+        return (ApplicationScopedModule) container ->
+                container.addInstance(cast(instance.getClass()), instance);
     }
 
     public static  <I, C extends I> Module applicationInstance(final Class<I> anInterface, final C instance) {
-        return new ApplicationScopedModule() {
-            public Container addPerApplicationObjects(Container container) {
-                return container.addInstance(anInterface, instance);
-            }
-        };
+        return (ApplicationScopedModule) container ->
+                container.addInstance(anInterface, instance);
     }
 
     public static Module requestScopedClass(final Class<?> aClass) {
-        return new RequestScopedModule() {
-            public Container addPerRequestObjects(Container container) {
-                return container.add(aClass);
-            }
-        };
+        return (RequestScopedModule) container -> container.add(aClass);
     }
 
     public static ServicesModule serviceClass(final Class<? extends Service> aClass) {
-        return new ServicesModule() {
-            @Override
-            public Services add(Services services) throws Exception {
-                return services.addAndRegister(aClass);
-            }
-        };
+        return services -> services.addAndRegister(aClass);
     }
 
     public static Boolean autoStart(UtterlyIdleProperties properties) {

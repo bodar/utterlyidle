@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.examples;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
@@ -53,16 +54,10 @@ public class HelloWorldApplication extends RestApplication {
     }
 
     private static <T> ResponseHandler streamingRenderer(final WritingRenderer<T> writingRenderer) {
-        return new ResponseHandler() {
-            @Override
-            public Response handle(final Response response) throws Exception {
-                return modify(response).entity(new StreamingWriter() {
-                    @Override
-                    public void write(Writer writer) throws IOException {
-                        writingRenderer.renderTo((T) response.entity().value(), writer);
-                    }
-                }).build();
-            }
-        };
+        return response ->
+                modify(response).
+                        entity((StreamingWriter) writer ->
+                                writingRenderer.renderTo(Unchecked.<T>cast(response.entity().value()), writer)).
+                        build();
     }
 }

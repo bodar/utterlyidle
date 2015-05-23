@@ -15,19 +15,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StringTemplateDecorator implements Decorator {
-    private final Renderer template;
+    private final Renderer<Map<String, Object>> template;
     private final HttpHandler httpHandlerForIncludes;
     private final BasePath base;
     private final QueryParameters queryParameters;
 
-    public StringTemplateDecorator(Renderer template, HttpClient httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
+    public StringTemplateDecorator(Renderer<Map<String, Object>> template, HttpClient httpHandlerForIncludes, BasePath base, QueryParameters queryParameters) {
         this.template = template;
         this.httpHandlerForIncludes = httpHandlerForIncludes;
         this.base = base;
         this.queryParameters = queryParameters;
     }
 
-    public StringTemplateDecorator(Renderer template, HttpClient httpHandlerForIncludes, BasePath base, Request request) {
+    public StringTemplateDecorator(Renderer<Map<String, Object>> template, HttpClient httpHandlerForIncludes, BasePath base, Request request) {
         this(template, httpHandlerForIncludes, base, Requests.query(request));
     }
 
