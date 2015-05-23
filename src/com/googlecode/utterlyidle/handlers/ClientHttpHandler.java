@@ -6,7 +6,6 @@ import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Function;
-import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
@@ -21,10 +20,8 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.proxies.NoProxy;
 import com.googlecode.utterlyidle.proxies.ProxyFor;
-import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.Closeable;
 import java.io.File;
@@ -55,7 +52,6 @@ import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.collections.CloseableList.constructors.closeableList;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.totallylazy.numbers.Numbers.zero;
@@ -66,6 +62,7 @@ import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 
 public class ClientHttpHandler implements HttpClient, Closeable {
     private final int connectTimeoutMillis;
@@ -106,13 +103,11 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public Response handle(final Request request) throws Exception {
+        if(request.uri().scheme().equals("file") && request.method().equals(PUT)) return putFile(request);
         URLConnection connection = openConnection(request.uri());
         connection.setUseCaches(false);
         connection.setConnectTimeout(connectTimeoutMillis);
         connection.setReadTimeout(readTimeoutMillis);
-        if (connection instanceof HttpURLConnection) {
-            return handle(request, (HttpURLConnection) connection);
-        }
         return handle(request, connection);
     }
 
@@ -151,15 +146,11 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         }
     }
 
-    @multimethod
-    private Response handle(Request request, FileURLConnection connection) throws IOException {
-        if (request.method().equals(HttpMethod.PUT)) {
-            File file = uri(connection.getURL()).toFile();
+    private Response putFile(Request request) throws IOException {
+            File file = request.uri().toFile();
             Files.write(request.entity().asBytes(), file);
             for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
-            return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, connection.getURL()).build();
-        }
-        return defaultHandle(request, connection);
+            return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, request.uri()).build();
     }
 
     @multimethod
