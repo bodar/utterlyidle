@@ -27,7 +27,7 @@ public class EncodingCookieHandler implements HttpHandler {
     }
 
     private Response encode(Response response) {
-        final ResponseBuilder builder = ResponseBuilder.modify(response);
+        ResponseBuilder builder = ResponseBuilder.modify(response);
         sequence(cookies(response)).fold(builder, new Callable2<ResponseBuilder, Cookie, ResponseBuilder>() {
             @Override
             public ResponseBuilder call(ResponseBuilder builder, Cookie cookie) throws Exception {
@@ -38,7 +38,7 @@ public class EncodingCookieHandler implements HttpHandler {
     }
 
     private Request decode(Request request) {
-        final RequestBuilder builder = RequestBuilder.modify(request);
+        RequestBuilder builder = RequestBuilder.modify(request);
         sequence(cookies(request)).fold(builder, new Callable2<RequestBuilder, Cookie, RequestBuilder>() {
             @Override
             public RequestBuilder call(RequestBuilder builder, Cookie cookie) throws Exception {

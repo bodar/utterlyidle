@@ -102,7 +102,7 @@ public class Requests {
     }
 
     public static CookieParameters cookies(Request request) {
-        return CookieParameters.cookies(request.headers());
+        return CookieParameters.cookies(request);
     }
 
     public static Callable1<Request, HierarchicalPath> path() {

@@ -1,18 +1,14 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.ParametersContract;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Sequences.one;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.time.Dates.date;
-import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -23,22 +19,22 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 public class CookieParametersTest extends ParametersContract<CookieParameters> {
+
     @Override
     protected CookieParameters parameters() {
-        return cookies(headerParameters());
+        return cookies(request());
     }
 
     @Test
     public void shouldHandleTrailingSpaces() throws Exception {
-        CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "a=1; ; ;")))).headers());
-
+        CookieParameters cookies = cookies(request("Cookie", "a=1; ; ;"));
         assertThat(cookies.getValue("a"), is("1"));
     }
 
     @Test
     public void shouldBeCaseInsensitive() throws Exception {
-        CookieParameters lowercaseCookies = cookies(request(headerParameters(one(pair("cookie", "a=1")))).headers());
-        CookieParameters uppercaseCookies = cookies(request(headerParameters(one(pair("COOKIE", "b=2")))).headers());
+        CookieParameters lowercaseCookies = cookies(request("cookie", "a=1"));
+        CookieParameters uppercaseCookies = cookies(request("COOKIE", "b=2"));
 
         assertThat(lowercaseCookies.getValue("a"), is("1"));
         assertThat(uppercaseCookies.getValue("b"), is("2"));
@@ -46,19 +42,7 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
 
     @Test
     public void shouldCopeWithRequestCookiesInMultipleHeaders() throws Exception {
-        CookieParameters cookies = cookies(request(headerParameters(sequence(pair("Cookie", "a=1"), pair("Cookie", "b=2")))).headers());
-
-        assertThat(cookies.getValue("a"), is("1"));
-        assertThat(cookies.getValue("b"), is("2"));
-    }
-
-    @Test
-    public void willIgnoreAttributesOnRequestCookiesForTheTimeBeing() throws Exception {
-        CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "$Version=1; a=1; $Path=whatever; $Domain=something; b=2")))).headers());
-
-        assertThat(cookies.getValue("$Version"), is(nullValue()));
-        assertThat(cookies.getValue("$Path"), is(nullValue()));
-        assertThat(cookies.getValue("$Domain"), is(nullValue()));
+        CookieParameters cookies = cookies(request(pair("Cookie", "a=1"), pair("Cookie", "b=2")));
 
         assertThat(cookies.getValue("a"), is("1"));
         assertThat(cookies.getValue("b"), is("2"));
@@ -66,7 +50,7 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
 
     @Test
     public void willIgnoreMalformedCookies() throws Exception {
-        CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "invalidCookie; a=1")))).headers());
+        CookieParameters cookies = cookies(request("Cookie", "invalidCookie; a=1"));
 
         assertThat(cookies.getValue("invalidCookie"), is(nullValue()));
 
@@ -75,22 +59,29 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
 
     @Test
     public void copesWithCookieHeaderWithNoCookies() {
-        CookieParameters cookies = cookies(request(headerParameters(one(pair("Cookie", "")))).headers());
+        CookieParameters cookies = cookies(request("Cookie", ""));
         assertThat(cookies.size(), is(0));
     }
 
     @Test
     public void parsesResponseCookies() {
-        Response response = response(OK)
-                .cookie(cookie("test", "test value", expires(date(2013, 1, 1))))
-                .build();
+        Response response = response(OK).cookie(cookie("test", "test value", expires(date(2013, 1, 1)))).build();
 
         CookieParameters cookies = CookieParameters.cookies(response);
 
         assertThat(cookies.getValue("test"), is("test value"));
     }
 
-    private Request request(HeaderParameters headers) {
-        return Requests.request(HttpMethod.GET, null, headers, null);
+    private Request request(String name, String value) {
+        return request(pair(name, value));
+    }
+
+    @SafeVarargs
+    private final Request request(Pair<String, String>... headers) {
+        RequestBuilder builder = RequestBuilder.get("/");
+        for (Pair<String, String> header : headers) {
+            builder.header(header.first(), header.second());
+        }
+        return builder.build();
     }
 }

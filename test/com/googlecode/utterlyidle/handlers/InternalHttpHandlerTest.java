@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.cookies.Cookie;
@@ -13,7 +12,6 @@ import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static com.googlecode.utterlyidle.handlers.ApplicationId.applicationId;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -29,7 +27,7 @@ public class InternalHttpHandlerTest {
 
         new InternalHttpHandler(snoopingRequestMarker, new HelloWorldApplication(basePath("base")), cookieRequest).handle(sitemeshRequest);
 
-        assertThat(snoopingRequestMarker.request.headers().getValue(COOKIE), is(toHttpHeader(cookie)));
+        assertThat(snoopingRequestMarker.request.headers().getValue(COOKIE), is(cookie.toString()));
         assertThat(snoopingRequestMarker.request.headers().getValue(AUTHORIZATION), is("basic auth string"));
     }
 

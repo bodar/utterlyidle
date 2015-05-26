@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function1;
@@ -11,7 +12,7 @@ import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
-import com.googlecode.utterlyidle.cookies.CookieAttribute;
+import com.googlecode.utterlyidle.cookies.CookieBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,6 @@ import java.util.concurrent.Callable;
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Callables.replace;
 import static com.googlecode.totallylazy.Callables.second;
-import static com.googlecode.totallylazy.Functions.returns1;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
@@ -31,10 +31,7 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
 import static com.googlecode.utterlyidle.Requests.request;
-import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
+import static com.googlecode.utterlyidle.cookies.CookieCutter.parseRequestHeader;
 import static java.lang.String.format;
 
 public class RequestBuilder implements Callable<Request> {
@@ -102,7 +99,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder cookie(String name, String value) {
-        headers.add(pair(COOKIE, toHttpHeader(Cookie.cookie(name, value))));
+        headers.add(pair(COOKIE, Cookie.cookie(name, value).toString()));
         return this;
     }
 
@@ -266,7 +263,7 @@ public class RequestBuilder implements Callable<Request> {
         return new Function1<String, String>() {
             @Override
             public String call(String cookieValue) throws Exception {
-                return cookies(cookieValue).filter(where(first(String.class), not(cookieName))).map(toCookieString()).toString("; ");
+                return parseRequestHeader(cookieValue).filter(where(cookieName(), not(cookieName))).map(toCookieString()).toString("; ");
             }
         };
     }
@@ -275,19 +272,18 @@ public class RequestBuilder implements Callable<Request> {
         return new Function1<String, String>() {
             @Override
             public String call(String headerValue) throws Exception {
-                return cookies(headerValue).map(
-                        replace(where(first(String.class), equalIgnoringCase(name)),
-                                Callables.<String, String, String>second(returns1(value)))).
-                        map(toCookieString()).toString("; ");
+                return parseRequestHeader(headerValue)
+                        .map(replace(where(cookieName(), equalIgnoringCase(name)), setValue(value)))
+                        .map(toCookieString()).toString("; ");
             }
         };
     }
 
-    private static Function1<Pair<String, String>, String> toCookieString() {
-        return new Function1<Pair<String, String>, String>() {
+    private static Function1<Cookie, String> toCookieString() {
+        return new Function1<Cookie, String>() {
             @Override
-            public String call(Pair<String, String> cookie) throws Exception {
-                return format("%s=%s", cookie.first(), Rfc2616.toQuotedString(cookie.second()));
+            public String call(Cookie cookie) throws Exception {
+                return format("%s=%s", cookie.name(), Rfc2616.toQuotedString(cookie.value()));
             }
         };
     }
@@ -304,4 +300,24 @@ public class RequestBuilder implements Callable<Request> {
             }
         };
     }
+
+    private static Callable1<Cookie, String> cookieName() {
+        return new Callable1<Cookie, String>() {
+            @Override
+            public String call(Cookie cookie) throws Exception {
+                return cookie.name();
+            }
+        };
+    }
+
+    private static Callable1<Cookie, Cookie> setValue(final String value) {
+        return new Callable1<Cookie, Cookie>() {
+            @Override
+            public Cookie call(Cookie cookie) throws Exception {
+                return CookieBuilder.modify(cookie).value(value).build();
+            }
+        };
+    }
+
+
 }

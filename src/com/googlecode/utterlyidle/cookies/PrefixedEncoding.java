@@ -6,7 +6,7 @@ public class PrefixedEncoding implements CookieEncoding {
 
     private final CookieEncoding delegate;
 
-    public PrefixedEncoding(CookieEncoding delegate) {
+    PrefixedEncoding(CookieEncoding delegate) {
         this.delegate = delegate;
     }
 
