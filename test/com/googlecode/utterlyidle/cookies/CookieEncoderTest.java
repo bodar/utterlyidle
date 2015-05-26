@@ -1,46 +1,36 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.handlers.RecordingHttpHandler;
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
-import static com.googlecode.utterlyidle.cookies.CookieBuilder.*;
-import static com.googlecode.utterlyidle.cookies.CookieCutter.cookies;
-import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returns;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
+import static com.googlecode.utterlyidle.cookies.CookieEncoder.cookieEncoder;
+import static org.junit.Assert.*;
 
 public class CookieEncoderTest {
 
+    private final Cookie cookie = cookie("cookie1", "Hob Nob");
+    private final CookieEncoder cookieEncoder = cookieEncoder(new EvilEncoding());
+
     @Test
-    public void decodesCookieValuesOnRequests() throws Exception {
-        Cookie cookie = cookie("cookie1", "SMWNYiBOxZHhuIM=");
-        Cookie expected = modify(cookie).value("Hōb Nőḃ").build();
-
-        Request request = get("/").cookie(cookie).build();
-        RecordingHttpHandler delegate = RecordingHttpHandler.recordingHttpHandler();
-        CookieEncoder encoder = new CookieEncoder(delegate, new Base64Encoding());
-
-        encoder.handle(request);
-        assertThat(cookies(delegate.lastRequest()), contains(expected));
+    public void returnsOriginalCookieIfEncodingFails() throws Exception {
+        assertThat(cookieEncoder.encode(cookie), is(cookie));
     }
 
     @Test
-    public void encodesCookieValuesOnResponses() throws Exception {
-        Cookie cookie = cookie("cookie1", "Hōb Nőḃ", comment("comment"));
-        Cookie expected = modify(cookie).value("SMWNYiBOxZHhuIM=").build();
-
-        Response response = response().cookie(cookie).build();
-        CookieEncoder encoder = new CookieEncoder(returns(response), new Base64Encoding());
-        assertThat(cookies(encoder.handle(anyRequest())), contains(expected));
+    public void returnsOriginalCookieIfDecodingFails() throws Exception {
+        assertThat(cookieEncoder.decode(cookie), is(cookie));
     }
 
-    private Request anyRequest() {
-        return get("/").build();
+    private static class EvilEncoding implements CookieEncoding {
+        @Override
+        public String decode(final String input) {
+            throw new IllegalArgumentException("Muhahahahaha!");
+        }
+
+        @Override
+        public String encode(final String input) {
+            throw new IllegalArgumentException("Muhahahahaha!");
+        }
     }
 }

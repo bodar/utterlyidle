@@ -1,50 +1,32 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.Callable2;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
-
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.cookies.CookieBuilder.modify;
-import static com.googlecode.utterlyidle.cookies.CookieCutter.cookies;
 
-public class CookieEncoder implements HttpHandler {
+public class CookieEncoder {
 
-    private final HttpHandler delegate;
-    private final CookieEncoding encoder;
-
-    public CookieEncoder(HttpHandler delegate, CookieEncoding encoder) {
-        this.delegate = delegate;
-        this.encoder = encoder;
+    public static CookieEncoder cookieEncoder(CookieEncoding encoding) {
+        return new CookieEncoder(encoding);
     }
 
-    @Override
-    public Response handle(Request request) throws Exception {
-        return encode(delegate.handle(decode(request)));
+    private CookieEncoding encoding;
+
+    public CookieEncoder(CookieEncoding encoding) {
+        this.encoding = encoding;
     }
 
-    private Response encode(Response response) {
-        final ResponseBuilder builder = ResponseBuilder.modify(response);
-        sequence(cookies(response)).fold(builder, new Callable2<ResponseBuilder, Cookie, ResponseBuilder>() {
-            @Override
-            public ResponseBuilder call(ResponseBuilder builder, Cookie cookie) throws Exception {
-                return builder.replaceCookie(modify(cookie).value(encoder.encode(cookie.value())).build());
-            }
-        });
-        return builder.build();
+    public Cookie encode(Cookie cookie) {
+        try {
+            return modify(cookie).value(encoding.encode(cookie.value())).build();
+        } catch (Exception e) {
+            return cookie;
+        }
     }
 
-    private Request decode(Request request) {
-        final RequestBuilder builder = RequestBuilder.modify(request);
-        sequence(cookies(request)).fold(builder, new Callable2<RequestBuilder, Cookie, RequestBuilder>() {
-            @Override
-            public RequestBuilder call(RequestBuilder builder, Cookie cookie) throws Exception {
-                return builder.replaceCookie(modify(cookie).value(encoder.decode(cookie.value())).build());
-            }
-        });
-        return builder.build();
+    public Cookie decode(Cookie cookie) {
+        try {
+            return modify(cookie).value(encoding.decode(cookie.value())).build();
+        } catch (Exception e) {
+            return cookie;
+        }
     }
 }
