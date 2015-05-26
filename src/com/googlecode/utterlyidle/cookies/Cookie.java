@@ -1,11 +1,13 @@
 package com.googlecode.utterlyidle.cookies;
 
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 public class Cookie {
     private final String name;
@@ -32,6 +34,10 @@ public class Cookie {
 
     public Iterable<CookieAttribute> attributes() {
         return attributes;
+    }
+
+    public Pair<String, String> toPair() {
+        return Pair.pair(name(), value());
     }
 
     @Override

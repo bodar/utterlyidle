@@ -4,6 +4,8 @@ import com.googlecode.totallylazy.security.Base64;
 
 public class Base64Encoding implements CookieEncoding {
 
+    Base64Encoding() { }
+
     @Override
     public String encode(String input) {
         return Base64.encode(input.getBytes());

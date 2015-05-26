@@ -1,40 +1,25 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.First;
-import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Second;
-import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.cookies.Cookie;
-import com.googlecode.utterlyidle.cookies.CookieAttribute;
 
 import java.util.Date;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.replace;
 import static com.googlecode.totallylazy.Callables.second;
-import static com.googlecode.totallylazy.Functions.returns1;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.and;
 import static com.googlecode.totallylazy.Predicates.is;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Strings.blank;
-import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.Strings.startsWith;
-import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
-import static java.lang.String.format;
 
 public class ResponseBuilder {
     private Status status;
@@ -72,7 +57,7 @@ public class ResponseBuilder {
     }
 
     public ResponseBuilder cookie(Cookie cookie) {
-        return header(HttpHeaders.SET_COOKIE, toHttpHeader(cookie));
+        return header(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     public ResponseBuilder removeCookie(String name) {
