@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
@@ -33,6 +34,12 @@ public class CookieCutterRequestTest {
     public void ignoresMalformedCookies() throws Exception {
         Request request = get("/").header(COOKIE, "hello;" + cookie1).build();
         assertThat(cookies(request), contains(cookie1));
+    }
+
+    @Test
+    public void shouldHandleDoubleQuotesInCookieValues() throws Exception {
+        Cookie cookie = cookie("a", "\"");
+        MatcherAssert.assertThat(cookies(requestWithCookies(cookie)), contains(cookie));
     }
 
     private Request requestWithoutCookies() {

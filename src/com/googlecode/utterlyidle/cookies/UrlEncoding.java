@@ -9,6 +9,9 @@ public class UrlEncoding implements CookieEncoding {
 
     private static final String characterEncoding = "UTF-8";
 
+    UrlEncoding() {
+    }
+
     @Override
     public String encode(String input) {
         try {

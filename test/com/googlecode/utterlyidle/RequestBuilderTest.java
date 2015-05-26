@@ -20,7 +20,6 @@ import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Requests.form;
 import static com.googlecode.utterlyidle.Requests.query;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieParameters.toHttpHeader;
 import static java.lang.String.valueOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -67,30 +66,30 @@ public class RequestBuilderTest {
     @Test
     public void shouldBeAbleToReplaceACookie() throws Exception {
         Request request = get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie1", "timtam").build();
-        assertThat(CookieParameters.cookies(request.headers()).getValue("cookie1"), is("timtam"));
+        assertThat(CookieParameters.cookies(request).getValue("cookie1"), is("timtam"));
     }
 
     @Test
     public void shouldBeAbleToReplaceACookieEvenIfHeaderParameterCaseDiffers() throws Exception {
         Request request = get("/").
-                header(COOKIE.toLowerCase(), toHttpHeader(Cookie.cookie("cookie1", "McVitees Digestive with caramel"))).
+                header(COOKIE.toLowerCase(), Cookie.cookie("cookie1", "McVitees Digestive with caramel").toString()).
                 cookie("cookie2", "value2").
                 replaceCookie("cookie1", "timtam").build();
 
-        assertThat(CookieParameters.cookies(request.headers()).getValue("cookie1"), is("timtam"));
+        assertThat(CookieParameters.cookies(request).getValue("cookie1"), is("timtam"));
     }
 
     @Test
     public void shouldBeAbleToRemoveACookie() throws Exception {
         Request request = get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").removeCookie("cookie1").build();
-        assertThat(CookieParameters.cookies(request.headers()).contains("cookie1"), is(false));
-        assertThat(CookieParameters.cookies(request.headers()).getValue("cookie2"), is("value2"));
+        assertThat(CookieParameters.cookies(request).contains("cookie1"), is(false));
+        assertThat(CookieParameters.cookies(request).getValue("cookie2"), is("value2"));
     }
 
     @Test
     public void shouldBeAbleToRemoveAllEvidenceOfCookie() throws Exception {
         Request request = get("/").cookie("cookie1", "value1").removeCookie("cookie1").build();
-        assertThat(CookieParameters.cookies(request.headers()).contains("cookie1"), is(false));
+        assertThat(CookieParameters.cookies(request).contains("cookie1"), is(false));
         assertThat(request.headers().contains(COOKIE), is(false));
     }
 

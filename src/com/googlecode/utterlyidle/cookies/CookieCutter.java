@@ -23,29 +23,29 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.cookieAttribute
 public class CookieCutter {
 
     public static Iterable<Cookie> cookies(Request request) {
-        return request.headers().getValues(COOKIE).flatMap(parseCookieHeader());
+        return request.headers().getValues(COOKIE).flatMap(new Function1<String, Iterable<Cookie>>() {
+            @Override
+            public Iterable<Cookie> call(String header) throws Exception {
+                return parseRequestHeader(header);
+            }
+        });
     }
 
     public static Iterable<Cookie> cookies(Response response) {
-        return flatten(response.headers().getValues(SET_COOKIE).map(parseSetCookieHeader()));
-    }
-
-    private static Function1<String, Iterable<Cookie>> parseCookieHeader() {
-        return new Function1<String, Iterable<Cookie>>() {
-            @Override
-            public Iterable<Cookie> call(String header) throws Exception {
-                return parseNameValuePairs(header).map(buildCookie());
-            }
-        };
-    }
-
-    private static Function1<String, Option<Cookie>> parseSetCookieHeader() {
-        return new Function1<String, Option<Cookie>>() {
+        return flatten(response.headers().getValues(SET_COOKIE).map(new Function1<String, Option<Cookie>>() {
             @Override
             public Option<Cookie> call(String header) throws Exception {
-                return buildCookieWithAttributes(parseNameValuePairs(header));
+                return parseResponseHeader(header);
             }
-        };
+        }));
+    }
+
+    public static Sequence<Cookie> parseRequestHeader(String value) {
+        return parseNameValuePairs(value).map(buildCookie());
+    }
+
+    public static Option<Cookie> parseResponseHeader(String value) {
+        return buildCookieWithAttributes(parseNameValuePairs(value));
     }
 
     private static Function1<Pair<String, String>, Cookie> buildCookie() {
