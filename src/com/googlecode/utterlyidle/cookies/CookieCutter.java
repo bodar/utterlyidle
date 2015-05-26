@@ -74,7 +74,7 @@ public class CookieCutter {
         });
     }
 
-    private static Sequence<Pair<String, String>> parseNameValuePairs(final String header) {
+    private static Sequence<Pair<String, String>> parseNameValuePairs(String header) {
         return regex("\\s*;\\s*").split(header)
                 .filter(correctlyFormed())
                 .map(splitOnFirst("="))
