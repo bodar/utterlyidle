@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
@@ -12,7 +12,6 @@ import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.webapp.WebAppContext;
@@ -86,8 +85,8 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return server;
     }
 
-    public static Function1<Server, Context> defaultContext(final Application application, final ServerConfiguration configuration) {
-        return new Function1<Server, Context>() {
+    public static Function<Server, Context> defaultContext(final Application application, final ServerConfiguration configuration) {
+        return new Function<Server, Context>() {
             @Override
             public Context call(Server server) throws Exception {
                 Context context = new Context(server, contextPath(configuration.basePath()), NO_SESSIONS);
@@ -107,8 +106,8 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return value.substring(0, value.length() - 1);
     }
 
-    public static Function1<Server, Context> webXmlContext(final Uri webRoot, final ServerConfiguration configuration) {
-        return new Function1<Server, Context>() {
+    public static Function<Server, Context> webXmlContext(final Uri webRoot, final ServerConfiguration configuration) {
+        return new Function<Server, Context>() {
             @Override
             public Context call(Server server) throws Exception {
                 return new WebAppContext(server, webRoot.toString(), contextPath(configuration.basePath()));

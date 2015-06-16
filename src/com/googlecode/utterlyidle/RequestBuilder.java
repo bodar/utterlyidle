@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Callable2;
 import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
@@ -248,7 +248,7 @@ public class RequestBuilder implements Callable<Request> {
         return mapCookies(filterOutCookie(cookieName));
     }
 
-    private RequestBuilder mapCookies(Function1<String, String> mapper) {
+    private RequestBuilder mapCookies(Function<String, String> mapper) {
         final LogicalPredicate<Pair<String, String>> isCookieHeader = where(first(String.class), equalIgnoringCase(COOKIE));
         final Predicate<Pair<String, String>> hasNoValue = where(second(String.class), blank);
         Sequence<Pair<String, String>> newHeaders = sequence(headers).
@@ -259,8 +259,8 @@ public class RequestBuilder implements Callable<Request> {
         return this;
     }
 
-    private static Function1<String, String> filterOutCookie(final String cookieName) {
-        return new Function1<String, String>() {
+    private static Function<String, String> filterOutCookie(final String cookieName) {
+        return new Function<String, String>() {
             @Override
             public String call(String cookieValue) throws Exception {
                 return parseRequestHeader(cookieValue).filter(where(cookieName(), not(cookieName))).map(toCookieString()).toString("; ");
@@ -268,8 +268,8 @@ public class RequestBuilder implements Callable<Request> {
         };
     }
 
-    private static Function1<String, String> setCookie(final String name, final String value) {
-        return new Function1<String, String>() {
+    private static Function<String, String> setCookie(final String name, final String value) {
+        return new Function<String, String>() {
             @Override
             public String call(String headerValue) throws Exception {
                 return parseRequestHeader(headerValue)
@@ -279,8 +279,8 @@ public class RequestBuilder implements Callable<Request> {
         };
     }
 
-    private static Function1<Cookie, String> toCookieString() {
-        return new Function1<Cookie, String>() {
+    private static Function<Cookie, String> toCookieString() {
+        return new Function<Cookie, String>() {
             @Override
             public String call(Cookie cookie) throws Exception {
                 return format("%s=%s", cookie.name(), Rfc2616.toQuotedString(cookie.value()));

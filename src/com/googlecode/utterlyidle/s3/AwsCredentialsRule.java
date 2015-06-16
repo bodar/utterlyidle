@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.Request;
 
@@ -27,8 +27,8 @@ public class AwsCredentialsRule implements Predicate<Request>{
     }
 
     public static class functions{
-        public static Function1<AwsCredentialsRule, AwsCredentials> credentials(){
-            return new Function1<AwsCredentialsRule, AwsCredentials>() {
+        public static Function<AwsCredentialsRule, AwsCredentials> credentials(){
+            return new Function<AwsCredentialsRule, AwsCredentials>() {
                 @Override
                 public AwsCredentials call(final AwsCredentialsRule awsCredentialsRule) throws Exception {
                     return awsCredentialsRule.credentials();

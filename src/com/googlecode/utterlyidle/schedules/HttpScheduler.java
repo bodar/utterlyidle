@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Record;
 import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Clock;
@@ -19,7 +19,6 @@ import com.googlecode.yadic.Container;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Predicates.is;
@@ -141,8 +140,8 @@ public class HttpScheduler implements Service {
         scheduler.schedule(record.get(SchedulesDefinition.scheduleId), httpTask(record.get(SchedulesDefinition.scheduleId), application, parseRequest(record.get(SchedulesDefinition.request))), start.map(toStart()), record.get(SchedulesDefinition.interval));
     }
 
-    private Function1<String, Date> toStart() {
-        return new Function1<String, Date>() {
+    private Function<String, Date> toStart() {
+        return new Function<String, Date>() {
             @Override
             public Date call(String time) throws Exception {
                 return Schedule.start(time, clock);

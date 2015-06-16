@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
@@ -54,8 +54,8 @@ public class S3RequestSigner {
                 getOrElse(request);
     }
 
-    private Function1<AwsCredentials, Request> actuallySign(final Request request) {
-        return new Function1<AwsCredentials, Request>() {
+    private Function<AwsCredentials, Request> actuallySign(final Request request) {
+        return new Function<AwsCredentials, Request>() {
             @Override
             public Request call(final AwsCredentials credentials) throws Exception {
                 Request requestWithDate = ensureDate(request);

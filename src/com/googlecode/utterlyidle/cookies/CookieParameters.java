@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.utterlyidle.Parameters;
@@ -36,8 +36,8 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
         return new CookieParameters(sequence(cookies).map(asPair()).toPersistentList());
     }
 
-    private static Function1<Cookie, Pair<String, String>> asPair() {
-        return new Function1<Cookie, Pair<String, String>>() {
+    private static Function<Cookie, Pair<String, String>> asPair() {
+        return new Function<Cookie, Pair<String, String>>() {
             @Override
             public Pair<String, String> call(final Cookie cookie) throws Exception {
                 return cookie.toPair();

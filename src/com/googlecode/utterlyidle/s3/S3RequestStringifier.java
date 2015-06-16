@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Group;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
@@ -58,8 +58,8 @@ public class S3RequestStringifier {
                 : result + "\n";
     }
 
-    private Function1<Group<String, Pair<String, String>>, Pair<String, String>> mergeHeaders() {
-        return new Function1<Group<String, Pair<String, String>>, Pair<String, String>>() {
+    private Function<Group<String, Pair<String, String>>, Pair<String, String>> mergeHeaders() {
+        return new Function<Group<String, Pair<String, String>>, Pair<String, String>>() {
             @Override
             public Pair<String, String> call(final Group<String, Pair<String, String>> headers) throws Exception {
                 String commaSeparatedValues = headers.map(second(String.class)).toString(",");

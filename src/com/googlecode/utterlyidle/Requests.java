@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
@@ -72,8 +72,8 @@ public class Requests {
         };
     }
 
-    public static Function1<Request, Accept> accept() {
-        return new Function1<Request, Accept>() {
+    public static Function<Request, Accept> accept() {
+        return new Function<Request, Accept>() {
             public Accept call(Request request) throws Exception {
                 return Accept.accept(request);
             }
