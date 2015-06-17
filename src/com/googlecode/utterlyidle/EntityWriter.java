@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 
 import java.io.OutputStream;
 
@@ -12,8 +12,8 @@ public interface EntityWriter<T> {
         private functions() {
         }
 
-        public static <T> Function<T, Block<OutputStream>> asFunction(final EntityWriter<T> writer) {
-            return new Function<T, Block<OutputStream>>() {
+        public static <T> Function1<T, Block<OutputStream>> asFunction(final EntityWriter<T> writer) {
+            return new Function1<T, Block<OutputStream>>() {
                 @Override
                 public Block<OutputStream> call(T t) throws Exception {
                     return writeWith(writer, t);

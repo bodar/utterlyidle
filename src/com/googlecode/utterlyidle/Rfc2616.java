@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicate;
 
 import static com.googlecode.totallylazy.Sequences.characters;
@@ -34,8 +34,8 @@ public class Rfc2616 {
         return value.replaceFirst("^\"", "").replaceFirst("\"$", "").replace("\\\"", "\"");
     }
 
-    public static Function<String, String> toUnquotedString() {
-        return new Function<String, String>() {
+    public static Function1<String, String> toUnquotedString() {
+        return new Function1<String, String>() {
             @Override
             public String call(String s) throws Exception {
                 return toUnquotedString(s);

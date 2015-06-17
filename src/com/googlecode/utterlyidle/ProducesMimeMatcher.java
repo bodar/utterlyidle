@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 
@@ -13,8 +13,8 @@ public class ProducesMimeMatcher implements Predicate<Request> {
         this.mimeTypes = mimeTypes;
     }
 
-    public static Function<Binding, Float> quality(final Request request) {
-        return new Function<Binding, Float>() {
+    public static Function1<Binding, Float> quality(final Request request) {
+        return new Function1<Binding, Float>() {
             @Override
             public Float call(Binding binding) throws Exception {
                 return quality(request, binding);

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Value;
 import org.w3c.dom.Element;
 
@@ -19,8 +19,8 @@ public class TableCell extends BlockLevelElement implements Value<String> {
     }
 
     public static class functions{
-        public static Function<Element, TableCell> toTableCell(){
-            return new Function<Element, TableCell>() {
+        public static Function1<Element, TableCell> toTableCell(){
+            return new Function1<Element, TableCell>() {
                 @Override
                 public TableCell call(Element element) throws Exception {
                     return new TableCell(element);

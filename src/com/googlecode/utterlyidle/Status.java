@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.collections.PersistentSet;
 import com.googlecode.totallylazy.numbers.Numbers;
 
@@ -139,8 +139,8 @@ public class Status {
 
     public static class functions {
 
-        public static Function<Status, Integer> code() {
-            return new Function<Status, Integer>() {
+        public static Function1<Status, Integer> code() {
+            return new Function1<Status, Integer>() {
                 @Override
                 public Integer call(Status status) throws Exception {
                     return status.code();
@@ -148,8 +148,8 @@ public class Status {
             };
         }
 
-        public static Function<Status, String> description() {
-            return new Function<Status, String>() {
+        public static Function1<Status, String> description() {
+            return new Function1<Status, String>() {
                 @Override
                 public String call(Status status) throws Exception {
                     return status.description();
@@ -157,8 +157,8 @@ public class Status {
             };
         }
 
-        public static Function<Status,Boolean> isSuccessful() {
-            return new Function<Status, Boolean>() {
+        public static Function1<Status,Boolean> isSuccessful() {
+            return new Function1<Status, Boolean>() {
                 @Override
                 public Boolean call(Status status) throws Exception {
                     return status.isSuccessful();
@@ -166,8 +166,8 @@ public class Status {
             };
         }
 
-        public static Function<Status,Boolean> isRedirect() {
-            return new Function<Status, Boolean>() {
+        public static Function1<Status,Boolean> isRedirect() {
+            return new Function1<Status, Boolean>() {
                 @Override
                 public Boolean call(Status status) throws Exception {
                     return status.isRedirect();

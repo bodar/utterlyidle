@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.bindings.actions;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.yadic.Container;
@@ -16,8 +16,8 @@ public interface Action {
     Iterable<ActionMetaData> metaData();
 
     public static class functions{
-        public static Function<Action, Sequence<ActionMetaData>> metaData(){
-            return new Function<Action, Sequence<ActionMetaData>>() {
+        public static Function1<Action, Sequence<ActionMetaData>> metaData(){
+            return new Function1<Action, Sequence<ActionMetaData>>() {
                 @Override
                 public Sequence<ActionMetaData> call(Action action) throws Exception {
                     return sequence(action.metaData());
@@ -25,8 +25,8 @@ public interface Action {
             };
         }
 
-        public static <T extends ActionMetaData> Function<Action, Sequence<T>> metaData(final Class<T> type){
-            return new Function<Action, Sequence<T>>() {
+        public static <T extends ActionMetaData> Function1<Action, Sequence<T>> metaData(final Class<T> type){
+            return new Function1<Action, Sequence<T>>() {
                 @Override
                 public Sequence<T> call(Action action) throws Exception {
                     return metaData().call(action).safeCast(type);

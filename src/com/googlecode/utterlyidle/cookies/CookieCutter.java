@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -23,7 +23,7 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.cookieAttribute
 public class CookieCutter {
 
     public static Iterable<Cookie> cookies(Request request) {
-        return request.headers().getValues(COOKIE).flatMap(new Function<String, Iterable<Cookie>>() {
+        return request.headers().getValues(COOKIE).flatMap(new Function1<String, Iterable<Cookie>>() {
             @Override
             public Iterable<Cookie> call(String header) throws Exception {
                 return parseRequestHeader(header);
@@ -32,7 +32,7 @@ public class CookieCutter {
     }
 
     public static Iterable<Cookie> cookies(Response response) {
-        return flatten(response.headers().getValues(SET_COOKIE).map(new Function<String, Option<Cookie>>() {
+        return flatten(response.headers().getValues(SET_COOKIE).map(new Function1<String, Option<Cookie>>() {
             @Override
             public Option<Cookie> call(String header) throws Exception {
                 return parseResponseHeader(header);
@@ -48,8 +48,8 @@ public class CookieCutter {
         return buildCookieWithAttributes(parseNameValuePairs(value));
     }
 
-    private static Function<Pair<String, String>, Cookie> buildCookie() {
-        return new Function<Pair<String, String>, Cookie>() {
+    private static Function1<Pair<String, String>, Cookie> buildCookie() {
+        return new Function1<Pair<String, String>, Cookie>() {
             @Override
             public Cookie call(final Pair<String, String> header) throws Exception {
                 return cookie(header.first(), header.second());
@@ -66,7 +66,7 @@ public class CookieCutter {
     }
 
     private static Sequence<CookieAttribute> attributes(Sequence<Pair<String, String>> attributes) {
-        return attributes.map(new Function<Pair<String, String>, CookieAttribute>() {
+        return attributes.map(new Function1<Pair<String, String>, CookieAttribute>() {
             @Override
             public CookieAttribute call(final Pair<String, String> pair) throws Exception {
                 return cookieAttribute(pair.first(), pair.second());
@@ -90,8 +90,8 @@ public class CookieCutter {
         };
     }
 
-    private static Function<? super String, Pair<String, String>> splitOnFirst(final String separator) {
-        return new Function<String, Pair<String, String>>() {
+    private static Function1<? super String, Pair<String, String>> splitOnFirst(final String separator) {
+        return new Function1<String, Pair<String, String>>() {
             public Pair<String, String> call(String cookie) throws Exception {
                 return pair(cookie.substring(0, cookie.indexOf(separator)), cookie.substring(cookie.indexOf(separator) + 1, cookie.length()));
             }

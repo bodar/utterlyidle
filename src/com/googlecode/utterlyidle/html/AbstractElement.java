@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Exceptions;
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Curried2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -86,7 +86,7 @@ public class AbstractElement {
     }
 
     public static class functions {
-        public static Function<AbstractElement, String> attribute(final String attributeName) {
+        public static Function1<AbstractElement, String> attribute(final String attributeName) {
             return attribute().flip().apply(attributeName);
         }
 
@@ -99,7 +99,7 @@ public class AbstractElement {
             };
         }
 
-        public static Function<AbstractElement, String> contents(final String xpath) {
+        public static Function1<AbstractElement, String> contents(final String xpath) {
             return contents().flip().apply(xpath);
         }
 
@@ -112,7 +112,7 @@ public class AbstractElement {
             };
         }
 
-        public static Function<AbstractElement, String> selectContent(final String xpath) {
+        public static Function1<AbstractElement, String> selectContent(final String xpath) {
             return selectContent().flip().apply(xpath);
         }
 
@@ -126,7 +126,7 @@ public class AbstractElement {
         }
 
 
-        public static Function<AbstractElement, Html> innerHtml(final String xpath) {
+        public static Function1<AbstractElement, Html> innerHtml(final String xpath) {
             return innerHtml().flip().apply(xpath);
         }
 
@@ -140,7 +140,7 @@ public class AbstractElement {
         }
 
 
-        public static Function<AbstractElement, Number> count(final String xpath) {
+        public static Function1<AbstractElement, Number> count(final String xpath) {
             return count().flip().apply(xpath);
         }
 

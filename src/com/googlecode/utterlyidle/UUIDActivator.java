@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -20,8 +20,8 @@ public class UUIDActivator implements Callable<UUID> {
         return fromString().call(value);
     }
 
-    public static Function<String, UUID> fromString() {
-        return new Function<String, UUID>() {
+    public static Function1<String, UUID> fromString() {
+        return new Function1<String, UUID>() {
             @Override
             public UUID call(String value) throws Exception {
                 return UUID.fromString(value);

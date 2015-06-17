@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Curried2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
@@ -45,16 +45,16 @@ public interface Response {
     }
 
     public static class functions {
-        public static Function<Object, Response> asResponse() {
+        public static Function1<Object, Response> asResponse() {
             return asResponse(response());
         }
 
-        public static Function<Object, Response> asResponse(final String contentType) {
+        public static Function1<Object, Response> asResponse(final String contentType) {
             return asResponse(response().contentType(contentType));
         }
 
-        public static Function<Object, Response> asResponse(final ResponseBuilder response) {
-            return new Function<Object, Response>() {
+        public static Function1<Object, Response> asResponse(final ResponseBuilder response) {
+            return new Function1<Object, Response>() {
                 @Override
                 public Response call(Object entity) throws Exception {
                     return response.entity(entity).build();
@@ -62,8 +62,8 @@ public interface Response {
             };
         }
 
-        public static Function<Response, Entity> entity() {
-            return new Function<Response, Entity>() {
+        public static Function1<Response, Entity> entity() {
+            return new Function1<Response, Entity>() {
                 @Override
                 public Entity call(Response response) throws Exception {
                     return response.entity();
@@ -80,8 +80,8 @@ public interface Response {
             };
         }
 
-        public static Function<Response, Status> status() {
-            return new Function<Response, Status>() {
+        public static Function1<Response, Status> status() {
+            return new Function1<Response, Status>() {
                 @Override
                 public Status call(Response response) throws Exception {
                     return response.status();
@@ -89,8 +89,8 @@ public interface Response {
             };
         }
 
-        public static Function<Response, String> header(final String name) {
-            return new Function<Response, String>() {
+        public static Function1<Response, String> header(final String name) {
+            return new Function1<Response, String>() {
                 @Override
                 public String call(Response response) throws Exception {
                     return response.headers().getValue(name);

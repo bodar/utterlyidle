@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import org.w3c.dom.Element;
@@ -33,12 +33,12 @@ public class TableRow extends AbstractElement {
     }
 
     public static class functions{
-        public static Function<Element, TableRow> toTableRow(){
+        public static Function1<Element, TableRow> toTableRow(){
             return toTableRow(new HashMap<String, Integer>());
         }
 
-        public static Function<Element, TableRow> toTableRow(final Map<String, Integer> columnNames){
-            return new Function<Element, TableRow>() {
+        public static Function1<Element, TableRow> toTableRow(final Map<String, Integer> columnNames){
+            return new Function1<Element, TableRow>() {
                 @Override
                 public TableRow call(Element element) throws Exception {
                     return new TableRow(element, columnNames);

@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Callables;
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
@@ -126,8 +126,8 @@ public class Binding  {
         public static LogicalPredicate<Binding> isForMethod(final Method method) {
             return where(action(), Action.functions.isForMethod(method));
         }
-        public static Function<Binding, Action> action() {
-            return new Function<Binding, Action>() {
+        public static Function1<Binding, Action> action() {
+            return new Function1<Binding, Action>() {
                 @Override
                 public Action call(Binding binding) throws Exception {
                     return binding.action();
@@ -135,8 +135,8 @@ public class Binding  {
             };
         }
 
-        public static Function<Binding, Integer> priority() {
-            return new Function<Binding, Integer>() {
+        public static Function1<Binding, Integer> priority() {
+            return new Function1<Binding, Integer>() {
                 @Override
                 public Integer call(Binding binding) throws Exception {
                     return binding.priority();
@@ -144,8 +144,8 @@ public class Binding  {
             };
         }
 
-        public static Function<Binding, Integer> numberOfArguments() {
-            return new Function<Binding, Integer>() {
+        public static Function1<Binding, Integer> numberOfArguments() {
+            return new Function1<Binding, Integer>() {
                 @Override
                 public Integer call(Binding binding) throws Exception {
                     return binding.numberOfArguments();
@@ -153,8 +153,8 @@ public class Binding  {
             };
         }
 
-        public static Function<Binding, Integer> numberOfDefaultArguments() {
-            return new Function<Binding, Integer>() {
+        public static Function1<Binding, Integer> numberOfDefaultArguments() {
+            return new Function1<Binding, Integer>() {
                 @Override
                 public Integer call(Binding binding) throws Exception {
                     return binding.numberOfDefaultArguments();
@@ -163,8 +163,8 @@ public class Binding  {
         }
 
 
-        public static Function<Binding, Integer> pathSegments() {
-            return new Function<Binding, Integer>() {
+        public static Function1<Binding, Integer> pathSegments() {
+            return new Function1<Binding, Integer>() {
                 @Override
                 public Integer call(Binding binding) throws Exception {
                     return binding.uriTemplate().segments();

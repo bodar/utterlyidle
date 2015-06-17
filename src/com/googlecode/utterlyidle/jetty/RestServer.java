@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
@@ -85,8 +84,8 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return server;
     }
 
-    public static Function<Server, Context> defaultContext(final Application application, final ServerConfiguration configuration) {
-        return new Function<Server, Context>() {
+    public static Function1<Server, Context> defaultContext(final Application application, final ServerConfiguration configuration) {
+        return new Function1<Server, Context>() {
             @Override
             public Context call(Server server) throws Exception {
                 Context context = new Context(server, contextPath(configuration.basePath()), NO_SESSIONS);
@@ -106,8 +105,8 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return value.substring(0, value.length() - 1);
     }
 
-    public static Function<Server, Context> webXmlContext(final Uri webRoot, final ServerConfiguration configuration) {
-        return new Function<Server, Context>() {
+    public static Function1<Server, Context> webXmlContext(final Uri webRoot, final ServerConfiguration configuration) {
+        return new Function1<Server, Context>() {
             @Override
             public Context call(Server server) throws Exception {
                 return new WebAppContext(server, webRoot.toString(), contextPath(configuration.basePath()));

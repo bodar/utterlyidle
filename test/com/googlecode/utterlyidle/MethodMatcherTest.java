@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicates;
 import org.junit.Test;
 
@@ -27,8 +27,8 @@ public class MethodMatcherTest {
                 matcher(Predicates.<Boolean>forAll(Predicates.is(true))));
     }
 
-    private Function<RequestBuilder, Boolean> matches() {
-        return new Function<RequestBuilder, Boolean>() {
+    private Function1<RequestBuilder, Boolean> matches() {
+        return new Function1<RequestBuilder, Boolean>() {
             @Override
             public Boolean call(RequestBuilder request) throws Exception {
                 return new MethodMatcher("*").matches(request.build());
