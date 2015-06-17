@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
@@ -122,7 +121,7 @@ public class AnnotatedBindings {
     }
 
     public static class functions {
-        public static Mapper<Method, Option<Binding>> binding = new Mapper<Method, Option<Binding>>() {
+        public static Function1<Method, Option<Binding>> binding = new Function1<Method, Option<Binding>>() {
             @Override
             public Option<Binding> call(Method method) throws Exception {
                 return AnnotatedBindings.binding(method);

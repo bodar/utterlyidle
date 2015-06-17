@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.utterlyidle.Request;
@@ -29,42 +29,42 @@ public interface Job {
     Option<Date> completed();
 
     class functions {
-        public static Mapper<Job, UUID> id = new Mapper<Job, UUID>() {
+        public static Function1<Job, UUID> id = new Function1<Job, UUID>() {
             @Override
             public UUID call(final Job job) throws Exception {
                 return job.id();
             }
         };
 
-        public static Mapper<Job, Date> created = new Mapper<Job, Date>() {
+        public static Function1<Job, Date> created = new Function1<Job, Date>() {
             @Override
             public Date call(Job job) throws Exception {
                 return job.created();
             }
         };
 
-        public static Mapper<Job, Option<Date>> started = new Mapper<Job, Option<Date>>() {
+        public static Function1<Job, Option<Date>> started = new Function1<Job, Option<Date>>() {
             @Override
             public Option<Date> call(Job job) throws Exception {
                 return job.started();
             }
         };
 
-        public static Mapper<Job, Option<Date>> completed = new Mapper<Job, Option<Date>>() {
+        public static Function1<Job, Option<Date>> completed = new Function1<Job, Option<Date>>() {
             @Override
             public Option<Date> call(Job job) throws Exception {
                 return job.completed();
             }
         };
 
-        public static Mapper<Job, Request> request = new Mapper<Job, Request>() {
+        public static Function1<Job, Request> request = new Function1<Job, Request>() {
             @Override
             public Request call(final Job job) throws Exception {
                 return job.request();
             }
         };
 
-        public static Mapper<Job, Option<Response>> response = new Mapper<Job, Option<Response>>() {
+        public static Function1<Job, Option<Response>> response = new Function1<Job, Option<Response>>() {
             @Override
             public Option<Response> call(final Job job) throws Exception {
                 return job.response();

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Rules;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
@@ -24,8 +24,8 @@ public class RoutingClient implements HttpClient {
                 addLast(any(Uri.class), authority(destination)));
     }
 
-    public static Mapper<Uri, Uri> authority(final String newAuthority) {
-        return new Mapper<Uri, Uri>() {
+    public static Function1<Uri, Uri> authority(final String newAuthority) {
+        return new Function1<Uri, Uri>() {
             @Override
             public Uri call(Uri uri) throws Exception {
                 return uri.authority(newAuthority);

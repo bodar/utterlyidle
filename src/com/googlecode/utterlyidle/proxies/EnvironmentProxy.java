@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.proxies;
 
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
@@ -27,9 +27,9 @@ public class EnvironmentProxy implements ProxyFor {
     private final Sequence<Predicate<String>> noProxy;
 
     private EnvironmentProxy(final Map<String, String> env) {
-        http_proxy = httpProxy(env).flatMap(uri.optional()).map(proxyFor);
+        http_proxy = httpProxy(env).flatMap(uri.optional()).map(this::createProxy);
         noProxy = find(env, equalIgnoringCase("no_proxy")).toSequence().
-                flatMap(split(regex(","))).
+                flatMap(regex(",")::split).
                 map(toPredicate).
                 cons(is("127.0.0.1")).
                 cons(is("localhost")).
@@ -42,16 +42,11 @@ public class EnvironmentProxy implements ProxyFor {
 
     private final Regex wildcard = Regex.regex("\\*(.+)");
 
-    private final Mapper<String, Predicate<String>> toPredicate = new Mapper<String, Predicate<String>>() {
-        @Override
-        public Predicate<String> call(final String value) throws Exception {
-            return new match<String, Predicate<String>>(wildcard) {
-                Predicate<String> value(String suffix) {
-                    return endsWith(suffix);
-                }
-            }.apply(value).getOrElse(is(value));
+    private final Function1<String, Predicate<String>> toPredicate = value -> new match<String, Predicate<String>>(wildcard) {
+        Predicate<String> value(String suffix) {
+            return endsWith(suffix);
         }
-    };
+    }.apply(value).getOrElse(is(value));
 
     public static ProxyFor environmentProxy(final Map<String, String> env) {
         return HttpProxy.httpProxy(new EnvironmentProxy(env));
@@ -68,15 +63,8 @@ public class EnvironmentProxy implements ProxyFor {
     }
 
     private Proxy createProxy(final Uri uri) {
-        return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(uri.host(), port(uri.authority())));
+        return new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(uri.host(), port(uri.authority())));
     }
-
-    private final Mapper<Uri, Proxy> proxyFor = new Mapper<Uri, Proxy>() {
-        @Override
-        public Proxy call(final Uri value) throws Exception {
-            return createProxy(value);
-        }
-    };
 
     private final Regex r = regex(".*:(\\d+)");
 
@@ -84,12 +72,4 @@ public class EnvironmentProxy implements ProxyFor {
         return Integer.valueOf(some(r.match(authority).group(1)).getOrElse("80"));
     }
 
-    private static Mapper<String, Sequence<String>> split(final Regex r) {
-        return new Mapper<String, Sequence<String>>() {
-            @Override
-            public Sequence<String> call(final String s) throws Exception {
-                return r.split(s);
-            }
-        };
-    }
 }

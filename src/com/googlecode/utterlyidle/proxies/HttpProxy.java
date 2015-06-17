@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.proxies;
 
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.collections.PersistentSet;
@@ -28,7 +28,7 @@ public class HttpProxy implements ProxyFor {
         return none();
     }
 
-    public static Mapper<Proxy, Proxy.Type> type = new Mapper<Proxy, Proxy.Type>() {
+    public static Function1<Proxy, Proxy.Type> type = new Function1<Proxy, Proxy.Type>() {
         @Override
         public Proxy.Type call(final Proxy proxy) throws Exception {
             return proxy.type();

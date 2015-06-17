@@ -1,9 +1,8 @@
 package com.googlecode.utterlyidle.proxies;
 
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 
 import java.net.Proxy;
@@ -30,7 +29,7 @@ public class Proxies implements ProxyFor {
 
     @Override
     public Option<Proxy> proxyFor(final Uri uri) {
-        return proxies.flatMap(new Mapper<ProxyFor, Option<Proxy>>() {
+        return proxies.flatMap(new Function1<ProxyFor, Option<Proxy>>() {
             @Override
             public Option<Proxy> call(final ProxyFor proxyFor) throws Exception {
                 return proxyFor.proxyFor(uri);

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Mapper;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import org.w3c.dom.Node;
 
@@ -22,28 +22,28 @@ public class OptionElement extends AbstractElement {
     }
 
     public static class functions {
-        public static Mapper<Node, OptionElement> option = new Mapper<Node, OptionElement>() {
+        public static Function1<Node, OptionElement> option = new Function1<Node, OptionElement>() {
             @Override
             public OptionElement call(Node node) throws Exception {
                 return new OptionElement(node);
             }
         };
 
-        public static Mapper<OptionElement, Pair<String, String>> pair = new Mapper<OptionElement, Pair<String, String>>() {
+        public static Function1<OptionElement, Pair<String, String>> pair = new Function1<OptionElement, Pair<String, String>>() {
             @Override
             public Pair<String, String> call(OptionElement optionElement) throws Exception {
                 return optionElement.pair();
             }
         };
 
-        public static Mapper<OptionElement, String> value = new Mapper<OptionElement, String>() {
+        public static Function1<OptionElement, String> value = new Function1<OptionElement, String>() {
             @Override
             public String call(OptionElement optionElement) throws Exception {
                 return optionElement.value();
             }
         };
 
-        public static Mapper<OptionElement, String> text = new Mapper<OptionElement, String>() {
+        public static Function1<OptionElement, String> text = new Function1<OptionElement, String>() {
             @Override
             public String call(OptionElement optionElement) throws Exception {
                 return optionElement.text();
