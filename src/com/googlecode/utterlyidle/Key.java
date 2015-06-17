@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Curried2;
+import com.googlecode.totallylazy.CurriedFunction2;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Value;
 
@@ -94,16 +94,16 @@ public class Key implements Value<String> {
     }
 
     public static class functions {
-        public static Curried2<Key, ? super String, String> encrypt() {
-            return new Curried2<Key, String, String>() {
+        public static CurriedFunction2<Key, ? super String, String> encrypt() {
+            return new CurriedFunction2<Key, String, String>() {
                 @Override
                 public String call(Key key, String value) throws Exception {
                     return key.encrypt(value);
                 }
             };
         }
-        public static Curried2<Key, ? super String, String> decrypt() {
-            return new Curried2<Key, String, String>() {
+        public static CurriedFunction2<Key, ? super String, String> decrypt() {
+            return new CurriedFunction2<Key, String, String>() {
                 @Override
                 public String call(Key key, String value) throws Exception {
                     return key.decrypt(value);
