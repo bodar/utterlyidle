@@ -33,16 +33,13 @@ public interface BrowserState {
                 final Request lastRequest = request;
                 final Response lastResponse = response;
 
-                final LazyCallable<Option<Html>> lastHtml = lazy(new Callable<Option<Html>>() {
-                    @Override
-                    public Option<Html> call() throws Exception {
-                        try {
-                            return some(Html.html(response));
-                        } catch (Exception e) {
-                            System.out.println(format("Error while parsing html.\nRequest was:\n%s\n\nResponse was:\n%s", lastRequest, lastResponse));
-                            e.printStackTrace();
-                            return none(Html.class);
-                        }
+                final LazyCallable<Option<Html>> lastHtml = lazy(() -> {
+                    try {
+                        return some(Html.html(response));
+                    } catch (Exception e) {
+                        System.out.println(format("Error while parsing html.\nRequest was:\n%s\n\nResponse was:\n%s", lastRequest, lastResponse));
+                        e.printStackTrace();
+                        return none(Html.class);
                     }
                 });
 

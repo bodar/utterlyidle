@@ -28,12 +28,7 @@ public class AwsCredentialsRule implements Predicate<Request>{
 
     public static class functions{
         public static Function1<AwsCredentialsRule, AwsCredentials> credentials(){
-            return new Function1<AwsCredentialsRule, AwsCredentials>() {
-                @Override
-                public AwsCredentials call(final AwsCredentialsRule awsCredentialsRule) throws Exception {
-                    return awsCredentialsRule.credentials();
-                }
-            };
+            return awsCredentialsRule -> awsCredentialsRule.credentials();
         }
     }
 }

@@ -32,12 +32,7 @@ public class BasePathHandler implements HttpHandler {
     }
 
     private Function1<? super String, Uri> uri() {
-        return new Function1<String, Uri>() {
-            @Override
-            public Uri call(String value) throws Exception {
-                return Uri.uri(value);
-            }
-        };
+        return value -> Uri.uri(value);
     }
 
     public static Uri toFullyQualified(Uri uri, BaseUri baseUri) {
@@ -48,12 +43,7 @@ public class BasePathHandler implements HttpHandler {
     }
 
     public static Function1<Uri, Uri> asFullyQualified(final BaseUri baseUri) {
-        return new Function1<Uri, Uri>() {
-            @Override
-            public Uri call(Uri value) throws Exception {
-                return toFullyQualified(value, baseUri);
-            }
-        };
+        return value -> toFullyQualified(value, baseUri);
     }
 
     private Request removeBasePathFromUri(Request request) {

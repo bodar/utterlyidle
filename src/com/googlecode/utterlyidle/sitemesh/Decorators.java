@@ -31,11 +31,7 @@ public class Decorators {
     }
 
     public static Function2<? super Decorators, ? super DecoratorRule, Decorators> add() {
-        return new Function2<Decorators, DecoratorRule, Decorators>() {
-            public Decorators call(Decorators decorators, DecoratorRule rule) throws Exception {
-                return decorators.add(rule);
-            }
-        };
+        return (decorators, rule) -> decorators.add(rule);
     }
 
 

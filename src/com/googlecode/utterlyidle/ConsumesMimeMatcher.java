@@ -16,21 +16,13 @@ public class ConsumesMimeMatcher implements Predicate<Request> {
         return request.headers().valueOption(HttpHeaders.CONTENT_TYPE).exists(new LogicalPredicate<String>() {
             @Override
             public boolean matches(final String type) {
-                return mimeTypes.exists(new Predicate<String>() {
-                    public boolean matches(String mimeType) {
-                        return type.startsWith(mimeType);
-                    }
-                });
+                return mimeTypes.exists(mimeType -> type.startsWith(mimeType));
             }
         });
     }
 
     public static Predicate<Binding> contentMatches(final Request request) {
-        return new Predicate<Binding>() {
-            public boolean matches(Binding binding) {
-                return new ConsumesMimeMatcher(binding.consumes()).matches(request);
-            }
-        };
+        return binding -> new ConsumesMimeMatcher(binding.consumes()).matches(request);
     }
 
 }

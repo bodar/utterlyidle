@@ -62,24 +62,22 @@ public class Form extends BlockLevelElement {
     }
 
     private Function1<? super Element, Sequence<NameValue>> toNameAndValue() {
-        return new Function1<Element, Sequence<NameValue>>() {
-            public Sequence<NameValue> call(Element element) throws Exception {
-                String type = type(element);
-                if (type.equals("select")) {
-                    return Sequences.<NameValue>sequence(new Select(element));
-                }
-                if (type.equals("checkbox")) {
-                    Checkbox checkbox = new Checkbox(element);
-                    if (checkbox.checked()) {
-                        return Sequences.<NameValue>sequence(checkbox);
-                    }
-                    return Sequences.empty();
-                }
-                if(type.equals("textarea")) {
-                    return Sequences.<NameValue>sequence(new TextArea(element));
-                }
-                return Sequences.<NameValue>sequence(new Input(element));
+        return element -> {
+            String type = type(element);
+            if (type.equals("select")) {
+                return Sequences.<NameValue>sequence(new Select(element));
             }
+            if (type.equals("checkbox")) {
+                Checkbox checkbox = new Checkbox(element);
+                if (checkbox.checked()) {
+                    return Sequences.<NameValue>sequence(checkbox);
+                }
+                return Sequences.empty();
+            }
+            if(type.equals("textarea")) {
+                return Sequences.<NameValue>sequence(new TextArea(element));
+            }
+            return Sequences.<NameValue>sequence(new Input(element));
         };
     }
 
@@ -92,27 +90,14 @@ public class Form extends BlockLevelElement {
     }
 
     private Function2<RequestBuilder, NameValue, RequestBuilder> addQueryParams() {
-        return new Function2<RequestBuilder, NameValue, RequestBuilder>() {
-            public RequestBuilder call(RequestBuilder requestBuilder, NameValue nameValue) throws Exception {
-                return requestBuilder.query(nameValue.name(), nameValue.value());
-            }
-        };
+        return (requestBuilder, nameValue) -> requestBuilder.query(nameValue.name(), nameValue.value());
     }
 
     private Function2<RequestBuilder, NameValue, RequestBuilder> addFormParams() {
-        return new Function2<RequestBuilder, NameValue, RequestBuilder>() {
-            public RequestBuilder call(RequestBuilder requestBuilder, NameValue nameValue) throws Exception {
-                return requestBuilder.form(nameValue.name(), nameValue.value());
-            }
-        };
+        return (requestBuilder, nameValue) -> requestBuilder.form(nameValue.name(), nameValue.value());
     }
 
     public static Function1<? super Element, ? extends Form> fromElement() {
-        return new Function1<Element, Form>() {
-            @Override
-            public Form call(Element element) throws Exception {
-                return new Form(element);
-            }
-        };
+        return element -> new Form(element);
     }
 }

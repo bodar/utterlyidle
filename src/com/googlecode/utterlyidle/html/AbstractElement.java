@@ -91,12 +91,7 @@ public class AbstractElement {
         }
 
         public static CurriedFunction2<AbstractElement, String, String> attribute() {
-            return new CurriedFunction2<AbstractElement, String, String>() {
-                @Override
-                public String call(final AbstractElement element, final String attributeName) throws Exception {
-                    return element.attribute(attributeName);
-                }
-            };
+            return (element, attributeName) -> element.attribute(attributeName);
         }
 
         public static Function1<AbstractElement, String> contents(final String xpath) {
@@ -104,12 +99,7 @@ public class AbstractElement {
         }
 
         public static CurriedFunction2<AbstractElement, String, String> contents() {
-            return new CurriedFunction2<AbstractElement, String, String>() {
-                @Override
-                public String call(final AbstractElement element, final String xpath) throws Exception {
-                    return element.contents(xpath);
-                }
-            };
+            return (element, xpath) -> element.contents(xpath);
         }
 
         public static Function1<AbstractElement, String> selectContent(final String xpath) {
@@ -117,12 +107,7 @@ public class AbstractElement {
         }
 
         public static CurriedFunction2<AbstractElement, String, String> selectContent() {
-            return new CurriedFunction2<AbstractElement, String, String>() {
-                @Override
-                public String call(final AbstractElement element, final String xpath) throws Exception {
-                    return element.selectContent(xpath);
-                }
-            };
+            return (element, xpath) -> element.selectContent(xpath);
         }
 
 
@@ -131,12 +116,7 @@ public class AbstractElement {
         }
 
         public static CurriedFunction2<AbstractElement, String, Html> innerHtml() {
-            return new CurriedFunction2<AbstractElement, String, Html>() {
-                @Override
-                public Html call(final AbstractElement element, final String xpath) throws Exception {
-                    return element.innerHtml(xpath);
-                }
-            };
+            return (element, xpath) -> element.innerHtml(xpath);
         }
 
 
@@ -145,33 +125,18 @@ public class AbstractElement {
         }
 
         public static CurriedFunction2<AbstractElement, String, Number> count() {
-            return new CurriedFunction2<AbstractElement, String, Number>() {
-                @Override
-                public Number call(final AbstractElement element, final String xpath) throws Exception {
-                    return element.count(xpath);
-                }
-            };
+            return (element, xpath) -> element.count(xpath);
         }
     }
 
     public static class predicates {
 
         public static Predicate<AbstractElement> hasAttribute(final String attributeName) {
-            return new Predicate<AbstractElement>() {
-                @Override
-                public boolean matches(final AbstractElement element) {
-                    return element.hasAttribute(attributeName);
-                }
-            };
+            return element -> element.hasAttribute(attributeName);
         }
 
         public static Predicate<AbstractElement> contains(final String xpath) {
-            return new Predicate<AbstractElement>() {
-                @Override
-                public boolean matches(final AbstractElement element) {
-                    return element.contains(xpath);
-                }
-            };
+            return element -> element.contains(xpath);
         }
     }
 }

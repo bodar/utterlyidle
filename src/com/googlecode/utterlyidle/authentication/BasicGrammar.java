@@ -17,12 +17,9 @@ interface BasicGrammar {
 
     Parser<com.googlecode.utterlyidle.authentication.Credentials> BasicCookie = isChar(alphaNumeric.or(in('/', '+', '='))).many1().
             map(Parsers.toString).
-            map(new Function1<String, com.googlecode.utterlyidle.authentication.Credentials>() {
-                @Override
-                public com.googlecode.utterlyidle.authentication.Credentials call(final String raw) throws Exception {
-                    String[] pair = Strings.string(Base64.decode(raw)).split(":");
-                    return com.googlecode.utterlyidle.authentication.Credentials.credential(pair[0], pair[1]);
-                }
+            map(raw -> {
+                String[] pair = Strings.string(Base64.decode(raw)).split(":");
+                return com.googlecode.utterlyidle.authentication.Credentials.credential(pair[0], pair[1]);
             });
 
     Parser<com.googlecode.utterlyidle.authentication.Credentials> Credentials = Scheme.next(ws(BasicCookie));
@@ -32,17 +29,7 @@ interface BasicGrammar {
     Parser<String> realm = Parsers.string("realm=").next(quoted);
     Parser<String> Challenge = Scheme.next(ws(realm));
 
-    Function1<String, Option<String>> parseChallenge = new Function1<String, Option<String>>() {
-        @Override
-        public Option<String> call(final String raw) throws Exception {
-            return Challenge.parse(raw).option();
-        }
-    };
+    Function1<String, Option<String>> parseChallenge = raw -> Challenge.parse(raw).option();
 
-    Function1<String, Option<com.googlecode.utterlyidle.authentication.Credentials>> parseCredential = new Function1<String, Option<com.googlecode.utterlyidle.authentication.Credentials>>() {
-        @Override
-        public Option<com.googlecode.utterlyidle.authentication.Credentials> call(final String auth) throws Exception {
-            return Credentials.parse(auth).option();
-        }
-    };
+    Function1<String, Option<com.googlecode.utterlyidle.authentication.Credentials>> parseCredential = auth -> Credentials.parse(auth).option();
 }

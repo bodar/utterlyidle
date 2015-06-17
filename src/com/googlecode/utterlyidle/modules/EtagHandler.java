@@ -55,12 +55,7 @@ public class EtagHandler implements HttpHandler {
     }
 
     private static Function2<ResponseBuilder, String, ResponseBuilder> copyFrom(final Response source) {
-        return new Function2<ResponseBuilder, String, ResponseBuilder>() {
-            @Override
-            public ResponseBuilder call(ResponseBuilder destination, String header) throws Exception {
-                return destination.header(header, header(source, header));
-            }
-        };
+        return (destination, header) -> destination.header(header, header(source, header));
     }
 
     private String strongEtag(Digest digest) {

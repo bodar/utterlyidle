@@ -42,13 +42,11 @@ public class Auditors implements Auditor{
     }
 
     private Callable<Auditor> resolve(final Class<? extends Auditor> auditor) {
-        return new Callable<Auditor>() {
-            public Auditor call() throws Exception {
-                if(!container.contains(auditor)){
-                    container.add(auditor);
-                }
-                return container.get(auditor);
+        return () -> {
+            if(!container.contains(auditor)){
+                container.add(auditor);
             }
+            return container.get(auditor);
         };
     }
 }

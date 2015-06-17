@@ -58,12 +58,10 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     private Predicate<? super Pair<String, String>> appliesTo(final Request request) {
-        return new Predicate<Pair<String, String>>() {
-            public boolean matches(Pair<String, String> extensionAndReplacementMimeType) {
-                Option<String> actual = fileExtension(request);
-                String expected = extensionAndReplacementMimeType.first();
-                return !actual.isEmpty() && ("." + expected).equals(actual.get());
-            }
+        return extensionAndReplacementMimeType -> {
+            Option<String> actual = fileExtension(request);
+            String expected = extensionAndReplacementMimeType.first();
+            return !actual.isEmpty() && ("." + expected).equals(actual.get());
         };
     }
 
@@ -86,14 +84,10 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     private Function2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
-        return new Function2<Request, Pair<String, String>, Request>() {
-            public Request call(Request request, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
-                return modify(request).
-                        replaceHeader(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()).
-                        uri(removeExtension(request.uri())).
-                        build();
-            }
-        };
+        return (request, extensionAndReplacementMimeType) -> modify(request).
+                replaceHeader(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()).
+                uri(removeExtension(request.uri())).
+                build();
     }
 
     public static class Replacements implements Iterable<Pair<String, String>> {

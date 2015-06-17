@@ -49,11 +49,8 @@ public class BasicHttpHandlerTest {
     }
 
     public static HttpHandler throwing() {
-        return new HttpHandler() {
-            @Override
-            public Response handle(final Request request) throws Exception {
-                throw new UnsupportedOperationException();
-            }
+        return request -> {
+            throw new UnsupportedOperationException();
         };
     }
 

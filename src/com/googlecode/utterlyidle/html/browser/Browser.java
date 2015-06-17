@@ -165,12 +165,7 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
         }
 
         public static Function1<Browser, String> url() {
-            return new Function1<Browser, String>() {
-                @Override
-                public String call(Browser browser) throws Exception {
-                    return browser.uri().toString();
-                }
-            };
+            return browser -> browser.uri().toString();
         }
     }
 }

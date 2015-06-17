@@ -84,12 +84,7 @@ public class BaseUriRedirector implements Redirector {
     }
 
     private Function1<? super Binding, Uri> resourceUriOf(final Object... arguments) {
-        return new Function1<Binding, Uri>() {
-            @Override
-            public Uri call(Binding binding) throws Exception {
-                return resourceUriOf(binding, arguments);
-            }
-        };
+        return binding -> resourceUriOf(binding, arguments);
     }
 
     private Uri trim(Uri uri) {

@@ -7,11 +7,6 @@ import com.googlecode.utterlyidle.Response;
 
 public class Handlers {
     public static Function1<Request, Response> asFunction(final HttpHandler httpHandler) {
-        return new Function1<Request, Response>() {
-            @Override
-            public Response call(Request request) throws Exception {
-                return httpHandler.handle(request);
-            }
-        };
+        return request -> httpHandler.handle(request);
     }
 }

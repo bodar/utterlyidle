@@ -13,12 +13,7 @@ public interface EntityWriter<T> {
         }
 
         public static <T> Function1<T, Block<OutputStream>> asFunction(final EntityWriter<T> writer) {
-            return new Function1<T, Block<OutputStream>>() {
-                @Override
-                public Block<OutputStream> call(T t) throws Exception {
-                    return writeWith(writer, t);
-                }
-            };
+            return t -> writeWith(writer, t);
         }
 
         public static <T> Block<OutputStream> writeWith(final EntityWriter<T> writer, final T entity) {

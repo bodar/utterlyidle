@@ -46,28 +46,18 @@ public class Accept implements Predicate<String>{
     }
 
     private Function1<? super MediaRange, Float> mediaQuality() {
-        return new Function1<MediaRange, Float>() {
-            public Float call(MediaRange mediaRange) throws Exception {
-                return mediaRange.quality();
-            }
-        };
+        return mediaRange -> mediaRange.quality();
     }
 
     private Predicate<? super MediaRange> containedBy(final Sequence<String> values) {
-        return new Predicate<MediaRange>() {
-            public boolean matches(MediaRange mediaRange) {
-                return values.exists(sameValue(mediaRange.value()));
-            }
-        };
+        return mediaRange -> values.exists(sameValue(mediaRange.value()));
     }
 
 
     public static Accept accept(String header) {
-        Sequence<MediaRange> mediaRanges = regex.findMatches(header).map(new Function1<MatchResult, MediaRange>() {
-            public MediaRange call(MatchResult m) throws Exception {
-                float quality = m.group(3) == null ? 1.0f : valueOf(m.group(3));
-                return new MediaRange(m.group(1), quality);
-            }
+        Sequence<MediaRange> mediaRanges = regex.findMatches(header).map(m -> {
+            float quality = m.group(3) == null ? 1.0f : valueOf(m.group(3));
+            return new MediaRange(m.group(1), quality);
         });
         return new Accept(mediaRanges);
     }

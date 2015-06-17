@@ -21,12 +21,7 @@ public class CookieBuilder implements Callable<Cookie> {
         this.name = cookie.name();
         this.value = cookie.value();
 
-        sequence(cookie.attributes()).fold(this, new Function2<CookieBuilder, CookieAttribute, CookieBuilder>() {
-            @Override
-            public CookieBuilder call(CookieBuilder cookieBuilder, CookieAttribute cookieAttribute) throws Exception {
-                return cookieBuilder.attribute(cookieAttribute);
-            }
-        });
+        sequence(cookie.attributes()).fold(this, (cookieBuilder, cookieAttribute) -> cookieBuilder.attribute(cookieAttribute));
     }
 
     public CookieBuilder name(String name) {

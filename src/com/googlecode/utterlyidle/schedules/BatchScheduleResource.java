@@ -53,11 +53,7 @@ public class BatchScheduleResource {
     }
 
     public Function1<UUID, Response> delete() {
-        return new Function1<UUID, Response>() {
-            public Response call(UUID uuid) throws Exception {
-                return invocationHandler.handle(method(on(ScheduleResource.class).delete(uuid)));
-            }
-        };
+        return uuid -> invocationHandler.handle(method(on(ScheduleResource.class).delete(uuid)));
     }
 
     private Sequence<UUID> ids() {

@@ -50,12 +50,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Function1<? super Binding, Response> success(final Request request) {
-        return new Function1<Binding, Response>() {
-            @Override
-            public Response call(Binding binding) throws Exception {
-                return success(request, binding);
-            }
-        };
+        return binding -> success(request, binding);
     }
 
 
@@ -103,11 +98,6 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Function1<? super MatchFailure, Response> failure() {
-        return new Function1<MatchFailure, Response>() {
-            @Override
-            public Response call(MatchFailure matchFailure) throws Exception {
-                return failure(matchFailure);
-            }
-        };
+        return matchFailure -> failure(matchFailure);
     }
 }

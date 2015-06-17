@@ -17,21 +17,11 @@ public interface Action {
 
     public static class functions{
         public static Function1<Action, Sequence<ActionMetaData>> metaData(){
-            return new Function1<Action, Sequence<ActionMetaData>>() {
-                @Override
-                public Sequence<ActionMetaData> call(Action action) throws Exception {
-                    return sequence(action.metaData());
-                }
-            };
+            return action -> sequence(action.metaData());
         }
 
         public static <T extends ActionMetaData> Function1<Action, Sequence<T>> metaData(final Class<T> type){
-            return new Function1<Action, Sequence<T>>() {
-                @Override
-                public Sequence<T> call(Action action) throws Exception {
-                    return metaData().call(action).safeCast(type);
-                }
-            };
+            return action -> metaData().call(action).safeCast(type);
         }
 
         public static LogicalPredicate<Action> isForMethod(final Method method) {

@@ -176,12 +176,9 @@ public class HelloWorld {
     @GET
     @Path("stream-exception")
     public StreamingWriter streamException() {
-        return new StreamingWriter() {
-            @Override
-            public void write(final Writer writer) throws IOException {
-                writer.write("Yes, I'm streaming");
-                throw new RuntimeException("boom from streaming!");
-            }
+        return writer -> {
+            writer.write("Yes, I'm streaming");
+            throw new RuntimeException("boom from streaming!");
         };
     }
 

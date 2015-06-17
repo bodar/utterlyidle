@@ -100,11 +100,7 @@ public class HierarchicalPath implements Path, Comparable<HierarchicalPath> {
     }
 
     private Predicate<Pair<String, String>> segmentIsEqual() {
-        return new Predicate<Pair<String, String>>() {
-            public boolean matches(Pair<String, String> pathSegment) {
-                return pathSegment.first().equals(pathSegment.second());
-            }
-        };
+        return pathSegment -> pathSegment.first().equals(pathSegment.second());
     }
 
     public HierarchicalPath remove(HierarchicalPath base) {

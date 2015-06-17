@@ -37,11 +37,6 @@ public class CookieParameters extends Parameters<String, String, CookieParameter
     }
 
     private static Function1<Cookie, Pair<String, String>> asPair() {
-        return new Function1<Cookie, Pair<String, String>>() {
-            @Override
-            public Pair<String, String> call(final Cookie cookie) throws Exception {
-                return cookie.toPair();
-            }
-        };
+        return cookie -> cookie.toPair();
     }
 }

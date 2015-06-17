@@ -42,11 +42,7 @@ import static com.googlecode.utterlyidle.bindings.actions.InvokeResourceMethod.c
 
 public class AnnotatedBindings {
     public static Binding[] annotatedClass(Class<?> aClass) {
-        return sequence(aClass.getMethods()).flatMap(new Function1<Method, Iterable<Binding>>() {
-            public Iterable<Binding> call(Method method) throws Exception {
-                return binding(method);
-            }
-        }).toArray(Binding.class);
+        return sequence(aClass.getMethods()).flatMap(method -> binding(method)).toArray(Binding.class);
     }
 
     public static Option<Binding> binding(final Method method) {
@@ -65,11 +61,7 @@ public class AnnotatedBindings {
     }
 
     private static Function1<HttpMethod, Binding> asBinding(final Method method) {
-        return new Function1<HttpMethod, Binding>() {
-            public Binding call(HttpMethod httpMethod) throws Exception {
-                return new Binding(invokeResourceMethod(method), uriTemplate(method), httpMethod.value(), consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method), extractView(method));
-            }
-        };
+        return httpMethod -> new Binding(invokeResourceMethod(method), uriTemplate(method), httpMethod.value(), consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method), extractView(method));
     }
 
     private static View extractView(final Method method) {
@@ -113,17 +105,15 @@ public class AnnotatedBindings {
     }};
 
     private static Sequence<Option<Parameter>> namedParameters(final Method method) {
-        return sequence(method.getParameterAnnotations()).map(new Function1<Annotation[], Option<Parameter>>() {
-            public Option<Parameter> call(Annotation[] annotations) throws Exception {
-                for (final Annotation annotation : annotations) {
-                    Class<? extends Annotation> key = annotation.annotationType();
-                    if (supportedAnnotations.containsKey(key)) {
-                        Param param = param(annotation);
-                        return Option.<Parameter>some(new NamedParameter(param.<String>value(), supportedAnnotations.get(key), defaultValue(annotations)));
-                    }
+        return sequence(method.getParameterAnnotations()).map(annotations -> {
+            for (final Annotation annotation : annotations) {
+                Class<? extends Annotation> key = annotation.annotationType();
+                if (supportedAnnotations.containsKey(key)) {
+                    Param param = param(annotation);
+                    return Option.<Parameter>some(new NamedParameter(param.<String>value(), supportedAnnotations.get(key), defaultValue(annotations)));
                 }
-                return none();
             }
+            return none();
         });
     }
 

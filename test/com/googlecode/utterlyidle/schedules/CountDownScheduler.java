@@ -26,12 +26,10 @@ public class CountDownScheduler implements Scheduler {
     }
 
     public static <T> Callable<T> decorate(final CountDownLatch latch, final Callable<T> command) {
-        return new Callable<T>() {
-            public T call() throws Exception {
-                T result = command.call();
-                latch.countDown();
-                return result;
-            }
+        return () -> {
+            T result = command.call();
+            latch.countDown();
+            return result;
         };
     }
 }

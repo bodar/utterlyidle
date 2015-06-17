@@ -127,50 +127,24 @@ public class Binding  {
             return where(action(), Action.functions.isForMethod(method));
         }
         public static Function1<Binding, Action> action() {
-            return new Function1<Binding, Action>() {
-                @Override
-                public Action call(Binding binding) throws Exception {
-                    return binding.action();
-                }
-            };
+            return binding -> binding.action();
         }
 
         public static Function1<Binding, Integer> priority() {
-            return new Function1<Binding, Integer>() {
-                @Override
-                public Integer call(Binding binding) throws Exception {
-                    return binding.priority();
-                }
-            };
+            return binding -> binding.priority();
         }
 
         public static Function1<Binding, Integer> numberOfArguments() {
-            return new Function1<Binding, Integer>() {
-                @Override
-                public Integer call(Binding binding) throws Exception {
-                    return binding.numberOfArguments();
-                }
-            };
+            return binding -> binding.numberOfArguments();
         }
 
         public static Function1<Binding, Integer> numberOfDefaultArguments() {
-            return new Function1<Binding, Integer>() {
-                @Override
-                public Integer call(Binding binding) throws Exception {
-                    return binding.numberOfDefaultArguments();
-                }
-            };
+            return binding -> binding.numberOfDefaultArguments();
         }
 
 
         public static Function1<Binding, Integer> pathSegments() {
-            return new Function1<Binding, Integer>() {
-                @Override
-                public Integer call(Binding binding) throws Exception {
-                    return binding.uriTemplate().segments();
-
-                }
-            };
+            return binding -> binding.uriTemplate().segments();
         }
 
     }

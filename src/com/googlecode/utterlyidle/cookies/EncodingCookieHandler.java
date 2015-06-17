@@ -28,23 +28,13 @@ public class EncodingCookieHandler implements HttpHandler {
 
     private Response encode(Response response) {
         ResponseBuilder builder = ResponseBuilder.modify(response);
-        sequence(cookies(response)).fold(builder, new Function2<ResponseBuilder, Cookie, ResponseBuilder>() {
-            @Override
-            public ResponseBuilder call(ResponseBuilder builder, Cookie cookie) throws Exception {
-                return builder.replaceCookie(encoder.encode(cookie));
-            }
-        });
+        sequence(cookies(response)).fold(builder, (builder1, cookie) -> builder1.replaceCookie(encoder.encode(cookie)));
         return builder.build();
     }
 
     private Request decode(Request request) {
         RequestBuilder builder = RequestBuilder.modify(request);
-        sequence(cookies(request)).fold(builder, new Function2<RequestBuilder, Cookie, RequestBuilder>() {
-            @Override
-            public RequestBuilder call(RequestBuilder builder, Cookie cookie) throws Exception {
-                return builder.replaceCookie(encoder.decode(cookie));
-            }
-        });
+        sequence(cookies(request)).fold(builder, (builder1, cookie) -> builder1.replaceCookie(encoder.decode(cookie)));
         return builder.build();
     }
 }

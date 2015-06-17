@@ -27,11 +27,7 @@ public class AuditTest {
     }
 
     private AuditModule auditModule() {
-        return new AuditModule() {
-            public Auditors addAuditors(Auditors auditors) {
-                return auditors.add(TestAuditor.class);
-            }
-        };
+        return auditors -> auditors.add(TestAuditor.class);
     }
 
     public static class TestAuditor implements Auditor {
