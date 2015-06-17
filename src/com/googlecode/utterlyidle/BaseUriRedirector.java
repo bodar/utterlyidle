@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
@@ -83,8 +83,8 @@ public class BaseUriRedirector implements Redirector {
         return RelativeUriExtractor.relativeUriOf(binding, arguments);
     }
 
-    private Callable1<? super Binding, Uri> resourceUriOf(final Object... arguments) {
-        return new Callable1<Binding, Uri>() {
+    private Function1<? super Binding, Uri> resourceUriOf(final Object... arguments) {
+        return new Function1<Binding, Uri>() {
             @Override
             public Uri call(Binding binding) throws Exception {
                 return resourceUriOf(binding, arguments);

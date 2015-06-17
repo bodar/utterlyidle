@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
@@ -28,7 +28,7 @@ public class EncodingCookieHandler implements HttpHandler {
 
     private Response encode(Response response) {
         ResponseBuilder builder = ResponseBuilder.modify(response);
-        sequence(cookies(response)).fold(builder, new Callable2<ResponseBuilder, Cookie, ResponseBuilder>() {
+        sequence(cookies(response)).fold(builder, new Function2<ResponseBuilder, Cookie, ResponseBuilder>() {
             @Override
             public ResponseBuilder call(ResponseBuilder builder, Cookie cookie) throws Exception {
                 return builder.replaceCookie(encoder.encode(cookie));
@@ -39,7 +39,7 @@ public class EncodingCookieHandler implements HttpHandler {
 
     private Request decode(Request request) {
         RequestBuilder builder = RequestBuilder.modify(request);
-        sequence(cookies(request)).fold(builder, new Callable2<RequestBuilder, Cookie, RequestBuilder>() {
+        sequence(cookies(request)).fold(builder, new Function2<RequestBuilder, Cookie, RequestBuilder>() {
             @Override
             public RequestBuilder call(RequestBuilder builder, Cookie cookie) throws Exception {
                 return builder.replaceCookie(encoder.decode(cookie));

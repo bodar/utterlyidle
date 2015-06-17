@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Function;
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.Curried2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
@@ -90,8 +90,8 @@ public class AbstractElement {
             return attribute().flip().apply(attributeName);
         }
 
-        public static Function2<AbstractElement, String, String> attribute() {
-            return new Function2<AbstractElement, String, String>() {
+        public static Curried2<AbstractElement, String, String> attribute() {
+            return new Curried2<AbstractElement, String, String>() {
                 @Override
                 public String call(final AbstractElement element, final String attributeName) throws Exception {
                     return element.attribute(attributeName);
@@ -103,8 +103,8 @@ public class AbstractElement {
             return contents().flip().apply(xpath);
         }
 
-        public static Function2<AbstractElement, String, String> contents() {
-            return new Function2<AbstractElement, String, String>() {
+        public static Curried2<AbstractElement, String, String> contents() {
+            return new Curried2<AbstractElement, String, String>() {
                 @Override
                 public String call(final AbstractElement element, final String xpath) throws Exception {
                     return element.contents(xpath);
@@ -116,8 +116,8 @@ public class AbstractElement {
             return selectContent().flip().apply(xpath);
         }
 
-        public static Function2<AbstractElement, String, String> selectContent() {
-            return new Function2<AbstractElement, String, String>() {
+        public static Curried2<AbstractElement, String, String> selectContent() {
+            return new Curried2<AbstractElement, String, String>() {
                 @Override
                 public String call(final AbstractElement element, final String xpath) throws Exception {
                     return element.selectContent(xpath);
@@ -130,8 +130,8 @@ public class AbstractElement {
             return innerHtml().flip().apply(xpath);
         }
 
-        public static Function2<AbstractElement, String, Html> innerHtml() {
-            return new Function2<AbstractElement, String, Html>() {
+        public static Curried2<AbstractElement, String, Html> innerHtml() {
+            return new Curried2<AbstractElement, String, Html>() {
                 @Override
                 public Html call(final AbstractElement element, final String xpath) throws Exception {
                     return element.innerHtml(xpath);
@@ -144,8 +144,8 @@ public class AbstractElement {
             return count().flip().apply(xpath);
         }
 
-        public static Function2<AbstractElement, String, Number> count() {
-            return new Function2<AbstractElement, String, Number>() {
+        public static Curried2<AbstractElement, String, Number> count() {
+            return new Curried2<AbstractElement, String, Number>() {
                 @Override
                 public Number call(final AbstractElement element, final String xpath) throws Exception {
                     return element.count(xpath);

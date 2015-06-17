@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
 
@@ -31,8 +31,8 @@ public class BasePathHandler implements HttpHandler {
         return responseBuilder.build();
     }
 
-    private Callable1<? super String, Uri> uri() {
-        return new Callable1<String, Uri>() {
+    private Function1<? super String, Uri> uri() {
+        return new Function1<String, Uri>() {
             @Override
             public Uri call(String value) throws Exception {
                 return Uri.uri(value);
@@ -47,8 +47,8 @@ public class BasePathHandler implements HttpHandler {
         return baseUri.value().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
     }
 
-    public static Callable1<Uri, Uri> asFullyQualified(final BaseUri baseUri) {
-        return new Callable1<Uri, Uri>() {
+    public static Function1<Uri, Uri> asFullyQualified(final BaseUri baseUri) {
+        return new Function1<Uri, Uri>() {
             @Override
             public Uri call(Uri value) throws Exception {
                 return toFullyQualified(value, baseUri);

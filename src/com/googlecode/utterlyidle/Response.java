@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Function;
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.Curried2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
@@ -98,8 +98,8 @@ public interface Response {
             };
         }
 
-        public static Function2<Response, Object, Response> replaceHeader(final String name) {
-            return new Function2<Response, Object, Response>() {
+        public static Curried2<Response, Object, Response> replaceHeader(final String name) {
+            return new Curried2<Response, Object, Response>() {
                 @Override
                 public Response call(final Response response, final Object value) throws Exception {
                     return modify(response).replaceHeaders(name, value).build();

@@ -1,12 +1,11 @@
 package com.googlecode.utterlyidle.html.browser;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
-import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
@@ -165,8 +164,8 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
             };
         }
 
-        public static Callable1<Browser, String> url() {
-            return new Callable1<Browser, String>() {
+        public static Function1<Browser, String> url() {
+            return new Function1<Browser, String>() {
                 @Override
                 public String call(Browser browser) throws Exception {
                     return browser.uri().toString();

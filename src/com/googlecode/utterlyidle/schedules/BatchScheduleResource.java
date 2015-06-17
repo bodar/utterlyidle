@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.schedules;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Redirector;
@@ -52,8 +52,8 @@ public class BatchScheduleResource {
         return ids().map(delete()).last();
     }
 
-    public Callable1<UUID, Response> delete() {
-        return new Callable1<UUID, Response>() {
+    public Function1<UUID, Response> delete() {
+        return new Function1<UUID, Response>() {
             public Response call(UUID uuid) throws Exception {
                 return invocationHandler.handle(method(on(ScheduleResource.class).delete(uuid)));
             }

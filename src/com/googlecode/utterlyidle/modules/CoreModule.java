@@ -1,9 +1,8 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
@@ -163,9 +162,9 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
 
     public static class TypedIterableResolver<T> implements Resolver<Iterable<T>> {
         private final Container container;
-        private final Callable1<String, T> mapper;
+        private final Function1<String, T> mapper;
 
-        public TypedIterableResolver(Container container, Callable1<String, T> mapper) {
+        public TypedIterableResolver(Container container, Function1<String, T> mapper) {
             this.container = container;
             this.mapper = mapper;
         }

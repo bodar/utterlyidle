@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.jetty;
 
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.CloseableCallable;
@@ -33,8 +33,8 @@ public class RestApplicationActivator implements CloseableCallable<Application> 
         application.close();
     }
 
-    private Callable2<Application, Module, Application> addToApplication() {
-        return new Callable2<Application, Module, Application>() {
+    private Function2<Application, Module, Application> addToApplication() {
+        return new Function2<Application, Module, Application>() {
             public Application call(Application application, Module resourcesModule) throws Exception {
                 return application.add(resourcesModule);
             }

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicate;
 
 import java.lang.annotation.Annotation;
@@ -27,7 +27,7 @@ public class Param {
         }
     }
 
-    public static Callable1<Annotation, Param> toParam() {
+    public static Function1<Annotation, Param> toParam() {
         return Param::param;
     }
 
@@ -54,7 +54,7 @@ public class Param {
         return annotation;
     }
 
-    public static <T> Callable1<? super Annotation, T> toValue() {
+    public static <T> Function1<? super Annotation, T> toValue() {
         return annotation1 -> cast(getValue(annotation1));
     }
 }

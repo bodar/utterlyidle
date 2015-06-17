@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.dsl;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.MediaType;
 
@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.regex.Pattern;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.proxy.Call.method;
@@ -61,8 +60,8 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
         return this;
     }
 
-    private Callable1<Map.Entry<String, String>, Binding> asBinding() {
-        return new Callable1<Map.Entry<String, String>, Binding>() {
+    private Function1<Map.Entry<String, String>, Binding> asBinding() {
+        return new Function1<Map.Entry<String, String>, Binding>() {
             public Binding call(Map.Entry<String, String> entry) throws Exception {
                 return get(format("%s/{filename:.+\\.%s}", path, quote(entry.getKey()))).
                         produces(entry.getValue()).

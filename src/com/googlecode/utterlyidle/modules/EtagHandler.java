@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -54,8 +54,8 @@ public class EtagHandler implements HttpHandler {
         return sequence(safeHeaders).fold(destination, copyFrom(source));
     }
 
-    private static Callable2<ResponseBuilder, String, ResponseBuilder> copyFrom(final Response source) {
-        return new Callable2<ResponseBuilder, String, ResponseBuilder>() {
+    private static Function2<ResponseBuilder, String, ResponseBuilder> copyFrom(final Response source) {
+        return new Function2<ResponseBuilder, String, ResponseBuilder>() {
             @Override
             public ResponseBuilder call(ResponseBuilder destination, String header) throws Exception {
                 return destination.header(header, header(source, header));

@@ -1,11 +1,10 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.totallylazy.json.Json;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
@@ -77,7 +76,7 @@ public class JobsResource {
         return jobResponse(id, Job.functions.response);
     }
 
-    private Response jobResponse(final UUID id, final Callable1<? super Job, ? extends Option<Response>> mapper) {
+    private Response jobResponse(final UUID id, final Function1<? super Job, ? extends Option<Response>> mapper) {
         return storage.get(id).
                 flatMap(mapper).
                 getOrElse(Responses.response(Status.NOT_FOUND));

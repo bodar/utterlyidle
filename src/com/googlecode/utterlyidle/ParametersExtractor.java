@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -14,7 +14,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Debug.debugging;
 import static com.googlecode.yadic.resolvers.Resolvers.create;
 
 public class ParametersExtractor implements RequestExtractor<Object[]> {
@@ -41,15 +40,15 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
     }
 
     public Object[] extract(final Request request) {
-        return typesWithNamedParameter.map(new Callable1<Pair<Type, Option<Parameter>>, Object>() {
+        return typesWithNamedParameter.map(new Function1<Pair<Type, Option<Parameter>>, Object>() {
             public Object call(Pair<Type, Option<Parameter>> pair) throws Exception {
                 return application.usingArgumentScope(request, resolveParameter(pair));
             }
         }).toArray(Object.class);
     }
 
-    private Callable1<Container, Object> resolveParameter(final Pair<Type, Option<Parameter>> pair) {
-        return new Callable1<Container, Object>() {
+    private Function1<Container, Object> resolveParameter(final Pair<Type, Option<Parameter>> pair) {
+        return new Function1<Container, Object>() {
             public Object call(Container container) throws Exception {
                 final Type type = pair.first();
                 final Option<Parameter> optionalParameter = pair.second();

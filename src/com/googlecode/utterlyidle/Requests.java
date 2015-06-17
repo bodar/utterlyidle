@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Uri;
@@ -21,8 +21,8 @@ public class Requests {
         return request(method, Uri.uri(path + query.toString()), headers, input);
     }
 
-    public static Callable1<Request, String> pathAsString() {
-        return new Callable1<Request, String>() {
+    public static Function1<Request, String> pathAsString() {
+        return new Function1<Request, String>() {
             @Override
             public String call(Request request) throws Exception {
                 return request.uri().path();
@@ -30,32 +30,32 @@ public class Requests {
         };
     }
 
-    public static Callable1<Request, Uri> uri() {
-        return new Callable1<Request, Uri>() {
+    public static Function1<Request, Uri> uri() {
+        return new Function1<Request, Uri>() {
             public Uri call(Request request) throws Exception {
                 return request.uri();
             }
         };
     }
 
-    public static Callable1<Request, String> method() {
-        return new Callable1<Request, String>() {
+    public static Function1<Request, String> method() {
+        return new Function1<Request, String>() {
             public String call(Request request) throws Exception {
                 return request.method();
             }
         };
     }
 
-    public static Callable1<Request, QueryParameters> query() {
-        return new Callable1<Request, QueryParameters>() {
+    public static Function1<Request, QueryParameters> query() {
+        return new Function1<Request, QueryParameters>() {
             public QueryParameters call(Request request) throws Exception {
                 return query(request);
             }
         };
     }
 
-    public static Callable1<Request, String> queryParameter(final String name) {
-        return new Callable1<Request, String>() {
+    public static Function1<Request, String> queryParameter(final String name) {
+        return new Function1<Request, String>() {
             @Override
             public String call(Request request) throws Exception {
                 return query(request).getValue(name);
@@ -84,8 +84,8 @@ public class Requests {
         return QueryParameters.parse(request.uri().query());
     }
 
-    public static Callable1<Request, FormParameters> form() {
-        return new Callable1<Request, FormParameters>() {
+    public static Function1<Request, FormParameters> form() {
+        return new Function1<Request, FormParameters>() {
             public FormParameters call(Request request) throws Exception {
                 return form(request);
             }
@@ -105,16 +105,16 @@ public class Requests {
         return CookieParameters.cookies(request);
     }
 
-    public static Callable1<Request, HierarchicalPath> path() {
-        return new Callable1<Request, HierarchicalPath>() {
+    public static Function1<Request, HierarchicalPath> path() {
+        return new Function1<Request, HierarchicalPath>() {
             public HierarchicalPath call(Request request) throws Exception {
                 return HierarchicalPath.hierarchicalPath(request.uri().path());
             }
         };
     }
 
-    public static Callable1<Request, Entity> input() {
-        return new Callable1<Request, Entity>() {
+    public static Function1<Request, Entity> input() {
+        return new Function1<Request, Entity>() {
             public Entity call(Request request) throws Exception {
                 return request.entity();
             }

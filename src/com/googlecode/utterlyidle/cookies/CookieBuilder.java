@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Sequence;
 
 import java.util.concurrent.Callable;
@@ -21,7 +21,7 @@ public class CookieBuilder implements Callable<Cookie> {
         this.name = cookie.name();
         this.value = cookie.value();
 
-        sequence(cookie.attributes()).fold(this, new Callable2<CookieBuilder, CookieAttribute, CookieBuilder>() {
+        sequence(cookie.attributes()).fold(this, new Function2<CookieBuilder, CookieAttribute, CookieBuilder>() {
             @Override
             public CookieBuilder call(CookieBuilder cookieBuilder, CookieAttribute cookieAttribute) throws Exception {
                 return cookieBuilder.attribute(cookieAttribute);

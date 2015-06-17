@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.First;
 import com.googlecode.totallylazy.Pair;
@@ -9,7 +9,6 @@ import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
@@ -47,8 +46,8 @@ public class InternalHttpHandler implements HttpHandler {
         return headersToAdd.fold(request, addHeader());
     }
 
-    private Callable2<Request, Pair<String, String>, Request> addHeader() {
-        return new Callable2<Request, Pair<String, String>, Request>() {
+    private Function2<Request, Pair<String, String>, Request> addHeader() {
+        return new Function2<Request, Pair<String, String>, Request>() {
             @Override
             public Request call(Request request, Pair<String, String> headerPair) throws Exception {
                 return RequestBuilder.modify(request).header(headerPair.first(), headerPair.second()).build();

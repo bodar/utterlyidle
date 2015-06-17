@@ -1,14 +1,13 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.First;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Segment;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.collections.PersistentList;
 
@@ -22,10 +21,10 @@ import static com.googlecode.totallylazy.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> implements Iterable<Pair<K, V>> {
-    private final Callable1<K, Predicate<K>> predicate;
+    private final Function1<K, Predicate<K>> predicate;
     protected final PersistentList<Pair<K, V>> values;
 
-    protected Parameters(Callable1<K, Predicate<K>> predicate, PersistentList<Pair<K, V>> values) {
+    protected Parameters(Function1<K, Predicate<K>> predicate, PersistentList<Pair<K, V>> values) {
         this.predicate = predicate;
         this.values = values;
     }
@@ -81,8 +80,8 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
         return sequence(values).filter(predicate);
     }
 
-    public static <K, V, Self extends Parameters<K, V, Self>> Callable2<Self, Pair<K, V>, Self> pairIntoParameters() {
-        return new Callable2<Self, Pair<K, V>, Self>() {
+    public static <K, V, Self extends Parameters<K, V, Self>> Function2<Self, Pair<K, V>, Self> pairIntoParameters() {
+        return new Function2<Self, Pair<K, V>, Self>() {
             public Self call(Self result, Pair<K, V> pair) throws Exception {
                 return result.add(pair.first(), pair.second());
             }

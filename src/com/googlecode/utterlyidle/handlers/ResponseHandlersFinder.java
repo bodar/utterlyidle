@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
@@ -31,8 +31,8 @@ public class ResponseHandlersFinder{
                 get();
     }
 
-    private Callable1<? super ResponseHandler, ResponseHandler> injectResolverIfNeeded() {
-        return new Callable1<ResponseHandler, ResponseHandler>() {
+    private Function1<? super ResponseHandler, ResponseHandler> injectResolverIfNeeded() {
+        return new Function1<ResponseHandler, ResponseHandler>() {
             public ResponseHandler call(ResponseHandler handler) throws Exception {
                 if(handler instanceof DependsOnContainer){
                     ((DependsOnContainer) handler).setContainer(container);
@@ -42,8 +42,8 @@ public class ResponseHandlersFinder{
         };
     }
 
-    private Callable1<Object, ResponseHandler> createHandlerIfNeeded() {
-        return new Callable1<Object, ResponseHandler>() {
+    private Function1<Object, ResponseHandler> createHandlerIfNeeded() {
+        return new Function1<Object, ResponseHandler>() {
             public ResponseHandler call(Object handler) throws Exception {
                 if (handler instanceof Class) {
                     Class handlerClass = (Class) handler;

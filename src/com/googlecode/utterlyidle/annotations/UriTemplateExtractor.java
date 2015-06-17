@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Extractor;
 import com.googlecode.utterlyidle.UriTemplate;
@@ -21,8 +21,8 @@ public class UriTemplateExtractor implements Extractor<Method, UriTemplate> {
         return UriTemplate.uriTemplate(paths.filter(notNullValue()).map(getValue()).toString("/"));
     }
 
-    public static Callable1<? super Path, String> getValue() {
-        return new Callable1<Path, String>() {
+    public static Function1<? super Path, String> getValue() {
+        return new Function1<Path, String>() {
             public String call(Path o) throws Exception {
                 return trimSlashes(o.value());
             }

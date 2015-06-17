@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
@@ -37,8 +37,8 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
         return replacementsThatApply.fold(response, reapplyExtension());
     }
 
-    private Callable2<? super Response, ? super Pair<String, String>, Response> reapplyExtension() {
-        return new Callable2<Response, Pair<String, String>, Response>() {
+    private Function2<? super Response, ? super Pair<String, String>, Response> reapplyExtension() {
+        return new Function2<Response, Pair<String, String>, Response>() {
             public Response call(Response response, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
                 if (response.headers().contains(LOCATION)) {
                     return ResponseBuilder.modify(response).
@@ -85,8 +85,8 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
         return uri.path(hierarchicalPath(uri.path()).segments().init().append(fileWithoutExtension).toString("/"));
     }
 
-    private Callable2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
-        return new Callable2<Request, Pair<String, String>, Request>() {
+    private Function2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
+        return new Function2<Request, Pair<String, String>, Request>() {
             public Request call(Request request, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
                 return modify(request).
                         replaceHeader(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()).

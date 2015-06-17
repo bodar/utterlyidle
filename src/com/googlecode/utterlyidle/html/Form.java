@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Xml;
@@ -61,8 +61,8 @@ public class Form extends BlockLevelElement {
         return selectElements(xpath.toString(DESCENDANT, "|" + DESCENDANT, "")).flatMap(toNameAndValue());
     }
 
-    private Callable1<? super Element, Sequence<NameValue>> toNameAndValue() {
-        return new Callable1<Element, Sequence<NameValue>>() {
+    private Function1<? super Element, Sequence<NameValue>> toNameAndValue() {
+        return new Function1<Element, Sequence<NameValue>>() {
             public Sequence<NameValue> call(Element element) throws Exception {
                 String type = type(element);
                 if (type.equals("select")) {
@@ -91,24 +91,24 @@ public class Form extends BlockLevelElement {
         return tagName;
     }
 
-    private Callable2<RequestBuilder, NameValue, RequestBuilder> addQueryParams() {
-        return new Callable2<RequestBuilder, NameValue, RequestBuilder>() {
+    private Function2<RequestBuilder, NameValue, RequestBuilder> addQueryParams() {
+        return new Function2<RequestBuilder, NameValue, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, NameValue nameValue) throws Exception {
                 return requestBuilder.query(nameValue.name(), nameValue.value());
             }
         };
     }
 
-    private Callable2<RequestBuilder, NameValue, RequestBuilder> addFormParams() {
-        return new Callable2<RequestBuilder, NameValue, RequestBuilder>() {
+    private Function2<RequestBuilder, NameValue, RequestBuilder> addFormParams() {
+        return new Function2<RequestBuilder, NameValue, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, NameValue nameValue) throws Exception {
                 return requestBuilder.form(nameValue.name(), nameValue.value());
             }
         };
     }
 
-    public static Callable1<? super Element, ? extends Form> fromElement() {
-        return new Callable1<Element, Form>() {
+    public static Function1<? super Element, ? extends Form> fromElement() {
+        return new Function1<Element, Form>() {
             @Override
             public Form call(Element element) throws Exception {
                 return new Form(element);

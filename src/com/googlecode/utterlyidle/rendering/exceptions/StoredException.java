@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.utterlyidle.Request;
 
@@ -38,8 +38,8 @@ public class StoredException {
         return  Exceptions.asString(exception);
     }
 
-    public static Callable1<? super StoredException, Exception> exception() {
-        return new Callable1<StoredException, Exception>() {
+    public static Function1<? super StoredException, Exception> exception() {
+        return new Function1<StoredException, Exception>() {
             @Override
             public Exception call(StoredException e) throws Exception {
                 return e.getException();

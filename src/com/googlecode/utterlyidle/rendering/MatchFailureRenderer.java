@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.rendering;
 
-import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.template.Templates;
 import com.googlecode.utterlyidle.BasePath;

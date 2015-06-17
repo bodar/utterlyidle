@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Bytes;
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Option;
@@ -207,18 +207,18 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         return builder.build();
     }
 
-    private static Callable2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {
+    private static Function2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {
         return (connection, header) -> {
             connection.setRequestProperty(header.first(), header.second());
             return connection;
         };
     }
 
-    private static Callable2<ResponseBuilder, Pair<String, List<String>>, ResponseBuilder> responseHeaders() {
+    private static Function2<ResponseBuilder, Pair<String, List<String>>, ResponseBuilder> responseHeaders() {
         return (response, entry) -> sequence(entry.second()).fold(response, responseHeader(entry.first()));
     }
 
-    private static Callable2<ResponseBuilder, String, ResponseBuilder> responseHeader(final String key) {
+    private static Function2<ResponseBuilder, String, ResponseBuilder> responseHeader(final String key) {
         return (response, value) -> {
             if (key != null) return response.header(key, value);
             return response;

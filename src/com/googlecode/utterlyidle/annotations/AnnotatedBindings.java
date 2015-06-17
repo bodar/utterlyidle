@@ -1,11 +1,10 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Mapper;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.multi;
@@ -43,7 +42,7 @@ import static com.googlecode.utterlyidle.bindings.actions.InvokeResourceMethod.c
 
 public class AnnotatedBindings {
     public static Binding[] annotatedClass(Class<?> aClass) {
-        return sequence(aClass.getMethods()).flatMap(new Callable1<Method, Iterable<Binding>>() {
+        return sequence(aClass.getMethods()).flatMap(new Function1<Method, Iterable<Binding>>() {
             public Iterable<Binding> call(Method method) throws Exception {
                 return binding(method);
             }
@@ -65,8 +64,8 @@ public class AnnotatedBindings {
         return RelativeUriExtractor.relativeUriOf(binding(invocation.method()).get(), invocation.arguments());
     }
 
-    private static Callable1<HttpMethod, Binding> asBinding(final Method method) {
-        return new Callable1<HttpMethod, Binding>() {
+    private static Function1<HttpMethod, Binding> asBinding(final Method method) {
+        return new Function1<HttpMethod, Binding>() {
             public Binding call(HttpMethod httpMethod) throws Exception {
                 return new Binding(invokeResourceMethod(method), uriTemplate(method), httpMethod.value(), consumesMimeMatcher(method), producesMimeMatcher(method), extractTypesAndNames(method), new PriorityExtractor().extract(method), hidden(method), extractView(method));
             }
@@ -93,7 +92,7 @@ public class AnnotatedBindings {
                 getOrElse(sequence(MediaType.WILDCARD));
     }
 
-    private static Callable1<Param, Sequence<String>> asSequence() {
+    private static Function1<Param, Sequence<String>> asSequence() {
         return param -> sequence(param.<String[]>value());
     }
 
@@ -114,7 +113,7 @@ public class AnnotatedBindings {
     }};
 
     private static Sequence<Option<Parameter>> namedParameters(final Method method) {
-        return sequence(method.getParameterAnnotations()).map(new Callable1<Annotation[], Option<Parameter>>() {
+        return sequence(method.getParameterAnnotations()).map(new Function1<Annotation[], Option<Parameter>>() {
             public Option<Parameter> call(Annotation[] annotations) throws Exception {
                 for (final Annotation annotation : annotations) {
                     Class<? extends Annotation> key = annotation.annotationType();

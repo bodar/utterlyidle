@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import com.googlecode.utterlyidle.bindings.DefaultBindingMatcher;
@@ -88,7 +87,7 @@ public class RestApplication implements Application {
         return usingRequestScope(handleRequest(request));
     }
 
-    public <T> T usingRequestScope(Callable1<Container, T> callable) {
+    public <T> T usingRequestScope(Function1<Container, T> callable) {
         checkNotClosed();
         return using(requestScope(), callable);
     }
@@ -124,7 +123,7 @@ public class RestApplication implements Application {
                 .map(value(Class.class));
     }
 
-    public <T> T usingArgumentScope(Request request, Callable1<Container, T> callable) {
+    public <T> T usingArgumentScope(Request request, Function1<Container, T> callable) {
         checkNotClosed();
         return using(argumentScope(request), callable);
     }
@@ -136,12 +135,12 @@ public class RestApplication implements Application {
         return argumentScope;
     }
 
-    public static Callable1<Container, Response> handleRequest(final Request request) {
+    public static Function1<Container, Response> handleRequest(final Request request) {
         return container -> container.addInstance(Request.class, request).
                 get(HttpHandler.class).handle(request);
     }
 
-    public static <T, R> Callable1<Container, R> inject(final T instance, final Callable1<Container, R> handler) {
+    public static <T, R> Function1<Container, R> inject(final T instance, final Function1<Container, R> handler) {
         return container -> {
             if (container.contains(instance.getClass())) {
                 container.remove(instance.getClass());

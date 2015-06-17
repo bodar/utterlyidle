@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
@@ -71,8 +71,8 @@ public class NamedParameter implements Parameter {
     }
 
     public static class methods {
-        public static Callable1<NamedParameter, Option<String>> defaultValue() {
-            return new Callable1<NamedParameter, Option<String>>() {
+        public static Function1<NamedParameter, Option<String>> defaultValue() {
+            return new Function1<NamedParameter, Option<String>>() {
                 @Override
                 public Option<String> call(NamedParameter namedParameter) throws Exception {
                     return namedParameter.defaultValue();

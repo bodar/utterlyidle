@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.UrlEncodedMessage;
@@ -25,16 +25,16 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     private UriTemplate(String template) {
         this.template = trimSlashes(template);
         matches = pathParameters.findMatches(this.template + "{$:(/.*)?}");
-        names = matches.map(new Callable1<MatchResult, String>() {
+        names = matches.map(new Function1<MatchResult, String>() {
             public String call(MatchResult m) throws Exception {
                 return m.group(1);
             }
         });
-        templateRegex = regex(matches.replace(new Callable1<CharSequence, CharSequence>() {
+        templateRegex = regex(matches.replace(new Function1<CharSequence, CharSequence>() {
             public CharSequence call(CharSequence notMatched) throws Exception {
                 return Pattern.quote(notMatched.toString());
             }
-        }, new Callable1<MatchResult, CharSequence>() {
+        }, new Function1<MatchResult, CharSequence>() {
             public CharSequence call(MatchResult matched) throws Exception {
                 return matched.group(2) == null ? "([^/]+)" : "(" + matched.group(2) + ")";
             }
@@ -68,7 +68,7 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public String generate(final PathParameters parameters) {
-        return matches.replace(new Callable1<MatchResult, CharSequence>() {
+        return matches.replace(new Function1<MatchResult, CharSequence>() {
             public CharSequence call(MatchResult matchResult) throws Exception {
                 String paramValue = parameters.getValue(matchResult.group(1));
                 if(paramValue==null)return null;

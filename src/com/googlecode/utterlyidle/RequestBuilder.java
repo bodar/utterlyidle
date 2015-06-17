@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Pair;
@@ -56,7 +56,7 @@ public class RequestBuilder implements Callable<Request> {
     public RequestBuilder(Request request) {
         this(request.method(), request.uri());
 
-        sequence(request.headers()).fold(this, new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
+        sequence(request.headers()).fold(this, new Function2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
             public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
                 requestBuilder.header(nameAndValue.first(), nameAndValue.second());
                 return requestBuilder;
@@ -292,8 +292,8 @@ public class RequestBuilder implements Callable<Request> {
         return sequence(queryParameters(FormParameters.parse(entity))).fold(this, addQuery());
     }
 
-    private Callable2<RequestBuilder, Pair<String, String>, RequestBuilder> addQuery() {
-        return new Callable2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
+    private Function2<RequestBuilder, Pair<String, String>, RequestBuilder> addQuery() {
+        return new Function2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
             @Override
             public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> pair) throws Exception {
                 return requestBuilder.query(pair.first(), pair.second());
@@ -301,8 +301,8 @@ public class RequestBuilder implements Callable<Request> {
         };
     }
 
-    private static Callable1<Cookie, String> cookieName() {
-        return new Callable1<Cookie, String>() {
+    private static Function1<Cookie, String> cookieName() {
+        return new Function1<Cookie, String>() {
             @Override
             public String call(Cookie cookie) throws Exception {
                 return cookie.name();
@@ -310,8 +310,8 @@ public class RequestBuilder implements Callable<Request> {
         };
     }
 
-    private static Callable1<Cookie, Cookie> setValue(final String value) {
-        return new Callable1<Cookie, Cookie>() {
+    private static Function1<Cookie, Cookie> setValue(final String value) {
+        return new Function1<Cookie, Cookie>() {
             @Override
             public Cookie call(Cookie cookie) throws Exception {
                 return CookieBuilder.modify(cookie).value(value).build();

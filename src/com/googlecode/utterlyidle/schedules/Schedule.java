@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Keyword;
 import com.googlecode.lazyrecords.Record;
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.time.Clock;
 
 import java.util.Date;
@@ -67,8 +67,8 @@ public class Schedule {
         return record.get(keyword);
     }
 
-    public static Callable1<Record, UUID> asScheduleId() {
-        return new Callable1<Record, UUID>() {
+    public static Function1<Record, UUID> asScheduleId() {
+        return new Function1<Record, UUID>() {
             public UUID call(Record record) throws Exception {
                 return record.get(scheduleId);
             }

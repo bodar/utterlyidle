@@ -1,10 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import com.googlecode.utterlyidle.bindings.MatchedBinding;
-import com.googlecode.utterlyidle.handlers.ResponseHandlersFinder;
 import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.Accept.accept;
@@ -50,8 +49,8 @@ public class BaseHandler implements HttpHandler {
         return instance;
     }
 
-    private Callable1<? super Binding, Response> success(final Request request) {
-        return new Callable1<Binding, Response>() {
+    private Function1<? super Binding, Response> success(final Request request) {
+        return new Function1<Binding, Response>() {
             @Override
             public Response call(Binding binding) throws Exception {
                 return success(request, binding);
@@ -103,8 +102,8 @@ public class BaseHandler implements HttpHandler {
         container.addInstance(Request.class, request);
     }
 
-    private Callable1<? super MatchFailure, Response> failure() {
-        return new Callable1<MatchFailure, Response>() {
+    private Function1<? super MatchFailure, Response> failure() {
+        return new Function1<MatchFailure, Response>() {
             @Override
             public Response call(MatchFailure matchFailure) throws Exception {
                 return failure(matchFailure);

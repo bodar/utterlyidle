@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
@@ -39,8 +39,8 @@ public class Responses {
         return response(Status.SEE_OTHER, one(pair(HttpHeaders.LOCATION, location)), location);
     }
 
-    public static Callable1<Response, Status> status() {
-        return new Callable1<Response, Status>() {
+    public static Function1<Response, Status> status() {
+        return new Function1<Response, Status>() {
             public Status call(Response response) throws Exception {
                 return response.status();
             }

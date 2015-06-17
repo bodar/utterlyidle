@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Extractor;
 
@@ -14,8 +14,8 @@ public class PriorityExtractor implements Extractor<Method, Integer> {
                 find(notNullValue()).map(value()).getOrElse(Priority.Medium);
     }
 
-    private Callable1<Priority, Integer> value() {
-        return new Callable1<Priority, Integer>() {
+    private Function1<Priority, Integer> value() {
+        return new Function1<Priority, Integer>() {
             public Integer call(Priority priority) throws Exception {
                 return priority.value();
             }

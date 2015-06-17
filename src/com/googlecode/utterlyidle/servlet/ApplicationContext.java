@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.Application;
@@ -43,7 +43,7 @@ public class ApplicationContext {
         return getApplication(servletContext, className, start ? Service.functions.start() : Runnables.<Service>doNothing());
     }
 
-    private static synchronized Application getApplication(final ServletContext servletContext, final String className, Callable1<? super Application, ?> onStart) {
+    private static synchronized Application getApplication(final ServletContext servletContext, final String className, Function1<? super Application, ?> onStart) {
         if (servletContext.getAttribute(KEY) == null) {
             Application application = createApplication(servletContext, getClass(className));
             Callers.call(onStart, application);

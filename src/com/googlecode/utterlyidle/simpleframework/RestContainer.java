@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.simpleframework;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -68,8 +68,8 @@ public class RestContainer implements Container {
         using(response.getOutputStream(), applicationResponse.entity().writer());
     }
 
-    private Callable2<Response, Pair<String, String>, Response> mapHeaders() {
-        return new Callable2<Response, Pair<String, String>, Response>() {
+    private Function2<Response, Pair<String, String>, Response> mapHeaders() {
+        return new Function2<Response, Pair<String, String>, Response>() {
             public Response call(Response response, Pair<String, String> applicationHeader) throws Exception {
                 response.set(applicationHeader.first(), applicationHeader.second());
                 return response;
@@ -94,8 +94,8 @@ public class RestContainer implements Container {
         return headerParameters(sequence(request.getNames()).map(headerValue(request)));
     }
 
-    private Callable1<String, Pair<String, String>> headerValue(final Request request) {
-        return new Callable1<String, Pair<String, String>>() {
+    private Function1<String, Pair<String, String>> headerValue(final Request request) {
+        return new Function1<String, Pair<String, String>>() {
             public Pair<String, String> call(String headerName) throws Exception {
                 return pair(headerName, request.getValue(headerName));
             }

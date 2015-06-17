@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.utterlyidle.Renderer;
@@ -22,7 +22,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
         return new ClassRenderingResponseHandler<T>(renderer);
     }
 
-    public static <T> RenderingResponseHandler<T> renderer(Callable1<Resolver, ? extends Renderer<T>> renderer) {
+    public static <T> RenderingResponseHandler<T> renderer(Function1<Resolver, ? extends Renderer<T>> renderer) {
         return new CallableRenderingResponseHandler<T>(renderer);
     }
 
@@ -62,10 +62,10 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     }
 
     private static class CallableRenderingResponseHandler<T> extends RenderingResponseHandler<T> implements DependsOnContainer {
-        private final Callable1<Resolver, ? extends Renderer<T>> callable;
+        private final Function1<Resolver, ? extends Renderer<T>> callable;
         private Container container;
 
-        public CallableRenderingResponseHandler(final Callable1<Resolver, ? extends Renderer<T>> callable) {
+        public CallableRenderingResponseHandler(final Function1<Resolver, ? extends Renderer<T>> callable) {
             this.callable = callable;
         }
 

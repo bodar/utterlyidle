@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.Request;
@@ -26,23 +26,23 @@ public class HandlerRule {
         return handlerRule -> handlerRule.predicate.matches(pair(request, response));
     }
 
-    public static Callable1<? super HandlerRule, Object> getHandlerFromRule() {
+    public static Function1<? super HandlerRule, Object> getHandlerFromRule() {
         return handlerRule -> handlerRule.handler;
     }
 
-    public static Callable1<? super Pair<Request, Response>, Object> entity() {
+    public static Function1<? super Pair<Request, Response>, Object> entity() {
         return entity(Object.class);
     }
 
-    public static Callable1<? super Pair<Request, Response>, Status> status() {
+    public static Function1<? super Pair<Request, Response>, Status> status() {
         return pair -> pair.second().status();
     }
 
-    public static Callable1<Pair<Request, Response>, String> method() {
+    public static Function1<Pair<Request, Response>, String> method() {
         return pair -> pair.first().method();
     }
 
-    public static <T> Callable1<? super Pair<Request, Response>, T> entity(final Class<T> aClass) {
+    public static <T> Function1<? super Pair<Request, Response>, T> entity(final Class<T> aClass) {
         return pair -> {
             if (pair.second().entity().value() != null && !aClass.isAssignableFrom(pair.second().entity().value().getClass())) {
                 return null;

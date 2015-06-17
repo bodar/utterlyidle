@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.jetty;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Function;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
@@ -32,17 +32,17 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     private final ServerConfiguration configuration;
     private Server server;
     private Uri uri;
-    private final Callable1<? super Server, ? extends Context> contextCreator;
+    private final Function1<? super Server, ? extends Context> contextCreator;
     private Context context;
 
-    private RestServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends Context> contextCreator) throws Exception {
+    private RestServer(final Application application, final ServerConfiguration configuration, Function1<? super Server, ? extends Context> contextCreator) throws Exception {
         this.application = application;
         this.configuration = configuration;
         this.contextCreator = contextCreator;
         server = startApp();
     }
 
-    public static RestServer restServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends Context> contextCreator) throws Exception {
+    public static RestServer restServer(final Application application, final ServerConfiguration configuration, Function1<? super Server, ? extends Context> contextCreator) throws Exception {
         return new RestServer(application, configuration, contextCreator);
     }
 

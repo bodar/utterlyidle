@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.Callable2;
+import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -30,8 +30,8 @@ public class Decorators {
         return new NoneDecorator();
     }
 
-    public static Callable2<? super Decorators, ? super DecoratorRule, Decorators> add() {
-        return new Callable2<Decorators, DecoratorRule, Decorators>() {
+    public static Function2<? super Decorators, ? super DecoratorRule, Decorators> add() {
+        return new Function2<Decorators, DecoratorRule, Decorators>() {
             public Decorators call(Decorators decorators, DecoratorRule rule) throws Exception {
                 return decorators.add(rule);
             }

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
@@ -45,8 +45,8 @@ public class Accept implements Predicate<String>{
                 getOrElse(1.0f);
     }
 
-    private Callable1<? super MediaRange, Float> mediaQuality() {
-        return new Callable1<MediaRange, Float>() {
+    private Function1<? super MediaRange, Float> mediaQuality() {
+        return new Function1<MediaRange, Float>() {
             public Float call(MediaRange mediaRange) throws Exception {
                 return mediaRange.quality();
             }
@@ -63,7 +63,7 @@ public class Accept implements Predicate<String>{
 
 
     public static Accept accept(String header) {
-        Sequence<MediaRange> mediaRanges = regex.findMatches(header).map(new Callable1<MatchResult, MediaRange>() {
+        Sequence<MediaRange> mediaRanges = regex.findMatches(header).map(new Function1<MatchResult, MediaRange>() {
             public MediaRange call(MatchResult m) throws Exception {
                 float quality = m.group(3) == null ? 1.0f : valueOf(m.group(3));
                 return new MediaRange(m.group(1), quality);

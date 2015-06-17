@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Callable1;
+import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Callables;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Rules;
@@ -38,7 +38,7 @@ public class CompositeHandler implements HttpHandler, HttpClient {
         return add(predicate, asFunction(httpHandler));
     }
 
-    public CompositeHandler add(Predicate<? super Request> predicate, Callable1<? super Request, ? extends Response> callable) {
+    public CompositeHandler add(Predicate<? super Request> predicate, Function1<? super Request, ? extends Response> callable) {
         rules.addFirst(predicate, callable);
         return this;
     }
