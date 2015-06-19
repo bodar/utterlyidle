@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.services;
 
 import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Debug;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UnaryFunction;
@@ -36,12 +35,8 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
 
     @Override
     public void start() {
-        services = listMap(sequence(services).map(new UnaryFunction<Pair<Class<? extends Service>, Status>>() {
-            @Override
-            public Pair<Class<? extends Service>, Status> call(Pair<Class<? extends Service>, Status> services) throws Exception {
-                return Pair.<Class<? extends Service>, Status>pair(services.first(), Services.this.start(services));
-            }
-        }));
+        services = listMap(sequence(services).
+                map(services1 -> Pair.<Class<? extends Service>, Status>pair(services1.first(), Services.this.start(services1))));
     }
 
     private Status start(final Pair<Class<? extends Service>, Status> services) throws Exception {
@@ -60,12 +55,8 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
 
     @Override
     public void stop() {
-        services = listMap(sequence(services).map(new UnaryFunction<Pair<Class<? extends Service>, Status>>() {
-            @Override
-            public Pair<Class<? extends Service>, Status> call(Pair<Class<? extends Service>, Status> services) throws Exception {
-                return Pair.<Class<? extends Service>, Status>pair(services.first(), Services.this.stop(services));
-            }
-        }));
+        services = listMap(sequence(services).
+                map(services1 -> Pair.<Class<? extends Service>, Status>pair(services1.first(), Services.this.stop(services1))));
     }
 
     private Status stop(final Pair<Class<? extends Service>, Status> services) throws Exception {
