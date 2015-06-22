@@ -9,12 +9,7 @@ public interface Service {
 
     class functions {
         public static Block<Service> start() {
-            return new Block<Service>() {
-                @Override
-                public void execute(Service service) throws Exception {
-                    service.start();
-                }
-            };
+            return Service::start;
         }
     }
 }

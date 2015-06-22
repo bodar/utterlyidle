@@ -143,12 +143,7 @@ public class JobsResourceTest {
 
     @Test
     public void shouldNotThrowExceptionForAnyRequestWithoutQuery() throws Exception {
-        sequence(annotatedClass(JobsResource.class)).filter(getBindingWithNoArguments()).each(new Block<Binding>() {
-            @Override
-            protected void execute(final Binding binding) throws Exception {
-                application.handle(get(relativeUriOf(binding)).build());
-            }
-        });
+        sequence(annotatedClass(JobsResource.class)).filter(getBindingWithNoArguments()).each(binding -> application.handle(get(relativeUriOf(binding)).build()));
         assertFalse(logger.hasLogged);
     }
 

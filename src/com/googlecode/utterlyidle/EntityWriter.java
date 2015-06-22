@@ -17,12 +17,7 @@ public interface EntityWriter<T> {
         }
 
         public static <T> Block<OutputStream> writeWith(final EntityWriter<T> writer, final T entity) {
-            return new Block<OutputStream>() {
-                @Override
-                public void execute(OutputStream outputStream) throws Exception {
-                    writer.write(entity, outputStream);
-                }
-            };
+            return outputStream -> writer.write(entity, outputStream);
         }
     }
 }

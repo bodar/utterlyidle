@@ -11,6 +11,7 @@ import com.googlecode.yadic.Container;
 
 import java.util.Iterator;
 
+import static com.googlecode.totallylazy.Block.block;
 import static com.googlecode.totallylazy.Debug.inDebug;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.collections.ListMap.listMap;
@@ -41,12 +42,7 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
 
     private Status start(final Pair<Class<? extends Service>, Status> services) throws Exception {
         try {
-            application.usingRequestScope(new Block<Container>() {
-                @Override
-                protected void execute(Container container) throws Exception {
-                    container.get(services.first()).start();
-                }
-            });
+            application.usingRequestScope(block(container -> container.get(services.first()).start()));
             return Status.status(Status.State.running, "");
         } catch (Exception e) {
             return Status.status(Status.State.failure, Exceptions.asString(e));
@@ -61,12 +57,7 @@ public class Services implements Service, Iterable<Pair<Class<? extends Service>
 
     private Status stop(final Pair<Class<? extends Service>, Status> services) throws Exception {
         try {
-            application.usingRequestScope(new Block<Container>() {
-                @Override
-                protected void execute(Container container) throws Exception {
-                    container.get(services.first()).stop();
-                }
-            });
+            application.usingRequestScope(block(container -> container.get(services.first()).stop()));
             return Status.status(Status.State.stopped, "");
         } catch (Exception e) {
             return Status.status(Status.State.failure, Exceptions.asString(e));

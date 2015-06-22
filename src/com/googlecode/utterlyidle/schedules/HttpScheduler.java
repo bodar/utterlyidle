@@ -107,30 +107,18 @@ public class HttpScheduler implements Service {
     }
 
     private Block<Container> update(final Schedule schedule) {
-        return new Block<Container>() {
-            public void execute(Container container) throws Exception {
-                Schedules newTransaction = container.get(Schedules.class);
-                newTransaction.put(schedule);
-            }
+        return container -> {
+            Schedules newTransaction = container.get(Schedules.class);
+            newTransaction.put(schedule);
         };
     }
 
     private Block<Record> cancel() {
-        return new Block<Record>() {
-            @Override
-            protected void execute(Record record) throws Exception {
-                scheduler.cancel(record.get(SchedulesDefinition.scheduleId));
-            }
-        };
+        return record -> scheduler.cancel(record.get(SchedulesDefinition.scheduleId));
     }
 
     private Block<Record> schedule() {
-        return new Block<Record>() {
-            @Override
-            protected void execute(Record record) throws Exception {
-                HttpScheduler.this.schedule(record);
-            }
-        };
+        return HttpScheduler.this::schedule;
     }
 
     private void schedule(Record record) {

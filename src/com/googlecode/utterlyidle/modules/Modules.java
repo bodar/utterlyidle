@@ -69,28 +69,18 @@ public class Modules implements ModuleDefinitions, ModuleActivator {
     }
 
     public static <M extends Iterable<? extends Class<? extends Module>>> Block<Module> activate(final Container container, final M modules) {
-        return new Block<Module>() {
-            @Override
-            protected void execute(Module module) throws Exception {
-                activate(module, container, modules);
-            }
-        };
+        return module -> activate(module, container, modules);
     }
 
     public static <M extends Iterable<? extends Class<? extends Module>>> void activate(Module module, Resolver resolver, final M classes) {
         sequence(classes).
                 filter(isInstance(module)).
                 flatMap(methods()).
-                forEach(invoke(module, resolver));
+                each(invoke(module, resolver));
     }
 
     private static Block<Method> invoke(final Object instance, final Resolver resolver) {
-        return new Block<Method>() {
-            @Override
-            protected void execute(Method method) throws Exception {
-                method.invoke(instance, convertToInstances(method.getGenericParameterTypes(), resolver));
-            }
-        };
+        return method -> method.invoke(instance, convertToInstances(method.getGenericParameterTypes(), resolver));
     }
 
     @SuppressWarnings("unchecked")

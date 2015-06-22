@@ -31,16 +31,13 @@ public class LastExceptionsHandler implements HttpHandler {
     }
 
     private Block<OutputStream> catchStreamingExceptions(final Request request, final Block<OutputStream> oldWriter) {
-        return new Block<OutputStream>() {
-            @Override
-            protected void execute(final OutputStream outputStream) throws Exception {
-                try {
-                    oldWriter.call(new IgnoreCloseOutputStream(outputStream));
-                } catch (Exception e) {
-                    lastExceptions.put(request, e);
-                } finally {
-                    Closeables.close(outputStream);
-                }
+        return outputStream -> {
+            try {
+                oldWriter.call(new IgnoreCloseOutputStream(outputStream));
+            } catch (Exception e) {
+                lastExceptions.put(request, e);
+            } finally {
+                Closeables.close(outputStream);
             }
         };
     }

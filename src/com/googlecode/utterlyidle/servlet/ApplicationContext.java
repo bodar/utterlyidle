@@ -29,12 +29,9 @@ public class ApplicationContext {
     }
 
     public static synchronized Application getApplication(final ServletContext servletContext, final String className) {
-        return getApplication(servletContext, className, new Block<Application>() {
-            @Override
-            protected void execute(final Application application) throws Exception {
-                if (Modules.autoStart(application.applicationScope().get(UtterlyIdleProperties.class))) {
-                    Service.functions.start().callConcurrently(application);
-                }
+        return getApplication(servletContext, className, (Block<Application>) application -> {
+            if (Modules.autoStart(application.applicationScope().get(UtterlyIdleProperties.class))) {
+                Service.functions.start().callConcurrently(application);
             }
         });
     }

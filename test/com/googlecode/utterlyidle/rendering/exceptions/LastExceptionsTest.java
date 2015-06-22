@@ -36,11 +36,8 @@ public class LastExceptionsTest {
     }
 
     private void addNumbersToLastExceptions(Sequence<? extends Exception> numbers) {
-        numbers.forEach(new Block<Exception>() {
-            @Override
-            protected void execute(Exception exception) throws Exception {
-                lastExceptions.put(RequestBuilder.get("/foo").build(), exception);
-            }
+        numbers.each(exception -> {
+            lastExceptions.put(RequestBuilder.get("/foo").build(), exception);
         });
     }
 }
