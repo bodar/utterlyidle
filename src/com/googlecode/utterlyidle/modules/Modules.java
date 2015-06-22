@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Classes.isInstance;
-import static com.googlecode.totallylazy.Methods.methods;
+import static com.googlecode.totallylazy.reflection.Methods.methods;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.yadic.Containers.selfRegister;

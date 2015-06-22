@@ -36,9 +36,9 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.totallylazy.Fields.access;
-import static com.googlecode.totallylazy.Fields.fields;
-import static com.googlecode.totallylazy.Fields.name;
+import static com.googlecode.totallylazy.reflection.Fields.access;
+import static com.googlecode.totallylazy.reflection.Fields.fields;
+import static com.googlecode.totallylazy.reflection.Fields.name;
 import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Maps.pairs;
 import static com.googlecode.totallylazy.Option.option;
