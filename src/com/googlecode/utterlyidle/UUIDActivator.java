@@ -21,12 +21,7 @@ public class UUIDActivator implements Callable<UUID> {
     }
 
     public static Function1<String, UUID> fromString() {
-        return new Function1<String, UUID>() {
-            @Override
-            public UUID call(String value) throws Exception {
-                return UUID.fromString(value);
-            }
-        };
+        return UUID::fromString;
     }
 
 

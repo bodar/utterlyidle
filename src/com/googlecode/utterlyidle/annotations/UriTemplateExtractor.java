@@ -22,10 +22,6 @@ public class UriTemplateExtractor implements Extractor<Method, UriTemplate> {
     }
 
     public static Function1<? super Path, String> getValue() {
-        return new Function1<Path, String>() {
-            public String call(Path o) throws Exception {
-                return trimSlashes(o.value());
-            }
-        };
+        return o -> trimSlashes(o.value());
     }
 }

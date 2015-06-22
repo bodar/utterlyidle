@@ -55,17 +55,14 @@ public class S3RequestSigner {
     }
 
     private Function1<AwsCredentials, Request> actuallySign(final Request request) {
-        return new Function1<AwsCredentials, Request>() {
-            @Override
-            public Request call(final AwsCredentials credentials) throws Exception {
-                Request requestWithDate = ensureDate(request);
-                String stringToSign = stringifier.stringToSign(requestWithDate);
-                String authorisationHeader = signer.authorizationHeader(credentials, stringToSign);
+        return credentials -> {
+            Request requestWithDate = ensureDate(request);
+            String stringToSign = stringifier.stringToSign(requestWithDate);
+            String authorisationHeader = signer.authorizationHeader(credentials, stringToSign);
 
-                return modify(requestWithDate).
-                        header(HttpHeaders.AUTHORIZATION, authorisationHeader).
-                        build();
-            }
+            return modify(requestWithDate).
+                    header(HttpHeaders.AUTHORIZATION, authorisationHeader).
+                    build();
         };
     }
 

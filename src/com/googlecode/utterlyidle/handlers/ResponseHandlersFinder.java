@@ -32,25 +32,21 @@ public class ResponseHandlersFinder{
     }
 
     private Function1<? super ResponseHandler, ResponseHandler> injectResolverIfNeeded() {
-        return new Function1<ResponseHandler, ResponseHandler>() {
-            public ResponseHandler call(ResponseHandler handler) throws Exception {
-                if(handler instanceof DependsOnContainer){
-                    ((DependsOnContainer) handler).setContainer(container);
-                }
-                return handler;
+        return handler -> {
+            if(handler instanceof DependsOnContainer){
+                ((DependsOnContainer) handler).setContainer(container);
             }
+            return handler;
         };
     }
 
     private Function1<Object, ResponseHandler> createHandlerIfNeeded() {
-        return new Function1<Object, ResponseHandler>() {
-            public ResponseHandler call(Object handler) throws Exception {
-                if (handler instanceof Class) {
-                    Class handlerClass = (Class) handler;
-                    return (ResponseHandler) resolve(create(handlerClass, container), handlerClass);
-                }
-                return (ResponseHandler) handler;
+        return handler -> {
+            if (handler instanceof Class) {
+                Class handlerClass = (Class) handler;
+                return (ResponseHandler) resolve(create(handlerClass, container), handlerClass);
             }
+            return (ResponseHandler) handler;
         };
     }
 

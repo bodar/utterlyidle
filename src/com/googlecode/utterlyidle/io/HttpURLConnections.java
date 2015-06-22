@@ -8,26 +8,14 @@ import java.net.HttpURLConnection;
 
 public class HttpURLConnections {
     public static Function1<? super HttpURLConnection, OutputStream> getOutputStream() {
-        return new Function1<HttpURLConnection, OutputStream>() {
-            public OutputStream call(HttpURLConnection httpURLConnection) throws Exception {
-                return httpURLConnection.getOutputStream();
-            }
-        };
+        return HttpURLConnection::getOutputStream;
     }
 
     public static Function1<? super HttpURLConnection, InputStream> getInputStream() {
-        return new Function1<HttpURLConnection, InputStream>() {
-            public InputStream call(HttpURLConnection httpURLConnection) throws Exception {
-                return httpURLConnection.getInputStream();
-            }
-        };
+        return HttpURLConnection::getInputStream;
     }
 
     public static Function1<? super HttpURLConnection, InputStream> getErrorStream() {
-        return new Function1<HttpURLConnection, InputStream>() {
-            public InputStream call(HttpURLConnection httpURLConnection) throws Exception {
-                return httpURLConnection.getErrorStream();
-            }
-        };
+        return HttpURLConnection::getErrorStream;
     }
 }

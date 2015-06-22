@@ -25,20 +25,10 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     private UriTemplate(String template) {
         this.template = trimSlashes(template);
         matches = pathParameters.findMatches(this.template + "{$:(/.*)?}");
-        names = matches.map(new Function1<MatchResult, String>() {
-            public String call(MatchResult m) throws Exception {
-                return m.group(1);
-            }
-        });
-        templateRegex = regex(matches.replace(new Function1<CharSequence, CharSequence>() {
-            public CharSequence call(CharSequence notMatched) throws Exception {
-                return Pattern.quote(notMatched.toString());
-            }
-        }, new Function1<MatchResult, CharSequence>() {
-            public CharSequence call(MatchResult matched) throws Exception {
-                return matched.group(2) == null ? "([^/]+)" : "(" + matched.group(2) + ")";
-            }
-        }));
+        names = matches.map(m -> m.group(1));
+        templateRegex = regex(matches.replace(
+                notMatched -> Pattern.quote(notMatched.toString()),
+                matched -> matched.group(2) == null ? "([^/]+)" : "(" + matched.group(2) + ")"));
     }
 
     public static UriTemplate uriTemplate(String template) {
@@ -68,13 +58,11 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public String generate(final PathParameters parameters) {
-        return matches.replace(new Function1<MatchResult, CharSequence>() {
-            public CharSequence call(MatchResult matchResult) throws Exception {
-                String paramValue = parameters.getValue(matchResult.group(1));
-                if(paramValue==null)return null;
-                if(paramValue.contains("/")) return paramValue;
-                return UrlEncodedMessage.encode(paramValue);
-            }
+        return matches.replace(matchResult -> {
+            String paramValue = parameters.getValue(matchResult.group(1));
+            if(paramValue==null)return null;
+            if(paramValue.contains("/")) return paramValue;
+            return UrlEncodedMessage.encode(paramValue);
         });
     }
 

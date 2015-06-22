@@ -20,27 +20,23 @@ public class ServletApiWrapper {
     public static final String WEB_XML = "/WEB-INF/web.xml";
 
     public static Callable<WebRoot> webRoot(final ServletContext context) {
-        return new Callable<WebRoot>() {
-            public WebRoot call() throws Exception {
-                try {
-                    Uri webXml = uri(context.getResource(WEB_XML));
-                    Uri url = webXml.path(hierarchicalPath(webXml.path()).parent().parent().toString());
-                    return WebRoot.webRoot(url);
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+        return () -> {
+            try {
+                Uri webXml = uri(context.getResource(WEB_XML));
+                Uri url = webXml.path(hierarchicalPath(webXml.path()).parent().parent().toString());
+                return WebRoot.webRoot(url);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
             }
         };
     }
 
     public static Callable<BasePath> basePath(final ServletContext context) {
-        return new Callable<BasePath>() {
-            public BasePath call() throws Exception {
-                Document document = Xml.document(Strings.toString(context.getResourceAsStream(WEB_XML)));
-                String url = servletUrl(document, ApplicationServlet.class);
-                String root = context.getContextPath();
-                return BasePath.basePath(root + url);
-            }
+        return () -> {
+            Document document = Xml.document(Strings.toString(context.getResourceAsStream(WEB_XML)));
+            String url = servletUrl(document, ApplicationServlet.class);
+            String root = context.getContextPath();
+            return BasePath.basePath(root + url);
         };
     }
 

@@ -29,12 +29,7 @@ public class Proxies implements ProxyFor {
 
     @Override
     public Option<Proxy> proxyFor(final Uri uri) {
-        return proxies.flatMap(new Function1<ProxyFor, Option<Proxy>>() {
-            @Override
-            public Option<Proxy> call(final ProxyFor proxyFor) throws Exception {
-                return proxyFor.proxyFor(uri);
-            }
-        }).headOption();
+        return proxies.flatMap(proxyFor -> proxyFor.proxyFor(uri)).headOption();
     }
 
     public Sequence<ProxyFor> proxies() {

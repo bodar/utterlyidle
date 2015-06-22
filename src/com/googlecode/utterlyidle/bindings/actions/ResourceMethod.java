@@ -25,12 +25,7 @@ public class ResourceMethod implements ActionMetaData, Value<Method> {
 
     public static class functions {
         public static Predicate<ResourceMethod> isForMethod(final Method method) {
-            return new Predicate<ResourceMethod>() {
-                @Override
-                public boolean matches(ResourceMethod resourceMethod) {
-                    return resourceMethod.value.equals(method);
-                }
-            };
+            return resourceMethod -> resourceMethod.value.equals(method);
         }
     }
 }

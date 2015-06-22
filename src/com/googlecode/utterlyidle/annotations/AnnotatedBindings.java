@@ -121,11 +121,6 @@ public class AnnotatedBindings {
     }
 
     public static class functions {
-        public static Function1<Method, Option<Binding>> binding = new Function1<Method, Option<Binding>>() {
-            @Override
-            public Option<Binding> call(Method method) throws Exception {
-                return AnnotatedBindings.binding(method);
-            }
-        };
+        public static Function1<Method, Option<Binding>> binding = AnnotatedBindings::binding;
     }
 }

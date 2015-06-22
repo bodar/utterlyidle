@@ -21,45 +21,23 @@ public class Requests {
     }
 
     public static Function1<Request, String> pathAsString() {
-        return new Function1<Request, String>() {
-            @Override
-            public String call(Request request) throws Exception {
-                return request.uri().path();
-            }
-        };
+        return request -> request.uri().path();
     }
 
     public static Function1<Request, Uri> uri() {
-        return new Function1<Request, Uri>() {
-            public Uri call(Request request) throws Exception {
-                return request.uri();
-            }
-        };
+        return Request::uri;
     }
 
     public static Function1<Request, String> method() {
-        return new Function1<Request, String>() {
-            public String call(Request request) throws Exception {
-                return request.method();
-            }
-        };
+        return Request::method;
     }
 
     public static Function1<Request, QueryParameters> query() {
-        return new Function1<Request, QueryParameters>() {
-            public QueryParameters call(Request request) throws Exception {
-                return query(request);
-            }
-        };
+        return Requests::query;
     }
 
     public static Function1<Request, String> queryParameter(final String name) {
-        return new Function1<Request, String>() {
-            @Override
-            public String call(Request request) throws Exception {
-                return query(request).getValue(name);
-            }
-        };
+        return request -> query(request).getValue(name);
     }
 
     public static LogicalPredicate<Request> hasQueryParameter(final String parameter) {
@@ -72,11 +50,7 @@ public class Requests {
     }
 
     public static Function1<Request, Accept> accept() {
-        return new Function1<Request, Accept>() {
-            public Accept call(Request request) throws Exception {
-                return Accept.accept(request);
-            }
-        };
+        return Accept::accept;
     }
 
     public static QueryParameters query(Request request) {
@@ -84,11 +58,7 @@ public class Requests {
     }
 
     public static Function1<Request, FormParameters> form() {
-        return new Function1<Request, FormParameters>() {
-            public FormParameters call(Request request) throws Exception {
-                return form(request);
-            }
-        };
+        return Requests::form;
     }
 
     public static FormParameters form(Request request) {
@@ -105,19 +75,11 @@ public class Requests {
     }
 
     public static Function1<Request, HierarchicalPath> path() {
-        return new Function1<Request, HierarchicalPath>() {
-            public HierarchicalPath call(Request request) throws Exception {
-                return HierarchicalPath.hierarchicalPath(request.uri().path());
-            }
-        };
+        return request -> HierarchicalPath.hierarchicalPath(request.uri().path());
     }
 
     public static Function1<Request, Entity> input() {
-        return new Function1<Request, Entity>() {
-            public Entity call(Request request) throws Exception {
-                return request.entity();
-            }
-        };
+        return Request::entity;
     }
 
     public static LogicalPredicate<Pair<Request, Response>> method(final String method) {

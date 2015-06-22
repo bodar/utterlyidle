@@ -126,36 +126,24 @@ public class HttpMessageParser {
     }
 
     private static Function2<StringBuilder, String, StringBuilder> addInputLine() {
-        return new Function2<StringBuilder, String, StringBuilder>() {
-            public StringBuilder call(StringBuilder input, String entityLine) throws Exception {
-                return input.append(entityLine);
-            }
-        };
+        return StringBuilder::append;
     }
 
     private static Function2<RequestBuilder, String, RequestBuilder> requestHeader() {
-        return new Function2<RequestBuilder, String, RequestBuilder>() {
-            public RequestBuilder call(RequestBuilder requestBuilder, String messageHeader) throws Exception {
-                Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
-                return requestBuilder.header(fieldNameAndValue.first(), fieldNameAndValue.second());
-            }
+        return (requestBuilder, messageHeader) -> {
+            Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
+            return requestBuilder.header(fieldNameAndValue.first(), fieldNameAndValue.second());
         };
     }
 
     private static Function2<ResponseBuilder, String, ResponseBuilder> responseHeader() {
-        return new Function2<ResponseBuilder, String, ResponseBuilder>() {
-            public ResponseBuilder call(ResponseBuilder responseBuilder, String messageHeader) throws Exception {
-                Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
-                return responseBuilder.header(fieldNameAndValue.first(), fieldNameAndValue.second());
-            }
+        return (responseBuilder, messageHeader) -> {
+            Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
+            return responseBuilder.header(fieldNameAndValue.first(), fieldNameAndValue.second());
         };
     }
 
     private static Sequence<String> trim(Sequence<String> linesToTrim) {
-        return linesToTrim.map(new Function1<String, String>() {
-            public String call(String s) throws Exception {
-                return s.trim();
-            }
-        });
+        return linesToTrim.map(String::trim);
     }
 }

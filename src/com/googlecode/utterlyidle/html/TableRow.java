@@ -38,12 +38,7 @@ public class TableRow extends AbstractElement {
         }
 
         public static Function1<Element, TableRow> toTableRow(final Map<String, Integer> columnNames){
-            return new Function1<Element, TableRow>() {
-                @Override
-                public TableRow call(Element element) throws Exception {
-                    return new TableRow(element, columnNames);
-                }
-            };
+            return element -> new TableRow(element, columnNames);
         }
     }
 }

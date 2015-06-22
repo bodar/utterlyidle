@@ -69,11 +69,9 @@ public class RestContainer implements Container {
     }
 
     private Function2<Response, Pair<String, String>, Response> mapHeaders() {
-        return new Function2<Response, Pair<String, String>, Response>() {
-            public Response call(Response response, Pair<String, String> applicationHeader) throws Exception {
-                response.set(applicationHeader.first(), applicationHeader.second());
-                return response;
-            }
+        return (response, applicationHeader) -> {
+            response.set(applicationHeader.first(), applicationHeader.second());
+            return response;
         };
     }
 
@@ -95,11 +93,7 @@ public class RestContainer implements Container {
     }
 
     private Function1<String, Pair<String, String>> headerValue(final Request request) {
-        return new Function1<String, Pair<String, String>>() {
-            public Pair<String, String> call(String headerName) throws Exception {
-                return pair(headerName, request.getValue(headerName));
-            }
-        };
+        return headerName -> pair(headerName, request.getValue(headerName));
     }
 
     private QueryParameters query(Request request) {

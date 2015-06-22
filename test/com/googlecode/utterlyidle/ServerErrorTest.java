@@ -87,34 +87,24 @@ public class ServerErrorTest {
     }
 
     private Predicate<Pair<Request, Response>> alwaysThrows() {
-        return new Predicate<Pair<Request, Response>>() {
-                    public boolean matches(Pair<Request, Response> requestResponsePair) {
-                        throw new RuntimeException();
-                    }
-                };
-    }
-
-    private ResponseHandler doNothingRenderer() {
-        return new ResponseHandler() {
-            public Response handle(Response response) throws Exception {
-                return response;
-            }
+        return requestResponsePair -> {
+            throw new RuntimeException();
         };
     }
 
+    private ResponseHandler doNothingRenderer() {
+        return response -> response;
+    }
+
     private ResponseHandler throwOnRender(final RuntimeException exception) {
-        return new ResponseHandler() {
-            public Response handle(Response response) throws Exception {
-                throw exception;
-            }
+        return response -> {
+            throw exception;
         };
     }
 
     private ResponseHandler throwError(final Error error) {
-        return new ResponseHandler() {
-            public Response handle(Response response) throws Exception {
-                throw error;
-            }
+        return response -> {
+            throw error;
         };
     }
 

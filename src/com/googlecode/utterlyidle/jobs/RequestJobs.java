@@ -59,12 +59,9 @@ public class RequestJobs implements Jobs {
     }
 
     private Callable<Void> handle(final CreatedJob job) {
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                complete(job);
-                return VOID;
-            }
+        return () -> {
+            complete(job);
+            return VOID;
         };
     }
 

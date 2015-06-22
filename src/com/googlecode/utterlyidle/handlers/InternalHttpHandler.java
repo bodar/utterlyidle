@@ -47,11 +47,6 @@ public class InternalHttpHandler implements HttpHandler {
     }
 
     private Function2<Request, Pair<String, String>, Request> addHeader() {
-        return new Function2<Request, Pair<String, String>, Request>() {
-            @Override
-            public Request call(Request request, Pair<String, String> headerPair) throws Exception {
-                return RequestBuilder.modify(request).header(headerPair.first(), headerPair.second()).build();
-            }
-        };
+        return (request, headerPair) -> RequestBuilder.modify(request).header(headerPair.first(), headerPair.second()).build();
     }
 }

@@ -68,11 +68,7 @@ public class Schedule {
     }
 
     public static Function1<Record, UUID> asScheduleId() {
-        return new Function1<Record, UUID>() {
-            public UUID call(Record record) throws Exception {
-                return record.get(scheduleId);
-            }
-        };
+        return record1 -> record1.get(scheduleId);
     }
 
     private <T> Schedule set(Keyword<T> keyword, T value) {

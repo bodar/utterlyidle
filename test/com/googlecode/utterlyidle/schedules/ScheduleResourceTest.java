@@ -65,14 +65,11 @@ public class ScheduleResourceTest {
     @Test
     public void scheduleResourceShouldNotThrowExceptionsInDebugMode() throws Exception {
         final SpyExceptionLogger logger = new SpyExceptionLogger();
-        final ApplicationBuilder application = application().add(new RequestScopedModule() {
-            @Override
-            public Container addPerRequestObjects(final Container container) throws Exception {
-                container.remove(ExceptionLogger.class);
-                return container.
-                        addInstance(ExceptionLogger.class, logger).
-                        addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()));
-            }
+        final ApplicationBuilder application = application().add((RequestScopedModule) container -> {
+            container.remove(ExceptionLogger.class);
+            return container.
+                    addInstance(ExceptionLogger.class, logger).
+                    addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()));
         }).add(new ScheduleModule());
         assertThat(application.handle(get("schedules/schedule").query("id", "93f78f30-d7db-11e1-9b23-0800200c9a66").query("interval", "60").query("uri", "/jobs/create/crawler/crawl").entity("id=93f78f30-d7db-11e1-9b23-0800200c9a66")).status().code(), is(303));
         assertFalse(logger.hasLogged);

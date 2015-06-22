@@ -54,21 +54,11 @@ public interface Response {
         }
 
         public static Function1<Object, Response> asResponse(final ResponseBuilder response) {
-            return new Function1<Object, Response>() {
-                @Override
-                public Response call(Object entity) throws Exception {
-                    return response.entity(entity).build();
-                }
-            };
+            return entity -> response.entity(entity).build();
         }
 
         public static Function1<Response, Entity> entity() {
-            return new Function1<Response, Entity>() {
-                @Override
-                public Entity call(Response response) throws Exception {
-                    return response.entity();
-                }
-            };
+            return Response::entity;
         }
 
         public static LogicalPredicate<Response> entityTypeIs(final Class type) {
@@ -81,30 +71,15 @@ public interface Response {
         }
 
         public static Function1<Response, Status> status() {
-            return new Function1<Response, Status>() {
-                @Override
-                public Status call(Response response) throws Exception {
-                    return response.status();
-                }
-            };
+            return Response::status;
         }
 
         public static Function1<Response, String> header(final String name) {
-            return new Function1<Response, String>() {
-                @Override
-                public String call(Response response) throws Exception {
-                    return response.headers().getValue(name);
-                }
-            };
+            return response -> response.headers().getValue(name);
         }
 
         public static CurriedFunction2<Response, Object, Response> replaceHeader(final String name) {
-            return new CurriedFunction2<Response, Object, Response>() {
-                @Override
-                public Response call(final Response response, final Object value) throws Exception {
-                    return modify(response).replaceHeaders(name, value).build();
-                }
-            };
+            return (response, value) -> modify(response).replaceHeaders(name, value).build();
         }
     }
 }

@@ -15,11 +15,10 @@ public class HttpMethodExtractor implements Extractor<Method, Option<HttpMethod>
     }
 
     public Option<HttpMethod> extract(Method method) {
-        return sequence(method.getAnnotations()).tryPick(new Function1<Annotation, Option<HttpMethod>>() {
-            public Option<HttpMethod> call(Annotation annotation) throws Exception {
-                return sequence(annotation.annotationType().getDeclaredAnnotations()).safeCast(HttpMethod.class).headOption();
-            }
-        });
+        return sequence(method.getAnnotations()).
+                tryPick(annotation -> sequence(annotation.annotationType().getDeclaredAnnotations()).
+                        safeCast(HttpMethod.class).
+                        headOption());
     }
 
 }

@@ -86,24 +86,22 @@ public class HttpScheduler implements Service {
     }
 
     private Callable<Void> httpTask(final UUID id, final Application application, final Request request) {
-        return new Callable<Void>() {
-            public Void call() throws Exception {
-                final Date started = clock.now();
-                try {
-                    application.usingRequestScope(update(
-                            Schedule.schedule(id).response(null).started(started).completed(null).running(true)));
-                    final Response response = application.handle(request);
-                    Date completed = clock.now();
-                    return application.usingRequestScope(update(
-                            Schedule.schedule(id).response(response.toString()).duration(Seconds.between(started, completed)).completed(completed).running(false)));
-                } catch (Exception e) {
-                    Date completed = clock.now();
-                    return application.usingRequestScope(update(
-                            Schedule.schedule(id).response(ResponseBuilder.response(Status.INTERNAL_SERVER_ERROR).
-                                    entity(ExceptionRenderer.toString(e)).toString()).
-                                    duration(Seconds.between(started, completed)).
-                                    completed(completed).running(false)));
-                }
+        return () -> {
+            final Date started = clock.now();
+            try {
+                application.usingRequestScope(update(
+                        Schedule.schedule(id).response(null).started(started).completed(null).running(true)));
+                final Response response = application.handle(request);
+                Date completed = clock.now();
+                return application.usingRequestScope(update(
+                        Schedule.schedule(id).response(response.toString()).duration(Seconds.between(started, completed)).completed(completed).running(false)));
+            } catch (Exception e) {
+                Date completed = clock.now();
+                return application.usingRequestScope(update(
+                        Schedule.schedule(id).response(ResponseBuilder.response(Status.INTERNAL_SERVER_ERROR).
+                                entity(ExceptionRenderer.toString(e)).toString()).
+                                duration(Seconds.between(started, completed)).
+                                completed(completed).running(false)));
             }
         };
     }
@@ -141,11 +139,6 @@ public class HttpScheduler implements Service {
     }
 
     private Function1<String, Date> toStart() {
-        return new Function1<String, Date>() {
-            @Override
-            public Date call(String time) throws Exception {
-                return Schedule.start(time, clock);
-            }
-        };
+        return time -> Schedule.start(time, clock);
     }
 }

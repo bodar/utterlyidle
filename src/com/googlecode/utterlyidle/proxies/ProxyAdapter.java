@@ -34,12 +34,7 @@ public class ProxyAdapter implements ProxyFor {
         return sequence(selector.select(uri.toURI())).find(where(type, is(not(DIRECT))));
     }
 
-    public static Function1<Proxy, Proxy.Type> type = new Function1<Proxy, Proxy.Type>() {
-        @Override
-        public Proxy.Type call(final Proxy proxy) throws Exception {
-            return proxy.type();
-        }
-    };
+    public static Function1<Proxy, Proxy.Type> type = Proxy::type;
 
     public ProxySelector selector() {
         return selector;

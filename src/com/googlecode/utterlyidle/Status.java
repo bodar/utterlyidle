@@ -140,39 +140,19 @@ public class Status {
     public static class functions {
 
         public static Function1<Status, Integer> code() {
-            return new Function1<Status, Integer>() {
-                @Override
-                public Integer call(Status status) throws Exception {
-                    return status.code();
-                }
-            };
+            return Status::code;
         }
 
         public static Function1<Status, String> description() {
-            return new Function1<Status, String>() {
-                @Override
-                public String call(Status status) throws Exception {
-                    return status.description();
-                }
-            };
+            return Status::description;
         }
 
         public static Function1<Status,Boolean> isSuccessful() {
-            return new Function1<Status, Boolean>() {
-                @Override
-                public Boolean call(Status status) throws Exception {
-                    return status.isSuccessful();
-                }
-            };
+            return Status::isSuccessful;
         }
 
         public static Function1<Status,Boolean> isRedirect() {
-            return new Function1<Status, Boolean>() {
-                @Override
-                public Boolean call(Status status) throws Exception {
-                    return status.isRedirect();
-                }
-            };
+            return Status::isRedirect;
         }
     }
 }

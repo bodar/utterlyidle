@@ -85,14 +85,11 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     public static Function1<Server, Context> defaultContext(final Application application, final ServerConfiguration configuration) {
-        return new Function1<Server, Context>() {
-            @Override
-            public Context call(Server server) throws Exception {
-                Context context = new Context(server, contextPath(configuration.basePath()), NO_SESSIONS);
-                application.add(new ServletModule(context.getServletContext()));
-                context.addServlet(ApplicationServlet.class, "/*");
-                return context;
-            }
+        return server1 -> {
+            Context context1 = new Context(server1, contextPath(configuration.basePath()), NO_SESSIONS);
+            application.add(new ServletModule(context1.getServletContext()));
+            context1.addServlet(ApplicationServlet.class, "/*");
+            return context1;
         };
     }
 
@@ -106,12 +103,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     public static Function1<Server, Context> webXmlContext(final Uri webRoot, final ServerConfiguration configuration) {
-        return new Function1<Server, Context>() {
-            @Override
-            public Context call(Server server) throws Exception {
-                return new WebAppContext(server, webRoot.toString(), contextPath(configuration.basePath()));
-            }
-        };
+        return server1 -> new WebAppContext(server1, webRoot.toString(), contextPath(configuration.basePath()));
     }
 
     private Server createServer(ServerConfiguration serverConfig) {

@@ -28,10 +28,5 @@ public class HttpProxy implements ProxyFor {
         return none();
     }
 
-    public static Function1<Proxy, Proxy.Type> type = new Function1<Proxy, Proxy.Type>() {
-        @Override
-        public Proxy.Type call(final Proxy proxy) throws Exception {
-            return proxy.type();
-        }
-    };
+    public static Function1<Proxy, Proxy.Type> type = Proxy::type;
 }

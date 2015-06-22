@@ -26,33 +26,25 @@ public class MediaRange implements Value<String>{
     }
 
     public static Predicate<String> sameValue(final String value) {
-        return new Predicate<String>() {
-            public boolean matches(String mimeType) {
-                if (mimeType.equals(WILDCARD) || value.equals(WILDCARD)) {
-                    return true;
-                }
-                return mimeType.equals(value);
+        return mimeType -> {
+            if (mimeType.equals(WILDCARD) || value.equals(WILDCARD)) {
+                return true;
             }
+            return mimeType.equals(value);
         };
     }
 
     public static Function1<? super MediaRange, Iterable<MediaRange>> convertWildCardsTo(final Sequence<String> possibleContentTypes) {
-        return new Function1<MediaRange, Iterable<MediaRange>>() {
-            public Iterable<MediaRange> call(MediaRange mediaRange) throws Exception {
-                if(mediaRange.value().equals(WILDCARD)){
-                    return possibleContentTypes.map(toMediaType(mediaRange.quality()));
-                }
-                return sequence(mediaRange);
+        return mediaRange -> {
+            if(mediaRange.value().equals(WILDCARD)){
+                return possibleContentTypes.map(toMediaType(mediaRange.quality()));
             }
+            return sequence(mediaRange);
         };
     }
 
     private static Function1<? super String, MediaRange> toMediaType(final float quality) {
-        return new Function1<String, MediaRange>() {
-            public MediaRange call(String value) throws Exception {
-                return new MediaRange(value, quality);
-            }
-        };
+        return value1 -> new MediaRange(value1, quality);
     }
 
 

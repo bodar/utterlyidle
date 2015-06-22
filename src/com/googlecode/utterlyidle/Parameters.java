@@ -81,11 +81,7 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
     }
 
     public static <K, V, Self extends Parameters<K, V, Self>> Function2<Self, Pair<K, V>, Self> pairIntoParameters() {
-        return new Function2<Self, Pair<K, V>, Self>() {
-            public Self call(Self result, Pair<K, V> pair) throws Exception {
-                return result.add(pair.first(), pair.second());
-            }
-        };
+        return (result, pair) -> result.add(pair.first(), pair.second());
     }
 
     @Override
@@ -107,15 +103,12 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
     }
 
     private Predicate<Pair<Pair<K, V>, Pair<K, V>>> pairsMatch() {
-        return new Predicate<Pair<Pair<K, V>, Pair<K, V>>>() {
-            @Override
-            public boolean matches(Pair<Pair<K, V>, Pair<K, V>> pair) {
-                Pair<K, V> first = pair.first();
-                Pair<K, V> second = pair.second();
+        return pair -> {
+            Pair<K, V> first = pair.first();
+            Pair<K, V> second = pair.second();
 
-                Predicate<K> predicate = call(Parameters.this.predicate, first.first());
-                return predicate.matches(second.first()) && first.second().equals(second.second());
-            }
+            Predicate<K> predicate1 = call(Parameters.this.predicate, first.first());
+            return predicate1.matches(second.first()) && first.second().equals(second.second());
         };
     }
 

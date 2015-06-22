@@ -75,13 +75,10 @@ public class RestTest {
     public void canDecorateARenderer() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
         final Type renderer = new TypeFor<Renderer<MyCustomClass>>() {}.get();
-        application.add(new RequestScopedModule() {
-            @Override
-            public Container addPerRequestObjects(Container container) throws Exception {
-                container.addType(renderer, MyCustomClassRenderer.class);
-                container.decorateType(renderer, MyCustomClassRendererDecorator.class);
-                return container;
-            }
+        application.add((RequestScopedModule) container -> {
+            container.addType(renderer, MyCustomClassRenderer.class);
+            container.decorateType(renderer, MyCustomClassRendererDecorator.class);
+            return container;
         });
         application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(renderer));
         assertThat(application.responseAsString(get("path")), is("foobar"));
@@ -119,21 +116,17 @@ public class RestTest {
     public void supportCustomArgumentActivation() throws Exception {
         final String SOME_CUSTOM_VALUE = "some custom value";
 
-        ApplicationBuilder application = application().addAnnotated(UsesCustomValue.class).add(new ArgumentScopedModule() {
-            public Container addPerArgumentObjects(Container container) {
-                return container.addInstance(CustomValueWithoutPublicConstructor.class, new CustomValueWithoutPublicConstructor(SOME_CUSTOM_VALUE));
-            }
-        });
+        ApplicationBuilder application = application().addAnnotated(UsesCustomValue.class).
+                add((ArgumentScopedModule) container ->
+                        container.addInstance(CustomValueWithoutPublicConstructor.class, new CustomValueWithoutPublicConstructor(SOME_CUSTOM_VALUE)));
         assertThat(application.responseAsString(get("path")), is(SOME_CUSTOM_VALUE));
     }
 
     @Test
     public void supportCustomArgumentActivationWithOption() throws Exception {
-        ApplicationBuilder application = application().addAnnotated(UsesCustomValueWithOption.class).add(new ArgumentScopedModule() {
-            public Container addPerArgumentObjects(Container container) {
-                return container.addActivator(CustomValueWithoutPublicConstructor.class, CustomValueWithoutPublicConstructorActivator.class);
-            }
-        });
+        ApplicationBuilder application = application().addAnnotated(UsesCustomValueWithOption.class).
+                add((ArgumentScopedModule) container ->
+                        container.addActivator(CustomValueWithoutPublicConstructor.class, CustomValueWithoutPublicConstructorActivator.class));
         assertThat(application.responseAsString(get("path")), is("true"));
     }
 
@@ -466,17 +459,14 @@ public class RestTest {
     public void supportsCustomRenderer() throws Exception {
         final boolean[] called = {false};
         ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
-        application.add(new RequestScopedModule() {
-            @Override
-            public Container addPerRequestObjects(Container container) throws Exception {
-                return container.addActivator(MyCustomClassRenderer.class, new Callable<MyCustomClassRenderer>() {
-                    @Override
-                    public MyCustomClassRenderer call() throws Exception {
-                        called[0] = true;
-                        return new MyCustomClassRenderer();
-                    }
-                });
-            }
+        application.add((RequestScopedModule) container -> {
+            return container.addActivator(MyCustomClassRenderer.class, new Callable<MyCustomClassRenderer>() {
+                @Override
+                public MyCustomClassRenderer call() throws Exception {
+                    called[0] = true;
+                    return new MyCustomClassRenderer();
+                }
+            });
         });
         application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
         assertThat(application.responseAsString(get("path")), is("foo"));

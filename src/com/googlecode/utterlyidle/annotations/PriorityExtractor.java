@@ -15,10 +15,6 @@ public class PriorityExtractor implements Extractor<Method, Integer> {
     }
 
     private Function1<Priority, Integer> value() {
-        return new Function1<Priority, Integer>() {
-            public Integer call(Priority priority) throws Exception {
-                return priority.value();
-            }
-        };
+        return Priority::value;
     }
 }

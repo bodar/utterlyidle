@@ -22,32 +22,12 @@ public class OptionElement extends AbstractElement {
     }
 
     public static class functions {
-        public static Function1<Node, OptionElement> option = new Function1<Node, OptionElement>() {
-            @Override
-            public OptionElement call(Node node) throws Exception {
-                return new OptionElement(node);
-            }
-        };
+        public static Function1<Node, OptionElement> option = OptionElement::new;
 
-        public static Function1<OptionElement, Pair<String, String>> pair = new Function1<OptionElement, Pair<String, String>>() {
-            @Override
-            public Pair<String, String> call(OptionElement optionElement) throws Exception {
-                return optionElement.pair();
-            }
-        };
+        public static Function1<OptionElement, Pair<String, String>> pair = OptionElement::pair;
 
-        public static Function1<OptionElement, String> value = new Function1<OptionElement, String>() {
-            @Override
-            public String call(OptionElement optionElement) throws Exception {
-                return optionElement.value();
-            }
-        };
+        public static Function1<OptionElement, String> value = OptionElement::value;
 
-        public static Function1<OptionElement, String> text = new Function1<OptionElement, String>() {
-            @Override
-            public String call(OptionElement optionElement) throws Exception {
-                return optionElement.text();
-            }
-        };
+        public static Function1<OptionElement, String> text = OptionElement::text;
     }
 }

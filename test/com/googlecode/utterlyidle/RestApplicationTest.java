@@ -97,12 +97,7 @@ public class RestApplicationTest {
     @Test
     public void basePathIsStrippedFromRequests() throws Exception {
 
-        final Response response = new RestApplication(basePath("foo")).add(new ResourcesModule() {
-            @Override
-            public Resources addResources(final Resources resources) throws Exception {
-                return resources.add(annotatedClass(Foo.class));
-            }
-        }).handle(get("/foo/").build());
+        final Response response = new RestApplication(basePath("foo")).add((ResourcesModule) resources -> resources.add(annotatedClass(Foo.class))).handle(get("/foo/").build());
 
         assertThat(response.status(), is(Status.OK));
     }

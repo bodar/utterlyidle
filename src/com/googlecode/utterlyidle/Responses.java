@@ -40,11 +40,7 @@ public class Responses {
     }
 
     public static Function1<Response, Status> status() {
-        return new Function1<Response, Status>() {
-            public Status call(Response response) throws Exception {
-                return response.status();
-            }
-        };
+        return Response::status;
     }
 
     public static LogicalPredicate<Pair<Request, Response>> status(final Status status) {

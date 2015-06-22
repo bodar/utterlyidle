@@ -7,40 +7,25 @@ import com.googlecode.totallylazy.Uri;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
 public interface Request {
-    public String method();
+    String method();
 
-    public Uri uri();
+    Uri uri();
 
-    public HeaderParameters headers();
+    HeaderParameters headers();
 
-    public Entity entity();
+    Entity entity();
 
     class functions {
         public static CurriedFunction2<Request, Object, Request> replaceHeader(final String name) {
-            return new CurriedFunction2<Request, Object, Request>() {
-                @Override
-                public Request call(final Request request, final Object value) throws Exception {
-                    return modify(request).replaceHeader(name, value).build();
-                }
-            };
+            return (request, value) -> modify(request).replaceHeader(name, value).build();
         }
 
         public static Function1<Request, String> header(final String name) {
-            return new Function1<Request, String>() {
-                @Override
-                public String call(final Request request) throws Exception {
-                    return request.headers().getValue(name);
-                }
-            };
+            return request -> request.headers().getValue(name);
         }
 
         public static Function1<Request, Uri> uri() {
-            return new Function1<Request, Uri>() {
-                @Override
-                public Uri call(final Request request) throws Exception {
-                    return request.uri();
-                }
-            };
+            return Request::uri;
         }
     }
 }

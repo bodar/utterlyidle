@@ -29,47 +29,17 @@ public interface Job {
     Option<Date> completed();
 
     class functions {
-        public static Function1<Job, UUID> id = new Function1<Job, UUID>() {
-            @Override
-            public UUID call(final Job job) throws Exception {
-                return job.id();
-            }
-        };
+        public static Function1<Job, UUID> id = Job::id;
 
-        public static Function1<Job, Date> created = new Function1<Job, Date>() {
-            @Override
-            public Date call(Job job) throws Exception {
-                return job.created();
-            }
-        };
+        public static Function1<Job, Date> created = Job::created;
 
-        public static Function1<Job, Option<Date>> started = new Function1<Job, Option<Date>>() {
-            @Override
-            public Option<Date> call(Job job) throws Exception {
-                return job.started();
-            }
-        };
+        public static Function1<Job, Option<Date>> started = Job::started;
 
-        public static Function1<Job, Option<Date>> completed = new Function1<Job, Option<Date>>() {
-            @Override
-            public Option<Date> call(Job job) throws Exception {
-                return job.completed();
-            }
-        };
+        public static Function1<Job, Option<Date>> completed = Job::completed;
 
-        public static Function1<Job, Request> request = new Function1<Job, Request>() {
-            @Override
-            public Request call(final Job job) throws Exception {
-                return job.request();
-            }
-        };
+        public static Function1<Job, Request> request = Job::request;
 
-        public static Function1<Job, Option<Response>> response = new Function1<Job, Option<Response>>() {
-            @Override
-            public Option<Response> call(final Job job) throws Exception {
-                return job.response();
-            }
-        };
+        public static Function1<Job, Option<Response>> response = Job::response;
     }
 
     class methods {

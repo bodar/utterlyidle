@@ -16,10 +16,6 @@ public class MethodMatcher implements Predicate<Request> {
     }
 
     public static Predicate<Binding> methodMatches(final Request request) {
-        return new Predicate<Binding>() {
-            public boolean matches(Binding binding) {
-                return  new MethodMatcher(binding.httpMethod()).matches(request);
-            }
-        };
+        return binding -> new MethodMatcher(binding.httpMethod()).matches(request);
     }
 }

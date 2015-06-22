@@ -25,12 +25,7 @@ public class RoutingClient implements HttpClient {
     }
 
     public static Function1<Uri, Uri> authority(final String newAuthority) {
-        return new Function1<Uri, Uri>() {
-            @Override
-            public Uri call(Uri uri) throws Exception {
-                return uri.authority(newAuthority);
-            }
-        };
+        return uri -> uri.authority(newAuthority);
     }
 
     public static RoutingClient urlRouterClient(HttpHandler handler, Rules<Uri, Uri> rules) {

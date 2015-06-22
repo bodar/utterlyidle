@@ -14,12 +14,7 @@ public class ProducesMimeMatcher implements Predicate<Request> {
     }
 
     public static Function1<Binding, Float> quality(final Request request) {
-        return new Function1<Binding, Float>() {
-            @Override
-            public Float call(Binding binding) throws Exception {
-                return quality(request, binding);
-            }
-        };
+        return binding -> quality(request, binding);
     }
 
     public static float quality(Request request, Binding firstSignature) {
@@ -39,10 +34,6 @@ public class ProducesMimeMatcher implements Predicate<Request> {
     }
 
     public static Predicate<Binding> producesMatches(final Request request) {
-        return new Predicate<Binding>() {
-            public boolean matches(Binding binding) {
-                return new ProducesMimeMatcher(binding.produces()).matches(request);
-            }
-        };
+        return binding -> new ProducesMimeMatcher(binding.produces()).matches(request);
     }
 }

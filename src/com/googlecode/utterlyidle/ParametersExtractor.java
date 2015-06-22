@@ -40,46 +40,42 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
     }
 
     public Object[] extract(final Request request) {
-        return typesWithNamedParameter.map(new Function1<Pair<Type, Option<Parameter>>, Object>() {
-            public Object call(Pair<Type, Option<Parameter>> pair) throws Exception {
-                return application.usingArgumentScope(request, resolveParameter(pair));
-            }
-        }).toArray(Object.class);
+        return typesWithNamedParameter.
+                map(pair -> application.usingArgumentScope(request, resolveParameter(pair))).
+                toArray(Object.class);
     }
 
     private Function1<Container, Object> resolveParameter(final Pair<Type, Option<Parameter>> pair) {
-        return new Function1<Container, Object>() {
-            public Object call(Container container) throws Exception {
-                final Type type = pair.first();
-                final Option<Parameter> optionalParameter = pair.second();
+        return container -> {
+            final Type type = pair.first();
+            final Option<Parameter> optionalParameter = pair.second();
 
-                container.addInstance(UriTemplate.class, uriTemplate);
+            container.addInstance(UriTemplate.class, uriTemplate);
 
 
-                for (Parameter parameter : optionalParameter) {
-                    parameter.addTo(container);
-                }
-
-                if (!container.contains(String.class)) {
-                    container.addType(String.class, new ProgrammerErrorResolver(String.class));
-                }
-
-                final Type iterableStringType = new TypeFor<Iterable<String>>() {}.get();
-                if (!container.contains(iterableStringType)) {
-                    container.addType(iterableStringType, new ProgrammerErrorResolver(iterableStringType));
-                }
-
-                List<Type> types = typeArgumentsOf(type);
-
-                for (Type t : types) {
-                    if (!container.contains(t)) {
-                        container.addType(t, create(t, container));
-                    }
-                }
-
-                return container.resolve(type);
-
+            for (Parameter parameter : optionalParameter) {
+                parameter.addTo(container);
             }
+
+            if (!container.contains(String.class)) {
+                container.addType(String.class, new ProgrammerErrorResolver(String.class));
+            }
+
+            final Type iterableStringType = new TypeFor<Iterable<String>>() {}.get();
+            if (!container.contains(iterableStringType)) {
+                container.addType(iterableStringType, new ProgrammerErrorResolver(iterableStringType));
+            }
+
+            List<Type> types = typeArgumentsOf(type);
+
+            for (Type t : types) {
+                if (!container.contains(t)) {
+                    container.addType(t, create(t, container));
+                }
+            }
+
+            return container.resolve(type);
+
         };
     }
 
@@ -101,11 +97,7 @@ public class ParametersExtractor implements RequestExtractor<Object[]> {
     }
 
     public static Predicate<Binding> parametersMatches(final Request request, final Application application, final ExceptionLogger logger) {
-        return new Predicate<Binding>() {
-            public boolean matches(Binding binding) {
-                return new ParametersExtractor(binding.uriTemplate(), application, binding.parameters(), logger).matches(request);
-            }
-        };
+        return binding -> new ParametersExtractor(binding.uriTemplate(), application, binding.parameters(), logger).matches(request);
     }
 
 }

@@ -61,16 +61,12 @@ public class StaticBindingBuilder implements Callable<Binding[]> {
     }
 
     private Function1<Map.Entry<String, String>, Binding> asBinding() {
-        return new Function1<Map.Entry<String, String>, Binding>() {
-            public Binding call(Map.Entry<String, String> entry) throws Exception {
-                return get(format("%s/{filename:.+\\.%s}", path, quote(entry.getKey()))).
-                        produces(entry.getValue()).
-                        resource(method(on(StaticResources.class).
-                                get(definedParam(base), pathParam(String.class, "filename")))).
-                        hidden(true).
-                        build();
-            }
-        };
+        return entry -> get(format("%s/{filename:.+\\.%s}", path, quote(entry.getKey()))).
+                produces(entry.getValue()).
+                resource(method(on(StaticResources.class).
+                        get(definedParam(base), pathParam(String.class, "filename")))).
+                hidden(true).
+                build();
     }
 
     public static StaticBindingBuilder in(URL base) {

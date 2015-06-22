@@ -19,11 +19,7 @@ public class Rfc2616 {
     }
 
     public static Predicate<? super Character> isValidTokenCharacter() {
-        return new Predicate<Character>() {
-            public boolean matches(Character character) {
-                return SEPARATORS.indexOf(character) < 0 && CTLs.indexOf(character) < 0;
-            }
-        };
+        return character -> SEPARATORS.indexOf(character) < 0 && CTLs.indexOf(character) < 0;
     }
 
     public static String toQuotedString(String value) {
@@ -35,11 +31,6 @@ public class Rfc2616 {
     }
 
     public static Function1<String, String> toUnquotedString() {
-        return new Function1<String, String>() {
-            @Override
-            public String call(String s) throws Exception {
-                return toUnquotedString(s);
-            }
-        };
+        return Rfc2616::toUnquotedString;
     }
 }

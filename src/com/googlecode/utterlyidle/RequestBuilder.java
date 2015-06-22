@@ -55,11 +55,9 @@ public class RequestBuilder implements Callable<Request> {
     public RequestBuilder(Request request) {
         this(request.method(), request.uri());
 
-        sequence(request.headers()).fold(this, new Function2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
-            public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> nameAndValue) throws Exception {
-                requestBuilder.header(nameAndValue.first(), nameAndValue.second());
-                return requestBuilder;
-            }
+        sequence(request.headers()).fold(this, (requestBuilder, nameAndValue) -> {
+            requestBuilder.header(nameAndValue.first(), nameAndValue.second());
+            return requestBuilder;
         });
         this.entity = request.entity();
     }
@@ -259,32 +257,17 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     private static Function1<String, String> filterOutCookie(final String cookieName) {
-        return new Function1<String, String>() {
-            @Override
-            public String call(String cookieValue) throws Exception {
-                return parseRequestHeader(cookieValue).filter(where(cookieName(), not(cookieName))).map(toCookieString()).toString("; ");
-            }
-        };
+        return cookieValue -> parseRequestHeader(cookieValue).filter(where(cookieName(), not(cookieName))).map(toCookieString()).toString("; ");
     }
 
     private static Function1<String, String> setCookie(final String name, final String value) {
-        return new Function1<String, String>() {
-            @Override
-            public String call(String headerValue) throws Exception {
-                return parseRequestHeader(headerValue)
-                        .map(replace(where(cookieName(), equalIgnoringCase(name)), setValue(value)))
-                        .map(toCookieString()).toString("; ");
-            }
-        };
+        return headerValue -> parseRequestHeader(headerValue)
+                .map(replace(where(cookieName(), equalIgnoringCase(name)), setValue(value)))
+                .map(toCookieString()).toString("; ");
     }
 
     private static Function1<Cookie, String> toCookieString() {
-        return new Function1<Cookie, String>() {
-            @Override
-            public String call(Cookie cookie) throws Exception {
-                return format("%s=%s", cookie.name(), Rfc2616.toQuotedString(cookie.value()));
-            }
-        };
+        return cookie -> format("%s=%s", cookie.name(), Rfc2616.toQuotedString(cookie.value()));
     }
 
     public RequestBuilder copyFormParamsToQuery() {
@@ -292,30 +275,15 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     private Function2<RequestBuilder, Pair<String, String>, RequestBuilder> addQuery() {
-        return new Function2<RequestBuilder, Pair<String, String>, RequestBuilder>() {
-            @Override
-            public RequestBuilder call(RequestBuilder requestBuilder, Pair<String, String> pair) throws Exception {
-                return requestBuilder.query(pair.first(), pair.second());
-            }
-        };
+        return (requestBuilder, pair) -> requestBuilder.query(pair.first(), pair.second());
     }
 
     private static Function1<Cookie, String> cookieName() {
-        return new Function1<Cookie, String>() {
-            @Override
-            public String call(Cookie cookie) throws Exception {
-                return cookie.name();
-            }
-        };
+        return Cookie::name;
     }
 
     private static Function1<Cookie, Cookie> setValue(final String value) {
-        return new Function1<Cookie, Cookie>() {
-            @Override
-            public Cookie call(Cookie cookie) throws Exception {
-                return CookieBuilder.modify(cookie).value(value).build();
-            }
-        };
+        return cookie -> CookieBuilder.modify(cookie).value(value).build();
     }
 
 

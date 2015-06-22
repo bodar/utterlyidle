@@ -39,11 +39,6 @@ public class StoredException {
     }
 
     public static Function1<? super StoredException, Exception> exception() {
-        return new Function1<StoredException, Exception>() {
-            @Override
-            public Exception call(StoredException e) throws Exception {
-                return e.getException();
-            }
-        };
+        return StoredException::getException;
     }
 }

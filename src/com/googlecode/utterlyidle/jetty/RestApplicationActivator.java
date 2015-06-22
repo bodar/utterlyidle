@@ -34,10 +34,6 @@ public class RestApplicationActivator implements CloseableCallable<Application> 
     }
 
     private Function2<Application, Module, Application> addToApplication() {
-        return new Function2<Application, Module, Application>() {
-            public Application call(Application application, Module resourcesModule) throws Exception {
-                return application.add(resourcesModule);
-            }
-        };
+        return Application::add;
     }
 }

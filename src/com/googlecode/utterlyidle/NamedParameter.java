@@ -38,14 +38,12 @@ public class NamedParameter implements Parameter {
     }
 
     public Callable<String> extractValueFrom(final TypeMap typeMap) {
-        return new Callable<String>() {
-            public String call() throws Exception {
-                Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
-                if (!parameters.contains(name())) {
-                    return defaultValueOrThrow();
-                }
-                return parameters.getValue(name());
+        return () -> {
+            Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
+            if (!parameters.contains(name())) {
+                return defaultValueOrThrow();
             }
+            return parameters.getValue(name());
         };
     }
 
@@ -54,14 +52,12 @@ public class NamedParameter implements Parameter {
     }
 
     public Resolver<Iterable<String>> extractValuesFrom(final TypeMap typeMap) {
-        return new Resolver<Iterable<String>>() {
-            public Iterable<String> resolve(Type type) throws Exception {
-                Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
-                if (!parameters.contains(name())) {
-                    return sequence(defaultValueOrThrow());
-                }
-                return parameters.getValues(name());
+        return type -> {
+            Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
+            if (!parameters.contains(name())) {
+                return sequence(defaultValueOrThrow());
             }
+            return parameters.getValues(name());
         };
     }
 
@@ -72,12 +68,7 @@ public class NamedParameter implements Parameter {
 
     public static class methods {
         public static Function1<NamedParameter, Option<String>> defaultValue() {
-            return new Function1<NamedParameter, Option<String>>() {
-                @Override
-                public Option<String> call(NamedParameter namedParameter) throws Exception {
-                    return namedParameter.defaultValue();
-                }
-            };
+            return NamedParameter::defaultValue;
         }
     }
 }

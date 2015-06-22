@@ -28,11 +28,6 @@ public class MethodMatcherTest {
     }
 
     private Function1<RequestBuilder, Boolean> matches() {
-        return new Function1<RequestBuilder, Boolean>() {
-            @Override
-            public Boolean call(RequestBuilder request) throws Exception {
-                return new MethodMatcher("*").matches(request.build());
-            }
-        };
+        return request -> new MethodMatcher("*").matches(request.build());
     }
 }
