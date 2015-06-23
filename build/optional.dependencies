@@ -4,4 +4,4 @@ mvn:org.mortbay.jetty:jetty-util:jar|sources:6.1.26
 mvn:org.mortbay.jetty:jetty:jar|sources:6.1.26
 mvn:org.ccil.cowan.tagsoup:tagsoup:jar:1.2
 
-mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:pack|sources:2.19
+mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:pack|sources:2.20
