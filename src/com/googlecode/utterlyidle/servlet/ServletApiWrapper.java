@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.totallylazy.Xml;
+import com.googlecode.totallylazy.xml.Xml;
 import com.googlecode.utterlyidle.AttributeMap;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.WebRoot;

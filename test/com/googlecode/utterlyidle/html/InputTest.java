@@ -2,8 +2,8 @@ package com.googlecode.utterlyidle.html;
 
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Xml.document;
-import static com.googlecode.totallylazy.Xml.selectElement;
+import static com.googlecode.totallylazy.xml.Xml.document;
+import static com.googlecode.totallylazy.xml.Xml.selectElement;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;

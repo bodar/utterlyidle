@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.tagsoup;
 
-import com.googlecode.totallylazy.Xml;
+import com.googlecode.totallylazy.xml.Xml;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;

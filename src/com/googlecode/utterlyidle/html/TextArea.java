@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.html;
 
 import org.w3c.dom.Element;
 
-import static com.googlecode.totallylazy.Xml.selectContents;
+import static com.googlecode.totallylazy.xml.Xml.selectContents;
 
 
 public class TextArea implements NameValue {

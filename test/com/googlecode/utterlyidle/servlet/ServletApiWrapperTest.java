@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.totallylazy.Xml;
+import com.googlecode.totallylazy.xml.Xml;
 import org.junit.Test;
 import org.w3c.dom.Document;
 

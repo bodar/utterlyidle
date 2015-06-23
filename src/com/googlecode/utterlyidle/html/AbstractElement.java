@@ -6,11 +6,11 @@ import com.googlecode.totallylazy.CurriedFunction2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Xml;
+import com.googlecode.totallylazy.xml.Xml;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import static com.googlecode.totallylazy.Xml.selectContents;
+import static com.googlecode.totallylazy.xml.Xml.selectContents;
 import static com.googlecode.utterlyidle.html.Html.html;
 import static java.lang.String.format;
 

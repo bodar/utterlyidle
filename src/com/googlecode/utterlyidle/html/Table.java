@@ -1,14 +1,14 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Xml;
+import com.googlecode.totallylazy.xml.Xml;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Maps.map;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Xml.functions.selectContents;
+import static com.googlecode.totallylazy.xml.Xml.functions.selectContents;
 import static com.googlecode.totallylazy.numbers.Numbers.range;
 import static com.googlecode.utterlyidle.html.TableRow.functions.toTableRow;
 
