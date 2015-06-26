@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.functions.TimeCallable.calculateMilliseconds;
+import static com.googlecode.totallylazy.functions.TimeFunction0.calculateMilliseconds;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;

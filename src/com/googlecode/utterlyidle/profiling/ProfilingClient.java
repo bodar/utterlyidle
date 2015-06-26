@@ -5,7 +5,7 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.HttpClient;
 
-import static com.googlecode.totallylazy.functions.TimeCallable.calculateMilliseconds;
+import static com.googlecode.totallylazy.functions.TimeFunction0.calculateMilliseconds;
 import static com.googlecode.utterlyidle.handlers.HttpClient.methods.httpClient;
 
 public class ProfilingClient implements HttpClient {
