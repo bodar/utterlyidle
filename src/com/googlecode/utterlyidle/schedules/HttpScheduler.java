@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Record;
-import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Block;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Clock;

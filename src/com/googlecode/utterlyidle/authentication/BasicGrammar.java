@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.authentication;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.parser.Parser;

@@ -9,8 +9,8 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 import java.util.Date;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.functions.Callables.first;
+import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.and;
 import static com.googlecode.totallylazy.Predicates.is;

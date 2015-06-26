@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.dsl;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.MediaType;
 

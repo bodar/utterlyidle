@@ -1,17 +1,14 @@
 package com.googlecode.utterlyidle.services;
 
-import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.UnaryFunction;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.totallylazy.collections.ListMap;
 import com.googlecode.utterlyidle.Application;
-import com.googlecode.yadic.Container;
 
 import java.util.Iterator;
 
-import static com.googlecode.totallylazy.Block.block;
+import static com.googlecode.totallylazy.functions.Block.block;
 import static com.googlecode.totallylazy.Debug.inDebug;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.collections.ListMap.listMap;

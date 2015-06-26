@@ -1,10 +1,8 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.utterlyidle.Extractor;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import static com.googlecode.totallylazy.Sequences.sequence;

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Value;
 import org.w3c.dom.Element;
 

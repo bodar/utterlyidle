@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
-import static com.googlecode.totallylazy.Functions.function;
+import static com.googlecode.totallylazy.functions.Functions.function;
 import static com.googlecode.totallylazy.concurrent.NamedExecutors.newCpuThreadPool;
 
 public class CpuBoundedCompleter implements Completer, Closeable {

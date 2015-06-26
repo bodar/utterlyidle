@@ -1,15 +1,13 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Closeables;
 import com.googlecode.totallylazy.Streams;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 
 import static com.googlecode.totallylazy.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Strings.bytes;

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;

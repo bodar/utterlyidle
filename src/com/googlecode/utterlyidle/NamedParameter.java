@@ -1,16 +1,15 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.TypeMap;
 import com.googlecode.yadic.generics.TypeFor;
 
-import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.Callables.callThrows;
+import static com.googlecode.totallylazy.functions.Callables.callThrows;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 

@@ -1,9 +1,8 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.functions.Block;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 public interface StreamingWriter {

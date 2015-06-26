@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.googlecode.totallylazy.Callables.descending;
+import static com.googlecode.totallylazy.functions.Callables.descending;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;

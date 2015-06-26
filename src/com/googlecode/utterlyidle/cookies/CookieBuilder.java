@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.Function2;
 import com.googlecode.totallylazy.Sequence;
 
 import java.util.concurrent.Callable;

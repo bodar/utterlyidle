@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Extractor;
 import com.googlecode.utterlyidle.UriTemplate;

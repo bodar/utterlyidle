@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.jetty;
 
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.CloseableCallable;

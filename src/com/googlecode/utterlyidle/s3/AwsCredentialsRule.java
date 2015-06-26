@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.Request;
 

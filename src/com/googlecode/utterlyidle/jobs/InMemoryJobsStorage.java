@@ -8,7 +8,7 @@ import com.googlecode.totallylazy.Value;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.Option.option;
 import static java.util.Collections.synchronizedMap;
 

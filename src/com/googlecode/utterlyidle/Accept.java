@@ -1,14 +1,12 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.regex.Regex;
 
-import java.util.regex.MatchResult;
-
-import static com.googlecode.totallylazy.Callables.descending;
+import static com.googlecode.totallylazy.functions.Callables.descending;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;

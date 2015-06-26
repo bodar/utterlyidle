@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Left;
 import com.googlecode.totallylazy.None;

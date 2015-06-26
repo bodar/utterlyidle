@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.json.Json;
@@ -18,7 +17,6 @@ import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.yadic.Container;
 import org.junit.Before;
 import org.junit.Test;
 

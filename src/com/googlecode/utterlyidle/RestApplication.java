@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import com.googlecode.utterlyidle.bindings.DefaultBindingMatcher;
@@ -25,7 +25,7 @@ import com.googlecode.yadic.closeable.CloseableContainer;
 
 import java.io.IOException;
 
-import static com.googlecode.totallylazy.Callables.value;
+import static com.googlecode.totallylazy.functions.Callables.value;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;

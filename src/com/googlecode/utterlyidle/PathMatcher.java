@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
-import static com.googlecode.totallylazy.Callables.first;
+import static com.googlecode.totallylazy.functions.Callables.first;
 import static com.googlecode.totallylazy.Predicates.where;
 
 public class PathMatcher extends LogicalPredicate<Request> {

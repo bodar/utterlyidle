@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.totallylazy.Block;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.StoppedClock;

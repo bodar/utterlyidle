@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.SystemClock;
 import com.googlecode.utterlyidle.HttpHandler;

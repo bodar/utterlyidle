@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.Function2;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;

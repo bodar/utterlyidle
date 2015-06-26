@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 
-import static com.googlecode.totallylazy.Functions.function;
+import static com.googlecode.totallylazy.functions.Functions.function;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.time.Seconds.between;
 import static java.util.concurrent.TimeUnit.SECONDS;

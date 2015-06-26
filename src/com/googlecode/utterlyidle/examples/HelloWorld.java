@@ -26,12 +26,10 @@ import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
 import java.util.Date;
 
-import static com.googlecode.totallylazy.Callables.toString;
+import static com.googlecode.totallylazy.functions.Callables.toString;
 import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;

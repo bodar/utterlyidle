@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.bindings.actions;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.yadic.Container;

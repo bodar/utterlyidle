@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.yadic.Container;

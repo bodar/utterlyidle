@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Rules;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.HttpHandler;

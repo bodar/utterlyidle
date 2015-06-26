@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.UtterlyIdleProperties;

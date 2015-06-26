@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Keyword;
 import com.googlecode.lazyrecords.Record;
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.time.Clock;
 
 import java.util.Date;

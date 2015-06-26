@@ -16,7 +16,7 @@ import com.googlecode.yadic.Container;
 
 import java.util.Map;
 
-import static com.googlecode.totallylazy.Callables.first;
+import static com.googlecode.totallylazy.functions.Callables.first;
 import static com.googlecode.totallylazy.Predicates.and;
 import static com.googlecode.totallylazy.Predicates.where;
 import static com.googlecode.totallylazy.Strings.contains;

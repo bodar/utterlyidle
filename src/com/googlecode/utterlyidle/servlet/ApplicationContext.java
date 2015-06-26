@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
-import com.googlecode.totallylazy.Block;
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Block;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Runnables;
 import com.googlecode.utterlyidle.Application;

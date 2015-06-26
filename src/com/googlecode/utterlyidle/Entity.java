@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Characters;
 import com.googlecode.totallylazy.Closeables;
 import com.googlecode.totallylazy.Lazy;

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.utterlyidle.Renderer;

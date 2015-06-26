@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Group;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
@@ -9,8 +9,8 @@ import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 
-import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.functions.Callables.first;
+import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.Pair.functions.pairToString;
 import static com.googlecode.totallylazy.Pair.functions.replaceFirst;
 import static com.googlecode.totallylazy.Pair.pair;

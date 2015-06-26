@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.services;
 
-import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.functions.Block;
 
 public interface Service {
     void start() throws Exception;

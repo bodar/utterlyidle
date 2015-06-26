@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.simpleframework;
 
-import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;

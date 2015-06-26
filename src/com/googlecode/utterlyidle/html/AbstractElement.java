@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Exceptions;
-import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.CurriedFunction2;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.functions.CurriedFunction2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;

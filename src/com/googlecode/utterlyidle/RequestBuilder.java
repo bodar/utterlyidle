@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Function1;
-import com.googlecode.totallylazy.Function2;
-import com.googlecode.totallylazy.Callables;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.functions.Function2;
+import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.Callables.first;
-import static com.googlecode.totallylazy.Callables.replace;
-import static com.googlecode.totallylazy.Callables.second;
+import static com.googlecode.totallylazy.functions.Callables.first;
+import static com.googlecode.totallylazy.functions.Callables.replace;
+import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Predicates.where;

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.Callables.returns;
+import static com.googlecode.totallylazy.functions.Callables.returns;
 
 public class Auditors implements Auditor{
     private final List<Callable<Auditor>> auditors = new ArrayList<Callable<Auditor>>();

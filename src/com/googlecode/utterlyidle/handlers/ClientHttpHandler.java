@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Bytes;
-import com.googlecode.totallylazy.Function2;
+import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Option;
@@ -34,7 +34,7 @@ import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
 
-import static com.googlecode.totallylazy.Callables.first;
+import static com.googlecode.totallylazy.functions.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.reflection.Fields.access;
 import static com.googlecode.totallylazy.reflection.Fields.fields;

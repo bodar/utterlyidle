@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Block;
+import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Rules;
 import com.googlecode.totallylazy.Sequence;

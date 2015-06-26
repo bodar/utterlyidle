@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Value;
 import com.googlecode.utterlyidle.Parameter;
 import com.googlecode.yadic.Container;
 
-import static com.googlecode.totallylazy.Callables.returns;
+import static com.googlecode.totallylazy.functions.Callables.returns;
 import static com.googlecode.yadic.resolvers.Resolvers.asResolver;
 
 public class DefinedParameter<T> implements Value<T>, Parameter {
