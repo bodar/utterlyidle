@@ -2,18 +2,16 @@ package com.googlecode.utterlyidle.html.browser;
 
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
-import com.googlecode.totallylazy.callables.LazyCallable;
+import com.googlecode.totallylazy.functions.LazyCallable;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.html.Html;
 
-import java.util.concurrent.Callable;
-
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
-import static com.googlecode.totallylazy.callables.LazyCallable.lazy;
+import static com.googlecode.totallylazy.functions.LazyCallable.lazy;
 import static java.lang.String.format;
 
 public interface BrowserState {

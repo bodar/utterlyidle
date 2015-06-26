@@ -15,7 +15,7 @@ import org.simpleframework.transport.connect.SocketConnection;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
+import static com.googlecode.totallylazy.functions.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
