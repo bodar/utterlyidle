@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.CurriedFunction2;
+import com.googlecode.totallylazy.functions.Curried2;
 import com.googlecode.totallylazy.Uri;
 
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
@@ -16,7 +16,7 @@ public interface Request {
     Entity entity();
 
     class functions {
-        public static CurriedFunction2<Request, Object, Request> replaceHeader(final String name) {
+        public static Curried2<Request, Object, Request> replaceHeader(final String name) {
             return (request, value) -> modify(request).replaceHeader(name, value).build();
         }
 

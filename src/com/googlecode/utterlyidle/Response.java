@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.CurriedFunction2;
+import com.googlecode.totallylazy.functions.Curried2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
@@ -78,7 +78,7 @@ public interface Response {
             return response -> response.headers().getValue(name);
         }
 
-        public static CurriedFunction2<Response, Object, Response> replaceHeader(final String name) {
+        public static Curried2<Response, Object, Response> replaceHeader(final String name) {
             return (response, value) -> modify(response).replaceHeaders(name, value).build();
         }
     }

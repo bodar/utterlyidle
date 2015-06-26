@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.CurriedFunction2;
+import com.googlecode.totallylazy.functions.Curried2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Predicate;
 import com.googlecode.totallylazy.Sequence;
@@ -90,7 +90,7 @@ public class AbstractElement {
             return attribute().flip().apply(attributeName);
         }
 
-        public static CurriedFunction2<AbstractElement, String, String> attribute() {
+        public static Curried2<AbstractElement, String, String> attribute() {
             return (element, attributeName) -> element.attribute(attributeName);
         }
 
@@ -98,7 +98,7 @@ public class AbstractElement {
             return contents().flip().apply(xpath);
         }
 
-        public static CurriedFunction2<AbstractElement, String, String> contents() {
+        public static Curried2<AbstractElement, String, String> contents() {
             return (element, xpath) -> element.contents(xpath);
         }
 
@@ -106,7 +106,7 @@ public class AbstractElement {
             return selectContent().flip().apply(xpath);
         }
 
-        public static CurriedFunction2<AbstractElement, String, String> selectContent() {
+        public static Curried2<AbstractElement, String, String> selectContent() {
             return (element, xpath) -> element.selectContent(xpath);
         }
 
@@ -115,7 +115,7 @@ public class AbstractElement {
             return innerHtml().flip().apply(xpath);
         }
 
-        public static CurriedFunction2<AbstractElement, String, Html> innerHtml() {
+        public static Curried2<AbstractElement, String, Html> innerHtml() {
             return (element, xpath) -> element.innerHtml(xpath);
         }
 
@@ -124,7 +124,7 @@ public class AbstractElement {
             return count().flip().apply(xpath);
         }
 
-        public static CurriedFunction2<AbstractElement, String, Number> count() {
+        public static Curried2<AbstractElement, String, Number> count() {
             return (element, xpath) -> element.count(xpath);
         }
     }

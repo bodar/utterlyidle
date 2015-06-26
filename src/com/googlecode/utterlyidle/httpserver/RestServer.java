@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 
-import static com.googlecode.totallylazy.functions.TimeFunction0.calculateMilliseconds;
+import static com.googlecode.totallylazy.functions.Time0.calculateMilliseconds;
 import static com.googlecode.totallylazy.concurrent.NamedExecutors.newFixedThreadPool;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
