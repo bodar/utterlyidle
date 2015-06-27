@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Curried2;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 

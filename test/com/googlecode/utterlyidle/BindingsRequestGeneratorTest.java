@@ -8,9 +8,7 @@ import com.googlecode.utterlyidle.annotations.PathParam;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 import org.junit.Test;
 
-import java.net.URL;
-
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BaseUriRedirectorTest.bindings;

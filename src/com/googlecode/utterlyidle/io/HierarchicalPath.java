@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.io;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
 
 import static com.googlecode.totallylazy.Sequences.empty;

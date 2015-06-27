@@ -7,7 +7,7 @@ import com.googlecode.utterlyidle.Response;
 
 import java.util.Set;
 
-import static com.googlecode.totallylazy.Predicates.in;
+import static com.googlecode.totallylazy.predicates.Predicates.in;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.WWW_AUTHENTICATE;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;

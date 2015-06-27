@@ -7,8 +7,8 @@ import java.io.File;
 import java.net.URL;
 
 import static com.googlecode.totallylazy.Files.workingDirectory;
-import static com.googlecode.totallylazy.URLs.packageUrl;
-import static com.googlecode.totallylazy.URLs.url;
+import static com.googlecode.totallylazy.http.URLs.packageUrl;
+import static com.googlecode.totallylazy.http.URLs.url;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.RequestBuilder.get;

@@ -5,8 +5,8 @@ import org.w3c.dom.Element;
 
 import java.util.NoSuchElementException;
 
-import static com.googlecode.totallylazy.Predicates.not;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.predicates.Predicates.not;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.totallylazy.Strings.empty;
 import static com.googlecode.totallylazy.xml.Xml.functions.attribute;
 import static com.googlecode.totallylazy.xml.Xml.functions.matches;

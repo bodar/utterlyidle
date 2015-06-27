@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.utterlyidle.annotations.Consumes;
@@ -24,7 +24,6 @@ import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -36,8 +35,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Left.left;
-import static com.googlecode.totallylazy.Predicates.instanceOf;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;

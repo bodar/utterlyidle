@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.predicates.Predicate;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.totallylazy.json.Json;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;

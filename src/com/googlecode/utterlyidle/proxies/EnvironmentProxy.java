@@ -2,9 +2,9 @@ package com.googlecode.utterlyidle.proxies;
 
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.totallylazy.match;
 import com.googlecode.totallylazy.regex.Regex;
 
@@ -15,11 +15,11 @@ import java.util.Map;
 import static com.googlecode.totallylazy.Maps.find;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
-import static com.googlecode.totallylazy.Predicates.is;
-import static com.googlecode.totallylazy.Predicates.matches;
+import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.predicates.Predicates.matches;
 import static com.googlecode.totallylazy.Strings.endsWith;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.totallylazy.Uri.functions.uri;
+import static com.googlecode.totallylazy.http.Uri.functions.uri;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 
 public class EnvironmentProxy implements ProxyFor {

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;

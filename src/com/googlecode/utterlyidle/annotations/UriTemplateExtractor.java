@@ -7,7 +7,7 @@ import com.googlecode.utterlyidle.UriTemplate;
 
 import java.lang.reflect.Method;
 
-import static com.googlecode.totallylazy.Predicates.notNullValue;
+import static com.googlecode.totallylazy.predicates.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.UriTemplate.trimSlashes;
 

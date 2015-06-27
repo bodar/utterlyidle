@@ -8,9 +8,9 @@ import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
 import java.util.UUID;
 
 import static com.googlecode.lazyrecords.Using.using;
-import static com.googlecode.totallylazy.Predicates.is;
-import static com.googlecode.totallylazy.Predicates.not;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.predicates.Predicates.not;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.totallylazy.Strings.empty;
 
 public class Schedules {

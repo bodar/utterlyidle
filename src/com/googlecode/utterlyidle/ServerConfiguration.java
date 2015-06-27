@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Unchecked;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.utterlyidle.httpserver.RestServer;
 
 import java.net.InetAddress;
@@ -9,7 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import static com.googlecode.totallylazy.Unchecked.cast;
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 import static java.lang.Integer.valueOf;
 import static java.lang.String.format;
 

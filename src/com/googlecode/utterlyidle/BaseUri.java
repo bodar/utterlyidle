@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.totallylazy.Value;
 
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
 import static java.lang.String.format;
 

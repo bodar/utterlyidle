@@ -6,7 +6,7 @@ import com.googlecode.utterlyidle.Extractor;
 
 import java.lang.reflect.Method;
 
-import static com.googlecode.totallylazy.Predicates.notNullValue;
+import static com.googlecode.totallylazy.predicates.Predicates.notNullValue;
 
 public class PriorityExtractor implements Extractor<Method, Integer> {
     public Integer extract(Method method) {

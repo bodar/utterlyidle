@@ -7,7 +7,7 @@ import com.googlecode.totallylazy.First;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.collections.PersistentList;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.Predicates.by;
+import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
 public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> implements Iterable<Pair<K, V>> {

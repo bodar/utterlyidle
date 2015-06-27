@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import static com.googlecode.totallylazy.functions.Callables.first;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 
 public class PathMatcher extends LogicalPredicate<Request> {
     private final UriTemplate uriTemplate;

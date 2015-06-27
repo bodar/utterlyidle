@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Strings;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.totallylazy.xml.Xml;
 import com.googlecode.utterlyidle.AttributeMap;
 import com.googlecode.utterlyidle.BasePath;
@@ -13,7 +13,7 @@ import javax.servlet.ServletContext;
 import java.net.MalformedURLException;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class ServletApiWrapper {

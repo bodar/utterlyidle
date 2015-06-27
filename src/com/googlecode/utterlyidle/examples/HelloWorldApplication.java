@@ -3,22 +3,17 @@ package com.googlecode.utterlyidle.examples;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.StreamingWriter;
-import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.jobs.JobsModule;
 import com.googlecode.utterlyidle.modules.PerformanceModule;
 import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.utterlyidle.profiling.ProfilingModule;
-import com.googlecode.utterlyidle.schedules.ScheduleModule;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Properties;
 
-import static com.googlecode.totallylazy.Predicates.instanceOf;
+import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
 import static com.googlecode.totallylazy.predicates.WherePredicate.where;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;

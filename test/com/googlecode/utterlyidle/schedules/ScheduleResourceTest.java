@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.memory.MemoryRecords;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.Binding;
@@ -16,8 +16,6 @@ import com.googlecode.utterlyidle.handlers.ApplicationId;
 import com.googlecode.utterlyidle.jobs.SpyExceptionLogger;
 import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.yadic.Container;
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 

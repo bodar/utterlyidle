@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Predicate;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.predicates.Predicate;
+import com.googlecode.totallylazy.http.Uri;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;

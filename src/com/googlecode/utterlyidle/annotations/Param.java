@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.annotations;
 
 import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 
 import java.lang.annotation.Annotation;
 

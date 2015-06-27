@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicates;
+import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.totallylazy.template.Templates;
 import com.googlecode.utterlyidle.Renderer;
@@ -17,8 +17,8 @@ import com.googlecode.yadic.Container;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.functions.Callables.first;
-import static com.googlecode.totallylazy.Predicates.and;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.predicates.Predicates.and;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.totallylazy.Strings.contains;
 import static com.googlecode.utterlyidle.Requests.pathAsString;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;

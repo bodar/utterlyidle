@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 import static com.googlecode.totallylazy.Option.none;
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 import static com.googlecode.utterlyidle.proxies.ProxyAdapter.systemProxy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

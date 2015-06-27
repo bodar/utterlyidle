@@ -2,12 +2,12 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Rules;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import static com.googlecode.totallylazy.Predicates.any;
+import static com.googlecode.totallylazy.predicates.Predicates.any;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
 public class RoutingClient implements HttpClient {

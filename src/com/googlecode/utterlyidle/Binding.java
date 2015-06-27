@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import static com.googlecode.totallylazy.Option.identity;
-import static com.googlecode.totallylazy.Predicates.where;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.utterlyidle.NamedParameter.methods.defaultValue;
 
 public class Binding  {

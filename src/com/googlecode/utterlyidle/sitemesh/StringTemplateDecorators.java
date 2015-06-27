@@ -1,9 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.totallylazy.template.Renderer;
-import com.googlecode.totallylazy.template.Template;
 import com.googlecode.totallylazy.template.Templates;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.yadic.Container;
@@ -15,7 +13,7 @@ import java.net.URL;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 import static com.googlecode.utterlyidle.sitemesh.Decorators.add;
 
 public class StringTemplateDecorators implements DecoratorProvider {

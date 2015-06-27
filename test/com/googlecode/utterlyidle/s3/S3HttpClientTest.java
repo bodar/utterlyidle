@@ -4,11 +4,10 @@ import com.googlecode.totallylazy.time.StoppedClock;
 import com.googlecode.utterlyidle.AuditTest;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.s3.S3SigningTest.dateInAmazonsExample;

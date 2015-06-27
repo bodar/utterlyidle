@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.jetty;
 
 import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.BasePath;

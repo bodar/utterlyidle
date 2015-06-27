@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.Uri.uri;
+import static com.googlecode.totallylazy.http.Uri.uri;
 
 public class UriActivator implements Callable<Uri> {
     private final String value;

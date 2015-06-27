@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.Request;

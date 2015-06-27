@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
 
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.http.Uri;
 
 public class WebRoot {
     private final Uri uri;

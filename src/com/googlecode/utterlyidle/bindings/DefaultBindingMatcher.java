@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.bindings;
 
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Binding;

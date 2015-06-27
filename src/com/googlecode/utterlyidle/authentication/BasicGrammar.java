@@ -8,7 +8,7 @@ import com.googlecode.totallylazy.parser.Parsers;
 import com.googlecode.totallylazy.security.Base64;
 
 import static com.googlecode.totallylazy.Characters.alphaNumeric;
-import static com.googlecode.totallylazy.Predicates.in;
+import static com.googlecode.totallylazy.predicates.Predicates.in;
 import static com.googlecode.totallylazy.parser.Parsers.isChar;
 import static com.googlecode.totallylazy.parser.Parsers.ws;
 

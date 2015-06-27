@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.bindings.actions;
 
-import com.googlecode.totallylazy.Predicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Value;
 
 import java.lang.reflect.Method;

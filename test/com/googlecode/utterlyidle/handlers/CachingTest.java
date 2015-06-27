@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Responses;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.Predicates.always;
+import static com.googlecode.totallylazy.predicates.Predicates.always;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
