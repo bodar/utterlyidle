@@ -4,7 +4,7 @@ import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.match;
 import com.googlecode.totallylazy.regex.Regex;
 
@@ -19,7 +19,7 @@ import static com.googlecode.totallylazy.predicates.Predicates.is;
 import static com.googlecode.totallylazy.predicates.Predicates.matches;
 import static com.googlecode.totallylazy.Strings.endsWith;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
-import static com.googlecode.totallylazy.http.Uri.functions.uri;
+import static com.googlecode.totallylazy.io.Uri.functions.uri;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 
 public class EnvironmentProxy implements ProxyFor {

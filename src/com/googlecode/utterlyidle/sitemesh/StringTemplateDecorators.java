@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.http.Uri.uri;
+import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.sitemesh.Decorators.add;
 
 public class StringTemplateDecorators implements DecoratorProvider {

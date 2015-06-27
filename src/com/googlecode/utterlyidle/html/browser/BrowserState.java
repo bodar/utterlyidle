@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.html.browser;
 
 import com.googlecode.totallylazy.functions.Lazy;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;

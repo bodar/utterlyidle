@@ -5,14 +5,14 @@ import com.googlecode.totallylazy.Left;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Right;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.dsl.DslTest;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.http.Uri.uri;
+import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BaseUri.baseUri;

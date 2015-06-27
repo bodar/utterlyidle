@@ -7,7 +7,7 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.http.Uri.uri;
+import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.s3.S3SigningTest.dateInAmazonsExample;

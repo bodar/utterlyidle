@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;

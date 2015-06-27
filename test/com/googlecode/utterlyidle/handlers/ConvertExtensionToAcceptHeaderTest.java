@@ -6,7 +6,7 @@ import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.http.Uri.uri;
+import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Response.methods.header;

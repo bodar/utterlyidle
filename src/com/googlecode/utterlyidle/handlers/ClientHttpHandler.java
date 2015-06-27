@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Files;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.CloseableList;
 import com.googlecode.totallylazy.multi;

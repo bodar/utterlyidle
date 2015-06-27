@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.proxies;
 
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 
 import java.net.Proxy;
 

@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;

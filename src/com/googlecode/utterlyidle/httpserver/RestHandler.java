@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.totallylazy.http.Uri.uri;
+import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;

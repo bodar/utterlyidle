@@ -16,7 +16,7 @@ import com.googlecode.utterlyidle.annotations.Produces;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.http.URLs.packageUrl;
+import static com.googlecode.totallylazy.io.URLs.packageUrl;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.MediaType.TEXT_XML;
 import static com.googlecode.utterlyidle.PathMatcher.path;

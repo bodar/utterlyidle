@@ -2,7 +2,7 @@ package com.googlecode.utterlyidle.proxies;
 
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.http.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.collections.PersistentSet;
 import com.googlecode.totallylazy.collections.PersistentSortedSet;
 
