@@ -1,4 +1,2 @@
-mvn:cglib:cglib-nodep:jar:2.2
-
-mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:pack|sources:2.172
+mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:pack|sources:2.179
 mvn://repo.bodar.com/com.googlecode.yadic:yadic:pack|sources:2.42
