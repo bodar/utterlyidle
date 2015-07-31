@@ -1,7 +1,21 @@
 mvn:org.simpleframework:simple:jar:4.1.21
 mvn:org.sitemesh:sitemesh:jar:3.0-alpha-2
+
+#Jetty 6
 mvn:org.mortbay.jetty:jetty-util:jar|sources:6.1.26
 mvn:org.mortbay.jetty:jetty:jar|sources:6.1.26
+
+#Jetty 9
+mvn:org.eclipse.jetty:jetty-http:jar|sources:9.2.8.v20150217
+mvn:org.eclipse.jetty:jetty-io:jar|sources:9.2.8.v20150217
+mvn:org.eclipse.jetty:jetty-util:jar|sources:9.2.8.v20150217
+mvn:org.eclipse.jetty:jetty-server:jar|sources:9.2.8.v20150217
+mvn:org.eclipse.jetty:jetty-servlet:jar|sources:9.2.8.v20150217
+mvn:org.eclipse.jetty:jetty-webapp:jar|sources:9.2.8.v20150217
+mvn:org.eclipse.jetty:jetty-security:jar|sources:9.2.8.v20150217
+
+mvn:javax.servlet:javax.servlet-api:jar|sources:3.1.0
+
 mvn:org.ccil.cowan.tagsoup:tagsoup:jar:1.2
 
 mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:pack|sources:292

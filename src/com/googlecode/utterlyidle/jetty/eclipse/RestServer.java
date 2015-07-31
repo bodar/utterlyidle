@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.jetty;
+package com.googlecode.utterlyidle.jetty.eclipse;
 
 import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Function1;
@@ -11,11 +11,11 @@ import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.webapp.WebAppContext;
-import org.mortbay.thread.QueuedThreadPool;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
@@ -25,33 +25,28 @@ import static com.googlecode.totallylazy.callables.TimeCallable.calculateMillise
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
-import static org.mortbay.jetty.servlet.Context.NO_SESSIONS;
 
 public class RestServer implements com.googlecode.utterlyidle.Server {
     private final Application application;
     private final ServerConfiguration configuration;
     private Server server;
     private Uri uri;
-    private final Callable1<? super Server, ? extends Context> contextCreator;
-    private Context context;
+    private final Callable1<? super Server, ? extends ServletContextHandler> contextCreator;
+    private ServletContextHandler context;
 
-    private RestServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends Context> contextCreator) throws Exception {
+    private RestServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends ServletContextHandler> contextCreator) throws Exception {
         this.application = application;
         this.configuration = configuration;
         this.contextCreator = contextCreator;
         server = startApp();
     }
 
-    public static RestServer restServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends Context> contextCreator) throws Exception {
+    public static RestServer restServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends ServletContextHandler> contextCreator) throws Exception {
         return new RestServer(application, configuration, contextCreator);
     }
 
     public static RestServer restServer(final Application application, final ServerConfiguration configuration) throws Exception {
         return restServer(application, configuration, defaultContext(application, configuration));
-    }
-
-    public static RestServer webXmlRestServer(final Application application, final ServerConfiguration configuration, Uri webRoot) throws Exception {
-        return restServer(application, configuration, webXmlContext(webRoot, configuration));
     }
 
     public void close() throws IOException {
@@ -85,11 +80,11 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return server;
     }
 
-    public static Function1<Server, Context> defaultContext(final Application application, final ServerConfiguration configuration) {
-        return new Function1<Server, Context>() {
+    public static Function1<Server, ServletContextHandler> defaultContext(final Application application, final ServerConfiguration configuration) {
+        return new Function1<Server, ServletContextHandler>() {
             @Override
-            public Context call(Server server) throws Exception {
-                Context context = new Context(server, contextPath(configuration.basePath()), NO_SESSIONS);
+            public ServletContextHandler call(Server server) throws Exception {
+                ServletContextHandler context = new ServletContextHandler(server, contextPath(configuration.basePath()), false, false);
                 application.add(new ServletModule(context.getServletContext()));
                 context.addServlet(ApplicationServlet.class, "/*");
                 return context;
@@ -97,7 +92,7 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         };
     }
 
-    private static String contextPath(BasePath basePath) {
+    static String contextPath(BasePath basePath) {
         return removeTrailingSlash(basePath.toString());
     }
 
@@ -106,27 +101,17 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return value.substring(0, value.length() - 1);
     }
 
-    public static Function1<Server, Context> webXmlContext(final Uri webRoot, final ServerConfiguration configuration) {
-        return new Function1<Server, Context>() {
-            @Override
-            public Context call(Server server) throws Exception {
-                return new WebAppContext(server, webRoot.toString(), contextPath(configuration.basePath()));
-            }
-        };
-    }
-
     private Server createServer(ServerConfiguration serverConfig) {
-        Server server = new Server();
-        SelectChannelConnector selectChannelConnector = new SelectChannelConnector();
-        selectChannelConnector.setPort(serverConfig.port());
-        selectChannelConnector.setHost(serverConfig.bindAddress().getHostAddress());
-        server.addConnector(selectChannelConnector);
-        server.setThreadPool(new QueuedThreadPool(serverConfig.maxThreadNumber()));
+        Server server = new Server(new QueuedThreadPool(serverConfig.maxThreadNumber()));
+        ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory());
+        serverConnector.setPort(serverConfig.port());
+        serverConnector.setHost(serverConfig.bindAddress().getHostAddress());
+        server.addConnector(serverConnector);
         return server;
     }
 
     private int portNumber(Server server) {
-        return sequence(server.getConnectors()).head().getLocalPort();
+        return sequence(server.getConnectors()).safeCast(ServerConnector.class).head().getLocalPort();
     }
 
     @Override
@@ -143,6 +128,6 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     static {
-        org.mortbay.log.Log.setLog(null);
+        org.eclipse.jetty.util.log.Log.setLog(new NoLogging());
     }
 }

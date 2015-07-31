@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
@@ -11,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
@@ -31,6 +33,7 @@ import static com.googlecode.utterlyidle.RequestBuilder.patch;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.Response.methods.headerOption;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
@@ -82,8 +85,8 @@ public abstract class ServerContract<T extends Server> {
         Response response = handle(get("etag").header(IF_NONE_MATCH, header(responseWithEtag, ETAG)), server);
 
         assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
-        assertThat(header(response, CONTENT_LENGTH), CoreMatchers.is("0"));
-        assertThat(response.entity().length(), CoreMatchers.is(some(0)));
+        assertThat(headerOption(response, CONTENT_LENGTH), CoreMatchers.is(none(String.class)));
+        assertThat(response.entity().length(), CoreMatchers.is(none(Integer.class)));
     }
 
     @Test
