@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle.jetty.eclipse;
 
-import com.googlecode.totallylazy.Uri;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import org.eclipse.jetty.server.Handler;
