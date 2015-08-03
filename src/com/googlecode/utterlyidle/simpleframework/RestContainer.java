@@ -71,7 +71,7 @@ public class RestContainer implements Container {
 
     private Function2<Response, Pair<String, String>, Response> mapHeaders() {
         return (response, applicationHeader) -> {
-            response.set(applicationHeader.first(), applicationHeader.second());
+            response.setValue(applicationHeader.first(), applicationHeader.second());
             return response;
         };
     }
