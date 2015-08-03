@@ -1,5 +1,9 @@
-mvn:org.simpleframework:simple:jar:4.1.21
 mvn:org.sitemesh:sitemesh:jar:3.0-alpha-2
+
+# Simple Framework http://www.simpleframework.org/
+mvn:org.simpleframework:simple-common:jar|sources:6.0.1
+mvn:org.simpleframework:simple-http:jar|sources:6.0.1
+mvn:org.simpleframework:simple-transport:jar|sources:6.0.1
 
 #Jetty 6
 mvn:org.mortbay.jetty:jetty-util:jar|sources:6.1.26

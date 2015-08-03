@@ -72,7 +72,7 @@ public class RestContainer implements Container {
     private Callable2<Response, Pair<String, String>, Response> mapHeaders() {
         return new Callable2<Response, Pair<String, String>, Response>() {
             public Response call(Response response, Pair<String, String> applicationHeader) throws Exception {
-                response.set(applicationHeader.first(), applicationHeader.second());
+                response.setValue(applicationHeader.first(), applicationHeader.second());
                 return response;
             }
         };

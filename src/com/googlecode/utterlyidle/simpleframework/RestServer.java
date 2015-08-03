@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerServer;
+import org.simpleframework.http.core.ContainerSocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
@@ -57,7 +57,7 @@ public class RestServer implements Server {
 
     private SocketConnection startUpApp(Application application, ServerConfiguration configuration) throws IOException {
         Container container = new RestContainer(application);
-        SocketConnection connection = new SocketConnection(new ContainerServer(container, configuration.maxThreadNumber()));
+        SocketConnection connection = new SocketConnection(new ContainerSocketProcessor(container, configuration.maxThreadNumber()));
         InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.port()));
 
         ServerConfiguration updatedConfiguration = configuration.port(socketAddress.getPort());
