@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.ResponseBuilder;
@@ -62,8 +63,8 @@ public class RestContainer implements Container {
     private void mapTo(com.googlecode.utterlyidle.Response applicationResponse, Response response) throws IOException {
         response.setCode(applicationResponse.status().code());
         sequence(applicationResponse.headers()).fold(response, mapHeaders());
-        for (Integer integer : applicationResponse.entity().length()) {
-            response.setContentLength(integer);
+        for (String integer : applicationResponse.headers().valueOption(HttpHeaders.CONTENT_LENGTH)) {
+            response.setContentLength(Integer.parseInt(integer));
         }
         using(response.getOutputStream(), applicationResponse.entity().writer());
     }

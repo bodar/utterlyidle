@@ -4,10 +4,12 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
+import org.eclipse.jetty.http.HttpHeader;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -51,23 +53,23 @@ public class ApplicationServlet extends HttpServlet {
     public void service(final HttpServletRequest httpServletRequest, HttpServletResponse resp) throws ServletException {
         try {
             Response response = application().handle(request(httpServletRequest));
-            mapTo(response, resp);
+            transfer(response, resp);
         } catch (Exception e) {
             throw new ServletException(e);
         }
     }
 
     @SuppressWarnings({"deprecation"})
-    private void mapTo(Response response, HttpServletResponse resp) throws IOException {
-        Status status = response.status();
-        resp.setStatus(status.code(), status.description());
-        for (Pair<String, String> pair : response.headers()) {
-            resp.addHeader(pair.first(), pair.second());
+    public static void transfer(Response source, HttpServletResponse destination) throws IOException {
+        Status status = source.status();
+        destination.setStatus(status.code(), status.description());
+        for (Pair<String, String> pair : source.headers()) {
+            destination.addHeader(pair.first(), pair.second());
         }
-        for (Integer length : response.entity().length()) {
-            resp.setContentLength(length);
+        for (String length : source.headers().valueOption(HttpHeaders.CONTENT_LENGTH)) {
+            destination.setContentLength(Integer.parseInt(length));
         }
-        using(resp.getOutputStream(), response.entity().writer());
+        using(destination.getOutputStream(), source.entity().writer());
     }
 
     public static Request request(HttpServletRequest servletRequest) {

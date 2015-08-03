@@ -1,8 +1,9 @@
 package com.googlecode.utterlyidle.httpserver;
 
-import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Value;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
@@ -47,16 +48,11 @@ public class RestHandler implements HttpHandler {
             httpExchange.getResponseHeaders().add(pair.first(), pair.second());
         }
 
-        httpExchange.sendResponseHeaders(response.status().code(), fixBadApiDesign(response.entity().length()));
+        httpExchange.sendResponseHeaders(response.status().code(), ContentLength.handle(response).value());
         using(httpExchange.getResponseBody(), response.entity().writer());
         httpExchange.close();
     }
 
-    private long fixBadApiDesign(final Option<Integer> length) {
-        if (length.isEmpty()) return 0;
-        if (length.get() == 0) return -1;
-        return length.get();
-    }
 
     private Request request(HttpExchange httpExchange) {
         Request request = Requests.request(
@@ -82,6 +78,31 @@ public class RestHandler implements HttpHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stream));
         return ResponseBuilder.modify(response).entity(stream.toByteArray()).build();
+    }
+}
+
+class ContentLength {
+    static ResponseType responseType(final long value){
+        return new ResponseType() {
+            @Override
+            public Long value() {
+                return value;
+            }
+        };
+    }
+
+    static ResponseType NoContent = responseType(-1); // Yes no content is NOT 0
+    static ResponseType Streaming = responseType(0); // Yes streaming is 0
+    static ResponseType Content(long value) {
+        return responseType(value);
+    }
+
+    interface ResponseType extends Value<Long> { }
+
+    static ResponseType handle(final Response response) {
+        if(response.entity().isStreaming()) return Streaming;
+        for (String length : response.headers().valueOption(HttpHeaders.CONTENT_LENGTH)) return Content(Long.parseLong(length));
+        return NoContent;
     }
 
 }

@@ -5,6 +5,8 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThanOrEqualTo;
@@ -24,7 +26,14 @@ public class ContentLengthHandler implements HttpHandler {
     }
 
     public static Response setContentLength(Response response) {
+        ResponseBuilder builder = ResponseBuilder.modify(response);
+        Status status = response.status();
+
+        if(status.isInformational() || status.equals(Status.NO_CONTENT) || status.equals(Status.NOT_MODIFIED)) {
+            return builder.removeEntity().removeHeaders(CONTENT_LENGTH).build();
+        }
         return response.entity().length().fold(response, Response.functions.replaceHeader(CONTENT_LENGTH));
+
     }
 
     public static HeaderParameters setContentLength(Entity entity, HeaderParameters headers) {

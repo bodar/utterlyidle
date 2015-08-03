@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
+import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.time.Dates.LEXICAL;
@@ -85,8 +87,7 @@ public abstract class ServerContract<T extends Server> {
         Response response = handle(get("etag").header(IF_NONE_MATCH, header(responseWithEtag, ETAG)), server);
 
         assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
-        assertThat(headerOption(response, CONTENT_LENGTH), CoreMatchers.is(none(String.class)));
-        assertThat(response.entity().length(), CoreMatchers.is(none(Integer.class)));
+        assertThat(headerOption(response, CONTENT_LENGTH).filter(not(Predicates.is("0"))), CoreMatchers.is(none(String.class)));
     }
 
     @Test
