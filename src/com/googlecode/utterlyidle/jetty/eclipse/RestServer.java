@@ -1,23 +1,23 @@
 package com.googlecode.utterlyidle.jetty.eclipse;
 
-import com.googlecode.totallylazy.Callable1;
-import com.googlecode.totallylazy.Function1;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
-import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
-import com.googlecode.utterlyidle.servlet.ServletModule;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -27,91 +27,54 @@ import static java.lang.String.format;
 import static java.lang.System.nanoTime;
 
 public class RestServer implements com.googlecode.utterlyidle.Server {
-    private final Application application;
-    private final ServerConfiguration configuration;
-    private Server server;
-    private Uri uri;
-    private final Callable1<? super Server, ? extends ServletContextHandler> contextCreator;
-    private ServletContextHandler context;
+    protected final Application application;
+    protected final ServerConfiguration configuration;
+    protected Server server;
+    protected Handler handler;
+    protected Uri uri;
 
-    private RestServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends ServletContextHandler> contextCreator) throws Exception {
+    protected RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
         this.application = application;
         this.configuration = configuration;
-        this.contextCreator = contextCreator;
-        server = startApp();
-    }
-
-    public static RestServer restServer(final Application application, final ServerConfiguration configuration, Callable1<? super Server, ? extends ServletContextHandler> contextCreator) throws Exception {
-        return new RestServer(application, configuration, contextCreator);
+        long start = nanoTime();
+        server = createServer(configuration);
+        handler = createHandler(server);
+        server.start();
+        uri = configuration.port(sequence(server.getConnectors()).safeCast(ServerConnector.class).head().getLocalPort()).toUrl();
+        System.out.println(format("Listening on %s, started Jetty in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
+        Service.functions.start().callConcurrently(application);
     }
 
     public static RestServer restServer(final Application application, final ServerConfiguration configuration) throws Exception {
-        return restServer(application, configuration, defaultContext(application, configuration));
-    }
-
-    public void close() throws IOException {
-        try {
-            server.stop();
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
+        return new RestServer(application, configuration);
     }
 
     public static void main(String[] args) throws Exception {
         ApplicationBuilder.application(HelloWorldApplication.class).start(defaultConfiguration().port(8002));
     }
 
-    private Server startApp() throws Exception {
-        long start = nanoTime();
-        Server server = startUpServer();
-        System.out.println(format("Listening on %s, started Jetty in %s msecs", uri, calculateMilliseconds(start, nanoTime())));
-        Service.functions.start().callConcurrently(application);
-        return server;
-    }
-
-    private Server startUpServer() throws Exception {
-        Server server = createServer(configuration);
-
-        context = contextCreator.call(server);
-        server.start();
-
-        servletContext().setAttribute(Application.class.getCanonicalName(), application);
-        uri = configuration.port(portNumber(server)).toUrl();
-        return server;
-    }
-
-    public static Function1<Server, ServletContextHandler> defaultContext(final Application application, final ServerConfiguration configuration) {
-        return new Function1<Server, ServletContextHandler>() {
+    protected Handler createHandler(Server server){
+        Handler handler = new AbstractHandler() {
             @Override
-            public ServletContextHandler call(Server server) throws Exception {
-                ServletContextHandler context = new ServletContextHandler(server, contextPath(configuration.basePath()), false, false);
-                application.add(new ServletModule(context.getServletContext()));
-                context.addServlet(ApplicationServlet.class, "/*");
-                return context;
+            public void handle(String target, Request baseRequest, HttpServletRequest servletRequest, HttpServletResponse response) throws IOException, ServletException {
+                try {
+                    ApplicationServlet.transfer(application.handle(ApplicationServlet.request(servletRequest)), response);
+                } catch (Exception e) {
+                    throw new ServletException(e.getMessage(), e);
+                }
             }
         };
+        server.setHandler(handler);
+        return handler;
     }
 
-    static String contextPath(BasePath basePath) {
-        return removeTrailingSlash(basePath.toString());
-    }
-
-    private static String removeTrailingSlash(final String value) {
-        if (!value.endsWith("/")) return value;
-        return value.substring(0, value.length() - 1);
-    }
-
-    private Server createServer(ServerConfiguration serverConfig) {
+    protected Server createServer(ServerConfiguration serverConfig) {
         Server server = new Server(new QueuedThreadPool(serverConfig.maxThreadNumber()));
         ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory());
         serverConnector.setPort(serverConfig.port());
         serverConnector.setHost(serverConfig.bindAddress().getHostAddress());
         server.addConnector(serverConnector);
         return server;
-    }
-
-    private int portNumber(Server server) {
-        return sequence(server.getConnectors()).safeCast(ServerConnector.class).head().getLocalPort();
     }
 
     @Override
@@ -123,8 +86,12 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return uri;
     }
 
-    public ServletContext servletContext() {
-        return context.getServletContext();
+    public void close() throws IOException {
+        try {
+            server.stop();
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 
     static {
