@@ -13,30 +13,29 @@ import static com.googlecode.utterlyidle.s3.AnyS3Request.anyS3Request;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
 
 public class S3HttpClient implements HttpClient {
-
     private final HttpHandler httpClient;
     private final S3RequestSigner signer;
-
-    public S3HttpClient(final AwsCredentials credentials) {
-        this(new RedirectHttpHandler(new ClientHttpHandler()), new S3RequestSigner(sequence(rule(anyS3Request, credentials))));
-    }
-
-    public S3HttpClient(final HttpHandler httpClient, final AwsCredentials credentials) {
-        this(httpClient, new S3RequestSigner(sequence(rule(anyS3Request, credentials))));
-    }
 
     public S3HttpClient(final HttpHandler httpClient, final S3RequestSigner signer) {
         this.httpClient = httpClient;
         this.signer = signer;
     }
 
-    @Override
-    public Response handle(final Request request) throws Exception {
-        return httpClient.handle(possiblySign(s3ToHttp(request)));
+    public S3HttpClient(final HttpHandler httpClient, final AwsCredentials credentials) {
+        this(httpClient, new S3RequestSigner(sequence(rule(anyS3Request, credentials))));
     }
 
-    private Request possiblySign(final Request request) {
-        return signer.sign(request);
+    public S3HttpClient(final HttpHandler httpClient) {
+        this(httpClient, AwsCredentials.awsCredentials());
+    }
+
+    public S3HttpClient(final AwsCredentials credentials) {
+        this(new RedirectHttpHandler(new ClientHttpHandler()), credentials);
+    }
+
+    @Override
+    public Response handle(final Request request) throws Exception {
+        return httpClient.handle(signer.sign(s3ToHttp(request)));
     }
 
     private Request s3ToHttp(final Request request) {
