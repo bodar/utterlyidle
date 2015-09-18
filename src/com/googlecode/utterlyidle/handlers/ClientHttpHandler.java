@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -169,6 +170,14 @@ public class ClientHttpHandler implements HttpClient, Closeable {
 
     private static final Field httpMethod = access(fields(HttpURLConnection.class).find(where(name, is("method"))).get());
     private void setHttpMethod(final Request request, final HttpURLConnection connection) {
+        try {
+            connection.setRequestMethod(request.method());
+        } catch (ProtocolException e) {
+            useReflection(request, connection);
+        }
+    }
+
+    private void useReflection(final Request request, final HttpURLConnection connection) {
         try {
             httpMethod.set(connection, request.method());
         } catch (IllegalAccessException e) {
