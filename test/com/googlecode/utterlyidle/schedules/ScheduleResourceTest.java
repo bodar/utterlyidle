@@ -73,6 +73,14 @@ public class ScheduleResourceTest {
         assertFalse(logger.hasLogged);
     }
 
+    @Test
+    public void scheduleListCanBeRequestedAsJson() throws Exception {
+        final ApplicationBuilder application = application().add((RequestScopedModule) container -> {
+            return container.addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()));
+        }).add(new ScheduleModule());
+        assertThat(application.handle(get("schedules/list")).entity().toString(), is("{\"schedules\":[],\"schedulerIsRunning\":false}"));
+    }
+
     private static class StubHttpScheduler extends HttpScheduler {
 
         public Schedule lastSchedule;

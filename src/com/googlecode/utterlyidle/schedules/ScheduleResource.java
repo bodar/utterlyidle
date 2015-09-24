@@ -31,9 +31,11 @@ import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
 import static com.googlecode.utterlyidle.RequestBuilder.modify;
 
-@Path("schedules")
+@Path(ScheduleResource.PATH)
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
 public class ScheduleResource {
+    public static final String PATH = "schedules";
+
     private final HttpScheduler scheduler;
     private final Request request;
     private final Redirector redirector;
