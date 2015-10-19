@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle.examples;
 
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.numbers.Numbers;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -32,6 +33,7 @@ import java.io.Writer;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Callables.toString;
+import static com.googlecode.totallylazy.Sequences.repeat;
 import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
@@ -39,6 +41,8 @@ import static com.googlecode.utterlyidle.ResponseBuilder.response;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
+    public static final String CHUNK = repeat("a").take(1000000).toString("");
+
     @GET
     @Path("primes")
     public Sequence<Number> primes() {
@@ -48,7 +52,7 @@ public class HelloWorld {
     @GET
     @Path("chunk")
     public StreamingOutput chunk() {
-        return streamingOutputOf("chunk");
+        return streamingOutputOf(CHUNK);
     }
 
     @GET
