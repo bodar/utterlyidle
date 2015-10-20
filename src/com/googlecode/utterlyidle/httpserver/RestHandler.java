@@ -91,9 +91,10 @@ class ContentLength {
         };
     }
 
-    static ResponseType NoContent = responseType(-1); // Yes no content is NOT 0
-    static ResponseType Streaming = responseType(0); // Yes streaming is 0
+    static ResponseType NoContent = responseType(-1); // Yes "no content" is NOT 0!
+    static ResponseType Streaming = responseType(0); // Yes streaming is 0!
     static ResponseType Content(long value) {
+        if(value == 0) return NoContent;
         return responseType(value);
     }
 
