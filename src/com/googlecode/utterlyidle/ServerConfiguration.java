@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.httpserver.RestServer;
 
@@ -15,25 +14,29 @@ import static java.lang.String.format;
 
 public class ServerConfiguration {
 
+    public static final String SERVER_PROTOCOL = "server.protocol";
     public static final String SERVER_BASE_PATH = "server.base.path";
     public static final String MAX_THREAD_NUM = "server.max.thread.number";
     public static final String SERVER_BIND_ADDRESS = "server.bind.address";
     public static final String SERVER_PORT = "server.port";
     public static final String SERVER_CLASS = "server.class";
 
+    public static final String DEFAULT_PROTOCOL = Protocol.HTTP;
     public static final String DEFAULT_BASE_PATH = "/";
     public static final String DEFAULT_THREAD_NUMBER = "50";
     public static final String DEFAULT_BIND_ADDRESS = "0.0.0.0";
     public static final String DEFAULT_PORT = "0";
     public static final String DEFAULT_CLASS = RestServer.class.getCanonicalName();
 
+    private final String protocol;
     private final BasePath basePath;
     private final int maxThreadNumber;
     private final InetAddress bindAddress;
     private final int port;
     private final Class<? extends Server> serverClass;
 
-    public ServerConfiguration(BasePath basePath, int maxThreadNumber, InetAddress bindAddress, int port, Class<? extends Server> serverClass) {
+    public ServerConfiguration(String protocol, BasePath basePath, int maxThreadNumber, InetAddress bindAddress, int port, Class<? extends Server> serverClass) {
+        this.protocol = protocol;
         this.basePath = basePath;
         this.maxThreadNumber = maxThreadNumber;
         this.bindAddress = bindAddress;
@@ -42,11 +45,12 @@ public class ServerConfiguration {
     }
 
     public ServerConfiguration() {
-        this( new BasePath(DEFAULT_BASE_PATH), Integer.parseInt(DEFAULT_THREAD_NUMBER), toInetAddress(DEFAULT_BIND_ADDRESS), Integer.parseInt(DEFAULT_PORT), toServer(DEFAULT_CLASS));
+        this(DEFAULT_PROTOCOL, new BasePath(DEFAULT_BASE_PATH), Integer.parseInt(DEFAULT_THREAD_NUMBER), toInetAddress(DEFAULT_BIND_ADDRESS), Integer.parseInt(DEFAULT_PORT), toServer(DEFAULT_CLASS));
     }
 
     public ServerConfiguration(Properties properties) {
-        this(new BasePath(properties.getProperty(SERVER_BASE_PATH, DEFAULT_BASE_PATH)),
+        this(properties.getProperty(SERVER_PROTOCOL, DEFAULT_PROTOCOL),
+                new BasePath(properties.getProperty(SERVER_BASE_PATH, DEFAULT_BASE_PATH)),
                 valueOf(properties.getProperty(MAX_THREAD_NUM, DEFAULT_THREAD_NUMBER)),
                 toInetAddress(properties.getProperty(SERVER_BIND_ADDRESS, DEFAULT_BIND_ADDRESS)),
                 valueOf(properties.getProperty(SERVER_PORT, DEFAULT_PORT)),
@@ -62,7 +66,7 @@ public class ServerConfiguration {
     }
 
     public ServerConfiguration basePath(BasePath basePath) {
-        return new ServerConfiguration(basePath, maxThreadNumber, bindAddress, port, serverClass);
+        return new ServerConfiguration(protocol, basePath, maxThreadNumber, bindAddress, port, serverClass);
     }
 
     public int maxThreadNumber() {
@@ -70,7 +74,7 @@ public class ServerConfiguration {
     }
 
     public ServerConfiguration maxThreadNumber(int maxThreadNumber) {
-        return new ServerConfiguration(basePath, maxThreadNumber, bindAddress, port, serverClass);
+        return new ServerConfiguration(protocol, basePath, maxThreadNumber, bindAddress, port, serverClass);
     }
 
     public Class<? extends Server> serverClass() {
@@ -78,7 +82,7 @@ public class ServerConfiguration {
     }
 
     public ServerConfiguration serverClass(Class<? extends Server> serverClass) {
-        return new ServerConfiguration(basePath, maxThreadNumber, bindAddress, port, serverClass);
+        return new ServerConfiguration(protocol, basePath, maxThreadNumber, bindAddress, port, serverClass);
     }
 
     public InetAddress bindAddress() {
@@ -86,11 +90,15 @@ public class ServerConfiguration {
     }
 
     public ServerConfiguration bindAddress(InetAddress bindAddress) {
-        return new ServerConfiguration(basePath, maxThreadNumber, bindAddress, port, serverClass);
+        return new ServerConfiguration(protocol, basePath, maxThreadNumber, bindAddress, port, serverClass);
     }
 
     public ServerConfiguration port(int bindPort) {
-        return new ServerConfiguration(basePath, maxThreadNumber, bindAddress, bindPort, serverClass);
+        return new ServerConfiguration(protocol, basePath, maxThreadNumber, bindAddress, bindPort, serverClass);
+    }
+
+    public ServerConfiguration protocol(final String protocol) {
+        return new ServerConfiguration(protocol, basePath, maxThreadNumber, bindAddress, port, serverClass);
     }
 
     public int port() {
@@ -105,6 +113,7 @@ public class ServerConfiguration {
         }
     }
 
+
     private static Class<? extends Server> toServer(String className) {
         try {
             return cast(Class.forName(className));
@@ -113,8 +122,7 @@ public class ServerConfiguration {
         }
     }
 
-
     public Uri toUrl() {
-        return uri(format("http://localhost:%s%s", port(), basePath()));
+        return uri(format(protocol + "://localhost:%s%s", port(), basePath()));
     }
 }

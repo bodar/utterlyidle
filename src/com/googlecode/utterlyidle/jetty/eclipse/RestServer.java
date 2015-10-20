@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.jetty.eclipse;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
@@ -13,6 +14,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.ServletException;
@@ -20,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.callables.TimeCallable.calculateMilliseconds;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
@@ -29,13 +33,15 @@ import static java.lang.System.nanoTime;
 public class RestServer implements com.googlecode.utterlyidle.Server {
     protected final Application application;
     protected final ServerConfiguration configuration;
+    private final Option<SslContextFactory> sslContextFactory;
     protected Server server;
     protected Handler handler;
     protected Uri uri;
 
-    protected RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
+    protected RestServer(final Application application, final ServerConfiguration configuration, final Option<SslContextFactory> sslContextFactory) throws Exception {
         this.application = application;
         this.configuration = configuration;
+        this.sslContextFactory = sslContextFactory;
         long start = nanoTime();
         server = createServer(configuration);
         handler = createHandler(server);
@@ -45,15 +51,23 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         Service.functions.start().callConcurrently(application);
     }
 
+    protected RestServer(final Application application, final ServerConfiguration configuration) throws Exception {
+        this(application, configuration, null);
+    }
+
     public static RestServer restServer(final Application application, final ServerConfiguration configuration) throws Exception {
-        return new RestServer(application, configuration);
+        return new RestServer(application, configuration, none(SslContextFactory.class));
+    }
+
+    public static RestServer restServer(final Application application, final ServerConfiguration configuration, final SslContextFactory sslContextFactory) throws Exception {
+        return new RestServer(application, configuration, some(sslContextFactory));
     }
 
     public static void main(String[] args) throws Exception {
         ApplicationBuilder.application(HelloWorldApplication.class).start(defaultConfiguration().port(8002));
     }
 
-    protected Handler createHandler(Server server){
+    protected Handler createHandler(Server server) {
         Handler handler = new AbstractHandler() {
             @Override
             public void handle(String target, Request baseRequest, HttpServletRequest servletRequest, HttpServletResponse response) throws IOException, ServletException {
@@ -70,10 +84,10 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
 
     protected Server createServer(ServerConfiguration serverConfig) {
         Server server = new Server(new QueuedThreadPool(serverConfig.maxThreadNumber()));
-        ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory());
-        serverConnector.setPort(serverConfig.port());
-        serverConnector.setHost(serverConfig.bindAddress().getHostAddress());
-        server.addConnector(serverConnector);
+        ServerConnector connector = new ServerConnector(server, sslContextFactory.getOrNull(), new HttpConnectionFactory());
+        connector.setPort(serverConfig.port());
+        connector.setHost(serverConfig.bindAddress().getHostAddress());
+        server.addConnector(connector);
         return server;
     }
 

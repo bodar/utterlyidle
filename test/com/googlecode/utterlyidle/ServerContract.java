@@ -1,10 +1,11 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.handlers.HttpHandlers;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
 import com.googlecode.utterlyidle.rendering.exceptions.StoredException;
 import org.hamcrest.CoreMatchers;
@@ -14,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Option.none;
-import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Predicates.not;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
@@ -38,7 +38,7 @@ import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Response.methods.headerOption;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
-import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
+import static com.googlecode.utterlyidle.handlers.HttpHandlers.handle;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -65,7 +65,7 @@ public abstract class ServerContract<T extends Server> {
         Response response = handle(get("chunk"), server);
 
         assertThat(response.status(), is(Status.OK));
-        assertThat(response.entity().toString(), is("chunk"));
+        assertThat(response.entity().toString(), is(HelloWorld.CHUNK));
     }
 
     @Test

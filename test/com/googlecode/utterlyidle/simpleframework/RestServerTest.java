@@ -1,13 +1,13 @@
 package com.googlecode.utterlyidle.simpleframework;
 
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerContract;
+import com.googlecode.utterlyidle.handlers.HttpHandlers;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.Status.NOT_ACCEPTABLE;
-import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
+import static com.googlecode.utterlyidle.handlers.HttpHandlers.handle;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;

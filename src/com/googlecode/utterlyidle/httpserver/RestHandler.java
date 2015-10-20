@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.httpserver;
 
+import com.googlecode.totallylazy.Callable1;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Value;
 import com.googlecode.utterlyidle.Application;
@@ -17,9 +18,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;
 import static com.googlecode.utterlyidle.Responses.response;
 
@@ -91,8 +94,8 @@ class ContentLength {
         };
     }
 
-    static ResponseType NoContent = responseType(-1); // Yes no content is NOT 0
-    static ResponseType Streaming = responseType(0); // Yes streaming is 0
+    static ResponseType NoContent = responseType(-1); // No content is NOT 0
+    static ResponseType Streaming = responseType(0); // Streaming is 0
     static ResponseType Content(long value) {
         return responseType(value);
     }
@@ -100,9 +103,23 @@ class ContentLength {
     interface ResponseType extends Value<Long> { }
 
     static ResponseType handle(final Response response) {
-        if(response.entity().isStreaming()) return Streaming;
-        for (String length : response.headers().valueOption(HttpHeaders.CONTENT_LENGTH)) return Content(Long.parseLong(length));
-        return NoContent;
+        if (response.entity().isStreaming()) {
+            return Streaming;
+        }
+        return response.headers().valueOption(CONTENT_LENGTH).map(toResponseType()).getOrElse(NoContent);
     }
 
+    private static Callable1<String, ResponseType> toResponseType() {
+        return new Callable1<String, ResponseType>() {
+            @Override
+            public ResponseType call(final String length) throws Exception {
+                long value = Long.parseLong(length);
+                // zero length content means no content
+                if (value == 0) {
+                    return NoContent;
+                }
+                return Content(value);
+            }
+        };
+    }
 }
