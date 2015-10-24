@@ -23,6 +23,8 @@ import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.proxies.NoProxy;
 import com.googlecode.utterlyidle.proxies.ProxyFor;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,9 +68,12 @@ import static com.googlecode.utterlyidle.Status.status;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 
 public class ClientHttpHandler implements HttpClient, Closeable {
+    public static final int DEFAULT_TIMEOUT = 0;
+    public static final ProxyFor DEFAULT_PROXY = NoProxy.instance;
     private final int connectTimeoutMillis;
     private final int readTimeoutMillis;
     private final ProxyFor proxies;
+    private final HostnameVerifier hostnameVerifier;
     private final CloseableList<InputStream> closeables = closeableList();
     private final Integer streamingSize = Integer.getInteger("utterlyidle.client.stream.size", 4000);
     private final Boolean disableStreaming = Boolean.getBoolean("utterlyidle.client.stream.disable");
@@ -78,7 +83,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public ClientHttpHandler() {
-        this(0);
+        this(DEFAULT_TIMEOUT);
     }
 
     public ClientHttpHandler(int timeoutMillis) {
@@ -90,13 +95,18 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis) {
-        this(connectTimeoutMillis, readTimeoutMillis, NoProxy.instance);
+        this(connectTimeoutMillis, readTimeoutMillis, DEFAULT_PROXY);
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies) {
+        this(connectTimeoutMillis, readTimeoutMillis, proxies, HttpsURLConnection.getDefaultHostnameVerifier());
+    }
+
+    public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies, HostnameVerifier hostnameVerifier) {
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
         this.proxies = proxies;
+        this.hostnameVerifier = hostnameVerifier;
     }
 
     public ClientHttpHandler(RequestTimeout requestTimeout) {
@@ -152,6 +162,12 @@ public class ClientHttpHandler implements HttpClient, Closeable {
             Files.write(request.entity().asBytes(), file);
             for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
             return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, request.uri()).build();
+    }
+
+    @multimethod
+    private Response handle(Request request, HttpsURLConnection connection) throws IOException {
+        connection.setHostnameVerifier(hostnameVerifier);
+        return handle(request, (HttpURLConnection) connection);
     }
 
     @multimethod
