@@ -25,6 +25,7 @@ import com.googlecode.utterlyidle.proxies.ProxyFor;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,6 +75,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     private final int readTimeoutMillis;
     private final ProxyFor proxies;
     private final HostnameVerifier hostnameVerifier;
+    private final SSLSocketFactory sslSocketFactory;
     private final CloseableList<InputStream> closeables = closeableList();
     private final Integer streamingSize = Integer.getInteger("utterlyidle.client.stream.size", 4000);
     private final Boolean disableStreaming = Boolean.getBoolean("utterlyidle.client.stream.disable");
@@ -99,14 +101,15 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies) {
-        this(connectTimeoutMillis, readTimeoutMillis, proxies, HttpsURLConnection.getDefaultHostnameVerifier());
+        this(connectTimeoutMillis, readTimeoutMillis, proxies, HttpsURLConnection.getDefaultHostnameVerifier(), HttpsURLConnection.getDefaultSSLSocketFactory());
     }
 
-    public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies, HostnameVerifier hostnameVerifier) {
+    public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies, HostnameVerifier hostnameVerifier, final SSLSocketFactory sslSocketFactory) {
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
         this.proxies = proxies;
         this.hostnameVerifier = hostnameVerifier;
+        this.sslSocketFactory = sslSocketFactory;
     }
 
     public ClientHttpHandler(RequestTimeout requestTimeout) {
@@ -167,6 +170,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     @multimethod
     private Response handle(Request request, HttpsURLConnection connection) throws IOException {
         connection.setHostnameVerifier(hostnameVerifier);
+        connection.setSSLSocketFactory(sslSocketFactory);
         return handle(request, (HttpURLConnection) connection);
     }
 
