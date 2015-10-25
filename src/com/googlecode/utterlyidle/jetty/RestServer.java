@@ -5,17 +5,21 @@ import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.utterlyidle.servlet.ApplicationServlet;
 import com.googlecode.utterlyidle.servlet.ServletModule;
+import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.thread.QueuedThreadPool;
 
+import javax.net.ssl.SSLServerSocketFactory;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 
@@ -108,12 +112,25 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
 
     private Server createServer(ServerConfiguration serverConfig) {
         Server server = new Server();
-        SelectChannelConnector selectChannelConnector = new SelectChannelConnector();
-        selectChannelConnector.setPort(serverConfig.port());
-        selectChannelConnector.setHost(serverConfig.bindAddress().getHostAddress());
+        org.mortbay.jetty.Connector selectChannelConnector = connector(serverConfig);
         server.addConnector(selectChannelConnector);
         server.setThreadPool(new QueuedThreadPool(serverConfig.maxThreadNumber()));
         return server;
+    }
+
+    private Connector connector(final ServerConfiguration serverConfig) {
+        if(serverConfig.protocol().equals(Protocol.HTTPS)){
+            return new SslSocketConnector(){
+                @Override
+                protected SSLServerSocketFactory createFactory() throws Exception {
+                    return configuration.sslContext().get().getServerSocketFactory();
+                }
+            };
+        }
+        SelectChannelConnector selectChannelConnector = new SelectChannelConnector();
+        selectChannelConnector.setPort(serverConfig.port());
+        selectChannelConnector.setHost(serverConfig.bindAddress().getHostAddress());
+        return selectChannelConnector;
     }
 
     private int portNumber(Server server) {

@@ -3,11 +3,14 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -57,14 +60,23 @@ public class RestServer implements Server {
     }
 
     private HttpServer startUpServer(Application application, ServerConfiguration configuration) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(configuration.bindAddress(), configuration.port()), 0);
-        server.createContext(configuration.basePath().toString(),
-                new RestHandler(application));
+        HttpServer server = createServer(configuration);
+        server.createContext(configuration.basePath().toString(), new RestHandler(application));
         executorService = newFixedThreadPool(configuration.maxThreadNumber(), getClass());
         server.setExecutor(executorService);
         server.start();
         ServerConfiguration updatedConfiguration = configuration.port(server.getAddress().getPort());
         uri = updatedConfiguration.toUrl();
         return server;
+    }
+
+    private HttpServer createServer(final ServerConfiguration configuration) throws IOException {
+        InetSocketAddress address = new InetSocketAddress(configuration.bindAddress(), configuration.port());
+        if(configuration.protocol().equals(Protocol.HTTPS)) {
+            HttpsServer server = HttpsServer.create(address, 0);
+            server.setHttpsConfigurator(new HttpsConfigurator(configuration.sslContext().get()));
+            return server;
+        }
+        return HttpServer.create(address, 0);
     }
 }

@@ -58,7 +58,8 @@ public class RestServer implements Server {
     private SocketConnection startUpApp(Application application, ServerConfiguration configuration) throws IOException {
         Container container = new RestContainer(application);
         SocketConnection connection = new SocketConnection(new ContainerSocketProcessor(container, configuration.maxThreadNumber()));
-        InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.port()));
+        InetSocketAddress socketAddress = (InetSocketAddress) connection.connect(new InetSocketAddress(configuration.bindAddress(), configuration.port()),
+                configuration.sslContext().getOrNull());
 
         ServerConfiguration updatedConfiguration = configuration.port(socketAddress.getPort());
         uri = updatedConfiguration.toUrl();

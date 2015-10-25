@@ -4,15 +4,23 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
 import com.googlecode.utterlyidle.rendering.exceptions.StoredException;
+import com.googlecode.utterlyidle.ssl.SecureString;
+import com.googlecode.utterlyidle.ssl.SecureStringTest;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import java.io.InputStream;
+
 import static com.googlecode.totallylazy.Option.none;
+import static com.googlecode.totallylazy.Sequences.repeat;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.predicates.Predicates.not;
@@ -37,6 +45,9 @@ import static com.googlecode.utterlyidle.Response.methods.headerOption;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
+import static com.googlecode.utterlyidle.ssl.SSL.keyStore;
+import static com.googlecode.utterlyidle.ssl.SSL.sslContext;
+import static com.googlecode.utterlyidle.ssl.SecureString.secureString;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,7 +61,11 @@ public abstract class ServerContract<T extends Server> {
 
     @Before
     public void start() throws Exception {
-        server = cast(application(HelloWorldApplication.class).start(defaultConfiguration().basePath(basePath("base/path")).serverClass(server())));
+        server = configureServer(defaultConfiguration());
+    }
+
+    private T configureServer(final ServerConfiguration configuration) throws Exception {
+        return cast(application(HelloWorldApplication.class).start(configuration.basePath(basePath("base/path")).serverClass(server())));
     }
 
     @After
@@ -217,4 +232,20 @@ public abstract class ServerContract<T extends Server> {
         assertThat(handle(get("optionalDate?date="), server).entity().toString(), is("no date"));
         assertThat(handle(get("optionalDate?date=" + LEXICAL().format(Dates.date(1974, 10, 29))), server).entity().toString(), is("19741029000000000"));
     }
+
+    @Test
+    public void supportsHttps() throws Exception {
+        try(InputStream resource = SecureStringTest.class.getResourceAsStream("localhost.jks");
+            SecureString password = secureString('p', 'a', 's', 's', 'w', 'o', 'r', 'd')) {
+            SSLContext sslContext = sslContext(keyStore(password, resource), password);
+            server.close();
+            server = configureServer(defaultConfiguration().sslContext(sslContext));
+            Response response = handle(new ClientHttpHandler(1000, 1000, ClientHttpHandler.DEFAULT_PROXY, HttpsURLConnection.getDefaultHostnameVerifier(), sslContext), get("helloworld/x-forwarded-proto"), server);
+
+            assertThat(response.status(), is(Status.OK));
+            assertThat(response.entity().toString(), is(Protocol.HTTPS));
+        }
+
+    }
+
 }

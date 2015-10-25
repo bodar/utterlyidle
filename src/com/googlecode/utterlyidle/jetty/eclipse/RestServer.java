@@ -1,8 +1,10 @@
 package com.googlecode.utterlyidle.jetty.eclipse;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
@@ -13,6 +15,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.ServletException;
@@ -70,11 +73,19 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
 
     protected Server createServer(ServerConfiguration serverConfig) {
         Server server = new Server(new QueuedThreadPool(serverConfig.maxThreadNumber()));
-        ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory());
+        ServerConnector serverConnector = new ServerConnector(server, sslContextFactory(serverConfig).getOrNull(), new HttpConnectionFactory());
         serverConnector.setPort(serverConfig.port());
         serverConnector.setHost(serverConfig.bindAddress().getHostAddress());
         server.addConnector(serverConnector);
         return server;
+    }
+
+    private Option<SslContextFactory> sslContextFactory(final ServerConfiguration serverConfig) {
+        return serverConfig.sslContext().map(context -> {
+            SslContextFactory sslContextFactory = new SslContextFactory();
+            sslContextFactory.setSslContext(context);
+            return sslContextFactory;
+        });
     }
 
     @Override

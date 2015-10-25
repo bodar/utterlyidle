@@ -23,6 +23,7 @@ import com.googlecode.utterlyidle.proxies.ProxyFor;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.Closeable;
 import java.io.File;
@@ -99,6 +100,10 @@ public class ClientHttpHandler implements HttpClient, Closeable {
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies) {
         this(connectTimeoutMillis, readTimeoutMillis, proxies, HttpsURLConnection.getDefaultHostnameVerifier(), HttpsURLConnection.getDefaultSSLSocketFactory());
+    }
+
+    public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies, HostnameVerifier hostnameVerifier, final SSLContext sslContext) {
+        this(connectTimeoutMillis, readTimeoutMillis, proxies, hostnameVerifier, sslContext.getSocketFactory());
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies, HostnameVerifier hostnameVerifier, final SSLSocketFactory sslSocketFactory) {

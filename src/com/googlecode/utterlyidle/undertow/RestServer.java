@@ -1,10 +1,14 @@
 package com.googlecode.utterlyidle.undertow;
 
+import com.googlecode.totallylazy.Classes;
+import com.googlecode.totallylazy.Lists;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.totallylazy.reflection.Fields;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
@@ -18,6 +22,7 @@ import java.util.List;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.functions.Time0.calculateMilliseconds;
+import static com.googlecode.totallylazy.reflection.Fields.access;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static java.lang.String.format;
 import static java.lang.System.nanoTime;
@@ -62,8 +67,9 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     private Undertow startUpServer(Application application, ServerConfiguration configuration) throws Exception {
-        Undertow server = Undertow.builder()
-                .addHttpListener(configuration.port(), configuration.bindAddress().getHostAddress())
+        Undertow.Builder builder = builder(configuration);
+
+        Undertow server = builder
                 .setWorkerThreads(configuration.maxThreadNumber())
                 .setHandler(new RestHttpHandler(application))
                 .build();
@@ -74,6 +80,13 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return server;
     }
 
+    private Undertow.Builder builder(final ServerConfiguration configuration) {
+        if(configuration.protocol().equals(Protocol.HTTPS)) {
+            return Undertow.builder().addHttpsListener(configuration.port(), configuration.bindAddress().getHostAddress(), configuration.sslContext().get());
+        }
+        return Undertow.builder().addHttpListener(configuration.port(), configuration.bindAddress().getHostAddress());
+    }
+
     private int findPortInUse(Undertow server) {
         return declaredField(server, "channels")
                 .map(field -> listValueOf(field, server))
@@ -81,10 +94,18 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
                 .flatMap(channels -> channels
                         .flatMap(this::portFrom)
                         .headOption())
-                .getOrThrow(new IllegalStateException("Cannot find port from Undertow"));
+                .getOrThrow(new IllegalStateException("Cannot find port from Undertow using reflection!"));
     }
 
+    private static Class<?> sslChannel = Classes.forName("io.undertow.protocols.ssl.UndertowAcceptingSslChannel").get();
     private Option<Integer> portFrom(Object channel) throws Exception {
+        if(sslChannel.isInstance(channel)) {
+            channel = declaredField(channel, "tcpServer").map(Fields.value(channel)).get();
+        }
+        return socket(channel);
+    }
+
+    private Option<Integer> socket(final Object channel) throws IllegalAccessException {
         return declaredField(channel, "socket")
                 .map(socketField -> (ServerSocket) socketField.get(channel))
                 .map(ServerSocket::getLocalPort);
@@ -92,17 +113,15 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
 
     private List<Object> listValueOf(Field field, Object object) {
         try {
-            return (List<Object>) field.get(object);
+            return Fields.get(field, object);
         } catch (IllegalAccessException e) {
-            return null;
+            return Lists.list();
         }
     }
 
     private Option<Field> declaredField(Object object, String fieldName) {
         try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return option(field);
+            return option(access(object.getClass().getDeclaredField(fieldName)));
         } catch (NoSuchFieldException e) {
             return none();
         }
