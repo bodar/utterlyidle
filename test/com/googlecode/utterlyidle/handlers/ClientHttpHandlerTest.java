@@ -191,7 +191,7 @@ public class ClientHttpHandlerTest {
     }
 
     public static Response handle(final RequestBuilder request, final Server server) throws Exception {
-        return handle(new ClientHttpHandler(0), request, server);
+        return handle(0, request, server);
     }
 
     public static Response handle(int timeout, final RequestBuilder request, final Server server) throws Exception {
