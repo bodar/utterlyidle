@@ -13,9 +13,11 @@ Some of the core features
    * Jetty in embedded mode
    * SimpleWeb
    * Embedded HttpServer from Java 6
+   * Undertow (V2 only)
    * In-Memory
   * Very flexible / extensible
     * You can new up the Application and reach in and replace any dependency for a test
+  * Super simple SSL setup support
   * Uniform client / server API (like Restlet)
   * Composition preferred over class inheritance (unlike Restlet)
   * Resources can be defined with Annotations, DSL, static files or role your own convention
