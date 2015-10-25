@@ -10,9 +10,7 @@ import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.security.KeyManagementException;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import static com.googlecode.totallylazy.LazyException.lazyException;
