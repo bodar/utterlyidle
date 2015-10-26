@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.utterlyidle.ClientConfiguration.Builder;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 import com.googlecode.utterlyidle.rendering.exceptions.LastExceptions;
@@ -26,6 +27,7 @@ import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.time.Dates.LEXICAL;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
+import static com.googlecode.utterlyidle.ClientConfiguration.Builder.*;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
@@ -234,12 +236,12 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void supportsHttps() throws Exception {
-        try(InputStream resource = SecureStringTest.class.getResourceAsStream("localhost.jks");
-            SecureString password = secureString('p', 'a', 's', 's', 'w', 'o', 'r', 'd')) {
-            SSLContext sslContext = sslContext(keyStore(password, resource), password);
+        try (InputStream resource = SecureStringTest.class.getResourceAsStream("localhost.jks");
+             SecureString password = secureString('p', 'a', 's', 's', 'w', 'o', 'r', 'd')) {
+            SSLContext context = sslContext(keyStore(password, resource), password);
             server.close();
-            server = configureServer(defaultConfiguration().sslContext(sslContext));
-            Response response = handle(new ClientHttpHandler(1000, 1000, ClientHttpHandler.DEFAULT_PROXY, HttpsURLConnection.getDefaultHostnameVerifier(), sslContext), get("helloworld/x-forwarded-proto"), server);
+            server = configureServer(defaultConfiguration().sslContext(context));
+            Response response = handle(new ClientHttpHandler(clientConfiguration(Builder.sslContext(context))), get("helloworld/x-forwarded-proto"), server);
 
             assertThat(response.status(), is(Status.OK));
             assertThat(response.entity().toString(), is(Protocol.HTTPS));

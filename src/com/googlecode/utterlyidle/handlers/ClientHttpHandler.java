@@ -14,6 +14,7 @@ import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.CloseableList;
 import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.utterlyidle.ClientConfiguration;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
@@ -105,8 +106,8 @@ public class ClientHttpHandler implements HttpClient, Closeable {
         this(connectTimeoutMillis, readTimeoutMillis, proxies, HttpsURLConnection.getDefaultHostnameVerifier(), HttpsURLConnection.getDefaultSSLSocketFactory());
     }
 
-    public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies, HostnameVerifier hostnameVerifier, final SSLContext sslContext) {
-        this(connectTimeoutMillis, readTimeoutMillis, proxies, hostnameVerifier, sslContext.getSocketFactory());
+    public ClientHttpHandler(ClientConfiguration configuration) {
+        this(configuration.timeout(), configuration.timeout(), configuration.proxyFor(), configuration.hostnameVerifier(), configuration.sslContext().getSocketFactory());
     }
 
     public ClientHttpHandler(int connectTimeoutMillis, int readTimeoutMillis, ProxyFor proxies, HostnameVerifier hostnameVerifier, final SSLSocketFactory sslSocketFactory) {
