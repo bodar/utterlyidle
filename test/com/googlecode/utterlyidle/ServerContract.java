@@ -38,6 +38,7 @@ import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 import static com.googlecode.utterlyidle.RequestBuilder.delete;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.head;
+import static com.googlecode.utterlyidle.RequestBuilder.options;
 import static com.googlecode.utterlyidle.RequestBuilder.patch;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
@@ -146,6 +147,14 @@ public abstract class ServerContract<T extends Server> {
         String result = response.entity().toString();
 
         assertThat(result, is("https"));
+    }
+
+    @Test
+    public void handlesOptions() throws Exception {
+        Response response = handle(options("helloworld/options").query("name", "foo"), server);
+
+        assertThat(response.status(), is(Status.OK));
+        assertThat(response.entity().toString(), is("Hello foo"));
     }
 
     @Test
