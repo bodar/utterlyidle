@@ -9,6 +9,7 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 import java.util.Date;
 import java.util.List;
 
+import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.functions.Callables.first;
 import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -75,7 +76,9 @@ public class ResponseBuilder {
 
 
     public ResponseBuilder removeHeaders(String name) {
-        RequestBuilder.removeHeaders(headers, name);
+        for (Pair<String, String> header : sequence(headers).filter(where(first(String.class), equalIgnoringCase(name))).realise()) {
+            headers.remove(header);
+        }
         return this;
     }
 

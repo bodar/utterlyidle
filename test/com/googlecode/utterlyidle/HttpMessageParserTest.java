@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.Request.Builder;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
@@ -9,7 +10,7 @@ import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
 import static com.googlecode.utterlyidle.HttpMessageParser.toFieldNameAndValue;
 import static com.googlecode.utterlyidle.HttpMessageParser.toMethodAndPath;
 import static com.googlecode.utterlyidle.HttpMessageParser.toStatus;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.BAD_REQUEST;
@@ -29,14 +30,13 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseRequests() {
-        canParseRequest(new RequestBuilder(POST, "/my/path").
-                header("header 1", "header 1 value").
-                header("header 2", "header 2 value").
-                form("form 1", "form 1 value").
-                form("form 2", "form 2 value").
-                build());
-        canParseRequest(new RequestBuilder(GET, "/test").build());
-        canParseRequest(new RequestBuilder(GET, "/test").header("name", "value").build());
+        canParseRequest(Builder.post("/my/path",
+                Builder.header("header 1", "header 1 value"),
+                Builder.header("header 2", "header 2 value"),
+                form("form 1", "form 1 value"),
+                form("form 2", "form 2 value")));
+        canParseRequest(Builder.get("/test"));
+        canParseRequest(Builder.get("/test", Builder.header("name", "value")));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseRequestWithoutBodyWithoutCRLF() {
-        assertThat(new RequestBuilder(GET, "/path").build(), is(HttpMessageParser.parseRequest("GET /path HTTP/1.1")));
+        assertThat(Request.Builder.get("/path"), is(HttpMessageParser.parseRequest("GET /path HTTP/1.1")));
     }
 
     @Test
@@ -68,9 +68,9 @@ public class HttpMessageParserTest {
     public void parseResponseWithoutBody() {
         String response =
                 "HTTP/1.1 303 See Other\n" +
-                "Transfer-Encoding: chunked\n" +
-                "Content-Type: text/html\n" +
-                "Location: http://localhost:8899/waitrest/order\r\n\r\n";
+                        "Transfer-Encoding: chunked\n" +
+                        "Content-Type: text/html\n" +
+                        "Location: http://localhost:8899/waitrest/order\r\n\r\n";
         HeaderParameters headers = HttpMessageParser.parseResponse(response).headers();
         assertThat(headers.size(), is(3));
     }
@@ -90,7 +90,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void handlesHeadersParamsWithNoValue() {
-        String input = get("/").header("header", "").build().toString();
+        String input = get("/", Builder.header("header", "")).toString();
 
         Request parsed = HttpMessageParser.parseRequest(input);
 
@@ -99,7 +99,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void handlesFormParamsWithNoValue() {
-        String input = get("/").form("form", "").build().toString();
+        String input = get("/", Builder.form("form", "")).toString();
 
         Request parsed = HttpMessageParser.parseRequest(input);
 
@@ -108,9 +108,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void canParseRequestWithOnlyRequestLine() {
-        RequestBuilder builder = new RequestBuilder(GET, "/my/path");
-        Request originalRequest = builder.build();
-
+        Request originalRequest = Request.Builder.get("/my/path");
         Request parsedRequest = HttpMessageParser.parseRequest(originalRequest.toString());
 
         assertThat(parsedRequest.method(), is(equalTo("GET")));
@@ -162,11 +160,11 @@ public class HttpMessageParserTest {
         assertThat(responseWithUnixNewlines.entity().toString(), is("Hello\n\nJoe"));
     }
 
-        private void invalidRequestWithError(String request, String exceptionMessage) {
+    private void invalidRequestWithError(String request, String exceptionMessage) {
         try {
             parseRequest(request);
             fail("Should not parse invalid request");
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), is(exceptionMessage));
         }
     }
@@ -175,7 +173,7 @@ public class HttpMessageParserTest {
         try {
             parseResponse(response);
             fail("Should not parse invalid response");
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), is(exceptionMessage));
         }
     }
