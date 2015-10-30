@@ -4,11 +4,10 @@ import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.Strings.isEmpty;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 
 public class RelativeUrlHandler implements HttpHandler {
     private final HttpHandler httpHandler;
@@ -19,25 +18,30 @@ public class RelativeUrlHandler implements HttpHandler {
     }
 
     public Response handle(Request request) throws Exception {
-        RequestBuilder builder = modify(request);
-        if (isEmpty(builder.uri().scheme())) {
-            builder.uri(builder.uri().scheme(currentUri.scheme()));
+        Uri result = calculateUrl(request.uri());
+        currentUri = result;
+        return httpHandler.handle(modify(request, Request.Builder.uri(result)));
+    }
+
+    public Uri calculateUrl(Uri uri) {
+        Uri result = uri;
+        if (isEmpty(result.scheme())) {
+            result = result.scheme(currentUri.scheme());
         }
-        if (isEmpty(builder.uri().authority())) {
-            builder.uri(builder.uri().authority(currentUri.authority()));
+        if (isEmpty(result.authority())) {
+            result = result.authority(currentUri.authority());
         }
-        if (isEmpty(builder.uri().path())) {
-            if (Strings.isEmpty(builder.uri().query())) {
-                builder.uri(currentUri);
+        if (isEmpty(result.path())) {
+            if (Strings.isEmpty(result.query())) {
+                result = currentUri;
             } else {
-                builder.uri(currentUri.query(builder.uri().query()));
+                result = currentUri.query(result.query());
             }
-        } else if (builder.uri().isRelative()) {
-            String absolutePath = currentUri.mergePath(builder.uri().path()).path();
-            builder.uri(builder.uri().mergePath(absolutePath));
+        } else if (result.isRelative()) {
+            String absolutePath = currentUri.mergePath(result.path()).path();
+            result = result.mergePath(absolutePath);
         }
-        currentUri = builder.uri();
-        return httpHandler.handle(builder.build());
+        return result;
     }
 
     public Uri getCurrentUri() {

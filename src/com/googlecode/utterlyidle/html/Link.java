@@ -4,13 +4,15 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import org.w3c.dom.Element;
 
+import static com.googlecode.utterlyidle.Request.Builder.get;
+
 public class Link extends AbstractElement implements NameValue {
     public Link(Element link) {
         super(link);
     }
 
     public Request click() {
-        return RequestBuilder.get(value()).build();
+        return get(value());
     }
 
     public String value() {
