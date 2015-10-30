@@ -121,20 +121,4 @@ public abstract class Parameters<Self extends Parameters<Self>> implements Itera
     public Map<String, List<String>> toMap() {
         return Maps.multiMap(this);
     }
-
-    public static Unary<Parameters<?>> add(String name, Object value){
-        return params -> params.add(name, value.toString());
-    }
-
-    public static Unary<Parameters<?>> replace(String name, Object value){
-        return params -> params.replace(name, value.toString());
-    }
-
-    public static Unary<Parameters<?>> param(String name, Object value){
-        return params -> params.replace(name, value.toString());
-    }
-
-    public static Unary<Parameters<?>> param(String name, List<?> values){
-        return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, item.toString()));
-    }
 }

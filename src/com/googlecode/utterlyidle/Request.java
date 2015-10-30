@@ -5,10 +5,16 @@ import com.googlecode.totallylazy.functions.Compose;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.io.Uri;
 
+import java.util.List;
+
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.Entity.DEFAULT_CHARACTER_SET;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
 import static com.googlecode.utterlyidle.MemoryRequest.memoryRequest;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
+import static java.lang.String.format;
 
 public interface Request {
     String method();
@@ -90,27 +96,62 @@ public interface Request {
         }
 
         static Unary<Request> query(String name, Object value) {
-            return query(Parameters.replace(name, value));
+            return query(replace(name, value));
         }
 
         @SafeVarargs
         static Unary<Request> query(Unary<Parameters<?>>... builders) {
             return request -> {
                 QueryParameters parsed = QueryParameters.parse(request.uri().query());
-                return query(apply(parsed, builders)).call(request);
+                return modify(request, query(apply(parsed, builders)));
             };
-        }
-
-        @SafeVarargs
-        static <T> T apply(T seed, Unary<T>... builders) {
-            return sequence(builders).reduce(Compose.<T>compose()).apply(seed);
         }
 
         static Unary<Request> query(Parameters<?> parameters) {
             return request -> {
                 String encoded = UrlEncodedMessage.toString(parameters);
-                return uri(request.uri().query(encoded)).call(request);
+                return modify(request, uri(request.uri().query(encoded)));
             };
+        }
+
+        static Unary<Request> form(String name, Object value) {
+            return form(replace(name, value));
+        }
+
+        @SafeVarargs
+        static Unary<Request> form(Unary<Parameters<?>>... builders) {
+            return request -> {
+                FormParameters parsed = FormParameters.parse(request.entity());
+                return modify(request, form(apply(parsed, builders)));
+            };
+        }
+
+        static Unary<Request> form(Parameters<?> parameters) {
+            return request -> modify(request,
+                    header(CONTENT_TYPE, format("%s; charset=%s", APPLICATION_FORM_URLENCODED, DEFAULT_CHARACTER_SET)),
+                    entity(UrlEncodedMessage.toString(parameters)));
+        }
+
+        static Unary<Parameters<?>> add(String name, Object value){
+            return params -> params.add(name, value.toString());
+        }
+
+        static Unary<Parameters<?>> replace(String name, Object value){
+            return params -> params.replace(name, value.toString());
+        }
+
+        static Unary<Parameters<?>> param(String name, Object value){
+            return params -> params.replace(name, value.toString());
+        }
+
+        static Unary<Parameters<?>> param(String name, List<?> values){
+            return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, item.toString()));
+        }
+
+
+        @SafeVarargs
+        static <T> T apply(T seed, Unary<T>... builders) {
+            return sequence(builders).reduce(Compose.<T>compose()).apply(seed);
         }
     }
 }

@@ -108,4 +108,16 @@ public class RequestTest {
         assertThat(get("/", query(param("name", list("Dan", "Matt")))).uri(), is(uri("/?name=Dan&name=Matt")));
         assertThat(get("/", query(add("name", "Dan"), add("name", "Matt"))).uri(), is(uri("/?name=Dan&name=Matt")));
     }
+
+    @Test
+    public void canSetFormParameters() throws Exception {
+        assertThat(get("/", form("name", "Dan")).entity().toString(), is("name=Dan"));
+        assertThat(get("/", form("first", "Dan"), form("last", "Bod")).entity().toString(), is("first=Dan&last=Bod"));
+    }
+
+    @Test
+    public void canSetMultipleFormParametersInOneGoForPerformanceReasons() throws Exception {
+        assertThat(get("/", form(param("name", list("Dan", "Matt")))).entity().toString(), is("name=Dan&name=Matt"));
+        assertThat(get("/", form(add("name", "Dan"), add("name", "Matt"))).entity().toString(), is("name=Dan&name=Matt"));
+    }
 }
