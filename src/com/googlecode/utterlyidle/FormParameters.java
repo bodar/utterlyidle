@@ -7,7 +7,7 @@ import com.googlecode.totallylazy.collections.PersistentList;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
-public class FormParameters extends Parameters<String,String, FormParameters > {
+public class FormParameters extends Parameters<FormParameters > {
     private FormParameters() {
         this(PersistentList.constructors.<Pair<String, String>>empty());
     }
@@ -31,11 +31,11 @@ public class FormParameters extends Parameters<String,String, FormParameters > {
     }
 
     public static FormParameters formParameters(Iterable<Pair<String, String>> pairs) {
-        return sequence(pairs).foldLeft(new FormParameters(), Parameters.<String,String, FormParameters>pairIntoParameters());
+        return sequence(pairs).foldLeft(new FormParameters(), Parameters.<FormParameters>pairIntoParameters());
     }
 
     public static FormParameters parse(String value) {
-        return sequence(UrlEncodedMessage.parse(value)).foldLeft(new FormParameters(), Parameters.<String,String, FormParameters>pairIntoParameters());
+        return sequence(UrlEncodedMessage.parse(value)).foldLeft(new FormParameters(), Parameters.<FormParameters>pairIntoParameters());
     }
 
     public static FormParameters parse(Entity value) {

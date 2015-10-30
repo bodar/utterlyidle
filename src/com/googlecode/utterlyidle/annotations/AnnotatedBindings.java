@@ -95,7 +95,7 @@ public class AnnotatedBindings {
         return sequence(method.getGenericParameterTypes()).zip(namedParameters(method));
     }
 
-    private static Map<Class<? extends Annotation>, Class<? extends Parameters<String, String, ?>>> supportedAnnotations = new HashMap<Class<? extends Annotation>, Class<? extends Parameters<String, String, ?>>>() {{
+    private static Map<Class<? extends Annotation>, Class<? extends Parameters<?>>> supportedAnnotations = new HashMap<Class<? extends Annotation>, Class<? extends Parameters<?>>>() {{
         put(QueryParam.class, QueryParameters.class);
         put(FormParam.class, FormParameters.class);
         put(PathParam.class, PathParameters.class);

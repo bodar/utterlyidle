@@ -5,7 +5,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.matchers.IterableMatcher.hasExactly;
 import static org.junit.Assert.assertThat;
 
-public abstract class ParametersContract<T extends Parameters<String, String, T>> {
+public abstract class ParametersContract<T extends Parameters<T>> {
     protected abstract T parameters();
 
     @Test

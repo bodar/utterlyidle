@@ -10,7 +10,7 @@ import com.googlecode.utterlyidle.Response;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
-public class CookieParameters extends Parameters<String, String, CookieParameters> {
+public class CookieParameters extends Parameters<CookieParameters> {
     private CookieParameters(PersistentList<Pair<String, String>> values) {
         super(equalIgnoringCase(), values);
     }

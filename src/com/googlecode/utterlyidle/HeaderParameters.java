@@ -10,7 +10,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
-public class HeaderParameters extends Parameters<String, String, HeaderParameters> {
+public class HeaderParameters extends Parameters<HeaderParameters> {
     public HeaderParameters() {
         this(PersistentList.constructors.<Pair<String, String>>empty());
     }
@@ -34,7 +34,7 @@ public class HeaderParameters extends Parameters<String, String, HeaderParameter
     }
 
     public static HeaderParameters headerParameters(final Iterable<? extends Pair<String, String>> pairs) {
-        return sequence(pairs).foldLeft(new HeaderParameters(), Parameters.<String, String, HeaderParameters>pairIntoParameters());
+        return sequence(pairs).foldLeft(new HeaderParameters(), Parameters.<HeaderParameters>pairIntoParameters());
     }
 
     public static HeaderParameters headerParameters(final Map<String, ? extends Iterable<String>> requestHeaders) {

@@ -21,18 +21,18 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> implements Iterable<Pair<K, V>> {
-    private final Function1<K, Predicate<K>> predicate;
-    protected final PersistentList<Pair<K, V>> values;
+public abstract class Parameters<Self extends Parameters<Self>> implements Iterable<Pair<String, String>> {
+    private final Function1<String, Predicate<String>> predicate;
+    protected final PersistentList<Pair<String, String>> values;
 
-    protected Parameters(Function1<K, Predicate<K>> predicate, PersistentList<Pair<K, V>> values) {
+    protected Parameters(Function1<String, Predicate<String>> predicate, PersistentList<Pair<String, String>> values) {
         this.predicate = predicate;
         this.values = values;
     }
 
-    protected abstract Self self(PersistentList<Pair<K, V>> values);
+    protected abstract Self self(PersistentList<Pair<String, String>> values);
 
-    public Self add(K name, V value) {
+    public Self add(String name, String value) {
         return self(values.append(pair(name, value)));
     }
 
@@ -40,11 +40,11 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
         return self(values.joinTo(self.values));
     }
 
-    public Self remove(K name) {
+    public Self remove(String name) {
         return self(values.deleteAll(filterByKey(name)));
     }
 
-    public Self replace(K name, V value) {
+    public Self replace(String name, String value) {
         return remove(name).add(name, value);
     }
 
@@ -52,36 +52,36 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
         return values.size();
     }
 
-    public V getValue(K key) {
+    public String getValue(String key) {
         return valueOption(key).getOrNull();
     }
 
-    public Option<V> valueOption(K key) {
-        return filterByKey(key).headOption().map(Callables.<V>second());
+    public Option<String> valueOption(String key) {
+        return filterByKey(key).headOption().map(Callables.<String>second());
     }
 
-    public Sequence<V> getValues(K key) {
-        return filterByKey(key).map(Callables.<V>second());
+    public Sequence<String> getValues(String key) {
+        return filterByKey(key).map(Callables.<String>second());
     }
 
-    public boolean contains(K key) {
+    public boolean contains(String key) {
         return !filterByKey(key).headOption().isEmpty();
     }
 
-    public Iterator<Pair<K, V>> iterator() {
+    public Iterator<Pair<String, String>> iterator() {
         return values.iterator();
     }
 
-    private Sequence<Pair<K, V>> filterByKey(K key) {
-        Predicate<First<K>> predicate = by(Callables.<K>first(), call(this.predicate, key));
+    private Sequence<Pair<String, String>> filterByKey(String key) {
+        Predicate<First<String>> predicate = by(Callables.<String>first(), call(this.predicate, key));
         return filter(predicate).realise();
     }
 
-    public Sequence<Pair<K, V>> filter(final Predicate<First<K>> predicate) {
+    public Sequence<Pair<String, String>> filter(final Predicate<First<String>> predicate) {
         return sequence(values).filter(predicate);
     }
 
-    public static <K, V, Self extends Parameters<K, V, Self>> Function2<Self, Pair<K, V>, Self> pairIntoParameters() {
+    public static <Self extends Parameters<Self>> Function2<Self, Pair<String, String>, Self> pairIntoParameters() {
         return (result, pair) -> result.add(pair.first(), pair.second());
     }
 
@@ -103,12 +103,12 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
         return false;
     }
 
-    private Predicate<Pair<Pair<K, V>, Pair<K, V>>> pairsMatch() {
+    private Predicate<Pair<Pair<String, String>, Pair<String, String>>> pairsMatch() {
         return pair -> {
-            Pair<K, V> first = pair.first();
-            Pair<K, V> second = pair.second();
+            Pair<String, String> first = pair.first();
+            Pair<String, String> second = pair.second();
 
-            Predicate<K> predicate1 = call(Parameters.this.predicate, first.first());
+            Predicate<String> predicate1 = call(Parameters.this.predicate, first.first());
             return predicate1.matches(second.first()) && first.second().equals(second.second());
         };
     }
@@ -118,23 +118,23 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
         return sequence(values).toString();
     }
 
-    public Map<K, List<V>> toMap() {
+    public Map<String, List<String>> toMap() {
         return Maps.multiMap(this);
     }
 
-    public static Unary<Parameters<String, String, ?>> add(String name, Object value){
+    public static Unary<Parameters<?>> add(String name, Object value){
         return params -> params.add(name, value.toString());
     }
 
-    public static Unary<Parameters<String, String, ?>> replace(String name, Object value){
+    public static Unary<Parameters<?>> replace(String name, Object value){
         return params -> params.replace(name, value.toString());
     }
 
-    public static Unary<Parameters<String, String, ?>> param(String name, Object value){
+    public static Unary<Parameters<?>> param(String name, Object value){
         return params -> params.replace(name, value.toString());
     }
 
-    public static Unary<Parameters<String, String, ?>> param(String name, List<?> values){
+    public static Unary<Parameters<?>> param(String name, List<?> values){
         return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, item.toString()));
     }
 }

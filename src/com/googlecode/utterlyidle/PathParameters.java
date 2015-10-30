@@ -6,7 +6,7 @@ import com.googlecode.totallylazy.collections.PersistentList;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
-public class PathParameters extends Parameters<String, String, PathParameters> {
+public class PathParameters extends Parameters<PathParameters> {
     private PathParameters() {
         this(PersistentList.constructors.<Pair<String, String>>empty());
     }
@@ -30,6 +30,6 @@ public class PathParameters extends Parameters<String, String, PathParameters> {
     }
 
     public static PathParameters pathParameters(Iterable<Pair<String, String>> pairs) {
-        return (PathParameters) sequence(pairs).foldLeft(new PathParameters(), Parameters.<String,String, PathParameters>pairIntoParameters());
+        return sequence(pairs).foldLeft(new PathParameters(), Parameters.<PathParameters>pairIntoParameters());
     }
 }

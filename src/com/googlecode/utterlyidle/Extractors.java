@@ -23,12 +23,12 @@ public class Extractors {
         return extractParameters(binding, arguments, FormParameters.formParameters());
     }
 
-    public static <T extends Parameters<String, String, ?>> T extractParameters(final Binding binding, final Object[] arguments, T result) {
+    public static <T extends Parameters<?>> T extractParameters(final Binding binding, final Object[] arguments, T result) {
         return extractParameters(unzip(binding.parameters()).second(), sequence(arguments), result);
     }
 
-    public static <T extends Parameters<String, String, ?>> T extractParameters(final Sequence<Option<Parameter>> parameters, final Sequence<Object> values, T input) {
-        Parameters<String, String, ?> result = input;
+    public static <T extends Parameters<?>> T extractParameters(final Sequence<Option<Parameter>> parameters, final Sequence<Object> values, T input) {
+        Parameters<?> result = input;
         for (Pair<Parameter, Object> pair : getParameterAndValue(parameters, values)) {
             if (pair.first() instanceof NamedParameter) {
                 NamedParameter parameter = (NamedParameter) pair.first();
@@ -48,7 +48,7 @@ public class Extractors {
         return one(value);
     }
 
-    private static Parameters<String, String, ?> addAsString(Parameters<String, String, ?> result, NamedParameter parameter, String value) {
+    private static Parameters<?> addAsString(Parameters<?> result, NamedParameter parameter, String value) {
         if (value != null) {
             result = result.add(parameter.name(), value);
         }

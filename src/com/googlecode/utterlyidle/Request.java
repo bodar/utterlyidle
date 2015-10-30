@@ -94,7 +94,7 @@ public interface Request {
         }
 
         @SafeVarargs
-        static Unary<Request> query(Unary<Parameters<String, String, ?>>... builders) {
+        static Unary<Request> query(Unary<Parameters<?>>... builders) {
             return request -> {
                 QueryParameters parsed = QueryParameters.parse(request.uri().query());
                 return query(apply(parsed, builders)).call(request);
@@ -106,7 +106,7 @@ public interface Request {
             return sequence(builders).reduce(Compose.<T>compose()).apply(seed);
         }
 
-        static Unary<Request> query(Parameters<String, String, ?> parameters) {
+        static Unary<Request> query(Parameters<?> parameters) {
             return request -> {
                 String encoded = UrlEncodedMessage.toString(parameters);
                 return uri(request.uri().query(encoded)).call(request);

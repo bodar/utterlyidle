@@ -16,9 +16,9 @@ import static com.googlecode.totallylazy.Unchecked.cast;
 public class NamedParameter implements Parameter {
     private final String name;
     private final Option<String> defaultValue;
-    private final Class<? extends Parameters<String, String, ?>> parametersClass;
+    private final Class<? extends Parameters<?>> parametersClass;
 
-    public NamedParameter(String name, Class<? extends Parameters<String, String, ?>> parametersClass, Option<String> defaultValue) {
+    public NamedParameter(String name, Class<? extends Parameters<?>> parametersClass, Option<String> defaultValue) {
         this.name = name;
         this.parametersClass = parametersClass;
         this.defaultValue = defaultValue;
@@ -32,13 +32,13 @@ public class NamedParameter implements Parameter {
         return defaultValue;
     }
 
-    public Class<? extends Parameters<String, String, ?>> parametersClass() {
+    public Class<? extends Parameters<?>> parametersClass() {
         return parametersClass;
     }
 
     public Callable<String> extractValueFrom(final TypeMap typeMap) {
         return () -> {
-            Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
+            Parameters<?> parameters = cast(typeMap.resolve(parametersClass()));
             if (!parameters.contains(name())) {
                 return defaultValueOrThrow();
             }
@@ -52,7 +52,7 @@ public class NamedParameter implements Parameter {
 
     public Resolver<Iterable<String>> extractValuesFrom(final TypeMap typeMap) {
         return type -> {
-            Parameters<String, String, ?> parameters = cast(typeMap.resolve(parametersClass()));
+            Parameters<?> parameters = cast(typeMap.resolve(parametersClass()));
             if (!parameters.contains(name())) {
                 return sequence(defaultValueOrThrow());
             }

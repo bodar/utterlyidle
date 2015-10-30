@@ -7,7 +7,7 @@ import com.googlecode.totallylazy.collections.PersistentList;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 
-public class QueryParameters extends Parameters<String, String, QueryParameters> {
+public class QueryParameters extends Parameters<QueryParameters> {
     private QueryParameters() {
         this(PersistentList.constructors.<Pair<String, String>>empty());
     }
@@ -22,7 +22,7 @@ public class QueryParameters extends Parameters<String, String, QueryParameters>
     }
 
     public static QueryParameters parse(String value) {
-        return sequence(UrlEncodedMessage.parse(value)).foldLeft(new QueryParameters(), Parameters.<String, String, QueryParameters>pairIntoParameters());
+        return sequence(UrlEncodedMessage.parse(value)).foldLeft(new QueryParameters(), Parameters.<QueryParameters>pairIntoParameters());
     }
 
     public static QueryParameters queryParameters() {
@@ -35,7 +35,7 @@ public class QueryParameters extends Parameters<String, String, QueryParameters>
     }
 
     public static QueryParameters queryParameters(Iterable<Pair<String, String>> pairs) {
-        return sequence(pairs).foldLeft(new QueryParameters(), Parameters.<String, String, QueryParameters>pairIntoParameters());
+        return sequence(pairs).foldLeft(new QueryParameters(), Parameters.<QueryParameters>pairIntoParameters());
     }
 
     @Override
