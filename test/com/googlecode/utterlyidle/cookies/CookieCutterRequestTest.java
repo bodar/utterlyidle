@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -47,10 +47,6 @@ public class CookieCutterRequestTest {
     }
 
     private Request requestWithCookies(Cookie... cookies) {
-        RequestBuilder builder = RequestBuilder.get("/");
-        for (Cookie cookie : cookies) {
-            builder.cookie(cookie);
-        }
-        return builder.build();
+        return Request.Builder.get("/", Request.Builder.cookie(CookieParameters.pairs(sequence(cookies))));
     }
 }

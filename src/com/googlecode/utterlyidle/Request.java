@@ -143,6 +143,13 @@ public interface Request {
             return request -> request(request.method(), request.uri(), HeaderParameters.headerParameters(parameters), request.entity());
         }
 
+        static Unary<Request> accept(Object value) {
+            return header(replace(HttpHeaders.ACCEPT, value));
+        }
+        static Unary<Request> contentType(Object value) {
+            return header(replace(HttpHeaders.CONTENT_TYPE, value));
+        }
+
         static Unary<Request> entity(Object value) {
             return request -> request(request.method(), request.uri(), request.headers(), Entity.entity(value));
         }

@@ -3,11 +3,11 @@ package com.googlecode.utterlyidle.cookies;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.ParametersContract;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -78,10 +78,6 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
 
     @SafeVarargs
     private final Request request(Pair<String, String>... headers) {
-        RequestBuilder builder = RequestBuilder.get("/");
-        for (Pair<String, String> header : headers) {
-            builder.header(header.first(), header.second());
-        }
-        return builder.build();
+        return Request.Builder.get("/", Request.Builder.header(sequence(headers)));
     }
 }

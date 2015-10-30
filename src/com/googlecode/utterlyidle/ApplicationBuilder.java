@@ -95,11 +95,19 @@ public class ApplicationBuilder {
     }
 
     public Response handle(RequestBuilder request) throws Exception {
-        return build().handle(request.build());
+        return handle(request.build());
+    }
+
+    public Response handle(Request request) throws Exception {
+        return build().handle(request);
     }
 
     public String responseAsString(RequestBuilder request) throws Exception {
-        Response response = handle(request);
+        return responseAsString(request.build());
+    }
+
+    public String responseAsString(Request build) throws Exception {
+        Response response = handle(build);
         return response.entity().toString();
     }
 
