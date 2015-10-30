@@ -216,7 +216,7 @@ public interface Request {
         }
 
         static Unary<Parameters<?>> replace(String name, Object value){
-            if(value == null) return identity();
+            if(value == null) return remove(name);
             return params -> params.replace(name, value.toString());
         }
 
