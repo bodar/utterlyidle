@@ -7,6 +7,7 @@ import com.googlecode.totallylazy.First;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.collections.PersistentList;
@@ -119,5 +120,21 @@ public abstract class Parameters<K, V, Self extends Parameters<K, V, Self>> impl
 
     public Map<K, List<V>> toMap() {
         return Maps.multiMap(this);
+    }
+
+    public static Unary<Parameters<String, String, ?>> add(String name, Object value){
+        return params -> params.add(name, value.toString());
+    }
+
+    public static Unary<Parameters<String, String, ?>> replace(String name, Object value){
+        return params -> params.replace(name, value.toString());
+    }
+
+    public static Unary<Parameters<String, String, ?>> param(String name, Object value){
+        return params -> params.replace(name, value.toString());
+    }
+
+    public static Unary<Parameters<String, String, ?>> param(String name, List<?> values){
+        return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, item.toString()));
     }
 }
