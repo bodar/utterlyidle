@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.functions.Compose;
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.cookies.Cookie;
@@ -11,7 +12,9 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 import java.util.List;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.functions.Functions.identity;
 import static com.googlecode.utterlyidle.Entity.DEFAULT_CHARACTER_SET;
+import static com.googlecode.utterlyidle.Entity.empty;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
@@ -47,7 +50,7 @@ public interface Request {
 
         @SafeVarargs
         static Request request(String method, Uri uri, Unary<Request>... builders) {
-            return modify(request(method, uri, headerParameters(), Entity.empty()), builders);
+            return modify(request(method, uri, headerParameters(), empty()), builders);
         }
 
         @SafeVarargs
@@ -147,7 +150,7 @@ public interface Request {
         }
 
         static Unary<Request> header(Iterable<? extends Pair<String,String>> parameters) {
-            return request -> request(request.method(), request.uri(), HeaderParameters.headerParameters(parameters), request.entity());
+            return request -> request(request.method(), request.uri(), headerParameters(parameters), request.entity());
         }
 
         static Unary<Request> accept(Object value) {
@@ -167,17 +170,11 @@ public interface Request {
 
         @SafeVarargs
         static Unary<Request> query(Unary<Parameters<?>>... builders) {
-            return request -> {
-                QueryParameters parsed = QueryParameters.parse(request.uri().query());
-                return modify(request, query(apply(parsed, builders)));
-            };
+            return request -> modify(request, query(apply(QueryParameters.parse(request.uri().query()), builders)));
         }
 
         static Unary<Request> query(Iterable<? extends Pair<String,String>> parameters) {
-            return request -> {
-                String encoded = UrlEncodedMessage.toString(parameters);
-                return modify(request, uri(request.uri().query(encoded)));
-            };
+            return request -> modify(request, uri(request.uri().query(UrlEncodedMessage.toString(parameters))));
         }
 
         static Unary<Request> form(String name, Object value) {
@@ -186,10 +183,7 @@ public interface Request {
 
         @SafeVarargs
         static Unary<Request> form(Unary<Parameters<?>>... builders) {
-            return request -> {
-                FormParameters parsed = FormParameters.parse(request.entity());
-                return modify(request, form(apply(parsed, builders)));
-            };
+            return request -> modify(request, form(apply(FormParameters.parse(request.entity()), builders)));
         }
 
         static Unary<Request> form(Iterable<? extends Pair<String,String>> parameters) {
@@ -208,10 +202,7 @@ public interface Request {
 
         @SafeVarargs
         static Unary<Request> cookie(Unary<Parameters<?>>... builders) {
-            return request -> {
-                CookieParameters parsed = CookieParameters.cookies(request);
-                return modify(request, cookie(apply(parsed, builders)));
-            };
+            return request -> modify(request, cookie(apply(CookieParameters.cookies(request), builders)));
         }
 
         static Unary<Request> cookie(Iterable<? extends Pair<String,String>> parameters) {
@@ -220,10 +211,12 @@ public interface Request {
         }
 
         static Unary<Parameters<?>> add(String name, Object value){
+            if(value == null) return identity();
             return params -> params.add(name, value.toString());
         }
 
         static Unary<Parameters<?>> replace(String name, Object value){
+            if(value == null) return identity();
             return params -> params.replace(name, value.toString());
         }
 
@@ -232,7 +225,7 @@ public interface Request {
         }
 
         static Unary<Parameters<?>> param(String name, Object value){
-            return params -> params.replace(name, value.toString());
+            return replace(name, value);
         }
 
         static Unary<Parameters<?>> param(String name, List<?> values){
