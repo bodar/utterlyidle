@@ -13,9 +13,7 @@ import com.googlecode.yadic.Container;
 
 import java.util.Map;
 
-import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
-import static com.googlecode.totallylazy.predicates.Predicates.is;
-import static com.googlecode.totallylazy.predicates.Predicates.where;
+import static com.googlecode.totallylazy.predicates.Predicates.*;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;

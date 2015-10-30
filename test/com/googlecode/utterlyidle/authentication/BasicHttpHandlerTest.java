@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.Sets;
 import com.googlecode.totallylazy.security.Base64;
 import com.googlecode.utterlyidle.BaseUri;
 import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 

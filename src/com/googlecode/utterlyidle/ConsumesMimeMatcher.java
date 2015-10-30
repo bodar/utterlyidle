@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 
 public class ConsumesMimeMatcher implements Predicate<Request> {
     private final Sequence<String> mimeTypes;

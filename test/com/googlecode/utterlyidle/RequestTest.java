@@ -9,12 +9,8 @@ import static com.googlecode.totallylazy.Lists.list;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
-import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
-import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.Request.Builder.*;
-import static com.googlecode.utterlyidle.Request.Builder.cookie;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
 
 public class RequestTest {

@@ -2,7 +2,8 @@ package com.googlecode.utterlyidle;
 
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 
 public class RequestEnricher {
     private final ClientAddress clientAddress;

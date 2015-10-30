@@ -1,11 +1,11 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Exceptions;
-import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.Curried2;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Curried2;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.xml.Xml;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

@@ -10,9 +10,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.predicates.Predicates.always;
 import static com.googlecode.totallylazy.time.Dates.date;
-import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
-import static com.googlecode.utterlyidle.HttpHeaders.DATE;
-import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.MediaType.TEXT_CSS;
 import static com.googlecode.utterlyidle.MediaType.TEXT_JAVASCRIPT;
 import static com.googlecode.utterlyidle.PathMatcher.path;

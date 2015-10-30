@@ -1,8 +1,5 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.time.Clock;
-import com.googlecode.totallylazy.time.Seconds;
 import com.googlecode.utterlyidle.Response;
 
 import java.util.Date;

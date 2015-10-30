@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Block;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Rules;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Value;
+import com.googlecode.totallylazy.functions.Block;
+import com.googlecode.totallylazy.predicates.Predicate;
 
 import java.io.OutputStream;
 import java.util.NoSuchElementException;

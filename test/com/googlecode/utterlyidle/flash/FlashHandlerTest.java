@@ -3,11 +3,7 @@ package com.googlecode.utterlyidle.flash;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.json.Json;
 import com.googlecode.utterlyidle.*;
-import com.googlecode.utterlyidle.annotations.FormParam;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.POST;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.Produces;
+import com.googlecode.utterlyidle.annotations.*;
 import com.googlecode.utterlyidle.modules.ResourcesModule;
 import org.junit.Test;
 

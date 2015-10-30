@@ -1,31 +1,19 @@
 package com.googlecode.utterlyidle.s3;
 
+import com.googlecode.totallylazy.*;
 import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.Group;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 
-import static com.googlecode.totallylazy.functions.Callables.first;
-import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.Pair.functions.pairToString;
 import static com.googlecode.totallylazy.Pair.functions.replaceFirst;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.predicates.Predicates.in;
-import static com.googlecode.totallylazy.predicates.Predicates.not;
-import static com.googlecode.totallylazy.predicates.Predicates.nullValue;
-import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Strings.blank;
-import static com.googlecode.totallylazy.Strings.isBlank;
-import static com.googlecode.totallylazy.Strings.startsWith;
-import static com.googlecode.totallylazy.Strings.toLowerCase;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
-import static com.googlecode.utterlyidle.HttpHeaders.Content_MD5;
-import static com.googlecode.utterlyidle.HttpHeaders.HOST;
+import static com.googlecode.totallylazy.Strings.*;
+import static com.googlecode.totallylazy.functions.Callables.first;
+import static com.googlecode.totallylazy.functions.Callables.second;
+import static com.googlecode.totallylazy.predicates.Predicates.*;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.quote;
 

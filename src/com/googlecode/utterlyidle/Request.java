@@ -10,7 +10,6 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.util.List;
 
-import static com.googlecode.totallylazy.Sequences.cons;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Entity.DEFAULT_CHARACTER_SET;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;

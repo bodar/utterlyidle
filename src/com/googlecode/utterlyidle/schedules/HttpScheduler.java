@@ -1,17 +1,13 @@
 package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Record;
-import com.googlecode.totallylazy.functions.Block;
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Block;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Seconds;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.yadic.Container;
@@ -21,9 +17,9 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Option.option;
+import static com.googlecode.totallylazy.Strings.isEmpty;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
 import static com.googlecode.totallylazy.predicates.Predicates.where;
-import static com.googlecode.totallylazy.Strings.isEmpty;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 
 public class HttpScheduler implements Service {

@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Callers;
 import com.googlecode.totallylazy.Unchecked;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;

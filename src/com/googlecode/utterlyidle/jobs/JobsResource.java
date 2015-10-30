@@ -1,25 +1,13 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.time.Clock;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.MediaType;
-import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Responses;
-import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.annotations.ANY;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.POST;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.PathParam;
-import com.googlecode.utterlyidle.annotations.Produces;
+import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.annotations.*;
 import com.googlecode.utterlyidle.schedules.ScheduleResource;
 
 import java.util.HashMap;

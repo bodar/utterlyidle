@@ -7,7 +7,6 @@ import com.googlecode.totallylazy.io.Uri;
 import java.net.Proxy;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.proxies.EnvironmentProxy.environmentProxy;
 
 public class Proxies implements ProxyFor {
     private final Sequence<ProxyFor> proxies;

@@ -1,23 +1,15 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.functions.Function2;
-import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.First;
-import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.predicates.Predicates;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.InternalRequestMarker;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.*;
 
-import static com.googlecode.totallylazy.Sequences.head;
-import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.Request.Builder.header;

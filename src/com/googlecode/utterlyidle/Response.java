@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.Curried2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.functions.Curried2;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;

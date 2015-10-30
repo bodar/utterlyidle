@@ -1,14 +1,14 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.utterlyidle.Request;
 
-import static com.googlecode.totallylazy.predicates.Predicates.nullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.endsWith;
 import static com.googlecode.totallylazy.Strings.toLowerCase;
+import static com.googlecode.totallylazy.predicates.Predicates.nullValue;
 import static com.googlecode.utterlyidle.s3.S3RequestStringifier.hostHeaderAuthority;
 
 public class AnyS3Request extends LogicalPredicate<Request> {

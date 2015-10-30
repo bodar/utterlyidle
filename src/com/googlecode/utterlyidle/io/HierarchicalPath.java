@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.io;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.predicates.Predicate;
 
 import static com.googlecode.totallylazy.Sequences.empty;
 import static com.googlecode.totallylazy.Sequences.sequence;

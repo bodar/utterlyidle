@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 

@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Closeables;
+import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;

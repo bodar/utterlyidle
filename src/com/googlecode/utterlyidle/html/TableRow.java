@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.functions.Function1;
 import org.w3c.dom.Element;
 
 import java.util.HashMap;

@@ -1,11 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.annotations.DefaultValue;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.PathParam;
-import com.googlecode.utterlyidle.annotations.Priority;
-import com.googlecode.utterlyidle.annotations.QueryParam;
+import com.googlecode.utterlyidle.annotations.*;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.matchers.Matchers.is;

@@ -1,10 +1,6 @@
 package com.googlecode.utterlyidle.sitemesh;
 
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.MediaType;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.*;
 
 import java.io.IOException;
 

@@ -1,16 +1,16 @@
 package com.googlecode.utterlyidle.authentication;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.parser.Parser;
 import com.googlecode.totallylazy.parser.Parsers;
 import com.googlecode.totallylazy.security.Base64;
 
 import static com.googlecode.totallylazy.Characters.alphaNumeric;
-import static com.googlecode.totallylazy.predicates.Predicates.in;
 import static com.googlecode.totallylazy.parser.Parsers.isChar;
 import static com.googlecode.totallylazy.parser.Parsers.ws;
+import static com.googlecode.totallylazy.predicates.Predicates.in;
 
 interface BasicGrammar {
     Parser<Void> Scheme = Parsers.string("Basic").ignore();

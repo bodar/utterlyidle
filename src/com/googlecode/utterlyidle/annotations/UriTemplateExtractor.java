@@ -1,14 +1,14 @@
 package com.googlecode.utterlyidle.annotations;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.Extractor;
 import com.googlecode.utterlyidle.UriTemplate;
 
 import java.lang.reflect.Method;
 
-import static com.googlecode.totallylazy.predicates.Predicates.notNullValue;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.predicates.Predicates.notNullValue;
 import static com.googlecode.utterlyidle.UriTemplate.trimSlashes;
 
 public class UriTemplateExtractor implements Extractor<Method, UriTemplate> {

@@ -1,10 +1,6 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.Entity;
-import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Option.none;

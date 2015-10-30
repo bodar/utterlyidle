@@ -8,8 +8,8 @@ import java.util.Map;
 
 import static com.googlecode.totallylazy.Maps.map;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.xml.Xml.functions.selectContents;
 import static com.googlecode.totallylazy.numbers.Numbers.range;
+import static com.googlecode.totallylazy.xml.Xml.functions.selectContents;
 import static com.googlecode.utterlyidle.html.TableRow.functions.toTableRow;
 
 public class Table extends BlockLevelElement {

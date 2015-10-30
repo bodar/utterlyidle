@@ -1,15 +1,11 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.totallylazy.Exceptions;
-import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.utterlyidle.Request;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LastExceptions implements Iterable<StoredException> {

@@ -1,11 +1,11 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.functions.Callables;
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Callables;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Rfc2616;

@@ -7,7 +7,8 @@ import com.googlecode.utterlyidle.handlers.HttpClient;
 
 import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static java.lang.String.format;
 
 public class BasicHttpClient implements HttpClient {

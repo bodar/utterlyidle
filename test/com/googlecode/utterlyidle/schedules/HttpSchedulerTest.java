@@ -4,7 +4,6 @@ import com.googlecode.lazyrecords.memory.MemoryRecords;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.StoppedClock;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -15,10 +14,11 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.matchers.NumberMatcher.is;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static org.junit.Assert.assertThat;
 
 public class HttpSchedulerTest {
-    private String request = RequestBuilder.get("/test").build().toString();
+    private String request = get("/test").toString();
     private Schedule schedule = Schedule.schedule(UUID.randomUUID()).interval(10L).request(request);
     private final StubScheduler stub = new StubScheduler();
     private final HttpScheduler httpScheduler = new HttpScheduler(new SchedulerState(), new Schedules(new UtterlyIdleRecords(new MemoryRecords())), stub, null, new StoppedClock(Dates.date(2001, 1, 1)));

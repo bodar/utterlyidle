@@ -1,12 +1,11 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.io.Uri;
 
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.Response.methods.headers;
 import static java.util.regex.Pattern.quote;
 

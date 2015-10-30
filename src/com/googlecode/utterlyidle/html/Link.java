@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import org.w3c.dom.Element;
 
 import static com.googlecode.utterlyidle.Request.Builder.get;

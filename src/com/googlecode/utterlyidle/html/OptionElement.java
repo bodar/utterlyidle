@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.html;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.functions.Function1;
 import org.w3c.dom.Node;
 
 public class OptionElement extends AbstractElement {

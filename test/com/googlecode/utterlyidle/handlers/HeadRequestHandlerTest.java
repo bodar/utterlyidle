@@ -1,12 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.MatchFailure;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import org.junit.Test;
 

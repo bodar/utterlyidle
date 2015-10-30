@@ -7,7 +7,7 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.domain;
 import static com.googlecode.utterlyidle.cookies.CookieBuilder.modify;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class CookieBuilderTest {
 

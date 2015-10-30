@@ -2,21 +2,14 @@ package com.googlecode.utterlyidle.rendering;
 
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.template.Templates;
-import com.googlecode.utterlyidle.BasePath;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.FormParameters;
-import com.googlecode.utterlyidle.MatchFailure;
-import com.googlecode.utterlyidle.NamedParameter;
-import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.Renderer;
+import com.googlecode.utterlyidle.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.googlecode.totallylazy.predicates.Predicates.not;
 import static com.googlecode.totallylazy.Strings.EMPTY;
+import static com.googlecode.totallylazy.predicates.Predicates.not;
 
 public class MatchFailureRenderer implements Renderer<MatchFailure> {
     private final BasePath basePath;

@@ -2,14 +2,7 @@ package com.googlecode.utterlyidle.servlet;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.io.Uri;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.HeaderParameters;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Requests;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
-import org.eclipse.jetty.http.HttpHeader;
+import com.googlecode.utterlyidle.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;

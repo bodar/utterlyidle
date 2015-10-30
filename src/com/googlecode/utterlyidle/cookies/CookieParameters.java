@@ -1,7 +1,6 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Request;

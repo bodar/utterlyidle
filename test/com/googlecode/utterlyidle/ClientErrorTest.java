@@ -1,10 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.annotations.Consumes;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.Produces;
-import com.googlecode.utterlyidle.annotations.QueryParam;
+import com.googlecode.utterlyidle.annotations.*;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;

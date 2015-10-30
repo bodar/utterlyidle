@@ -1,8 +1,8 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.UrlEncodedMessage;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.regex.Matches;
 import com.googlecode.totallylazy.regex.Regex;
 

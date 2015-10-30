@@ -1,7 +1,5 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.utterlyidle.Request;
-
 import java.util.Date;
 
 import static com.googlecode.totallylazy.time.Dates.RFC822;

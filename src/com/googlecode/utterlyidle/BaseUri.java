@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.Value;
+import com.googlecode.totallylazy.io.Uri;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;

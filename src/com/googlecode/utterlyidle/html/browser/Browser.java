@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle.html.browser;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.HttpHandler;
@@ -21,10 +21,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Status.FOUND;
-import static com.googlecode.utterlyidle.Status.MOVED_PERMANENTLY;
-import static com.googlecode.utterlyidle.Status.SEE_OTHER;
-import static com.googlecode.utterlyidle.Status.TEMPORARY_REDIRECT;
+import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.html.browser.BrowserCookies.constructors.browserCookies;
 import static com.googlecode.utterlyidle.html.browser.BrowserState.constructors.browserState;
 

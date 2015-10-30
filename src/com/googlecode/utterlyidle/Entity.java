@@ -1,25 +1,18 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Characters;
 import com.googlecode.totallylazy.Closeables;
-import com.googlecode.totallylazy.functions.Lazy;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Value;
-import com.googlecode.totallylazy.numbers.Numbers;
+import com.googlecode.totallylazy.functions.Block;
+import com.googlecode.totallylazy.functions.Lazy;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.Charset;
 
-import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Strings.string;
-import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.Entities.inputStreamOf;
 
 public class Entity implements Value<Object>, Closeable {

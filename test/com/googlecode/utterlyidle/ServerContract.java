@@ -16,25 +16,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import java.io.InputStream;
 
 import static com.googlecode.totallylazy.Option.none;
-import static com.googlecode.totallylazy.Sequences.repeat;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.predicates.Predicates.not;
 import static com.googlecode.totallylazy.time.Dates.LEXICAL;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
-import static com.googlecode.utterlyidle.ClientConfiguration.Builder.*;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
-import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
-import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
-import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
+import static com.googlecode.utterlyidle.ClientConfiguration.Builder.clientConfiguration;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.Response.methods.header;

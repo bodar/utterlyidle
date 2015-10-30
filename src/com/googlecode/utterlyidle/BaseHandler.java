@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import com.googlecode.utterlyidle.bindings.MatchedBinding;
 import com.googlecode.yadic.Container;

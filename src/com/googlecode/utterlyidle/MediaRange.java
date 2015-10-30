@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Value;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.predicates.Predicate;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;

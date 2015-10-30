@@ -5,7 +5,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieEncoder.cookieEncoder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class CookieEncoderTest {
 

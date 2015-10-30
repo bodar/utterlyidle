@@ -1,14 +1,14 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.UrlEncodedMessage;
+import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Function2;
-import com.googlecode.totallylazy.functions.Callables;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
-import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.io.Uri;
-import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieBuilder;
@@ -17,15 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static com.googlecode.totallylazy.functions.Callables.first;
-import static com.googlecode.totallylazy.functions.Callables.replace;
-import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.predicates.Predicates.not;
-import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.blank;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.totallylazy.functions.Callables.*;
+import static com.googlecode.totallylazy.predicates.Predicates.not;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;

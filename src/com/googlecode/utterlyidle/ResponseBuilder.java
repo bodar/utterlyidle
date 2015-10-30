@@ -1,24 +1,21 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.cookies.Cookie;
 
 import java.util.Date;
 import java.util.List;
 
+import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.totallylazy.Strings.startsWith;
 import static com.googlecode.totallylazy.functions.Callables.first;
 import static com.googlecode.totallylazy.functions.Callables.second;
-import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.predicates.Predicates.and;
-import static com.googlecode.totallylazy.predicates.Predicates.is;
-import static com.googlecode.totallylazy.predicates.Predicates.not;
-import static com.googlecode.totallylazy.predicates.Predicates.where;
-import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.Strings.startsWith;
+import static com.googlecode.totallylazy.predicates.Predicates.*;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 

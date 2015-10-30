@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Strings;
+import com.googlecode.totallylazy.functions.Function2;
 
 import java.io.StringReader;
 import java.util.List;
@@ -16,9 +16,7 @@ import java.util.regex.Pattern;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
-import static com.googlecode.utterlyidle.Request.Builder.entity;
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.request;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.Status.status;
 import static java.lang.Integer.parseInt;
 

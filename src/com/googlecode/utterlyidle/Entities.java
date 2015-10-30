@@ -1,16 +1,16 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Closeables;
 import com.googlecode.totallylazy.Streams;
+import com.googlecode.totallylazy.functions.Block;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
 import static com.googlecode.totallylazy.Strings.bytes;
+import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
 
 public class Entities {
     public static final CompositeEntityWriter WRITERS = new CompositeEntityWriter();

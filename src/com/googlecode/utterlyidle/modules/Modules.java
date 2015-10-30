@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.UtterlyIdleProperties;
 import com.googlecode.utterlyidle.services.Service;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Classes.isInstance;
-import static com.googlecode.totallylazy.reflection.Methods.methods;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
+import static com.googlecode.totallylazy.reflection.Methods.methods;
 import static com.googlecode.yadic.Containers.selfRegister;
 import static com.googlecode.yadic.resolvers.Resolvers.asCallable1;
 

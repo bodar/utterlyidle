@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 
 import java.util.HashMap;

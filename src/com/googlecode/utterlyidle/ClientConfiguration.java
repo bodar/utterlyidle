@@ -57,6 +57,7 @@ public interface ClientConfiguration {
             return modify(clientConfiguration(), builders);
         }
 
+        @SafeVarargs
         static ClientConfiguration modify(final ClientConfiguration clientConfiguration, final Unary<ClientConfiguration>... builders) {
             return sequence(builders).reduce(Compose.<ClientConfiguration>compose()).apply(clientConfiguration);
         }

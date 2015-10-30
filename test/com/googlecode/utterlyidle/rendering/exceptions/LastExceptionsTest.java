@@ -3,12 +3,13 @@ package com.googlecode.utterlyidle.rendering.exceptions;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.StoppedClock;
-import com.googlecode.utterlyidle.RequestBuilder;
+import com.googlecode.utterlyidle.Request;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.repeat;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.time.Dates.date;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -36,7 +37,7 @@ public class LastExceptionsTest {
 
     private void addNumbersToLastExceptions(Sequence<? extends Exception> numbers) {
         numbers.each(exception -> {
-            lastExceptions.put(RequestBuilder.get("/foo").build(), exception);
+            lastExceptions.put(get("/foo"), exception);
         });
     }
 }

@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle.simpleframework;
 
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerContract;
 import org.junit.Test;
 

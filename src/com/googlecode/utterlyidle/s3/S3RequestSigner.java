@@ -1,16 +1,16 @@
 package com.googlecode.utterlyidle.s3;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.SystemClock;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.predicates.Predicates.always;
 import static com.googlecode.totallylazy.predicates.Predicates.matches;
-import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
 import static com.googlecode.utterlyidle.Request.Builder.header;
 import static com.googlecode.utterlyidle.Request.Builder.modify;

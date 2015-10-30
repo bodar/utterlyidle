@@ -2,16 +2,16 @@ package com.googlecode.utterlyidle.services;
 
 import com.googlecode.totallylazy.Exceptions;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.totallylazy.collections.ListMap;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import com.googlecode.utterlyidle.Application;
 
 import java.util.Iterator;
 
-import static com.googlecode.totallylazy.functions.Block.block;
 import static com.googlecode.totallylazy.Debug.inDebug;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.collections.ListMap.listMap;
+import static com.googlecode.totallylazy.functions.Block.block;
 
 public class Services implements Service, Iterable<Pair<Class<? extends Service>, Services.Status>> {
     private final Application application;

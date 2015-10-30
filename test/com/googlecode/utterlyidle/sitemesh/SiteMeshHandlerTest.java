@@ -1,15 +1,11 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
-import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.utterlyidle.MediaType;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.totallylazy.predicates.Predicate;
+import com.googlecode.totallylazy.predicates.Predicates;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.annotations.Produces;

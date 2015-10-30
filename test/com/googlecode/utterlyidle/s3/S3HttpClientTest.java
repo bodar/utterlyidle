@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.s3;
 import com.googlecode.totallylazy.time.StoppedClock;
 import com.googlecode.utterlyidle.AuditTest;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.handlers.AuditHandler;
 import org.junit.Test;
 

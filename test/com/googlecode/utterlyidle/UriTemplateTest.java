@@ -2,8 +2,6 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
-import java.util.UUID;
-
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.UriTemplate.uriTemplate;

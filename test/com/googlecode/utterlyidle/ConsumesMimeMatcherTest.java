@@ -1,16 +1,14 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.totallylazy.predicates.Predicate;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
-import static com.googlecode.utterlyidle.HttpHeaders.*;
-import static com.googlecode.utterlyidle.MediaType.APPLICATION_ATOM_XML;
-import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
-import static com.googlecode.utterlyidle.MediaType.APPLICATION_JSON;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.MediaType.*;
 import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.Requests.request;
 import static org.hamcrest.MatcherAssert.assertThat;

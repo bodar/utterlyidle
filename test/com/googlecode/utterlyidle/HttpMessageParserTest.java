@@ -5,25 +5,15 @@ import com.googlecode.utterlyidle.Request.Builder;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
-import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
-import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
-import static com.googlecode.utterlyidle.HttpMessageParser.toFieldNameAndValue;
-import static com.googlecode.utterlyidle.HttpMessageParser.toMethodAndPath;
-import static com.googlecode.utterlyidle.HttpMessageParser.toStatus;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.HttpMessageParser.*;
+import static com.googlecode.utterlyidle.Request.Builder.form;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.Status.BAD_REQUEST;
-import static com.googlecode.utterlyidle.Status.NOT_FOUND;
-import static com.googlecode.utterlyidle.Status.OK;
-import static com.googlecode.utterlyidle.Status.status;
-import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
-import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
+import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class HttpMessageParserTest {

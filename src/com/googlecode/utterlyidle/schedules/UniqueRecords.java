@@ -2,8 +2,8 @@ package com.googlecode.utterlyidle.schedules;
 
 import com.googlecode.lazyrecords.Keyword;
 import com.googlecode.lazyrecords.Record;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.predicates.Predicate;
 
 import java.util.HashSet;
 import java.util.Set;

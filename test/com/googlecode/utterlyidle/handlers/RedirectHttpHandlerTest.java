@@ -11,9 +11,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_JSON;
 import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
-import static com.googlecode.utterlyidle.Status.FOUND;
-import static com.googlecode.utterlyidle.Status.OK;
-import static com.googlecode.utterlyidle.Status.SEE_OTHER;
+import static com.googlecode.utterlyidle.Status.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 

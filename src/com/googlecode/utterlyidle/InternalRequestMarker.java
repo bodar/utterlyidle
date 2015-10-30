@@ -2,7 +2,8 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.handlers.ApplicationId;
 
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 
 public class InternalRequestMarker {
     private final ApplicationId applicationId;

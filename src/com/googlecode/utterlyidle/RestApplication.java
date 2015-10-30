@@ -1,17 +1,11 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import com.googlecode.utterlyidle.bindings.DefaultBindingMatcher;
 import com.googlecode.utterlyidle.bindings.actions.ResourceClass;
-import com.googlecode.utterlyidle.handlers.AuditHandler;
-import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
-import com.googlecode.utterlyidle.handlers.DateHandler;
-import com.googlecode.utterlyidle.handlers.ExceptionHandler;
-import com.googlecode.utterlyidle.handlers.HeadRequestHandler;
-import com.googlecode.utterlyidle.handlers.RemoveDotSegmentsHandler;
-import com.googlecode.utterlyidle.handlers.ResponseHttpHandler;
+import com.googlecode.utterlyidle.handlers.*;
 import com.googlecode.utterlyidle.modules.CoreModule;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
@@ -25,12 +19,11 @@ import com.googlecode.yadic.closeable.CloseableContainer;
 
 import java.io.IOException;
 
-import static com.googlecode.totallylazy.functions.Callables.value;
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
+import static com.googlecode.totallylazy.functions.Callables.value;
 import static com.googlecode.utterlyidle.Binding.functions.action;
-import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.bindings.actions.Action.functions.metaData;
 
 public class RestApplication implements Application {

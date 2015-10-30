@@ -1,9 +1,9 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.Curried2;
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Value;
+import com.googlecode.totallylazy.functions.Curried2;
+import com.googlecode.totallylazy.functions.Function1;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;

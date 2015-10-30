@@ -27,9 +27,7 @@ import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotated
 import static com.googlecode.utterlyidle.dsl.DslBindings.binding;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
-import static com.googlecode.utterlyidle.modules.Modules.applicationScopedClass;
-import static com.googlecode.utterlyidle.modules.Modules.requestScopedClass;
-import static com.googlecode.utterlyidle.modules.Modules.serviceClass;
+import static com.googlecode.utterlyidle.modules.Modules.*;
 
 public class ApplicationBuilder {
     private final Container container = new SimpleContainer();
@@ -94,6 +92,7 @@ public class ApplicationBuilder {
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     public Response handle(RequestBuilder request) throws Exception {
         return handle(request.build());
     }
@@ -102,6 +101,7 @@ public class ApplicationBuilder {
         return build().handle(request);
     }
 
+    @SuppressWarnings("deprecation")
     public String responseAsString(RequestBuilder request) throws Exception {
         return responseAsString(request.build());
     }

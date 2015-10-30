@@ -6,7 +6,6 @@ import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 
 public class Cookie {
     private final String name;

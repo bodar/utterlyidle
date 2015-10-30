@@ -1,8 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.BaseUriRedirector;
-import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.RegisteredResources;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import org.junit.Test;

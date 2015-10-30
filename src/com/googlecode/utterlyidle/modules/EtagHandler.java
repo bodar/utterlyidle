@@ -1,25 +1,14 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.totallylazy.functions.Function2;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Arrays.list;
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
-import static com.googlecode.utterlyidle.HttpHeaders.Content_MD5;
-import static com.googlecode.utterlyidle.HttpHeaders.DATE;
-import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
-import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
-import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
-import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
-import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;

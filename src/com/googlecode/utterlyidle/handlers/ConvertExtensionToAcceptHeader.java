@@ -1,16 +1,15 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
 
 import java.util.Iterator;
@@ -19,9 +18,7 @@ import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
-import static com.googlecode.utterlyidle.Request.Builder.uri;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
@@ -87,7 +84,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     private Function2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
-        return (request, extensionAndReplacementMimeType) -> modify(request,
+        return (request, extensionAndReplacementMimeType) -> Request.Builder.modify(request,
                 header(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()),
                 uri(removeExtension(request.uri())));
     }

@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle.html;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Pair.pair;

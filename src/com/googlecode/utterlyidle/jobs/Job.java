@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;

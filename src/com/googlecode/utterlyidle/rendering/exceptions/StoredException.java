@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Exceptions;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.Request;
 
 import java.util.Date;

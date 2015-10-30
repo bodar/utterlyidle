@@ -1,10 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;
 import com.googlecode.yadic.resolvers.ProgrammerErrorResolver;

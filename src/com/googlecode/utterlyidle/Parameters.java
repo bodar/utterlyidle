@@ -1,16 +1,11 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.collections.PersistentList;
+import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Function2;
-import com.googlecode.totallylazy.functions.Callables;
-import com.googlecode.totallylazy.First;
-import com.googlecode.totallylazy.Maps;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.predicates.Predicate;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.collections.PersistentList;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,8 +13,8 @@ import java.util.Map;
 
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.predicates.Predicates.by;
 
 public abstract class Parameters<Self extends Parameters<Self>> implements Iterable<Pair<String, String>> {
     private final Function1<String, Predicate<String>> predicate;

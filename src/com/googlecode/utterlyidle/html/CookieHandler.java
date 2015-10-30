@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.html;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 

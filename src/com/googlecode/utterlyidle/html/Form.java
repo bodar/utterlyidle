@@ -1,14 +1,11 @@
 package com.googlecode.utterlyidle.html;
 
 import com.googlecode.totallylazy.Pair;
-import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.totallylazy.functions.Unary;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.xml.Xml;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import org.w3c.dom.Element;
 

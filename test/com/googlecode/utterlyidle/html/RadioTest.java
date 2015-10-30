@@ -5,10 +5,7 @@ import org.junit.Test;
 import java.util.NoSuchElementException;
 
 import static com.googlecode.utterlyidle.html.Html.html;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
