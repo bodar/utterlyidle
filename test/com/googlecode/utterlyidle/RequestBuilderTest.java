@@ -11,7 +11,6 @@ import static com.googlecode.utterlyidle.Entities.inputStreamOf;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
-import static com.googlecode.utterlyidle.RequestBuilder.*;
 import static com.googlecode.utterlyidle.Requests.form;
 import static com.googlecode.utterlyidle.Requests.query;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -24,20 +23,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class RequestBuilderTest {
     @Test
     public void setsContentLengthWithFormParameters() throws Exception {
-        assertThat(post("/home").form("name", "value").build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(10)));
+        assertThat(RequestBuilder.post("/home").form("name", "value").build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(10)));
     }
 
     @Test
     public void alwaysSetsContentLengthForNonStreamingEntity() throws Exception {
-        assertThat(put("/home").entity("").build().headers().getValue(CONTENT_LENGTH), equalTo("0"));
-        assertThat(put("/home").entity("Hello").build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
-        assertThat(put("/home").entity(bytes("Hello")).build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
-        assertThat(put("/home").entity(inputStreamOf("Hello")).build().headers().contains(CONTENT_LENGTH), equalTo(false));
+        assertThat(RequestBuilder.put("/home").entity("").build().headers().getValue(CONTENT_LENGTH), equalTo("0"));
+        assertThat(RequestBuilder.put("/home").entity("Hello").build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
+        assertThat(RequestBuilder.put("/home").entity(bytes("Hello")).build().headers().getValue(CONTENT_LENGTH), equalTo(valueOf(bytes("Hello").length)));
+        assertThat(RequestBuilder.put("/home").entity(inputStreamOf("Hello")).build().headers().contains(CONTENT_LENGTH), equalTo(false));
     }
 
     @Test
     public void canCreateRequestBuilderFromRequest() {
-        Request originalRequest = get("/home").
+        Request originalRequest = RequestBuilder.get("/home").
                 cookie(cookie("fred", "blogs")).
                 form("going", "well").
                 header("some", "header").
@@ -45,7 +44,7 @@ public class RequestBuilderTest {
                 query("a query", "a question").
                 build();
 
-        Request clonedRequest = modify(originalRequest).build();
+        Request clonedRequest = RequestBuilder.modify(originalRequest).build();
 
         assertThat(clonedRequest.method(), is(equalTo(originalRequest.method())));
         assertThat(clonedRequest.uri(), is(equalTo(originalRequest.uri())));
@@ -55,19 +54,19 @@ public class RequestBuilderTest {
 
     @Test
     public void shouldRemoveQueryParamsFromEncodedUri() throws Exception {
-        RequestBuilder requestBuilder = get("/home").query("^&%$^%", "foo").query("removeme", "");
+        RequestBuilder requestBuilder = RequestBuilder.get("/home").query("^&%$^%", "foo").query("removeme", "");
         assertThat(requestBuilder.removeQuery("removeme").build().uri(), equalTo(Uri.uri("/home?%5E%26%25%24%5E%25=foo")));
     }
 
     @Test
     public void shouldBeAbleToReplaceACookie() throws Exception {
-        Request request = get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie1", "timtam").build();
+        Request request = RequestBuilder.get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie1", "timtam").build();
         assertThat(CookieParameters.cookies(request).getValue("cookie1"), is("timtam"));
     }
 
     @Test
     public void shouldBeAbleToReplaceACookieEvenIfHeaderParameterCaseDiffers() throws Exception {
-        Request request = get("/").
+        Request request = RequestBuilder.get("/").
                 header(COOKIE.toLowerCase(), Cookie.cookie("cookie1", "McVitees Digestive with caramel").toString()).
                 cookie("cookie2", "value2").
                 replaceCookie("cookie1", "timtam").build();
@@ -77,35 +76,35 @@ public class RequestBuilderTest {
 
     @Test
     public void shouldBeAbleToRemoveACookie() throws Exception {
-        Request request = get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").removeCookie("cookie1").build();
+        Request request = RequestBuilder.get("/").cookie("cookie1", "value1").cookie("cookie2", "value2").removeCookie("cookie1").build();
         assertThat(CookieParameters.cookies(request).contains("cookie1"), is(false));
         assertThat(CookieParameters.cookies(request).getValue("cookie2"), is("value2"));
     }
 
     @Test
     public void shouldBeAbleToRemoveAllEvidenceOfCookie() throws Exception {
-        Request request = get("/").cookie("cookie1", "value1").removeCookie("cookie1").build();
+        Request request = RequestBuilder.get("/").cookie("cookie1", "value1").removeCookie("cookie1").build();
         assertThat(CookieParameters.cookies(request).contains("cookie1"), is(false));
         assertThat(request.headers().contains(COOKIE), is(false));
     }
 
     @Test
     public void replacingACookiePreservesHeaderOrder() throws Exception {
-        Request request = put("/").header("path", "/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie2", "penguin").build();
+        Request request = RequestBuilder.put("/").header("path", "/").cookie("cookie1", "value1").cookie("cookie2", "value2").replaceCookie("cookie2", "penguin").build();
         assertThat(request.headers(), is(headerParameters(sequence(pair("path", "/"), pair(COOKIE, "cookie1=\"value1\""), pair(COOKIE, "cookie2=\"penguin\""), pair(CONTENT_LENGTH, "0")))));
     }
 
     @Test
     public void canReplaceCookieWhenListedInMiddleOfMultiCookie() throws Exception {
-        Request request = get("/").header(COOKIE, "cookie1=\"value1\"; cookie2=\"value2\"").replaceCookie("cookie2", "hobnob").build();
+        Request request = RequestBuilder.get("/").header(COOKIE, "cookie1=\"value1\"; cookie2=\"value2\"").replaceCookie("cookie2", "hobnob").build();
         assertThat(request.headers().toMap().get(COOKIE).get(0), is("cookie1=\"value1\"; cookie2=\"hobnob\""));
     }
 
     @Test
     public void canCopyFormParamsIntoQueryParams() {
-        Request postForm = post("/?three=3").form("one", "1").form("two", 2).build();
+        Request postForm = RequestBuilder.post("/?three=3").form("one", "1").form("two", 2).build();
 
-        Request modified = modify(postForm).copyFormParamsToQuery().build();
+        Request modified = RequestBuilder.modify(postForm).copyFormParamsToQuery().build();
 
         QueryParameters queryParameters = query(modified);
         assertThat(queryParameters.getValue("one"), is(equalTo("1")));
