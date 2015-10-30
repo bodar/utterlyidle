@@ -168,6 +168,10 @@ public interface Request {
             return params -> params.replace(name, value.toString());
         }
 
+        static Unary<Parameters<?>> remove(String name){
+            return params -> params.remove(name);
+        }
+
         static Unary<Parameters<?>> param(String name, Object value){
             return params -> params.replace(name, value.toString());
         }

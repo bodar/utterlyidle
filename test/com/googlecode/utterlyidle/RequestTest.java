@@ -13,6 +13,8 @@ import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.cookie;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
 
 public class RequestTest {
@@ -89,12 +91,21 @@ public class RequestTest {
         assertThat(get("/", header(ACCEPT, "Chickens")).headers().getValue(ACCEPT), is("Chickens"));
         HeaderParameters headers = get("/", header(ACCEPT, "Chickens"), header(CONTENT_TYPE, "Cats")).headers();
         assertThat(headers.getValue(ACCEPT), is("Chickens"));
+        assertThat(headers.getValue(CONTENT_TYPE), is("Cats"));
     }
 
     @Test
     public void canSetMultipleHeaderParametersInOneGoForPerformanceReasons() throws Exception {
         assertThat(get("/", header(param(ACCEPT, list("Chickens", "Cats")))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
         assertThat(get("/", header(add(ACCEPT, "Chickens"), add(ACCEPT, "Cats"))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
+    }
+
+    @Test
+    public void canRemoveAHeader() throws Exception {
+        Request original = get("/", header(ACCEPT, "Chickens"), header(CONTENT_TYPE, "Cats"));
+        HeaderParameters headers = modify(original, header(remove(ACCEPT))).headers();
+        assertThat(headers.contains(ACCEPT), is(false));
+        assertThat(headers.getValue(CONTENT_TYPE), is("Cats"));
     }
 
     @Test
@@ -116,6 +127,12 @@ public class RequestTest {
     }
 
     @Test
+    public void canRemoveAQuery() throws Exception {
+        Request original = get("/", query("first", "Dan"), query("last", "Bod"));
+        assertThat(modify(original, query(remove("first"))).uri(), is(uri("/?last=Bod")));
+    }
+
+    @Test
     public void canSetFormParameters() throws Exception {
         assertThat(get("/", form("name", "Dan")).entity().toString(), is("name=Dan"));
         assertThat(get("/", form("first", "Dan"), form("last", "Bod")).entity().toString(), is("first=Dan&last=Bod"));
@@ -125,6 +142,12 @@ public class RequestTest {
     public void canSetMultipleFormParametersInOneGoForPerformanceReasons() throws Exception {
         assertThat(get("/", form(param("name", list("Dan", "Matt")))).entity().toString(), is("name=Dan&name=Matt"));
         assertThat(get("/", form(add("name", "Dan"), add("name", "Matt"))).entity().toString(), is("name=Dan&name=Matt"));
+    }
+
+    @Test
+    public void canRemoveAForm() throws Exception {
+        Request original = get("/", form("first", "Dan"), form("last", "Bod"));
+        assertThat(modify(original, form(remove("first"))).entity().toString(), is("last=Bod"));
     }
 
     @Test
@@ -139,4 +162,11 @@ public class RequestTest {
         assertThat(get("/", cookie(param("name", list("Dan", "Matt")))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
         assertThat(get("/", cookie(add("name", "Dan"), add("name", "Matt"))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
     }
+
+    @Test
+    public void canRemoveACookie() throws Exception {
+        Request original = get("/", cookie("first", "Dan"), cookie("last", "Bod"));
+        assertThat(modify(original, cookie(remove("first"))).headers().getValues(COOKIE), is(sequence("last=\"Bod\"; ")));
+    }
+
 }
