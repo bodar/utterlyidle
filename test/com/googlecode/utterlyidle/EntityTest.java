@@ -8,7 +8,9 @@ import java.io.InputStream;
 
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
-import static com.googlecode.utterlyidle.Entities.*;
+import static com.googlecode.utterlyidle.Entities.inputStreamOf;
+import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
+import static com.googlecode.utterlyidle.Entities.streamingWriterOf;
 import static com.googlecode.utterlyidle.Entity.entity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

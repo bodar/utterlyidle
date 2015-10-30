@@ -9,7 +9,9 @@ import java.util.UUID;
 
 import static com.googlecode.lazyrecords.Using.using;
 import static com.googlecode.totallylazy.Strings.empty;
-import static com.googlecode.totallylazy.predicates.Predicates.*;
+import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.predicates.Predicates.not;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 
 public class Schedules {
     private final Records records;

@@ -21,7 +21,10 @@ import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.Status.FOUND;
+import static com.googlecode.utterlyidle.Status.MOVED_PERMANENTLY;
+import static com.googlecode.utterlyidle.Status.SEE_OTHER;
+import static com.googlecode.utterlyidle.Status.TEMPORARY_REDIRECT;
 import static com.googlecode.utterlyidle.html.browser.BrowserCookies.constructors.browserCookies;
 import static com.googlecode.utterlyidle.html.browser.BrowserState.constructors.browserState;
 

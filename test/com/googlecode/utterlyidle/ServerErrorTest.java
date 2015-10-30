@@ -10,7 +10,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.googlecode.totallylazy.predicates.Predicates.*;
+import static com.googlecode.totallylazy.predicates.Predicates.always;
+import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;

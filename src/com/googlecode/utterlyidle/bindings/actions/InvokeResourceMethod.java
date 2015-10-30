@@ -1,7 +1,12 @@
 package com.googlecode.utterlyidle.bindings.actions;
 
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.ExceptionLogger;
+import com.googlecode.utterlyidle.MatchedResource;
+import com.googlecode.utterlyidle.ParametersExtractor;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.bindings.MatchedBinding;
 import com.googlecode.yadic.Container;
 

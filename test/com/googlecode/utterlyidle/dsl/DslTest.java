@@ -1,7 +1,12 @@
 package com.googlecode.utterlyidle.dsl;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request.Builder;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
+import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -15,7 +20,12 @@ import static com.googlecode.utterlyidle.Request.Builder.accept;
 import static com.googlecode.utterlyidle.Request.Builder.query;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.annotations.View.constructors.view;
-import static com.googlecode.utterlyidle.dsl.BindingBuilder.*;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.entity;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.patch;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.put;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

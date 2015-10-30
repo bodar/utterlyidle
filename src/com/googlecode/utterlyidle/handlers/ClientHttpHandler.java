@@ -1,21 +1,41 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Bytes;
+import com.googlecode.totallylazy.Exceptions;
+import com.googlecode.totallylazy.Files;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.CloseableList;
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.ClientConfiguration;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.MediaType;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.proxies.NoProxy;
 import com.googlecode.utterlyidle.proxies.ProxyFor;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
 
@@ -30,11 +50,19 @@ import static com.googlecode.totallylazy.collections.CloseableList.constructors.
 import static com.googlecode.totallylazy.functions.Callables.first;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.totallylazy.numbers.Numbers.zero;
-import static com.googlecode.totallylazy.predicates.Predicates.*;
-import static com.googlecode.totallylazy.reflection.Fields.*;
-import static com.googlecode.utterlyidle.HttpHeaders.*;
+import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.predicates.Predicates.not;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
+import static com.googlecode.totallylazy.reflection.Fields.access;
+import static com.googlecode.totallylazy.reflection.Fields.fields;
+import static com.googlecode.totallylazy.reflection.Fields.name;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.Status.NOT_FOUND;
+import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.utterlyidle.Status.status;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 
 public class ClientHttpHandler implements HttpClient, Closeable {

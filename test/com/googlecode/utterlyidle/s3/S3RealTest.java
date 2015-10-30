@@ -15,7 +15,10 @@ import java.util.Properties;
 import java.util.UUID;
 
 import static com.googlecode.totallylazy.matchers.Matchers.is;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.delete;
+import static com.googlecode.utterlyidle.Request.Builder.entity;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.put;
 import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.Status.OK;
 import static org.hamcrest.MatcherAssert.assertThat;

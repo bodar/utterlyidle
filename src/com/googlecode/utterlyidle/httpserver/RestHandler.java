@@ -2,7 +2,14 @@ package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Value;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Protocol;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpsExchange;

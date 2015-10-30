@@ -9,7 +9,16 @@ import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.totallylazy.proxy.MethodInvocation;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.FormParameters;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.MediaType;
+import com.googlecode.utterlyidle.NamedParameter;
+import com.googlecode.utterlyidle.Parameter;
+import com.googlecode.utterlyidle.Parameters;
+import com.googlecode.utterlyidle.PathParameters;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.RelativeUriExtractor;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.lang.annotation.Annotation;

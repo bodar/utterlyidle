@@ -6,7 +6,12 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.matchers.Matchers.matcher;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.delete;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.head;
+import static com.googlecode.utterlyidle.Request.Builder.options;
+import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.Builder.put;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

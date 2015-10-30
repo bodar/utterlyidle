@@ -1,7 +1,11 @@
 package com.googlecode.utterlyidle.httpserver;
 
 import com.googlecode.totallylazy.io.Uri;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.Protocol;
+import com.googlecode.utterlyidle.Server;
+import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
 import com.sun.net.httpserver.HttpServer;

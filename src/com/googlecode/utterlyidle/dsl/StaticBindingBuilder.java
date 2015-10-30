@@ -12,7 +12,9 @@ import java.util.concurrent.Callable;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.dsl.BindingBuilder.*;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.pathParam;
 import static java.lang.String.format;
 import static java.util.regex.Pattern.quote;
 

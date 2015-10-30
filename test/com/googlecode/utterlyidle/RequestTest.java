@@ -9,9 +9,34 @@ import static com.googlecode.totallylazy.Lists.list;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
-import static com.googlecode.utterlyidle.HttpHeaders.*;
-import static com.googlecode.utterlyidle.Request.Builder.*;
-import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
+import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.Request.Builder.add;
+import static com.googlecode.utterlyidle.Request.Builder.cookie;
+import static com.googlecode.utterlyidle.Request.Builder.delete;
+import static com.googlecode.utterlyidle.Request.Builder.entity;
+import static com.googlecode.utterlyidle.Request.Builder.form;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.head;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.method;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.options;
+import static com.googlecode.utterlyidle.Request.Builder.param;
+import static com.googlecode.utterlyidle.Request.Builder.patch;
+import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.Builder.put;
+import static com.googlecode.utterlyidle.Request.Builder.query;
+import static com.googlecode.utterlyidle.Request.Builder.remove;
+import static com.googlecode.utterlyidle.Request.Builder.request;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.DELETE;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.HEAD;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.OPTIONS;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.PATCH;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 
 public class RequestTest {
     @Test

@@ -8,7 +8,9 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.totallylazy.predicates.Predicates.*;
+import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.predicates.Predicates.not;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static java.net.Proxy.Type.DIRECT;
 import static java.net.ProxySelector.getDefault;
 

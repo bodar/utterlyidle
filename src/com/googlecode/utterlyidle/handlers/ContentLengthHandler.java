@@ -1,6 +1,12 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Entity;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThanOrEqualTo;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;

@@ -7,7 +7,9 @@ import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.Builder.query;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

@@ -2,7 +2,11 @@ package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.template.Renderer;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.BasePath;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.handlers.HttpClient;
 
 import java.io.IOException;

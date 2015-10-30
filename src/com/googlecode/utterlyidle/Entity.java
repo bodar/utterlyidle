@@ -7,7 +7,11 @@ import com.googlecode.totallylazy.Value;
 import com.googlecode.totallylazy.functions.Block;
 import com.googlecode.totallylazy.functions.Lazy;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import static com.googlecode.totallylazy.Option.none;

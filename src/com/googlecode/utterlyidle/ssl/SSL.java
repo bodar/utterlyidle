@@ -2,7 +2,11 @@ package com.googlecode.utterlyidle.ssl;
 
 import com.googlecode.totallylazy.Maps;
 
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;

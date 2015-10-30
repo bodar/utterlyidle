@@ -1,6 +1,10 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Left;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Right;
+import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
@@ -15,7 +19,9 @@ import static com.googlecode.utterlyidle.BaseUri.baseUri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
-import static com.googlecode.utterlyidle.dsl.BindingBuilder.*;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.pathParam;
+import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

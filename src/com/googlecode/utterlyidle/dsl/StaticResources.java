@@ -2,7 +2,11 @@ package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.io.Uri;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.Responses;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 
 import java.net.URL;

@@ -1,9 +1,16 @@
 package com.googlecode.utterlyidle.modules;
 
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.HttpHeaders.*;
+import static com.googlecode.utterlyidle.HttpHeaders.Content_MD5;
+import static com.googlecode.utterlyidle.HttpHeaders.ETAG;
+import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.Request.Builder.post;
 import static com.googlecode.utterlyidle.Response.methods.header;

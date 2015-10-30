@@ -11,7 +11,9 @@ import com.googlecode.utterlyidle.annotations.HttpMethod;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.time.Dates.RFC822;
-import static com.googlecode.utterlyidle.HttpHeaders.*;
+import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
+import static com.googlecode.utterlyidle.HttpHeaders.DATE;
+import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static java.lang.String.format;

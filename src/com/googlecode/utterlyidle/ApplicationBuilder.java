@@ -27,7 +27,9 @@ import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotated
 import static com.googlecode.utterlyidle.dsl.DslBindings.binding;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
-import static com.googlecode.utterlyidle.modules.Modules.*;
+import static com.googlecode.utterlyidle.modules.Modules.applicationScopedClass;
+import static com.googlecode.utterlyidle.modules.Modules.requestScopedClass;
+import static com.googlecode.utterlyidle.modules.Modules.serviceClass;
 
 public class ApplicationBuilder {
     private final Container container = new SimpleContainer();

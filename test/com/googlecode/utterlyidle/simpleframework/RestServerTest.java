@@ -5,7 +5,10 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ServerContract;
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.accept;
+import static com.googlecode.utterlyidle.Request.Builder.add;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.header;
 import static com.googlecode.utterlyidle.Status.NOT_ACCEPTABLE;
 import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
 import static org.hamcrest.CoreMatchers.is;

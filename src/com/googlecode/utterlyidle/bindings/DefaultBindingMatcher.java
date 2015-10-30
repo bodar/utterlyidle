@@ -4,7 +4,13 @@ import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.predicates.Predicate;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.Bindings;
+import com.googlecode.utterlyidle.ExceptionLogger;
+import com.googlecode.utterlyidle.MatchFailure;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.totallylazy.Left.left;
 import static com.googlecode.totallylazy.Pair.pair;

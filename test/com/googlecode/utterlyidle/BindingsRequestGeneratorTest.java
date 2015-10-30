@@ -1,13 +1,20 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.annotations.*;
+import com.googlecode.utterlyidle.annotations.FormParam;
+import com.googlecode.utterlyidle.annotations.GET;
+import com.googlecode.utterlyidle.annotations.POST;
+import com.googlecode.utterlyidle.annotations.Path;
+import com.googlecode.utterlyidle.annotations.PathParam;
+import com.googlecode.utterlyidle.annotations.QueryParam;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BaseUriRedirectorTest.bindings;
 import static com.googlecode.utterlyidle.BaseUriRedirectorTest.redirector;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.form;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.post;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

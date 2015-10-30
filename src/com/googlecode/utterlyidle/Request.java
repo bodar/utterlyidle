@@ -17,7 +17,13 @@ import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
 import static com.googlecode.utterlyidle.MemoryRequest.memoryRequest;
-import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.DELETE;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.HEAD;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.OPTIONS;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.PATCH;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 import static java.lang.String.format;
 
 public interface Request {

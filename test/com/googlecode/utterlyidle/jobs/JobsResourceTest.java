@@ -6,7 +6,14 @@ import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.StoppedClock;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.ExceptionLogger;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import org.junit.Before;
@@ -22,11 +29,18 @@ import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.RelativeUriExtractor.relativeUriOf;
-import static com.googlecode.utterlyidle.Request.Builder.*;
-import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.Builder.uri;
+import static com.googlecode.utterlyidle.Status.CREATED;
+import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.relativeUriOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 
 public class JobsResourceTest {

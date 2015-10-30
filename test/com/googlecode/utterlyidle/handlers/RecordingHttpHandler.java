@@ -5,7 +5,9 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import static com.googlecode.totallylazy.collections.PersistentList.constructors.*;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.cons;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.empty;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.reverse;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returns;

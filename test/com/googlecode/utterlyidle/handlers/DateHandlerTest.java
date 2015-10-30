@@ -2,7 +2,9 @@ package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.StoppedClock;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;

@@ -8,7 +8,9 @@ import java.util.NoSuchElementException;
 import static com.googlecode.totallylazy.Strings.empty;
 import static com.googlecode.totallylazy.predicates.Predicates.not;
 import static com.googlecode.totallylazy.predicates.Predicates.where;
-import static com.googlecode.totallylazy.xml.Xml.functions.*;
+import static com.googlecode.totallylazy.xml.Xml.functions.attribute;
+import static com.googlecode.totallylazy.xml.Xml.functions.matches;
+import static com.googlecode.totallylazy.xml.Xml.functions.setAttribute;
 import static com.googlecode.totallylazy.xml.Xml.removeAttribute;
 import static java.lang.String.format;
 

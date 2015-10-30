@@ -1,11 +1,22 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.*;
+import com.googlecode.totallylazy.Either;
+import com.googlecode.totallylazy.Left;
+import com.googlecode.totallylazy.None;
+import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Right;
+import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.Some;
 import com.googlecode.totallylazy.functions.Callables;
 
-import static com.googlecode.totallylazy.Sequences.*;
+import static com.googlecode.totallylazy.Sequences.one;
+import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Sequences.unzip;
 import static com.googlecode.totallylazy.Unchecked.cast;
-import static com.googlecode.totallylazy.predicates.Predicates.*;
+import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.predicates.Predicates.some;
+import static com.googlecode.totallylazy.predicates.Predicates.where;
 
 public class Extractors {
     public static FormParameters extractForm(Binding binding, Object... arguments) {

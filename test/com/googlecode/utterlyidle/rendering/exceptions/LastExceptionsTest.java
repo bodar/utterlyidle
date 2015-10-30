@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.rendering.exceptions;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.time.StoppedClock;
-import com.googlecode.utterlyidle.Request;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.repeat;

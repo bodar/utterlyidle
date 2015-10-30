@@ -3,7 +3,11 @@ package com.googlecode.utterlyidle;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
-import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Request.Builder.accept;
+import static com.googlecode.utterlyidle.Request.Builder.form;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.post;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;

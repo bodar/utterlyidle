@@ -2,7 +2,14 @@ package com.googlecode.utterlyidle.undertow;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.functions.Function2;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Requests;
+import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.ResponseBuilder;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;

@@ -5,7 +5,11 @@ import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.predicates.Predicates;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.InternalRequestMarker;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
