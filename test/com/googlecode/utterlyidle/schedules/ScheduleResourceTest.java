@@ -33,7 +33,7 @@ public class ScheduleResourceTest {
     @Before
     public void setUp() {
         stubHttpScheduler = new StubHttpScheduler();
-        requestToSchedule = RequestBuilder.post("/foo/bar").query("queryParam", "value").header("myHeader", "myHeaderValue").entity("entityValue").build();
+        requestToSchedule = post("/foo/bar", query("queryParam", "value"), header("myHeader", "myHeaderValue"), entity("entityValue"));
         internalRequestMarker = new InternalRequestMarker(ApplicationId.applicationId());
         scheduleResource = new ScheduleResource(stubHttpScheduler, requestToSchedule, stubRedirector(), internalRequestMarker);
     }
@@ -67,9 +67,10 @@ public class ScheduleResourceTest {
 
     @Test
     public void scheduleListCanBeRequestedAsJson() throws Exception {
-        final ApplicationBuilder application = application().add((RequestScopedModule) container -> {
-            return container.addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()));
-        }).add(new ScheduleModule());
+        final ApplicationBuilder application = application().
+                add((RequestScopedModule) container ->
+                        container.addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()))).
+                add(new ScheduleModule());
         assertThat(application.handle(get("schedules/list")).entity().toString(), is("{\"schedules\":[],\"schedulerIsRunning\":false}"));
     }
 
