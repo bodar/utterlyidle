@@ -23,11 +23,11 @@ import static com.googlecode.utterlyidle.cookies.CookieAttribute.cookieAttribute
 public class CookieCutter {
 
     public static Iterable<Cookie> cookies(Request request) {
-        return request.headers().getValues(COOKIE).flatMap(header -> parseRequestHeader(header));
+        return request.headers().getValues(COOKIE).flatMap(CookieCutter::parseRequestHeader);
     }
 
     public static Iterable<Cookie> cookies(Response response) {
-        return flatten(response.headers().getValues(SET_COOKIE).map(header -> parseResponseHeader(header)));
+        return flatten(response.headers().getValues(SET_COOKIE).map(CookieCutter::parseResponseHeader));
     }
 
     public static Sequence<Cookie> parseRequestHeader(String value) {

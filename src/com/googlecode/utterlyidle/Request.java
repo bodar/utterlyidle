@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.functions.Compose;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Entity.DEFAULT_CHARACTER_SET;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
 import static com.googlecode.utterlyidle.MemoryRequest.memoryRequest;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
@@ -141,6 +143,23 @@ public interface Request {
                     entity(UrlEncodedMessage.toString(parameters)));
         }
 
+        static Unary<Request> cookie(String name, Object value) {
+            return cookie(replace(name, value));
+        }
+
+        @SafeVarargs
+        static Unary<Request> cookie(Unary<Parameters<?>>... builders) {
+            return request -> {
+                CookieParameters parsed = CookieParameters.cookies(request);
+                return modify(request, cookie(apply(parsed, builders)));
+            };
+        }
+
+        static Unary<Request> cookie(Parameters<?> parameters) {
+            return request -> modify(request,
+                    header(param(COOKIE, CookieParameters.cookies(parameters).toList())));
+        }
+
         static Unary<Parameters<?>> add(String name, Object value){
             return params -> params.add(name, value.toString());
         }
@@ -156,7 +175,6 @@ public interface Request {
         static Unary<Parameters<?>> param(String name, List<?> values){
             return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, item.toString()));
         }
-
 
         @SafeVarargs
         static <T> T apply(T seed, Unary<T>... builders) {

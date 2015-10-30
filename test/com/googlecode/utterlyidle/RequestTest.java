@@ -11,6 +11,7 @@ import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
+import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
 
@@ -124,5 +125,18 @@ public class RequestTest {
     public void canSetMultipleFormParametersInOneGoForPerformanceReasons() throws Exception {
         assertThat(get("/", form(param("name", list("Dan", "Matt")))).entity().toString(), is("name=Dan&name=Matt"));
         assertThat(get("/", form(add("name", "Dan"), add("name", "Matt"))).entity().toString(), is("name=Dan&name=Matt"));
+    }
+
+    @Test
+    public void canSetCookieParameters() throws Exception {
+        String value = get("/", cookie("name", "Dan")).headers().getValue(COOKIE);
+        assertThat(value, is("name=\"Dan\"; "));
+        assertThat(get("/", cookie("first", "Dan"), cookie("last", "Bod")).headers().getValues(COOKIE), is(sequence("first=\"Dan\"; ", "last=\"Bod\"; ")));
+    }
+
+    @Test
+    public void canSetMultipleCookieParametersInOneGoForPerformanceReasons() throws Exception {
+        assertThat(get("/", cookie(param("name", list("Dan", "Matt")))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
+        assertThat(get("/", cookie(add("name", "Dan"), add("name", "Matt"))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
     }
 }

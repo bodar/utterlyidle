@@ -96,7 +96,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public RequestBuilder cookie(String name, String value) {
-        headers.add(pair(COOKIE, Cookie.cookie(name, value).toString()));
+        headers.add(pair(COOKIE, Cookie.string(name, value)));
         return this;
     }
 

@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Rfc2616;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -42,8 +41,16 @@ public class Cookie {
 
     @Override
     public String toString() {
+        return string(name, value, attributes);
+    }
+
+    public static String string(String name, String value, CookieAttribute... attributes) {
+        return string(name, value, sequence(attributes));
+    }
+
+    public static String string(String name, String value, Sequence<CookieAttribute> attributes1) {
         final String cookieValue = format("%s=%s; ", name, Rfc2616.toQuotedString(value));
-        final String attributes = this.attributes.toString("; ");
+        final String attributes = attributes1.toString("; ");
         return cookieValue + attributes;
     }
 

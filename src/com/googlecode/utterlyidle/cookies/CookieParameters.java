@@ -1,11 +1,13 @@
 package com.googlecode.utterlyidle.cookies;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+
+import java.util.List;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
@@ -32,11 +34,16 @@ public class CookieParameters extends Parameters<CookieParameters> {
         return pairs(CookieCutter.cookies(response));
     }
 
-    private static CookieParameters pairs(final Iterable<Cookie> cookies) {
-        return new CookieParameters(sequence(cookies).map(asPair()).toPersistentList());
+    public static CookieParameters pairs(final Iterable<? extends Cookie> cookies) {
+        return cookies(sequence(cookies).map(Cookie::toPair));
     }
 
-    private static Function1<Cookie, Pair<String, String>> asPair() {
-        return cookie -> cookie.toPair();
+    public static CookieParameters cookies(Iterable<? extends Pair<String, String>> pairs) {
+        if(pairs instanceof CookieParameters) return (CookieParameters) pairs;
+        return new CookieParameters(sequence(pairs).toPersistentList());
+    }
+
+    public List<Cookie> toList() {
+        return values.map(pair -> new Cookie(pair.first(), pair.second()));
     }
 }
