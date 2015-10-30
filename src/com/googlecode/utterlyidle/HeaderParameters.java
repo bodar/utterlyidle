@@ -34,6 +34,7 @@ public class HeaderParameters extends Parameters<HeaderParameters> {
     }
 
     public static HeaderParameters headerParameters(final Iterable<? extends Pair<String, String>> pairs) {
+        if(pairs instanceof HeaderParameters) return (HeaderParameters) pairs;
         return sequence(pairs).foldLeft(new HeaderParameters(), Parameters.<HeaderParameters>pairIntoParameters());
     }
 

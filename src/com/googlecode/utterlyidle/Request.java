@@ -88,7 +88,16 @@ public interface Request {
         }
 
         static Unary<Request> header(String name, Object value) {
-            return request -> request(request.method(), request.uri(), request.headers().replace(name, value.toString()), request.entity());
+            return header(replace(name, value));
+        }
+
+        @SafeVarargs
+        static Unary<Request> header(Unary<Parameters<?>>... builders) {
+            return request -> modify(request, header(apply(request.headers(), builders)));
+        }
+
+        static Unary<Request> header(Parameters<?> parameters) {
+            return request -> request(request.method(), request.uri(), HeaderParameters.headerParameters(parameters), request.entity());
         }
 
         static Unary<Request> entity(Object value) {

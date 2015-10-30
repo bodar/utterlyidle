@@ -6,11 +6,11 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.Assert.assertThat;
 import static com.googlecode.totallylazy.Lists.list;
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
-import static com.googlecode.utterlyidle.Parameters.add;
-import static com.googlecode.utterlyidle.Parameters.param;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.*;
 
@@ -84,11 +84,16 @@ public class RequestTest {
     }
 
     @Test
-    public void canSetOrReplaceHeader() throws Exception {
-        Request request = get("/", header(ACCEPT, "Chickens"));
-        assertThat(request.headers().getValue(ACCEPT), is("Chickens"));
-        request = modify(request, header(ACCEPT, "Cats"));
-        assertThat(request.headers().getValue(ACCEPT), is("Cats"));
+    public void canSetHeaderParameters() throws Exception {
+        assertThat(get("/", header(ACCEPT, "Chickens")).headers().getValue(ACCEPT), is("Chickens"));
+        HeaderParameters headers = get("/", header(ACCEPT, "Chickens"), header(CONTENT_TYPE, "Cats")).headers();
+        assertThat(headers.getValue(ACCEPT), is("Chickens"));
+    }
+
+    @Test
+    public void canSetMultipleHeaderParametersInOneGoForPerformanceReasons() throws Exception {
+        assertThat(get("/", header(param(ACCEPT, list("Chickens", "Cats")))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
+        assertThat(get("/", header(add(ACCEPT, "Chickens"), add(ACCEPT, "Cats"))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
     }
 
     @Test
