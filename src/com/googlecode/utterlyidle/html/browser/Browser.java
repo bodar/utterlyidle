@@ -42,22 +42,17 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
     @Override
     public Response handle(Request request) throws Exception {
         Request requestWithCurrentState =
-                setCookies(ensureAcceptHeader(request))
-                        .build();
+                setCookies(ensureAcceptHeader(request)).build();
 
         Response response = handler.handle(requestWithCurrentState);
 
         update(requestWithCurrentState, response);
 
         if (isRedirect(response)) {
-            return handle(RequestBuilder.get(header(response, LOCATION)).build());
+            return handle(Request.Builder.get(header(response, LOCATION)));
         } else{
             return response;
         }
-    }
-
-    public Response handle(RequestBuilder request) throws Exception {
-        return handle(request.build());
     }
 
     private boolean isRedirect(Response response) {

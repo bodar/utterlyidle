@@ -16,7 +16,7 @@ public class BasicHttpClientTest {
     public void addsAuthorizeHeader() throws Exception {
         RecordingHttpHandler server = recordingHttpHandler();
         HttpClient client = new BasicHttpClient(server, credential("dan", "correct"));
-        client.handle(get("/").build());
+        client.handle(get("/"));
         assertThat(server.lastRequest().headers().getValue(HttpHeaders.AUTHORIZATION), is("Basic ZGFuOmNvcnJlY3Q="));
     }
 }
