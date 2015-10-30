@@ -33,6 +33,8 @@ import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieCutter.parseRequestHeader;
 import static java.lang.String.format;
 
+/** @deprecated Replaced by {@link com.googlecode.utterlyidle.Request.Builder } */
+@Deprecated
 public class RequestBuilder implements Callable<Request> {
     private String method;
     private Uri uri;
