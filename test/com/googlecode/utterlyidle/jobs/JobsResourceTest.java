@@ -1,20 +1,12 @@
 package com.googlecode.utterlyidle.jobs;
 
-import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.json.Json;
+import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.StoppedClock;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.ExceptionLogger;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import org.junit.Before;
@@ -30,17 +22,11 @@ import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.RelativeUriExtractor.relativeUriOf;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
-import static com.googlecode.utterlyidle.Status.CREATED;
-import static com.googlecode.utterlyidle.Status.OK;
-import static com.googlecode.utterlyidle.Status.SEE_OTHER;
+import static com.googlecode.utterlyidle.Request.Builder.*;
+import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.relativeUriOf;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 public class JobsResourceTest {
@@ -60,7 +46,7 @@ public class JobsResourceTest {
     public void statusCodesMapCorrectly() throws Exception {
         Clock clock = new StoppedClock(date(2001, 1, 2));
 
-        CreatedJob createdJob = CreatedJob.createJob(RequestBuilder.get("").build(), clock);
+        CreatedJob createdJob = CreatedJob.createJob(get(""), clock);
         assertThat(JobsResource.status(createdJob), is(Status.CREATED));
 
         RunningJob runningJob = createdJob.start(clock);
@@ -76,22 +62,22 @@ public class JobsResourceTest {
 
         assertThat(numberOfJobs(), is(0));
 
-        Response response = create(post("some/url").build());
+        Response response = create(post("some/url"));
         assertThat(response.status(), is(SEE_OTHER));
         String location = response.headers().getValue(HttpHeaders.LOCATION);
-        assertThat(application.handle(get(location).build()).status(), is(CREATED));
+        assertThat(application.handle(get(location)).status(), is(CREATED));
 
         completer.job.call();
 
         assertThat(numberOfJobs(), is(1));
 
-        Response job = application.handle(get(location).build());
+        Response job = application.handle(get(location));
 
         assertThat(job.status(), is(OK));
 
         try {
             String jsonResult = job.entity().toString();
-            Map<String,Object> json = Json.map(jsonResult);
+            Map<String, Object> json = Json.map(jsonResult);
             Dates.RFC3339withMilliseconds().parse((String) json.get("created"));
             Dates.RFC3339withMilliseconds().parse((String) json.get("started"));
             Dates.RFC3339withMilliseconds().parse((String) json.get("completed"));
@@ -103,9 +89,9 @@ public class JobsResourceTest {
     @Test
     public void canCreateMultipleJobsAndListThem() throws Exception {
         ManualCompleter manualCompleter = stepCompleter();
-        create(post("some/url1").build());
+        create(post("some/url1"));
         manualCompleter.job.call();
-        create(post("some/url2").build());
+        create(post("some/url2"));
         manualCompleter.job.call();
 
         assertThat(numberOfJobs(), is(2));
@@ -113,8 +99,8 @@ public class JobsResourceTest {
 
     @Test
     public void canListJobsThatHaveNotBeenCompletedOrStarted() throws Exception {
-        create(post("some/url1").build());
-        create(post("some/url2").build());
+        create(post("some/url1"));
+        create(post("some/url2"));
 
         assertThat(numberOfJobs(), is(2));
     }
@@ -123,7 +109,7 @@ public class JobsResourceTest {
     public void canDeleteAllRunningJobs() throws Exception {
         ManualCompleter completer = stepCompleter();
 
-        create(post("some/url").build());
+        create(post("some/url"));
 
         completer.job.call();
 
@@ -141,7 +127,7 @@ public class JobsResourceTest {
 
     @Test
     public void shouldNotThrowExceptionForAnyRequestWithoutQuery() throws Exception {
-        sequence(annotatedClass(JobsResource.class)).filter(getBindingWithNoArguments()).each(binding -> application.handle(get(relativeUriOf(binding)).build()));
+        sequence(annotatedClass(JobsResource.class)).filter(getBindingWithNoArguments()).each(binding -> application.handle(get(relativeUriOf(binding))));
         assertFalse(logger.hasLogged);
     }
 
@@ -153,7 +139,7 @@ public class JobsResourceTest {
     }
 
     private void deleteAll() throws Exception {
-        application.handle(post(relativeUriOf(method(on(JobsResource.class).deleteAll()))).build());
+        application.handle(post(relativeUriOf(method(on(JobsResource.class).deleteAll()))));
     }
 
     private int numberOfJobs() throws Exception {
@@ -161,15 +147,15 @@ public class JobsResourceTest {
         return items.size();
     }
 
-    private Map<String,Object> jobsList() throws Exception {
-        Response response = application.handle(get(relativeUriOf(method(on(JobsResource.class).list()))).build());
+    private Map<String, Object> jobsList() throws Exception {
+        Response response = application.handle(get(relativeUriOf(method(on(JobsResource.class).list()))));
         return Json.map(response.entity().toString());
     }
 
     private Response create(Request request) throws Exception {
         Uri resource = request.uri();
         String queuedPath = "/" + relativeUriOf(method(on(JobsResource.class).create(request, "/" + resource.path()))).toString();
-        return application.handle(modify(request).uri(resource.path(queuedPath)).build());
+        return application.handle(modify(request, uri(resource.path(queuedPath))));
     }
 
     private Predicate<Binding> getBindingWithNoArguments() {

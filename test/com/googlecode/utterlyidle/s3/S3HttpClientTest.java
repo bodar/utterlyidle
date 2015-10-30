@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.s3.S3SigningTest.dateInAmazonsExample;
 import static com.googlecode.utterlyidle.s3.S3SigningTest.exampleCredentials;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,12 +53,12 @@ public class S3HttpClientTest {
                 is(nullValue()));
     }
 
-    private Request delegatedRequest(final RequestBuilder request) throws Exception {
+    private Request delegatedRequest(final Request request) throws Exception {
         return delegatedRequest(client, request);
     }
 
-    private Request delegatedRequest(final S3HttpClient client1, final RequestBuilder request) throws Exception {
-        client1.handle(request.build());
+    private Request delegatedRequest(final S3HttpClient client1, final Request request) throws Exception {
+        client1.handle(request);
         return AuditTest.TestAuditor.receivedRequest;
     }
 

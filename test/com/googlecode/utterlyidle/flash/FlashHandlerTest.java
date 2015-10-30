@@ -2,12 +2,7 @@ package com.googlecode.utterlyidle.flash;
 
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.json.Json;
-import com.googlecode.utterlyidle.Application;
-import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.RestApplication;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.POST;
@@ -24,8 +19,7 @@ import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_XHTML_XML;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
@@ -41,7 +35,7 @@ public class FlashHandlerTest {
 
 	@Test
 	public void shouldReturnFlashStateInCookie() throws Exception {
-		Response redirectResponse = application.handle(post("/add").form("value", "Hello world").build());
+		Response redirectResponse = application.handle(post("/add", form("value", "Hello world")));
 
 		String redirectResponseCookie = flashCookie(redirectResponse);
 		assertThat(
@@ -66,12 +60,11 @@ public class FlashHandlerTest {
 
 	@Test
 	public void shouldAppendValuesToFlashUntilASuccessfulResponseIsReturned() throws Exception {
-		Response firstError = application.handle(post("/addAndError").
-				form("value", "Error 1").build());
+		Response firstError = application.handle(post("/addAndError", form("value", "Error 1")));
 		String firstErrorFlashCookie = flashCookie(firstError);
 
-		Response secondError = application.handle(withFlashCookie(firstErrorFlashCookie, post("/addAndError").
-				form("value", "Error 2")).build());
+		Response secondError = application.handle(withFlashCookie(firstErrorFlashCookie,
+				post("/addAndError", form("value", "Error 2"))));
 
 		String secondErrorFlashCookie = flashCookie(secondError);
 
@@ -83,21 +76,21 @@ public class FlashHandlerTest {
 
 	@Test
 	public void onlySetCookieIfValueChanges() throws Exception {
-		Response response = application.handle(withFlashCookie(CLEARED_FLASH_COOKIE_VALUE, get("/hi")).build());
+		Response response = application.handle(withFlashCookie(CLEARED_FLASH_COOKIE_VALUE, get("/hi")));
 		assertThat(response.status(), is(OK));
 		assertThat(cookies(response).contains(FLASH_COOKIE), is(false));
 	}
 
 	@Test
 	public void thereIsNoNeedToSetTheFlashCookieIfItsValueIsEmptyJsonAndTheIncomingRequestHasNoFlashCookie () throws Exception {
-		Response response = application.handle(get("/hi").build());
+		Response response = application.handle(get("/hi"));
 		assertThat(response.status(), is(OK));
 		assertThat(cookies(response).contains(FLASH_COOKIE), is(false));
 	}
 
 	@Test
 	public void migratesPreviousEmptyCookieValueToNewEmptyCookieValue () throws Exception {
-		Response response = application.handle(withFlashCookie("", get("/hi")).build());
+		Response response = application.handle(withFlashCookie("", get("/hi")));
 		assertThat(response.status(), is(OK));
 		assertThat(cookies(response).getValue(FLASH_COOKIE), is(CLEARED_FLASH_COOKIE_VALUE));
 	}
@@ -105,7 +98,7 @@ public class FlashHandlerTest {
 	private Response followRedirect(Response response) throws Exception {
 		String flash = flashCookie(response);
 		String redirectLocation = response.headers().getValue(LOCATION);
-		return application.handle(withFlashCookie(flash, get(redirectLocation)).build());
+		return application.handle(withFlashCookie(flash, get(redirectLocation)));
 	}
 
     private String flashCookie(Response response) {
@@ -113,8 +106,8 @@ public class FlashHandlerTest {
     }
 
 
-    private RequestBuilder withFlashCookie(String flash, RequestBuilder request) {
-		return request.cookie(FLASH_COOKIE, flash);
+    private Request withFlashCookie(String flash, Request request) {
+		return modify(request, cookie(FLASH_COOKIE, flash));
 	}
 
 	public static class FlashResource {

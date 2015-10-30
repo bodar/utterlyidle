@@ -29,7 +29,7 @@ import java.util.UUID;
 import static com.googlecode.totallylazy.functions.Callables.descending;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.jobs.Job.functions.created;
 
 @Path(JobsResource.JOBS)
@@ -59,7 +59,7 @@ public class JobsResource {
     @ANY
     @Path("create")
     public Response create(Request original, @PathParam("$") String endOfUrl) throws Exception {
-        Request request = modify(original).uri(original.uri().path(endOfUrl)).build();
+        Request request = modify(original, Request.Builder.uri(original.uri().path(endOfUrl)));
         Job job = jobs.create(request);
         return redirector.seeOther(method(on(JobsResource.class).get(job.id())));
     }

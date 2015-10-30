@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.predicates.Predicates.any;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 
 public class RoutingClient implements HttpClient {
     private final Rules<Uri, Uri> rules;
@@ -34,9 +34,7 @@ public class RoutingClient implements HttpClient {
 
     @Override
     public Response handle(Request request) throws Exception {
-        Request newRequest = modify(request).
-                uri(rules.call(request.uri())).
-                build();
+        Request newRequest = modify(request, Request.Builder.uri(rules.call(request.uri())));
         return handler.handle(newRequest);
     }
 }

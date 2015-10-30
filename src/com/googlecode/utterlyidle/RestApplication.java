@@ -30,7 +30,7 @@ import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.utterlyidle.Binding.functions.action;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.bindings.actions.Action.functions.metaData;
 
 public class RestApplication implements Application {

@@ -5,10 +5,12 @@ import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.functions.Compose;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import java.util.List;
 
+import static com.googlecode.totallylazy.Sequences.cons;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Entity.DEFAULT_CHARACTER_SET;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
@@ -189,6 +191,10 @@ public interface Request {
             return request -> modify(request,
                     header(CONTENT_TYPE, format("%s; charset=%s", APPLICATION_FORM_URLENCODED, DEFAULT_CHARACTER_SET)),
                     entity(UrlEncodedMessage.toString(parameters)));
+        }
+
+        static Unary<Request> cookie(Cookie cookie) {
+            return cookie(cookie.name(), cookie.value());
         }
 
         static Unary<Request> cookie(String name, Object value) {

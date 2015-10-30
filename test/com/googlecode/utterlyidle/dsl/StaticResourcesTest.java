@@ -11,7 +11,7 @@ import static com.googlecode.totallylazy.io.URLs.packageUrl;
 import static com.googlecode.totallylazy.io.URLs.url;
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.dsl.DslBindings.bindings;
 import static com.googlecode.utterlyidle.dsl.StaticBindingBuilder.in;
 import static org.hamcrest.MatcherAssert.assertThat;

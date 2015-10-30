@@ -1,11 +1,12 @@
 package com.googlecode.utterlyidle.simpleframework;
 
+import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.ServerContract;
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.Status.NOT_ACCEPTABLE;
 import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
 import static org.hamcrest.CoreMatchers.is;
@@ -21,7 +22,7 @@ public class RestServerTest extends ServerContract<RestServer> {
 
     @Test
     public void willOnlyHandleSingleValueHeadersBecauseSimpleWebDoesntSupportIt() throws Exception {
-        Response response = handle(get("echoheaders").accepting("*/*").header("someheader", "first value").header("someheader", "second value"), server);
+        Response response = handle(get("echoheaders", accept("*/*"), header("someheader", "first value"), header("someheader", "second value")), server);
         String result = response.entity().toString();
 
         assertThat(result, not(containsString("first value")));
@@ -30,7 +31,7 @@ public class RestServerTest extends ServerContract<RestServer> {
 
     @Test
     public void willNotHandleMultipleAcceptHeaders() throws Exception {
-        Response response = handle(get("html").accepting("text/plain").accepting("text/html").accepting("text/xml"), server);
+        Response response = handle(get("html", header(add(HttpHeaders.ACCEPT, "text/plain"), add(HttpHeaders.ACCEPT, "text/html"), add(HttpHeaders.ACCEPT, "text/xml"))), server);
         assertThat(response.status(), is(NOT_ACCEPTABLE));
     }
 }

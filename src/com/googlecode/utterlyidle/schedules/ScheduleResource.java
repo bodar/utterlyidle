@@ -4,32 +4,21 @@ import com.googlecode.lazyrecords.Record;
 import com.googlecode.totallylazy.Maps;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.utterlyidle.InternalRequestMarker;
-import com.googlecode.utterlyidle.MediaType;
-import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
-import com.googlecode.utterlyidle.annotations.ANY;
-import com.googlecode.utterlyidle.annotations.FormParam;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.POST;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.PathParam;
-import com.googlecode.utterlyidle.annotations.Produces;
-import com.googlecode.utterlyidle.annotations.QueryParam;
+import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.annotations.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.uri;
 
 @Path(ScheduleResource.PATH)
 @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON})
@@ -49,7 +38,7 @@ public class ScheduleResource {
     @ANY
     @Path("schedule/{id}/{interval}")
     public Response schedule(@PathParam("id") UUID id, @PathParam("interval") Long intervalInSeconds, @PathParam("$") String endOfUrl) throws Exception {
-        Request scheduledRequest = modify(request).uri(request.uri().path(endOfUrl)).build();
+        Request scheduledRequest = modify(request, uri(request.uri().path(endOfUrl)));
 
         scheduler.schedule(Schedule.schedule(id).interval(intervalInSeconds).request(scheduledRequest.toString()));
 
@@ -59,7 +48,7 @@ public class ScheduleResource {
     @ANY
     @Path("schedule/{id}/{start}/{interval}")
     public Response schedule(@PathParam("id") UUID id, @PathParam("start") String start, @PathParam("interval") Long intervalInSeconds, @PathParam("$") String endOfUrl) throws Exception {
-        Request scheduledRequest = modify(request).uri(request.uri().path(endOfUrl)).build();
+        Request scheduledRequest = modify(request, uri(request.uri().path(endOfUrl)));
 
         scheduler.schedule(Schedule.schedule(id).start(start).interval(intervalInSeconds).request(scheduledRequest.toString()));
 
@@ -69,7 +58,7 @@ public class ScheduleResource {
     @ANY
     @Path("schedule")
     public Response scheduleWithQueryParams(@QueryParam("id") UUID id, @QueryParam("start") Option<String> start, @QueryParam("interval") Long intervalInSeconds, @QueryParam("uri") String uri) {
-        Request scheduledRequest = modify(request).uri(uri(uri)).build();
+        Request scheduledRequest = modify(request, uri(Uri.uri(uri)));
 
         Schedule schedule = Schedule.schedule(id).interval(intervalInSeconds).request(scheduledRequest.toString());
         if (start.isDefined()) {

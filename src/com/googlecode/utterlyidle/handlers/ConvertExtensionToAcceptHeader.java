@@ -19,7 +19,10 @@ import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.uri;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class ConvertExtensionToAcceptHeader implements HttpHandler {
@@ -41,7 +44,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
         return new Function2<Response, Pair<String, String>, Response>() {
             public Response call(Response response, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
                 if (response.headers().contains(LOCATION)) {
-                    return ResponseBuilder.modify(response).
+                    return modify(response).
                             removeHeaders(LOCATION).
                             header(LOCATION, addExtension(response.headers().getValue(LOCATION), extensionAndReplacementMimeType.first())).
                             build();
@@ -84,10 +87,9 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     private Function2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
-        return (request, extensionAndReplacementMimeType) -> modify(request).
-                replaceHeader(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()).
-                uri(removeExtension(request.uri())).
-                build();
+        return (request, extensionAndReplacementMimeType) -> modify(request,
+                header(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()),
+                uri(removeExtension(request.uri())));
     }
 
     public static class Replacements implements Iterable<Pair<String, String>> {

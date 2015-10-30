@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MatchQualityTest {

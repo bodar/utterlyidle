@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.handlers.HttpClient;
 import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.s3.AnyS3Request.anyS3Request;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
 
@@ -39,6 +39,6 @@ public class S3HttpClient implements HttpClient {
     }
 
     private Request s3ToHttp(final Request request) {
-        return modify(request).uri(S3.toHttpUri(request.uri())).build();
+        return modify(request, Request.Builder.uri(S3.toHttpUri(request.uri())));
     }
 }

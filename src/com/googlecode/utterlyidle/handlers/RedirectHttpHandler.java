@@ -6,8 +6,7 @@ import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 
@@ -22,8 +21,8 @@ public class RedirectHttpHandler implements HttpClient {
         Response response = httpHandler.handle(request);
         if (response.status().isRedirect() && header(response, LOCATION) != null) {
             return SEE_OTHER.equals(response.status()) ?
-                    handle(get(header(response, LOCATION)).build()) :
-                    handle(modify(request).uri(uri(header(response, LOCATION))).build());
+                    handle(get(header(response, LOCATION))) :
+                    handle(Request.Builder.modify(request, Request.Builder.uri(uri(header(response, LOCATION)))));
         }
         return response;
     }

@@ -7,8 +7,9 @@ import com.googlecode.utterlyidle.Response;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.Builder.query;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -19,45 +20,45 @@ public class RelativeUrlHandlerTest {
     @Test
     public void ifTheFirstRequestIsRelativeTreatItRelativeToTheRoot() throws Exception {
         String relative = "foo";
-        handler.handle(get(relative).build());
+        handler.handle(get(relative));
         assertThat(delegate.lastUriReceived.toString(), is("/foo"));
     }
 
     @Test
     public void preservesSchemeAndAuthority() throws Exception {
         String fullyQualified = "http://localhost:1234/foo/bar?q=123";
-        handler.handle(get(fullyQualified).build());
-        handler.handle(post("/bar").build());
+        handler.handle(get(fullyQualified));
+        handler.handle(post("/bar"));
         assertThat(delegate.lastUriReceived.toString(), is("http://localhost:1234/bar"));
     }
 
     @Test
     public void preserveQueryParameters() throws Exception {
         String urlWithQueryParameter = "/foo/bar?q=123";
-        handler.handle(get(urlWithQueryParameter).build());
-        handler.handle(post("").build());
+        handler.handle(get(urlWithQueryParameter));
+        handler.handle(post(""));
         assertThat(handler.getCurrentUri().toString(), is(urlWithQueryParameter));
     }
 
     @Test
     public void preserveAbsolutePath() throws Exception {
-        handler.handle(get("/foo/bar").build());
+        handler.handle(get("/foo/bar"));
         assertThat(handler.getCurrentUri().toString(), is("/foo/bar"));
-        handler.handle(get("baz").build());
+        handler.handle(get("baz"));
         assertThat(handler.getCurrentUri().toString(), is("/foo/baz"));
     }
 
     @Test
     public void rebuildsRelativeUrlWithQuery() throws Exception {
-        handler.handle(get("/foo/bar").build());
-        handler.handle(get("").query("some", "param").build());
+        handler.handle(get("/foo/bar"));
+        handler.handle(get("", query("some", "param")));
         assertThat(delegate.lastUriReceived, is(uri("/foo/bar?some=param")));
     }
 
     @Test
     public void shouldAddQueryParameterWhenPostToNoUrl() throws Exception {
-        handler.handle(get("/foo/bar").build());
-        handler.handle(post("").query("some", "param").build());
+        handler.handle(get("/foo/bar"));
+        handler.handle(post("", query("some", "param")));
         assertThat(delegate.lastUriReceived, is(uri("/foo/bar?some=param")));
     }
 

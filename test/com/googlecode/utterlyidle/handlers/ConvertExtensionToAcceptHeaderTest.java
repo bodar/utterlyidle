@@ -8,7 +8,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Responses.seeOther;
@@ -59,12 +59,12 @@ public class ConvertExtensionToAcceptHeaderTest {
     public void addsExtensionBackInToLocationHeaderForRedirects() throws Exception {
         ConvertExtensionToAcceptHeader converter = converter(respondsWith(seeOther("/redirect/to/here")));
         assertThat(
-                header(converter.handle(get("anything.properties").build()), LOCATION),
+                header(converter.handle(get("anything.properties")), LOCATION),
                 is("/redirect/to/here.properties"));
 
         converter = converter(respondsWith(seeOther("/redirect/to/here.moo?queryparams=some")));
         assertThat(
-                header(converter.handle(get("anything.properties").build()), LOCATION),
+                header(converter.handle(get("anything.properties")), LOCATION),
                 is("/redirect/to/here.moo.properties?queryparams=some"));
     }
 
@@ -73,7 +73,7 @@ public class ConvertExtensionToAcceptHeaderTest {
 
         ConvertExtensionToAcceptHeader converter = converter(httpHandler);
 
-        Request request = get(url).build();
+        Request request = get(url);
         converter.handle(request);
 
         assertThat(httpHandler.requests().head().headers().getValue(HttpHeaders.ACCEPT), is(expectedMimeType));
@@ -94,7 +94,7 @@ public class ConvertExtensionToAcceptHeaderTest {
 
         ConvertExtensionToAcceptHeader converter = converter(httpHandler);
 
-        Request request = get(original).build();
+        Request request = get(original);
         converter.handle(request);
 
         assertThat(httpHandler.requests().head().uri(), is(uri(expectedAfterConversion)));

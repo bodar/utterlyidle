@@ -2,25 +2,10 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
-import com.googlecode.utterlyidle.annotations.Consumes;
-import com.googlecode.utterlyidle.annotations.CookieParam;
-import com.googlecode.utterlyidle.annotations.DELETE;
-import com.googlecode.utterlyidle.annotations.DefaultValue;
-import com.googlecode.utterlyidle.annotations.FormParam;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.HEAD;
-import com.googlecode.utterlyidle.annotations.PATCH;
-import com.googlecode.utterlyidle.annotations.POST;
-import com.googlecode.utterlyidle.annotations.PUT;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.PathParam;
-import com.googlecode.utterlyidle.annotations.Priority;
-import com.googlecode.utterlyidle.annotations.Produces;
-import com.googlecode.utterlyidle.annotations.QueryParam;
-import com.googlecode.utterlyidle.annotations.View;
+import com.googlecode.totallylazy.predicates.Predicates;
+import com.googlecode.utterlyidle.annotations.*;
 import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
@@ -42,22 +27,12 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
 import static com.googlecode.utterlyidle.Entities.streamingWriterOf;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
-import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.RequestBuilder.delete;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.head;
-import static com.googlecode.utterlyidle.RequestBuilder.patch;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
-import static com.googlecode.utterlyidle.RequestBuilder.put;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
-import static com.googlecode.utterlyidle.Status.FORBIDDEN;
-import static com.googlecode.utterlyidle.Status.NO_CONTENT;
-import static com.googlecode.utterlyidle.Status.OK;
-import static com.googlecode.utterlyidle.Status.SEE_OTHER;
+import static com.googlecode.utterlyidle.Status.*;
 import static com.googlecode.utterlyidle.annotations.Priority.High;
 import static com.googlecode.utterlyidle.annotations.Priority.Low;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -101,13 +76,13 @@ public class RestTest {
     public void supportUUIDConversion() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesUUID.class);
         String uuid = UUID.randomUUID().toString();
-        assertThat(application.responseAsString(get("hello").query("name", uuid)), is(uuid));
+        assertThat(application.responseAsString(get("hello", query("name", uuid))), is(uuid));
     }
 
     @Test
     public void supportDefaultValue() throws Exception {
         ApplicationBuilder application = application().addAnnotated(UsesDefaultValue.class);
-        assertThat(application.responseAsString(get("hello").query("name", "Matt")), is("Matt"));
+        assertThat(application.responseAsString(get("hello", query("name", "Matt"))), is("Matt"));
         assertThat(application.responseAsString(get("hello")), is("Dan"));
     }
 
@@ -132,8 +107,8 @@ public class RestTest {
     @Test
     public void whenReturningAResponseUseTheProducesContentTypeIfNoneExplicitlySet() throws Exception {
         ApplicationBuilder application = application().addAnnotated(ReturnsResponseWithContentType.class);
-        assertThat(header(application.handle(get("path").query("override", String.valueOf(false))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_ATOM_XML));
-        assertThat(header(application.handle(get("path").query("override", String.valueOf(true))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_JSON));
+        assertThat(header(application.handle(get("path", query("override", String.valueOf(false)))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_ATOM_XML));
+        assertThat(header(application.handle(get("path", query("override", String.valueOf(true)))), CONTENT_TYPE), startsWith(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -149,19 +124,19 @@ public class RestTest {
     @Test
     public void canHandleCookies() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GettableWithCookies.class);
-        Response response = application.handle(get("foo").header("cookie", "name=value"));
+        Response response = application.handle(get("foo", Request.Builder.header("cookie", "name=value")));
         assertThat(response.entity().toString(), is("value"));
         assertThat(header(response, "Set-Cookie"), is("anotherName=\"anotherValue\"; "));
     }
 
     @Test
     public void canHandleQuotedCookies() throws Exception {
-        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("foo").header("cookie", "name=\"value\"")), is("value"));
+        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("foo", Request.Builder.header("cookie", "name=\"value\""))), is("value"));
     }
 
     @Test
     public void canHandleCookieParams() throws Exception {
-        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("bar").header("cookie", "name=bob")), is("bob"));
+        assertThat(application().addAnnotated(GettableWithCookies.class).responseAsString(get("bar", Request.Builder.header("cookie", "name=bob"))), is("bob"));
     }
 
     @Test
@@ -174,14 +149,14 @@ public class RestTest {
     public void supportsGetWithListOfUUIDs() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
         Sequence<UUID> expectedIds = Sequences.sequence(UUID.randomUUID(), UUID.randomUUID());
-        assertThat(application.responseAsString(get("/path").query("id", expectedIds.first().toString()).query("id", expectedIds.second().toString())), is("ids"));
+        assertThat(application.responseAsString(get("/path", query("id", expectedIds.first().toString()), query("id", expectedIds.second().toString()))), is("ids"));
     }
 
     @Test
     public void correctlyErrorsWhenBadlyFormedParameterUsed() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithListOfUUIDs.class);
         Sequence<UUID> ids = Sequences.sequence(UUID.randomUUID(), UUID.randomUUID());
-        Response response = application.handle(get("/path").query("id", ids.first() + "," + ids.second()));
+        Response response = application.handle(get("/path", query("id", ids.first() + "," + ids.second())));
         assertThat(response.status(), Matchers.not(OK));
     }
 
@@ -194,13 +169,13 @@ public class RestTest {
     @Test
     public void canGetWithQueryParameter() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GettableWithQuery.class);
-        assertThat(application.responseAsString(get("foo").query("name", "value")), is("value"));
+        assertThat(application.responseAsString(get("foo", query("name", "value"))), is("value"));
     }
 
     @Test
     public void canPostWithFormParameter() throws Exception {
         ApplicationBuilder application = application().addAnnotated(Postable.class);
-        assertThat(application.responseAsString(post("foo").form("name", "value")), is("value"));
+        assertThat(application.responseAsString(post("foo", form("name", "value"))), is("value"));
     }
 
     @Test
@@ -213,7 +188,7 @@ public class RestTest {
     public void canDetermineMethodWhenThereIsAChoice() throws Exception {
         ApplicationBuilder application = application().addAnnotated(MultipleGets.class);
         assertThat(application.responseAsString(get("foo")), is("no parameters"));
-        assertThat(application.responseAsString(get("foo").query("arg", "match")), is("match"));
+        assertThat(application.responseAsString(get("foo", query("arg", "match"))), is("match"));
     }
 
     @Test
@@ -225,15 +200,15 @@ public class RestTest {
     @Test
     public void canDetermineGetMethodBasedOnMimeType() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
-        assertThat(application.responseAsString(get("text").accepting("text/plain")), is("plain"));
-        assertThat(application.responseAsString(get("text").accepting("text/html")), is("html"));
+        assertThat(application.responseAsString(get("text", accept("text/plain"))), is("plain"));
+        assertThat(application.responseAsString(get("text", accept("text/html"))), is("html"));
     }
 
     @Test
     public void setsResponseMimeType() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class);
 
-        Response response = application.handle(get("text").accepting("text/plain"));
+        Response response = application.handle(get("text", accept("text/plain")));
         assertThat(header(response, HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
     }
 
@@ -241,11 +216,11 @@ public class RestTest {
     public void setsResponseMimeTypeWhenThereAreMultiplePossibleTypes() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetsWithMultipleMimeTypes.class);
 
-        Response plainResponse = application.handle(get("text").accepting("text/plain"));
+        Response plainResponse = application.handle(get("text", accept("text/plain")));
         assertThat(header(plainResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/plain"));
         assertThat(plainResponse.entity().toString(), is("<xml/>"));
 
-        Response xmlResponse = application.handle(get("text").accepting("text/xml"));
+        Response xmlResponse = application.handle(get("text", accept("text/xml")));
         assertThat(header(xmlResponse, HttpHeaders.CONTENT_TYPE), startsWith("text/xml"));
         assertThat(xmlResponse.entity().toString(), is("<xml/>"));
     }
@@ -263,10 +238,10 @@ public class RestTest {
     public void aSingleResourceMethodCanAcceptsMultiplePossibleMimeTypes() throws Exception {
         ApplicationBuilder application = application().addAnnotated(PutWithMultipleMimeTypes.class);
 
-        Response plainResponse = application.handle(put("text").header(CONTENT_TYPE, "text/plain").entity("<xml/>"));
+        Response plainResponse = application.handle(put("text", Request.Builder.header(CONTENT_TYPE, "text/plain"), Request.Builder.entity("<xml/>")));
         assertThat(plainResponse.status(), is(NO_CONTENT));
 
-        Response xmlResponse = application.handle(put("text").header(CONTENT_TYPE, "text/xml").entity("<xml/>"));
+        Response xmlResponse = application.handle(put("text", Request.Builder.header(CONTENT_TYPE, "text/xml"), Request.Builder.entity("<xml/>")));
         assertThat(xmlResponse.status(), is(NO_CONTENT));
     }
 
@@ -274,16 +249,16 @@ public class RestTest {
     public void canHandleRealWorldAcceptsHeader() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetsWithMimeTypes.class).addAnnotated(PutContent.class);
         String mimeTypes = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
-        assertThat(application.responseAsString(get("text").accepting(mimeTypes)), is("xml"));
+        assertThat(application.responseAsString(get("text", accept(mimeTypes))), is("xml"));
 
         mimeTypes = "text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2";
-        assertThat(application.responseAsString(put("path/foo").accepting(mimeTypes).entity("input")), is("input"));
+        assertThat(application.responseAsString(put("path/foo", accept(mimeTypes), Request.Builder.entity("input"))), is("input"));
     }
 
     @Test
     public void canEcho() throws Exception {
         ApplicationBuilder application = application().addAnnotated(HelloWorld.class);
-        assertThat(application.responseAsString(put("echo").entity(Entities.inputStreamOf("Hello"))), is("Hello"));
+        assertThat(application.responseAsString(put("echo", Request.Builder.entity(Entities.inputStreamOf("Hello")))), is("Hello"));
     }
 
     @Test
@@ -343,22 +318,22 @@ public class RestTest {
     public void supportsPut() throws Exception {
         ApplicationBuilder application = application().addAnnotated(PutContent.class);
 
-        assertThat(application.responseAsString(put("path/bar").entity("input")), is("input"));
+        assertThat(application.responseAsString(put("path/bar", Request.Builder.entity("input"))), is("input"));
     }
 
     @Test
     public void supportsPatch() throws Exception {
         ApplicationBuilder application = application().addAnnotated(PatchContent.class);
 
-        assertThat(application.responseAsString(patch("path/bar").entity("input")), is("input"));
+        assertThat(application.responseAsString(patch("path/bar", Request.Builder.entity("input"))), is("input"));
     }
 
     @Test
     public void canDetermineInputHandlerByMimeType() throws Exception {
         ApplicationBuilder application = application().addAnnotated(MultiplePutContent.class);
 
-        assertThat(application.responseAsString(put("text").contentType("text/plain")), is("plain"));
-        assertThat(application.responseAsString(put("text").contentType("text/html")), is("html"));
+        assertThat(application.responseAsString(put("text", contentType("text/plain"))), is("plain"));
+        assertThat(application.responseAsString(put("text", contentType("text/html"))), is("html"));
     }
 
     @Test
@@ -380,7 +355,7 @@ public class RestTest {
     @Test
     public void canRedirectWithBaseUri() throws Exception {
         ApplicationBuilder application = application().addAnnotated(BaseUriResource.class);
-        Response response = application.handle(get("/foo/bar").header(HttpHeaders.HOST, "localhost:8080"));
+        Response response = application.handle(get("/foo/bar", Request.Builder.header(HttpHeaders.HOST, "localhost:8080")));
         assertThat(header(response, LOCATION), is("http://localhost:8080/baz"));
     }
 
@@ -393,14 +368,14 @@ public class RestTest {
     @Test
     public void canCoerceInvalidEithers() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithEither.class);
-        assertThat(application.responseAsString(get("path").query("layout", "invalidValue")), is("layout:left(invalidValue)"));
+        assertThat(application.responseAsString(get("path", query("layout", "invalidValue"))), is("layout:left(invalidValue)"));
     }
 
     @Test
     public void canCoerceValidEithers() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(application.responseAsString(get("path").query("layout", value)), is("layout:right(" + value + ")"));
+        assertThat(application.responseAsString(get("path", query("layout", value))), is("layout:right(" + value + ")"));
     }
 
 
@@ -408,14 +383,14 @@ public class RestTest {
     public void canCoerceEithersThatContainAValidOption() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         final String value = Formatter.BigDecimalLayoutForm.DECIMAL_FLOAT.toString();
-        assertThat(application.responseAsString(get("path").query("optionalLayout", value)), is("optionalLayout:right(some(" + value + "))"));
+        assertThat(application.responseAsString(get("path", query("optionalLayout", value))), is("optionalLayout:right(some(" + value + "))"));
     }
 
     @Test
     public void canCoerceEithersThatContainAnInvalidOption() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithOptionalEither.class);
         final String value = "rubbish";
-        assertThat(application.responseAsString(get("path").query("optionalLayout", value)), is("optionalLayout:left(" + value + ")"));
+        assertThat(application.responseAsString(get("path", query("optionalLayout", value))), is("optionalLayout:left(" + value + ")"));
     }
 
     @Test
@@ -433,7 +408,7 @@ public class RestTest {
     @Test
     public void canCoerceOptionalTypes() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetWithOptionalStrongTypeWithFactoryMethod.class);
-        assertThat(application.responseAsString(get("path").query("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8")), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
+        assertThat(application.responseAsString(get("path", query("id", "4d237b0a-535f-49e9-86ca-10d28aa3e4f8"))), is("4d237b0a-535f-49e9-86ca-10d28aa3e4f8"));
     }
 
     @Test

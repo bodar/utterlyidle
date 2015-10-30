@@ -12,7 +12,8 @@ import static com.googlecode.totallylazy.predicates.Predicates.always;
 import static com.googlecode.totallylazy.predicates.Predicates.matches;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.functions.credentials;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
 
@@ -60,9 +61,7 @@ public class S3RequestSigner {
             String stringToSign = stringifier.stringToSign(requestWithDate);
             String authorisationHeader = signer.authorizationHeader(credentials, stringToSign);
 
-            return modify(requestWithDate).
-                    header(HttpHeaders.AUTHORIZATION, authorisationHeader).
-                    build();
+            return modify(requestWithDate, header(HttpHeaders.AUTHORIZATION, authorisationHeader));
         };
     }
 
@@ -74,8 +73,6 @@ public class S3RequestSigner {
 
     private Request addDate(final Request request) {
         String currentDate = Dates.format("EEE, dd MMM yyyy HH:mm:ss Z").format(clock.now());
-        return modify(request)
-                .header(DATE, currentDate)
-                .build();
+        return modify(request, header(DATE, currentDate));
     }
 }

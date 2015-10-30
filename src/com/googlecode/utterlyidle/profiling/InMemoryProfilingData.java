@@ -11,7 +11,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.googlecode.totallylazy.Maps.map;
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.query;
 import static com.googlecode.utterlyidle.UriTemplate.trimSlashes;
 
 public class InMemoryProfilingData implements ProfilingData {
@@ -25,7 +26,7 @@ public class InMemoryProfilingData implements ProfilingData {
 
     @Override
     public ProfilingData add(Request request, Response response, Number milliseconds) {
-        Uri uri = modify(request).replaceQuery("profile", "").uri();
+        Uri uri = modify(request, query("profile", "")).uri();
         Uri link = redirector.absoluteUriOf(uri.path(trimSlashes(uri.path())));
         requests.add(map(pair("uri", request.uri()), pair("link", link), pair("status", response.status()), pair("milliseconds", milliseconds)));
         return this;

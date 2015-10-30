@@ -4,7 +4,8 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.xml.Xml.document;
 import static com.googlecode.totallylazy.xml.Xml.selectElement;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.query;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,7 +20,7 @@ public class FormTest {
     @Test
     public void shouldSubmitGetMethodToActionWithFieldValues(){
         Form form = new Form(selectElement(document("<form action='/location' method='get'><input name='field' value='value'/></form>"), "//form").get());
-        assertThat(form.submit(), is(get("/location").query("field", "value").build()));
+        assertThat(form.submit(), is(get("/location", query("field", "value"))));
     }
 
     @Test

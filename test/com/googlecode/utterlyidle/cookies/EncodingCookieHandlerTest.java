@@ -5,7 +5,7 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.RecordingHttpHandler;
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
@@ -23,7 +23,7 @@ public class EncodingCookieHandlerTest {
         Cookie cookie = cookie("cookie1", "utterlyidle:v1:SMWNYiBOxZHhuIM=");
         Cookie expected = modify(cookie).value("Hōb Nőḃ").build();
 
-        Request request = get("/").cookie(cookie).build();
+        Request request = get("/", Request.Builder.cookie(cookie));
         RecordingHttpHandler delegate = RecordingHttpHandler.recordingHttpHandler();
         EncodingCookieHandler handler = new EncodingCookieHandler(delegate, BASE64_ENCODING);
 
@@ -42,6 +42,6 @@ public class EncodingCookieHandlerTest {
     }
 
     private Request anyRequest() {
-        return get("/").build();
+        return get("/");
     }
 }

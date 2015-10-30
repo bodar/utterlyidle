@@ -8,12 +8,7 @@ import com.googlecode.totallylazy.io.URLs;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.io.Zip;
 import com.googlecode.totallylazy.time.Dates;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Server;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -32,9 +27,7 @@ import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.Entities.inputStreamOf;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
-import static com.googlecode.utterlyidle.RequestBuilder.put;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.handlers.RequestTimeout.requestTimeout;
 import static org.hamcrest.CoreMatchers.is;
@@ -62,7 +55,7 @@ public class ClientHttpHandlerTest {
 
     @Test(timeout = 500)
     public void correctlyHandlesStreamedRequest() throws Exception {
-        final Response response = handle(put("echo").entity(inputStreamOf("Hello")), server);
+        final Response response = handle(put("echo", entity(inputStreamOf("Hello"))), server);
         assertThat(response.status(), is(Status.OK));
         assertThat(response.headers().contains(HttpHeaders.CONTENT_LENGTH), is(false));
         assertThat(response.entity().toString(), is("Hello"));
@@ -78,13 +71,13 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void canPutAString() throws Exception {
-        Response response = handle(put("echo").entity("Hello"), server);
+        Response response = handle(put("echo", entity("Hello")), server);
         assertThat(response.entity().toString(), Matchers.is("Hello"));
     }
 
     @Test
     public void canPutByteArray() throws Exception {
-        Response response = handle(put("echo").entity(bytes("Hello")), server);
+        Response response = handle(put("echo", entity(bytes("Hello"))), server);
         assertThat(response.entity().toString(), Matchers.is("Hello"));
     }
 
@@ -116,7 +109,7 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void correctlyHandlesConnectionRefused() throws Exception {
-        Response response = new ClientHttpHandler().handle(get(uri("http://127.0.0.1:0/")).build());
+        Response response = new ClientHttpHandler().handle(get(uri("http://127.0.0.1:0/")));
         assertThat(response.status(), is(Status.CONNECTION_REFUSED));
     }
 
@@ -124,7 +117,7 @@ public class ClientHttpHandlerTest {
     public void correctlyHandlesANotFoundFileUrl() throws Exception {
         URL resource = URLs.url("file:///bob");
         HttpHandler urlHandler = new ClientHttpHandler();
-        Response response = urlHandler.handle(get(resource.toString()).build());
+        Response response = urlHandler.handle(get(resource.toString()));
         assertThat(response.status(), is(Status.NOT_FOUND));
     }
 
@@ -137,7 +130,7 @@ public class ClientHttpHandlerTest {
         Date lastModified = Dates.date(2001, 1, 1);
         Uri uri = uri(file);
         String content = "hairy monkey";
-        Response response = client.handle(put(uri).header(LAST_MODIFIED, lastModified).entity(content).build());
+        Response response = client.handle(put(uri, Request.Builder.header(LAST_MODIFIED, lastModified), entity(content)));
         assertThat(response.status(), is(Status.CREATED));
         assertThat(header(response, HttpHeaders.LOCATION), is(uri.toString()));
         assertThat(file.exists(), is(true));
@@ -149,7 +142,7 @@ public class ClientHttpHandlerTest {
     public void supportsLastModifiedOnFileUrls() throws Exception {
         File file = Files.temporaryFile();
         HttpHandler urlHandler = new ClientHttpHandler();
-        Response response = urlHandler.handle(get(uri(file)).build());
+        Response response = urlHandler.handle(get(uri(file)));
         assertThat(response.status(), is(Status.OK));
         assertThat(header(response, LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
     }
@@ -162,7 +155,7 @@ public class ClientHttpHandlerTest {
         Zip.zip(parentTempDir, zipFile);
         HttpHandler urlHandler = new ClientHttpHandler();
         String jarUrl = String.format("jar:%s!/%s", zipFile.toURI(), Files.relativePath(parentTempDir, file));
-        Response response = urlHandler.handle(get(jarUrl).build());
+        Response response = urlHandler.handle(get(jarUrl));
         assertThat(response.status(), is(Status.OK));
         assertThat(header(response, LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
     }
@@ -171,7 +164,7 @@ public class ClientHttpHandlerTest {
     public void canGetANonHttpUrl() throws Exception {
         URL resource = getClass().getResource("test.txt");
         HttpHandler urlHandler = new ClientHttpHandler();
-        Response response = urlHandler.handle(get(resource.toString()).build());
+        Response response = urlHandler.handle(get(resource.toString()));
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("This is a test file"));
     }
@@ -185,24 +178,24 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void canPostToAResource() throws Exception {
-        Response response = handle(post("helloworld/formparam").form("name", "foo"), server);
+        Response response = handle(post("helloworld/formparam", form("name", "foo")), server);
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello foo"));
     }
 
-    public static Response handle(final RequestBuilder request, final Server server) throws Exception {
+    public static Response handle(final Request request, final Server server) throws Exception {
         return handle(0, request, server);
     }
 
-    public static Response handle(int timeout, final RequestBuilder request, final Server server) throws Exception {
+    public static Response handle(int timeout, final Request request, final Server server) throws Exception {
         return handle(new ClientHttpHandler(timeout), request, server);
     }
 
-    public static Response handle(final HttpHandler client, final RequestBuilder request, final Server server) throws Exception {
+    public static Response handle(final HttpHandler client, final Request request, final Server server) throws Exception {
         HttpHandler urlHandler = new AuditHandler(client, new PrintAuditor(Debug.debugging() ? System.out : Streams.nullPrintStream()));
         Uri uri = request.uri();
         Uri path = server.uri().mergePath(uri.path()).query(uri.query()).fragment(uri.fragment());
-        return urlHandler.handle(request.uri(path).build());
+        return urlHandler.handle(modify(request, Request.Builder.uri(path)));
     }
 
     private Server server;

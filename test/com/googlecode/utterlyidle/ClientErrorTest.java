@@ -8,8 +8,7 @@ import com.googlecode.utterlyidle.annotations.QueryParam;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -29,7 +28,7 @@ public class ClientErrorTest {
 
     @Test
     public void shouldReturn400WhenMethodMatchesButARequiredArgumentIsMissing() throws Exception {
-        Response response = application().addAnnotated(SomeOther.class).handle(get("path").query("someOther", "value"));
+        Response response = application().addAnnotated(SomeOther.class).handle(get("path", query("someOther", "value")));
         assertThat(response.status(), is(Status.UNSATISFIABLE_PARAMETERS));
     }
 
@@ -41,13 +40,13 @@ public class ClientErrorTest {
 
     @Test
     public void shouldReturn415WhenResourceCanNotConsumeType() throws Exception {
-        Response response = application().addAnnotated(Foo.class).handle(get("path").contentType("application/rubbish"));
+        Response response = application().addAnnotated(Foo.class).handle(get("path", contentType("application/rubbish")));
         assertThat(response.status(), is(Status.UNSUPPORTED_MEDIA_TYPE));
     }
 
     @Test
     public void shouldReturn406WhenAcceptHeaderDoesNotMatch() throws Exception {
-        Response response = application().addAnnotated(Foo.class).handle(get("bob").accepting("application/gibberish"));
+        Response response = application().addAnnotated(Foo.class).handle(get("bob", accept("application/gibberish")));
         assertThat(response.status(), is(Status.NOT_ACCEPTABLE));
     }
 

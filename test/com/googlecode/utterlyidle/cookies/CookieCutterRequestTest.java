@@ -6,7 +6,8 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.header;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieCutter.cookies;
 import static com.googlecode.utterlyidle.cookies.EmptyCookiesMatcher.isEmpty;
@@ -32,7 +33,7 @@ public class CookieCutterRequestTest {
 
     @Test
     public void ignoresMalformedCookies() throws Exception {
-        Request request = get("/").header(COOKIE, "hello;" + cookie1).build();
+        Request request = get("/", header(COOKIE, "hello;" + cookie1));
         assertThat(cookies(request), contains(cookie1));
     }
 

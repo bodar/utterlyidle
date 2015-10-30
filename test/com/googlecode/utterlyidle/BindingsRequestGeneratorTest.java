@@ -1,20 +1,13 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.utterlyidle.annotations.FormParam;
-import com.googlecode.utterlyidle.annotations.GET;
-import com.googlecode.utterlyidle.annotations.POST;
-import com.googlecode.utterlyidle.annotations.Path;
-import com.googlecode.utterlyidle.annotations.PathParam;
-import com.googlecode.utterlyidle.annotations.QueryParam;
+import com.googlecode.utterlyidle.annotations.*;
 import org.junit.Test;
 
-import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BaseUriRedirectorTest.bindings;
 import static com.googlecode.utterlyidle.BaseUriRedirectorTest.redirector;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.post;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -24,14 +17,14 @@ public class BindingsRequestGeneratorTest {
     public void canGenerateGETRequest() throws Exception {
         RequestGenerator requestGenerator = requestGenerator(annotatedClass(RequestGeneratorResource.class));
         Request request = requestGenerator.requestFor(method(on(RequestGeneratorResource.class).get("query", "path")));
-        assertThat(request, is(get("http://server/base/test/path?query=query").build()));
+        assertThat(request, is(get("http://server/base/test/path?query=query")));
     }
 
     @Test
     public void canGeneratePOSTRequest() throws Exception {
         RequestGenerator requestGenerator = requestGenerator(annotatedClass(RequestGeneratorResource.class));
         Request request = requestGenerator.requestFor(method(on(RequestGeneratorResource.class).post("query", "form")));
-        Request expected = post("http://server/base/test?query=query").form("form", "form").build();
+        Request expected = post("http://server/base/test?query=query", form("form", "form"));
         assertThat(request, is(expected));
     }
 
