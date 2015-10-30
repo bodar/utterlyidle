@@ -7,7 +7,7 @@ import com.googlecode.utterlyidle.handlers.HttpClient;
 
 import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.*;
 import static java.lang.String.format;
 
 public class BasicHttpClient implements HttpClient {
@@ -21,7 +21,7 @@ public class BasicHttpClient implements HttpClient {
 
     @Override
     public Response handle(final Request request) throws Exception {
-        return client.handle(modify(request).header(AUTHORIZATION, authorisation(credentials)).build());
+        return client.handle(modify(request, header(AUTHORIZATION, authorisation(credentials))));
     }
 
     private String authorisation(final Credentials credentials) {
