@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 
@@ -27,7 +28,7 @@ public class PageMap extends UnsupportedMap {
         String url = key.toString();
         return cache.computeIfAbsent(url, n -> {
             try {
-                Response response = httpHandler.handle(RequestBuilder.get(url).build());
+                Response response = httpHandler.handle(Request.Builder.get(url));
                 if(!response.status().isSuccessful()) {
                     if(debugging()) System.err.printf("Failed to include '%s' received '%s'%n", url, response.status());
                     return null;

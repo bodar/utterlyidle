@@ -8,7 +8,6 @@ import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
@@ -20,7 +19,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
-import static com.googlecode.utterlyidle.RequestBuilder.modify;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.FOUND;
 import static com.googlecode.utterlyidle.Status.MOVED_PERMANENTLY;
@@ -42,7 +41,7 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
     @Override
     public Response handle(Request request) throws Exception {
         Request requestWithCurrentState =
-                setCookies(ensureAcceptHeader(request)).build();
+                setCookies(ensureAcceptHeader(request));
 
         Response response = handler.handle(requestWithCurrentState);
 
@@ -59,19 +58,15 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
         return sequence(MOVED_PERMANENTLY, TEMPORARY_REDIRECT, FOUND, SEE_OTHER).contains(response.status());
     }
 
-    private RequestBuilder setCookies(RequestBuilder request) {
-        for (Pair<String, String> cookie : cookies.cookies()) {
-            request.cookie(cookie.first(), cookie.second());
-        }
-        return request;
+    private Request setCookies(Request request) {
+        return modify(request, Request.Builder.cookie(cookies.cookies()));
     }
 
-    private RequestBuilder ensureAcceptHeader(Request request) {
-        RequestBuilder builder = modify(request);
+    private Request ensureAcceptHeader(Request request) {
         if(request.headers().contains(ACCEPT)) {
-            return builder;
+            return request;
         }
-        return builder.header(ACCEPT, acceptHeader);
+        return modify(request, Request.Builder.header(ACCEPT, acceptHeader));
     }
 
     private void update(Request request, final Response response) {
