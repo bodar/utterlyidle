@@ -19,6 +19,7 @@ import com.googlecode.utterlyidle.annotations.DefaultValue;
 import com.googlecode.utterlyidle.annotations.FormParam;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.HeaderParam;
+import com.googlecode.utterlyidle.annotations.OPTIONS;
 import com.googlecode.utterlyidle.annotations.PATCH;
 import com.googlecode.utterlyidle.annotations.POST;
 import com.googlecode.utterlyidle.annotations.PUT;
@@ -80,6 +81,12 @@ public class HelloWorld {
     @Path("helloworld/inresponseheaders")
     public Response getx(@QueryParam("name") String name) {
         return response(Status.OK).header("greeting", hello(name)).entity("").build();
+    }
+
+    @OPTIONS
+    @Path("helloworld/options")
+    public String options(@QueryParam("name") @DefaultValue("James") String name) {
+        return hello(name);
     }
 
     @GET
