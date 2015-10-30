@@ -6,6 +6,8 @@ import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.Entity.empty;
+import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.Builder.head;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -21,8 +23,8 @@ public class HeadRequestHandlerTest {
     public static final String TARGET = "whatever";
     public static final Status NOT_SUCCESSFUL_STATUS = NOT_FOUND;
 
-    Request HEAD_REQUEST = new RequestBuilder(HEAD, TARGET).build();
-    Request NOT_HEAD_REQUEST = new RequestBuilder(GET, TARGET).build();
+    Request HEAD_REQUEST = head(TARGET);
+    Request NOT_HEAD_REQUEST = get(TARGET);
     private RecordingHttpHandler httpHandler;
 
 
