@@ -70,7 +70,7 @@ public interface Request {
 
         @SafeVarargs
         static Request put(String uri, Unary<Request>... builders) {
-            return request(PUT, Uri.uri(uri), builders);
+            return put(Uri.uri(uri), builders);
         }
 
         @SafeVarargs
@@ -80,22 +80,42 @@ public interface Request {
 
         @SafeVarargs
         static Request patch(String uri, Unary<Request>... builders) {
-            return request(PATCH, Uri.uri(uri), builders);
+            return patch(Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
+        static Request patch(Uri uri, Unary<Request>... builders) {
+            return request(PATCH, uri, builders);
         }
 
         @SafeVarargs
         static Request delete(String uri, Unary<Request>... builders) {
-            return request(DELETE, Uri.uri(uri), builders);
+            return delete(Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
+        static Request delete(Uri uri, Unary<Request>... builders) {
+            return request(DELETE, uri, builders);
         }
 
         @SafeVarargs
         static Request options(String uri, Unary<Request>... builders) {
-            return request(OPTIONS, Uri.uri(uri), builders);
+            return options(Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
+        static Request options(Uri uri, Unary<Request>... builders) {
+            return request(OPTIONS, uri, builders);
         }
 
         @SafeVarargs
         static Request head(String uri, Unary<Request>... builders) {
-            return request(HEAD, Uri.uri(uri), builders);
+            return head(Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
+        static Request head(Uri uri, Unary<Request>... builders) {
+            return request(HEAD, uri, builders);
         }
 
         static Unary<Request> method(String value) {

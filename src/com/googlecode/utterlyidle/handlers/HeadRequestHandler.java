@@ -20,7 +20,7 @@ public class HeadRequestHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         if (request.method().equals(HttpMethod.HEAD) && matcher.match(request).isLeft()) {
-            Response response = decorated.handle(RequestBuilder.modify(request).method(HttpMethod.GET).build());
+            Response response = decorated.handle(Request.Builder.modify(request, Request.Builder.method(HttpMethod.GET)));
             return ResponseBuilder.modify(response).removeEntity().build();
         }
 

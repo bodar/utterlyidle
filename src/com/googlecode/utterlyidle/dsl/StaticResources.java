@@ -2,11 +2,7 @@ package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.io.Uri;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.RequestBuilder;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 
 import java.net.URL;
@@ -20,7 +16,7 @@ public class StaticResources {
             Uri normalise = original.removeDotSegments();
             if (!original.equals(normalise)) return Responses.response(Status.NOT_FOUND);
             HttpHandler handler = new ClientHttpHandler();
-            return handler.handle(RequestBuilder.get(original).build());
+            return handler.handle(Request.Builder.get(original));
         } catch (Exception e) {
             throw LazyException.lazyException(e);
         }
