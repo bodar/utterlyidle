@@ -7,6 +7,9 @@ import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
+import static com.googlecode.utterlyidle.Request.Builder.cookie;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
+
 public class CookieHandler implements HttpHandler {
     private final HttpHandler httpHandler;
     private CookieParameters cookies = CookieParameters.cookies();
@@ -21,11 +24,7 @@ public class CookieHandler implements HttpHandler {
     }
 
     private Request addExistingCookiesTo(final Request request) {
-        RequestBuilder builder = RequestBuilder.modify(request);
-        for (Pair<String, String> pair : cookies) {
-            builder.cookie(pair.first(), pair.second());
-        }
-        return builder.build();
+        return modify(request, cookie(cookies));
     }
 
     private Response updateCookiesReceived(final Response response) {

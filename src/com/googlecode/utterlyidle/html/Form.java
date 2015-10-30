@@ -98,6 +98,6 @@ public class Form extends BlockLevelElement {
     }
 
     public static Function1<? super Element, ? extends Form> fromElement() {
-        return element -> new Form(element);
+        return Form::new;
     }
 }

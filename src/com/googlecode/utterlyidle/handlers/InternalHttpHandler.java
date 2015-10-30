@@ -14,11 +14,14 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
 
+import static com.googlecode.totallylazy.Sequences.head;
 import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 
 public class InternalHttpHandler implements HttpHandler {
     private static final Sequence<String> HEADER_WHITE_LIST = sequence(COOKIE, AUTHORIZATION);
@@ -41,12 +44,6 @@ public class InternalHttpHandler implements HttpHandler {
 
     private Request requestWithOriginalHeaders(Request request) {
         Predicate<First<String>> inWhitelist = by(Callables.<String>first(), Predicates.or(HEADER_WHITE_LIST.map(equalIgnoringCase())));
-        Sequence<Pair<String, String>> headersToAdd = originalRequest.headers().filter(inWhitelist);
-
-        return headersToAdd.fold(request, addHeader());
-    }
-
-    private Function2<Request, Pair<String, String>, Request> addHeader() {
-        return (request, headerPair) -> RequestBuilder.modify(request).header(headerPair.first(), headerPair.second()).build();
+        return modify(request, header(originalRequest.headers().filter(inWhitelist)));
     }
 }
