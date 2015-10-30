@@ -1,9 +1,11 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.Sequences;
+import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.xml.Xml;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
@@ -43,10 +45,9 @@ public class Form extends BlockLevelElement {
         String action = selectContent("@action");
         String method = selectContent("@method");
 
-        Sequence<NameValue> inputs = nameValuePairs(fieldExpressions);
-        return inputs.fold(new RequestBuilder(method, action),
-                method.equalsIgnoreCase(HttpMethod.POST) ? addFormParams() : addQueryParams()).
-                build();
+        Sequence<Pair<String, String>> inputs = nameValuePairs(fieldExpressions).map(nameValue -> Pair.pair(nameValue.name(), nameValue.value()));
+        return Request.Builder.request(method, action,
+                method.equalsIgnoreCase(HttpMethod.POST) ? Request.Builder.form(inputs) : Request.Builder.query(inputs));
     }
 
     private Sequence<String> fieldExpressions() {
@@ -87,14 +88,6 @@ public class Form extends BlockLevelElement {
             return Xml.selectContents(element, "@type");
         }
         return tagName;
-    }
-
-    private Function2<RequestBuilder, NameValue, RequestBuilder> addQueryParams() {
-        return (requestBuilder, nameValue) -> requestBuilder.query(nameValue.name(), nameValue.value());
-    }
-
-    private Function2<RequestBuilder, NameValue, RequestBuilder> addFormParams() {
-        return (requestBuilder, nameValue) -> requestBuilder.form(nameValue.name(), nameValue.value());
     }
 
     public static Function1<? super Element, ? extends Form> fromElement() {
