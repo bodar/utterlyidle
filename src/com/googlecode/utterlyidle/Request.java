@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.functions.Compose;
 import com.googlecode.totallylazy.functions.Unary;
@@ -33,6 +34,11 @@ public interface Request {
         }
 
         @SafeVarargs
+        static Request request(String method, String uri, Unary<Request>... builders) {
+            return request(method, Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
         static Request request(String method, Uri uri, Unary<Request>... builders) {
             return modify(request(method, uri, headerParameters(), Entity.empty()), builders);
         }
@@ -44,17 +50,32 @@ public interface Request {
 
         @SafeVarargs
         static Request get(String uri, Unary<Request>... builders) {
-            return request(GET, Uri.uri(uri), builders);
+            return get(Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
+        static Request get(Uri uri, Unary<Request>... builders) {
+            return request(GET, uri, builders);
         }
 
         @SafeVarargs
         static Request post(String uri, Unary<Request>... builders) {
-            return request(POST, Uri.uri(uri), builders);
+            return post(Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
+        static Request post(Uri uri, Unary<Request>... builders) {
+            return request(POST, uri, builders);
         }
 
         @SafeVarargs
         static Request put(String uri, Unary<Request>... builders) {
             return request(PUT, Uri.uri(uri), builders);
+        }
+
+        @SafeVarargs
+        static Request put(Uri uri, Unary<Request>... builders) {
+            return request(PUT, uri, builders);
         }
 
         @SafeVarargs
@@ -98,7 +119,7 @@ public interface Request {
             return request -> modify(request, header(apply(request.headers(), builders)));
         }
 
-        static Unary<Request> header(Parameters<?> parameters) {
+        static Unary<Request> header(Iterable<? extends Pair<String,String>> parameters) {
             return request -> request(request.method(), request.uri(), HeaderParameters.headerParameters(parameters), request.entity());
         }
 
@@ -118,7 +139,7 @@ public interface Request {
             };
         }
 
-        static Unary<Request> query(Parameters<?> parameters) {
+        static Unary<Request> query(Iterable<? extends Pair<String,String>> parameters) {
             return request -> {
                 String encoded = UrlEncodedMessage.toString(parameters);
                 return modify(request, uri(request.uri().query(encoded)));
@@ -137,7 +158,7 @@ public interface Request {
             };
         }
 
-        static Unary<Request> form(Parameters<?> parameters) {
+        static Unary<Request> form(Iterable<? extends Pair<String,String>> parameters) {
             return request -> modify(request,
                     header(CONTENT_TYPE, format("%s; charset=%s", APPLICATION_FORM_URLENCODED, DEFAULT_CHARACTER_SET)),
                     entity(UrlEncodedMessage.toString(parameters)));
@@ -155,7 +176,7 @@ public interface Request {
             };
         }
 
-        static Unary<Request> cookie(Parameters<?> parameters) {
+        static Unary<Request> cookie(Iterable<? extends Pair<String,String>> parameters) {
             return request -> modify(request,
                     header(param(COOKIE, CookieParameters.cookies(parameters).toList())));
         }
