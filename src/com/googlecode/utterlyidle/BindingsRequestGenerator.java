@@ -7,6 +7,8 @@ import com.googlecode.totallylazy.proxy.MethodInvocation;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 
 import static com.googlecode.utterlyidle.Extractors.extractForm;
+import static com.googlecode.utterlyidle.Request.Builder.form;
+import static com.googlecode.utterlyidle.Request.Builder.modify;
 
 public class BindingsRequestGenerator implements RequestGenerator {
     private final Redirector redirector;
@@ -31,11 +33,11 @@ public class BindingsRequestGenerator implements RequestGenerator {
 
     @Override
     public Request requestFor(final Binding binding, final Object... arguments) {
-        RequestBuilder requestBuilder = new RequestBuilder(binding.httpMethod(), redirector.uriOf(binding, arguments));
+        Request request = Request.Builder.request(binding.httpMethod(), redirector.uriOf(binding, arguments));
         if (binding.httpMethod().equals(HttpMethod.POST)) {
-            requestBuilder.forms(extractForm(binding, arguments));
+            return modify(request, form(extractForm(binding, arguments)));
         }
-        return requestBuilder.build();
+        return request;
     }
 
 }
