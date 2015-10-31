@@ -2,12 +2,13 @@ package com.googlecode.utterlyidle.html;
 
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.handlers.RecordingHttpHandler;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.matchers.Matchers.is;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.handlers.RecordingHttpHandler.recordingHttpHandler;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
@@ -20,9 +21,9 @@ public class CookieHandlerTest {
         RecordingHttpHandler recording = recordingHttpHandler(returnsResponse(response().cookie(cookie)));
         HttpHandler handler = new CookieHandler(recording);
 
-        handler.handle(get("no-cookie"));
+        handler.handle(Request.get("no-cookie"));
         assertThat(recording.lastRequest().headers().contains(HttpHeaders.COOKIE), is(false));
-        handler.handle(get("should-have-cookie"));
+        handler.handle(Request.get("should-have-cookie"));
         assertThat(recording.lastRequest().headers().getValue(HttpHeaders.COOKIE), is(cookie.toString()));
     }
 }

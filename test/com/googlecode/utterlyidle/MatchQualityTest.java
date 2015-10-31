@@ -10,19 +10,19 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MatchQualityTest {
     @Test
     public void matchesLongestPathsBeforePriority() throws Exception {
-        assertThat(application().addAnnotated(User.class).responseAsString(get("user/dan")), is("Hello dan"));
+        assertThat(application().addAnnotated(User.class).responseAsString(Request.get("user/dan")), is("Hello dan"));
     }
 
     @Test
     public void matchesNamedParametersBeforeDefaultOnes() throws Exception {
-        assertThat(application().addAnnotated(Loser.class).responseAsString(get("loser?firstName=Foghorn&lastName=Leghorn")), is("Hello Foghorn Leghorn"));
-        assertThat(application().addAnnotated(Loser.class).responseAsString(get("loser?firstName=Stuart")), is("Hello Stuart with a shoe size of 10.5"));
+        assertThat(application().addAnnotated(Loser.class).responseAsString(Request.get("loser?firstName=Foghorn&lastName=Leghorn")), is("Hello Foghorn Leghorn"));
+        assertThat(application().addAnnotated(Loser.class).responseAsString(Request.get("loser?firstName=Stuart")), is("Hello Stuart with a shoe size of 10.5"));
     }
 
     @Path("user")

@@ -1,10 +1,11 @@
 package com.googlecode.utterlyidle.html;
 
+import com.googlecode.utterlyidle.Request;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.xml.Xml.document;
 import static com.googlecode.totallylazy.xml.Xml.selectElement;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.Builder.query;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,7 +21,7 @@ public class FormTest {
     @Test
     public void shouldSubmitGetMethodToActionWithFieldValues(){
         Form form = new Form(selectElement(document("<form action='/location' method='get'><input name='field' value='value'/></form>"), "//form").get());
-        assertThat(form.submit(), is(get("/location", query("field", "value"))));
+        assertThat(form.submit(), is(Request.get("/location", query("field", "value"))));
     }
 
     @Test

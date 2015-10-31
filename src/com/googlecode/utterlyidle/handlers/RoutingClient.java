@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.predicates.Predicates.any;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
 
 public class RoutingClient implements HttpClient {
     private final Rules<Uri, Uri> rules;

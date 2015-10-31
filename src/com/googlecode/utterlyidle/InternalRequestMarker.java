@@ -2,8 +2,8 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.handlers.ApplicationId;
 
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
 
 public class InternalRequestMarker {
     private final ApplicationId applicationId;
@@ -13,7 +13,7 @@ public class InternalRequestMarker {
     }
 
     public Request markAsInternal(Request request) {
-        return modify(request, header(HttpHeaders.X_FORWARDED_FOR, applicationId.toString()));
+        return modify(request, HttpMessage.Builder.header(HttpHeaders.X_FORWARDED_FOR, applicationId.toString()));
     }
 
     public Boolean isInternal(Request request) {

@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle.lazyrecords;
 import com.googlecode.lazyrecords.sql.ReadOnlyConnection;
 import com.googlecode.totallylazy.Closeables;
 import com.googlecode.totallylazy.Option;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.Request;
 
 import javax.sql.DataSource;
@@ -14,7 +15,6 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.predicates.Predicates.in;
 import static com.googlecode.totallylazy.predicates.Predicates.where;
-import static com.googlecode.utterlyidle.Requests.method;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.HEAD;
 
@@ -47,6 +47,6 @@ public class ConnectionActivator implements Callable<Connection>, Closeable {
     }
 
     private Connection connection() throws SQLException {
-        return request.is(where(method(), in(GET, HEAD))) ? new ReadOnlyConnection(dataSource) : dataSource.getConnection();
+        return request.is(where((Function1<Request,String>) Request::method, in(GET, HEAD))) ? new ReadOnlyConnection(dataSource) : dataSource.getConnection();
     }
 }

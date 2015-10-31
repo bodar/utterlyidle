@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.rendering.exceptions;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.totallylazy.template.Templates;
@@ -20,7 +21,6 @@ import static com.googlecode.totallylazy.Strings.contains;
 import static com.googlecode.totallylazy.functions.Callables.first;
 import static com.googlecode.totallylazy.predicates.Predicates.and;
 import static com.googlecode.totallylazy.predicates.Predicates.where;
-import static com.googlecode.utterlyidle.Requests.pathAsString;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static com.googlecode.utterlyidle.handlers.RenderingResponseHandler.renderer;
@@ -41,7 +41,7 @@ public class LastExceptionsModule implements ResourcesModule, ApplicationScopedM
 
     @Override
     public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) throws Exception {
-        return handlers.add(isAModel().and(where(first(Request.class), and(where(pathAsString(), contains(LastExceptionsResource.PATH))))), renderer(lastExceptionsRenderer()));
+        return handlers.add(isAModel().and(where(first(Request.class), and(where((Function1<Request,String>) request -> request.uri().path(), contains(LastExceptionsResource.PATH))))), renderer(lastExceptionsRenderer()));
     }
 
     private Renderer<Map<String,Object>> lastExceptionsRenderer() {

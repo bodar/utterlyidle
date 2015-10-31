@@ -46,7 +46,7 @@ public class BasePathHandler implements HttpHandler {
     }
 
     private Request removeBasePathFromUri(Request request) {
-        return Request.Builder.modify(request,
+        return HttpMessage.Builder.modify(request,
                 Request.Builder.uri(request.uri().path(removeBasePath(request.uri().path()))));
     }
 

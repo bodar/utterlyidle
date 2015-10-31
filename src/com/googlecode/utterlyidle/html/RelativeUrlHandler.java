@@ -7,7 +7,7 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.Strings.isEmpty;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
 
 public class RelativeUrlHandler implements HttpHandler {
     private final HttpHandler httpHandler;

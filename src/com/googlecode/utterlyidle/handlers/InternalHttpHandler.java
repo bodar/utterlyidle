@@ -7,6 +7,7 @@ import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -16,8 +17,8 @@ import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
 
 public class InternalHttpHandler implements HttpHandler {
     private static final Sequence<String> HEADER_WHITE_LIST = sequence(COOKIE, AUTHORIZATION);
@@ -40,6 +41,6 @@ public class InternalHttpHandler implements HttpHandler {
 
     private Request requestWithOriginalHeaders(Request request) {
         Predicate<First<String>> inWhitelist = by(Callables.<String>first(), Predicates.or(HEADER_WHITE_LIST.map(equalIgnoringCase())));
-        return modify(request, header(originalRequest.headers().filter(inWhitelist)));
+        return modify(request, HttpMessage.Builder.header(originalRequest.headers().filter(inWhitelist)));
     }
 }

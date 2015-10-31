@@ -14,7 +14,7 @@ import static com.googlecode.totallylazy.predicates.Predicates.always;
 import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
 import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.handlers.HandlerRule.entity;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,7 +28,7 @@ public class ServerErrorTest {
         ApplicationBuilder application = application().addAnnotated(ThrowingRuntimeResource.class);
         application.addResponseHandler(where(entity(), instanceOf(IllegalArgumentException.class)), new WriteMessageToResponseHandler(message));
 
-        Response response = application.handle(get("exception"));
+        Response response = application.handle(Request.get("exception"));
 
         assertThat(response.entity().toString(), containsString(message));
     }
@@ -39,7 +39,7 @@ public class ServerErrorTest {
         ApplicationBuilder application = application().addAnnotated(ThrowingCheckedResource.class);
         application.addResponseHandler(where(entity(), instanceOf(IOException.class)), new WriteMessageToResponseHandler(message));
 
-        Response response = application.handle(get("exception"));
+        Response response = application.handle(Request.get("exception"));
 
         assertThat(response.entity().toString(), containsString(message));
     }
@@ -48,7 +48,7 @@ public class ServerErrorTest {
     public void returns500WhenAnExceptionIsThrown() throws Exception {
         ApplicationBuilder application = application().addAnnotated(ThrowingRuntimeResource.class);
 
-        Response response = application.handle(get("exception"));
+        Response response = application.handle(Request.get("exception"));
 
         assertResponseContains(response, IllegalArgumentException.class);
     }
@@ -57,7 +57,7 @@ public class ServerErrorTest {
     public void returns500WhenAResourceCanNotBeCreatedByYadic() throws Exception {
         ApplicationBuilder application = application().addAnnotated(ResourceWithMissingDependency.class);
 
-        Response response = application.handle(get("lazy"));
+        Response response = application.handle(Request.get("lazy"));
 
         assertResponseContains(response, ContainerException.class);
     }
@@ -66,7 +66,7 @@ public class ServerErrorTest {
     public void shouldReturn500whenARendererThrowsException() throws Exception {
         ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
         application.addResponseHandler(always(), throwOnRender(new RuntimeException("Boom")));
-        Response response = application.handle(get("noProblems"));
+        Response response = application.handle(Request.get("noProblems"));
         assertResponseContains(response, RuntimeException.class);
     }
 
@@ -74,7 +74,7 @@ public class ServerErrorTest {
     public void shouldReturn500whenARendererThrowsError() throws Exception {
         ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
         application.addResponseHandler(always(), throwError(new AssertionError()));
-        Response response = application.handle(get("noProblems"));
+        Response response = application.handle(Request.get("noProblems"));
         assertResponseContains(response, AssertionError.class);
     }
 
@@ -82,7 +82,7 @@ public class ServerErrorTest {
     public void shouldReturn500whenAResponseMatcherThrowsException() throws Exception {
         ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
         application.addResponseHandler(alwaysThrows(), doNothingRenderer());
-        Response response = application.handle(get("noProblems"));
+        Response response = application.handle(Request.get("noProblems"));
         assertResponseContains(response, RuntimeException.class);
     }
 

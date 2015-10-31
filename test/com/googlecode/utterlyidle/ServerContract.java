@@ -35,15 +35,15 @@ import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 import static com.googlecode.utterlyidle.Request.Builder.accept;
-import static com.googlecode.utterlyidle.Request.Builder.add;
-import static com.googlecode.utterlyidle.Request.Builder.delete;
+import static com.googlecode.utterlyidle.Parameters.Builder.add;
+import static com.googlecode.utterlyidle.Request.delete;
 import static com.googlecode.utterlyidle.Request.Builder.form;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.head;
-import static com.googlecode.utterlyidle.Request.Builder.options;
-import static com.googlecode.utterlyidle.Request.Builder.patch;
-import static com.googlecode.utterlyidle.Request.Builder.post;
-import static com.googlecode.utterlyidle.Request.Builder.put;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.Request.head;
+import static com.googlecode.utterlyidle.Request.options;
+import static com.googlecode.utterlyidle.Request.patch;
+import static com.googlecode.utterlyidle.Request.post;
+import static com.googlecode.utterlyidle.Request.put;
 import static com.googlecode.utterlyidle.Request.Builder.query;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Response.methods.headerOption;
@@ -80,7 +80,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void handlesChunking() throws Exception {
-        Response response = handle(get("chunk"), server);
+        Response response = handle(Request.get("chunk"), server);
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("chunk"));
@@ -90,19 +90,19 @@ public abstract class ServerContract<T extends Server> {
     public void shouldCaptureStreamingExceptions() throws Exception {
         final Sequence<StoredException> exceptions = sequence(server.application().applicationScope().get(LastExceptions.class));
         assertThat(exceptions.size(), is(0));
-        handle(get("stream-exception"), server).toString();
+        handle(Request.get("stream-exception"), server).toString();
         assertThat(exceptions.size(), is(1));
     }
 
     @Test
     public void shouldCorrectlyHandlerEtagsAndNotModified() throws Exception {
-        Response responseWithEtag = handle(get("etag"), server);
+        Response responseWithEtag = handle(Request.get("etag"), server);
 
         assertThat(responseWithEtag.status(), Matchers.is(Status.OK));
         assertThat(header(responseWithEtag, ETAG), CoreMatchers.is("\"900150983cd24fb0d6963f7d28e17f72\""));
         assertThat(header(responseWithEtag, CONTENT_LENGTH), CoreMatchers.is("3"));
 
-        Response response = handle(get("etag", Request.Builder.header(IF_NONE_MATCH, header(responseWithEtag, ETAG))), server);
+        Response response = handle(Request.get("etag", HttpMessage.Builder.header(IF_NONE_MATCH, header(responseWithEtag, ETAG))), server);
 
         assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
         assertThat(headerOption(response, CONTENT_LENGTH).filter(not(Predicates.is("0"))), CoreMatchers.is(none(String.class)));
@@ -110,7 +110,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void shouldSetServerUrlIntoRequestScopeSoThatAllRedirectsAreFullyQualified() throws Exception {
-        Response response = handle(get("helloworld/redirect"), server);
+        Response response = handle(Request.get("helloworld/redirect"), server);
 
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
         assertThat(header(response, LOCATION), CoreMatchers.startsWith(server.uri().toString()));
@@ -118,7 +118,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void setXForwardedForIfRequestDoesntHaveOne() throws Exception {
-        Response response = handle(get("helloworld/xff"), server);
+        Response response = handle(Request.get("helloworld/xff"), server);
 
         String result = response.entity().toString();
 
@@ -127,7 +127,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void preservesXForwardedForIfRequestHasOne() throws Exception {
-        Response response = handle(get("helloworld/xff", Request.Builder.header(X_FORWARDED_FOR, "sky.com")), server);
+        Response response = handle(Request.get("helloworld/xff", HttpMessage.Builder.header(X_FORWARDED_FOR, "sky.com")), server);
 
         String result = response.entity().toString();
 
@@ -136,7 +136,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void setXForwardedProtoIfRequestDoesntHaveOne() throws Exception {
-        Response response = handle(get("helloworld/x-forwarded-proto"), server);
+        Response response = handle(Request.get("helloworld/x-forwarded-proto"), server);
 
         String result = response.entity().toString();
 
@@ -145,7 +145,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void preservesXForwardedProtoIfRequestHasOne() throws Exception {
-        Response response = handle(get("helloworld/x-forwarded-proto", Request.Builder.header(X_FORWARDED_PROTO, "https")), server);
+        Response response = handle(Request.get("helloworld/x-forwarded-proto", HttpMessage.Builder.header(X_FORWARDED_PROTO, "https")), server);
 
         String result = response.entity().toString();
 
@@ -154,7 +154,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void handlesOptions() throws Exception {
-        Response response = handle(options("helloworld/options", query("name", "foo")), server);
+        Response response = handle(Request.options("helloworld/options", query("name", "foo")), server);
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello foo"));
@@ -162,7 +162,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void handlesGets() throws Exception {
-        Response response = handle(get("helloworld/queryparam", query("name", "foo")), server);
+        Response response = handle(Request.get("helloworld/queryparam", query("name", "foo")), server);
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello foo"));
@@ -170,7 +170,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void handlesPatch() throws Exception {
-        Response response = handle(patch("helloworld/patch", query("name", "James")), server);
+        Response response = handle(Request.patch("helloworld/patch", query("name", "James")), server);
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello James"));
@@ -178,7 +178,7 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void handlesPosts() throws Exception {
-        Response response = handle(post("helloworld/formparam", form("name", "fred")), server);
+        Response response = handle(Request.post("helloworld/formparam", form("name", "fred")), server);
 
         assertThat(response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("Hello fred"));
@@ -186,37 +186,37 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void mapsRequestHeaders() throws Exception {
-        Response response = handle(get("helloworld/headerparam", accept(WILDCARD), Request.Builder.header("name", "bar")), server);
+        Response response = handle(Request.get("helloworld/headerparam", accept(WILDCARD), HttpMessage.Builder.header("name", "bar")), server);
 
         assertThat(response.entity().toString(), is("Hello bar"));
     }
 
     @Test
     public void handlesTheAnyCatchAllHttpVerb() throws Exception {
-        assertThat(handle(get("any"), server).entity().toString(), is("Hello everyone"));
-        assertThat(handle(post("any"), server).entity().toString(), is("Hello everyone"));
-        assertThat(handle(put("any"), server).entity().toString(), is("Hello everyone"));
-        assertThat(handle(delete("any"), server).entity().toString(), is("Hello everyone"));
-        assertThat(handle(head("any"), server).headers().getValue("x-custom-header"), is("smile"));
+        assertThat(handle(Request.get("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(Request.post("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(Request.put("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(Request.delete("any"), server).entity().toString(), is("Hello everyone"));
+        assertThat(handle(Request.head("any"), server).headers().getValue("x-custom-header"), is("smile"));
     }
 
     @Test
     public void mapsResponseHeaders() throws Exception {
-        Response response = handle(get("helloworld/inresponseheaders?name=mike", Request.Builder.accept(WILDCARD)), server);
+        Response response = handle(Request.get("helloworld/inresponseheaders?name=mike", Request.Builder.accept(WILDCARD)), server);
 
         assertThat(header(response, "greeting"), is("Hello mike"));
     }
 
     @Test
     public void mapsStatusCode() throws Exception {
-        Response response = handle(get("doesnotexist"), server);
+        Response response = handle(Request.get("doesnotexist"), server);
 
         assertThat(response.status(), is(NOT_FOUND));
     }
 
     @Test
     public void canHandleMultiValueQueryParameters() throws Exception {
-        Response response = handle(get("echoquery", query(add("a", "first"), add("a", "second")), accept(WILDCARD)), server);
+        Response response = handle(Request.get("echoquery", query(add("a", "first"), add("a", "second")), accept(WILDCARD)), server);
 
         String result = response.entity().toString();
 
@@ -226,14 +226,14 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void retainsOrderOfQueryParameters() throws Exception {
-        Response response = handle(get("echoquery", query(add("a", "1"), add("b", "2"), add("a", "3"), add("b", "4")), accept(WILDCARD)), server);
+        Response response = handle(Request.get("echoquery", query(add("a", "1"), add("b", "2"), add("a", "3"), add("b", "4")), accept(WILDCARD)), server);
 
         assertThat(response.entity().toString(), is("?a=1&b=2&a=3&b=4"));
     }
 
     @Test
     public void willPrintStackTraceAsPlainText() throws Exception {
-        Response response = handle(get("goesbang", query("exceptionMessage", "goes_bang"), accept(WILDCARD)), server);
+        Response response = handle(Request.get("goesbang", query("exceptionMessage", "goes_bang"), accept(WILDCARD)), server);
 
         assertThat(response.status(), is(Status.INTERNAL_SERVER_ERROR));
         assertThat(response.entity().toString(), allOf(containsString("Exception"), containsString("goes_bang")));
@@ -241,9 +241,9 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void canHandleOptionalDate() throws Exception {
-        assertThat(handle(get("optionalDate"), server).entity().toString(), is("no date"));
-        assertThat(handle(get("optionalDate?date="), server).entity().toString(), is("no date"));
-        assertThat(handle(get("optionalDate?date=" + LEXICAL().format(Dates.date(1974, 10, 29))), server).entity().toString(), is("19741029000000000"));
+        assertThat(handle(Request.get("optionalDate"), server).entity().toString(), is("no date"));
+        assertThat(handle(Request.get("optionalDate?date="), server).entity().toString(), is("no date"));
+        assertThat(handle(Request.get("optionalDate?date=" + LEXICAL().format(Dates.date(1974, 10, 29))), server).entity().toString(), is("19741029000000000"));
     }
 
     @Test
@@ -253,7 +253,7 @@ public abstract class ServerContract<T extends Server> {
             SSLContext context = sslContext(keyStore(password, resource), password);
             server.close();
             server = configureServer(defaultConfiguration().sslContext(context));
-            Response response = handle(new ClientHttpHandler(clientConfiguration(Builder.sslContext(context))), get("helloworld/x-forwarded-proto"), server);
+            Response response = handle(new ClientHttpHandler(clientConfiguration(Builder.sslContext(context))), Request.get("helloworld/x-forwarded-proto"), server);
 
             assertThat(response.status(), is(Status.OK));
             assertThat(response.entity().toString(), is(Protocol.HTTPS));

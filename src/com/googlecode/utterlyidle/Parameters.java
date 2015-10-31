@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.collections.PersistentList;
 import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Function2;
+import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.predicates.Predicate;
 
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import java.util.Map;
 import static com.googlecode.totallylazy.Callers.call;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.functions.Functions.identity;
 import static com.googlecode.totallylazy.predicates.Predicates.by;
 
 public abstract class Parameters<Self extends Parameters<Self>> implements Iterable<Pair<String, String>> {
@@ -119,5 +121,29 @@ public abstract class Parameters<Self extends Parameters<Self>> implements Itera
 
     public Map<String, List<String>> toMap() {
         return Maps.multiMap(this);
+    }
+
+    public interface Builder {
+        static Unary<Parameters<?>> add(String name, Object value){
+            if(value == null) return identity();
+            return params -> params.add(name, value.toString());
+        }
+
+        static Unary<Parameters<?>> replace(String name, Object value){
+            if(value == null) return remove(name);
+            return params -> params.replace(name, value.toString());
+        }
+
+        static Unary<Parameters<?>> remove(String name){
+            return params -> params.remove(name);
+        }
+
+        static Unary<Parameters<?>> param(String name, Object value){
+            return replace(name, value);
+        }
+
+        static Unary<Parameters<?>> param(String name, List<?> values){
+            return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, item.toString()));
+        }
     }
 }

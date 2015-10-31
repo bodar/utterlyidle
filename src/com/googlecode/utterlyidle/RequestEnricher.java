@@ -2,8 +2,8 @@ package com.googlecode.utterlyidle;
 
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
 
 public class RequestEnricher {
     private final ClientAddress clientAddress;
@@ -24,11 +24,11 @@ public class RequestEnricher {
     private Request withXForwardedProto(Request request) {
         request.headers();
         if (request.headers().contains(X_FORWARDED_PROTO)) return request;
-        return modify(request, header(X_FORWARDED_PROTO, protocol));
+        return modify(request, HttpMessage.Builder.header(X_FORWARDED_PROTO, protocol));
     }
     private Request withXForwardedFor(Request request) {
         request.headers();
         if (request.headers().contains(X_FORWARDED_FOR)) return request;
-        return modify(request, header(X_FORWARDED_FOR, clientAddress.value()));
+        return modify(request, HttpMessage.Builder.header(X_FORWARDED_FOR, clientAddress.value()));
     }
 }

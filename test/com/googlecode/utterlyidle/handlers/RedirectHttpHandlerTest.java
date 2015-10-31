@@ -10,10 +10,10 @@ import java.util.Map;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_JSON;
 import static com.googlecode.utterlyidle.Request.Builder.contentType;
-import static com.googlecode.utterlyidle.Request.Builder.entity;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.head;
-import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.Request.head;
+import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -23,11 +23,11 @@ import static org.junit.Assert.assertThat;
 
 public class RedirectHttpHandlerTest {
 
-    private final Request NON_GET_REQUEST = head("http://redirected.url");
-    private final Request NON_GET_REDIRECTED_REQUEST = head("http://newtarg.et");
-    private final Request REDIRECTED_GET_REQUEST = get("http://newtarg.et");
-    private final Request POST_REQUEST_WITH_ENTITY_AND_HEADERS = post("http://redirected.url", entity("{'name': 'value'}"), contentType(APPLICATION_JSON));
-    private final Request REDIRECTED_REQUEST_WITH_ENTITY_AND_HEADERS = post("http://newtarg.et", entity("{'name': 'value'}"), contentType(APPLICATION_JSON));
+    private final Request NON_GET_REQUEST = Request.head("http://redirected.url");
+    private final Request NON_GET_REDIRECTED_REQUEST = Request.head("http://newtarg.et");
+    private final Request REDIRECTED_GET_REQUEST = Request.get("http://newtarg.et");
+    private final Request POST_REQUEST_WITH_ENTITY_AND_HEADERS = Request.post("http://redirected.url", entity("{'name': 'value'}"), contentType(APPLICATION_JSON));
+    private final Request REDIRECTED_REQUEST_WITH_ENTITY_AND_HEADERS = Request.post("http://newtarg.et", entity("{'name': 'value'}"), contentType(APPLICATION_JSON));
     private final Response ANY_REDIRECTING_RESPONSE_BUT_SEE_OTHER = response(FOUND).header(LOCATION, "http://newtarg.et").build();
     private final Response REDIRECTING_RESPONSE_SEE_OTHER = response(SEE_OTHER).header(LOCATION, "http://newtarg.et").build();
     private final StubHttpHandler stubHttpHandler = new StubHttpHandler();

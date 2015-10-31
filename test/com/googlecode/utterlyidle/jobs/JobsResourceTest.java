@@ -29,9 +29,9 @@ import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.RelativeUriExtractor.relativeUriOf;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
-import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Request.Builder.uri;
 import static com.googlecode.utterlyidle.Status.CREATED;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -60,7 +60,7 @@ public class JobsResourceTest {
     public void statusCodesMapCorrectly() throws Exception {
         Clock clock = new StoppedClock(date(2001, 1, 2));
 
-        CreatedJob createdJob = CreatedJob.createJob(get(""), clock);
+        CreatedJob createdJob = CreatedJob.createJob(Request.get(""), clock);
         assertThat(JobsResource.status(createdJob), is(Status.CREATED));
 
         RunningJob runningJob = createdJob.start(clock);
@@ -76,16 +76,16 @@ public class JobsResourceTest {
 
         assertThat(numberOfJobs(), is(0));
 
-        Response response = create(post("some/url"));
+        Response response = create(Request.post("some/url"));
         assertThat(response.status(), is(SEE_OTHER));
         String location = response.headers().getValue(HttpHeaders.LOCATION);
-        assertThat(application.handle(get(location)).status(), is(CREATED));
+        assertThat(application.handle(Request.get(location)).status(), is(CREATED));
 
         completer.job.call();
 
         assertThat(numberOfJobs(), is(1));
 
-        Response job = application.handle(get(location));
+        Response job = application.handle(Request.get(location));
 
         assertThat(job.status(), is(OK));
 
@@ -103,9 +103,9 @@ public class JobsResourceTest {
     @Test
     public void canCreateMultipleJobsAndListThem() throws Exception {
         ManualCompleter manualCompleter = stepCompleter();
-        create(post("some/url1"));
+        create(Request.post("some/url1"));
         manualCompleter.job.call();
-        create(post("some/url2"));
+        create(Request.post("some/url2"));
         manualCompleter.job.call();
 
         assertThat(numberOfJobs(), is(2));
@@ -113,8 +113,8 @@ public class JobsResourceTest {
 
     @Test
     public void canListJobsThatHaveNotBeenCompletedOrStarted() throws Exception {
-        create(post("some/url1"));
-        create(post("some/url2"));
+        create(Request.post("some/url1"));
+        create(Request.post("some/url2"));
 
         assertThat(numberOfJobs(), is(2));
     }
@@ -123,7 +123,7 @@ public class JobsResourceTest {
     public void canDeleteAllRunningJobs() throws Exception {
         ManualCompleter completer = stepCompleter();
 
-        create(post("some/url"));
+        create(Request.post("some/url"));
 
         completer.job.call();
 
@@ -141,7 +141,7 @@ public class JobsResourceTest {
 
     @Test
     public void shouldNotThrowExceptionForAnyRequestWithoutQuery() throws Exception {
-        sequence(annotatedClass(JobsResource.class)).filter(getBindingWithNoArguments()).each(binding -> application.handle(get(relativeUriOf(binding))));
+        sequence(annotatedClass(JobsResource.class)).filter(getBindingWithNoArguments()).each(binding -> application.handle(Request.get(relativeUriOf(binding))));
         assertFalse(logger.hasLogged);
     }
 
@@ -153,7 +153,7 @@ public class JobsResourceTest {
     }
 
     private void deleteAll() throws Exception {
-        application.handle(post(relativeUriOf(method(on(JobsResource.class).deleteAll()))));
+        application.handle(Request.post(relativeUriOf(method(on(JobsResource.class).deleteAll()))));
     }
 
     private int numberOfJobs() throws Exception {
@@ -162,7 +162,7 @@ public class JobsResourceTest {
     }
 
     private Map<String, Object> jobsList() throws Exception {
-        Response response = application.handle(get(relativeUriOf(method(on(JobsResource.class).list()))));
+        Response response = application.handle(Request.get(relativeUriOf(method(on(JobsResource.class).list()))));
         return Json.map(response.entity().toString());
     }
 

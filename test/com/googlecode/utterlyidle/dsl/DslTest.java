@@ -2,8 +2,9 @@ package com.googlecode.utterlyidle.dsl;
 
 import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.Binding;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Redirector;
-import com.googlecode.utterlyidle.Request.Builder;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
@@ -34,7 +35,7 @@ public class DslTest {
     public void supportsPatch() throws Exception {
         ApplicationBuilder application = application().
                 add(patch("baz").resource(method(on(Baz.class).input(entity()))));
-        String response = application.responseAsString(Builder.patch("/baz", Builder.entity("Hello")));
+        String response = application.responseAsString(Request.patch("/baz", HttpMessage.Builder.entity("Hello")));
         assertThat(response, is("Hello"));
     }
 
@@ -42,7 +43,7 @@ public class DslTest {
     public void supportsEntityInputStream() throws Exception {
         ApplicationBuilder application = application().
                 add(put("baz").resource(method(on(Baz.class).input(entity()))));
-        String response = application.responseAsString(Builder.put("/baz", Builder.entity("Hello")));
+        String response = application.responseAsString(Request.put("/baz", HttpMessage.Builder.entity("Hello")));
         assertThat(response, is("Hello"));
     }
 
@@ -63,7 +64,7 @@ public class DslTest {
         ApplicationBuilder application = application().
                 add(get("redirect").resource(method(on(Redirect.class).redirect()))).
                 add(get("target").resource(method(on(Redirect.class).target())));
-        Response response = application.handle(Builder.get("/redirect"));
+        Response response = application.handle(Request.get("/redirect"));
         assertThat(response.status(), is(Status.SEE_OTHER));
         assertThat(header(response, LOCATION), is("/target"));
     }
@@ -71,41 +72,41 @@ public class DslTest {
     @Test
     public void supportsGet() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Bar.class).hello())));
-        assertThat(application.responseAsString(Builder.get("/bar")), is("Hello"));
+        assertThat(application.responseAsString(Request.get("/bar")), is("Hello"));
     }
 
     @Test
     public void supportsGetWithParameters() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Foo.class).say(queryParam(String.class, "value")))));
-        assertThat(application.responseAsString(Builder.get("/bar", query("value", "Dan"))), is("Hello Dan"));
+        assertThat(application.responseAsString(Request.get("/bar", query("value", "Dan"))), is("Hello Dan"));
     }
 
     @Test
     public void supportsGetWithDefaultValue() throws Exception {
         ApplicationBuilder application = application().add(get("/hello").resource(method(on(Foo.class).say(queryParam(String.class, "name", "Matt")))));
-        assertThat(application.responseAsString(Builder.get("/hello")), is("Hello Matt"));
-        assertThat(application.responseAsString(Builder.get("/hello", query("name", "Dan"))), is("Hello Dan"));
+        assertThat(application.responseAsString(Request.get("/hello")), is("Hello Matt"));
+        assertThat(application.responseAsString(Request.get("/hello", query("name", "Dan"))), is("Hello Dan"));
     }
 
     @Test
     public void supportsDefinedParameter() throws Exception {
         ApplicationBuilder application = application().add(get("/hello").resource(method(on(Foo.class).say(definedParam("Matt")))));
-        assertThat(application.responseAsString(Builder.get("/hello")), is("Hello Matt"));
-        assertThat(application.responseAsString(Builder.get("/hello", query("name", "Dan"))), is("Hello Matt"));
+        assertThat(application.responseAsString(Request.get("/hello")), is("Hello Matt"));
+        assertThat(application.responseAsString(Request.get("/hello", query("name", "Dan"))), is("Hello Matt"));
     }
 
     @Test
     public void supportsGetWithMultipleParameters() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Bob.class).say(queryParam(String.class, "firstName"), queryParam(String.class, "lastName")))));
-        assertThat(application.responseAsString(Builder.get("/bar", query("firstName", "Dan"), query("lastName", "Bodart"))), is("Hello Dan Bodart"));
+        assertThat(application.responseAsString(Request.get("/bar", query("firstName", "Dan"), query("lastName", "Bodart"))), is("Hello Dan Bodart"));
     }
 
     @Test
     public void supportsProduces() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").produces("text/html", "text/xml").resource(method(on(Bar.class).hello())));
-        assertThat(application.responseAsString(Builder.get("/bar", accept("text/html"))), is("Hello"));
-        assertThat(application.responseAsString(Builder.get("/bar", accept("text/xml"))), is("Hello"));
-        assertThat(application.handle(Builder.get("/bar", accept("text/plain"))).status(), is(Status.NOT_ACCEPTABLE));
+        assertThat(application.responseAsString(Request.get("/bar", accept("text/html"))), is("Hello"));
+        assertThat(application.responseAsString(Request.get("/bar", accept("text/xml"))), is("Hello"));
+        assertThat(application.handle(Request.get("/bar", accept("text/plain"))).status(), is(Status.NOT_ACCEPTABLE));
     }
 
     public static class Baz {

@@ -6,6 +6,7 @@ import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.ExceptionLogger;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
@@ -23,10 +24,10 @@ import java.util.UUID;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
-import static com.googlecode.utterlyidle.Request.Builder.entity;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Request.Builder.query;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
@@ -44,7 +45,7 @@ public class ScheduleResourceTest {
     @Before
     public void setUp() {
         stubHttpScheduler = new StubHttpScheduler();
-        requestToSchedule = post("/foo/bar", query("queryParam", "value"), header("myHeader", "myHeaderValue"), entity("entityValue"));
+        requestToSchedule = Request.post("/foo/bar", query("queryParam", "value"), HttpMessage.Builder.header("myHeader", "myHeaderValue"), entity("entityValue"));
         internalRequestMarker = new InternalRequestMarker(ApplicationId.applicationId());
         scheduleResource = new ScheduleResource(stubHttpScheduler, requestToSchedule, stubRedirector(), internalRequestMarker);
     }
@@ -72,7 +73,7 @@ public class ScheduleResourceTest {
                     addInstance(ExceptionLogger.class, logger).
                     addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()));
         }).add(new ScheduleModule());
-        assertThat(application.handle(get("schedules/schedule", query("id", "93f78f30-d7db-11e1-9b23-0800200c9a66"), query("interval", "60"), query("uri", "/jobs/create/crawler/crawl"), entity("id=93f78f30-d7db-11e1-9b23-0800200c9a66"))).status().code(), is(303));
+        assertThat(application.handle(Request.get("schedules/schedule", query("id", "93f78f30-d7db-11e1-9b23-0800200c9a66"), query("interval", "60"), query("uri", "/jobs/create/crawler/crawl"), entity("id=93f78f30-d7db-11e1-9b23-0800200c9a66"))).status().code(), is(303));
         assertFalse(logger.hasLogged);
     }
 
@@ -82,7 +83,7 @@ public class ScheduleResourceTest {
                 add((RequestScopedModule) container ->
                         container.addInstance(UtterlyIdleRecords.class, new UtterlyIdleRecords(new MemoryRecords()))).
                 add(new ScheduleModule());
-        assertThat(application.handle(get("schedules/list")).entity().toString(), is("{\"schedules\":[],\"schedulerIsRunning\":false}"));
+        assertThat(application.handle(Request.get("schedules/list")).entity().toString(), is("{\"schedules\":[],\"schedulerIsRunning\":false}"));
     }
 
     private static class StubHttpScheduler extends HttpScheduler {

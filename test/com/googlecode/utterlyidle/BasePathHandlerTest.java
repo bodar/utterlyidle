@@ -6,7 +6,7 @@ import org.junit.Test;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.HOST;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
@@ -17,7 +17,7 @@ public class BasePathHandlerTest {
     @Test
     public void removesBasePathFromRequestUri() throws Exception {
         HttpHandler handler = new BasePathHandler(returnsRequestUri(), basePath("basePath"));
-        assertThat(handler.handle(get("/basePath/foo")).entity().toString(), is("/foo"));
+        assertThat(handler.handle(Request.get("/basePath/foo")).entity().toString(), is("/foo"));
     }
 
     private HttpHandler returnsRequestUri() {
@@ -27,7 +27,7 @@ public class BasePathHandlerTest {
     @Test
     public void shouldPrependPathWithBasePathForRedirectsWithRelativePaths() throws Exception {
         Response response = new BasePathHandler(returnsResponse(seeOther("bar")), basePath("/foo")).
-                handle(get("", Request.Builder.header(HOST, "mayhost:8080")));
+                handle(Request.get("", HttpMessage.Builder.header(HOST, "mayhost:8080")));
         assertThat(header(response, LOCATION), is("http://mayhost:8080/foo/bar"));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }
@@ -50,7 +50,7 @@ public class BasePathHandlerTest {
 
     private void assertLocationIsCorrectlyModified(String originalLocation, String basePath, String finalLocation) throws Exception {
         Response response = new BasePathHandler(returnsResponse(seeOther(originalLocation)), basePath(basePath)).
-                handle(get("", Request.Builder.header(HOST, "mayhost:8080")));
+                handle(Request.get("", HttpMessage.Builder.header(HOST, "mayhost:8080")));
         assertThat(header(response, LOCATION), is(finalLocation));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }

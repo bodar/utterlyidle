@@ -13,8 +13,8 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BaseUriRedirectorTest.bindings;
 import static com.googlecode.utterlyidle.BaseUriRedirectorTest.redirector;
 import static com.googlecode.utterlyidle.Request.Builder.form;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -24,14 +24,14 @@ public class BindingsRequestGeneratorTest {
     public void canGenerateGETRequest() throws Exception {
         RequestGenerator requestGenerator = requestGenerator(annotatedClass(RequestGeneratorResource.class));
         Request request = requestGenerator.requestFor(method(on(RequestGeneratorResource.class).get("query", "path")));
-        assertThat(request, is(get("http://server/base/test/path?query=query")));
+        assertThat(request, is(Request.get("http://server/base/test/path?query=query")));
     }
 
     @Test
     public void canGeneratePOSTRequest() throws Exception {
         RequestGenerator requestGenerator = requestGenerator(annotatedClass(RequestGeneratorResource.class));
         Request request = requestGenerator.requestFor(method(on(RequestGeneratorResource.class).post("query", "form")));
-        Request expected = post("http://server/base/test?query=query", form("form", "form"));
+        Request expected = Request.post("http://server/base/test?query=query", form("form", "form"));
         assertThat(request, is(expected));
     }
 

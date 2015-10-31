@@ -5,9 +5,9 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.Request.Builder.accept;
 import static com.googlecode.utterlyidle.Request.Builder.form;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.post;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;
@@ -19,12 +19,12 @@ import static org.hamcrest.Matchers.is;
 public class MemoryRequestTest {
     @Test
     public void shouldBeReversibleToRawMessage() {
-        assertThat(post("http://www.youtube.com/watch?v=606eK4abteQ",
-                accept("text/html"),
-                form("chups", "nah bru"),
-                form("plinkton", "nom"),
-                header("Cookie", "size=diciptive"),
-                header("Referer", "http://google.com")).toString(),
+        assertThat(Request.post("http://www.youtube.com/watch?v=606eK4abteQ",
+                        accept("text/html"),
+                        form("chups", "nah bru"),
+                        form("plinkton", "nom"),
+                        HttpMessage.Builder.header("Cookie", "size=diciptive"),
+                        HttpMessage.Builder.header("Referer", "http://google.com")).toString(),
                 is(
                         "POST http://www.youtube.com/watch?v=606eK4abteQ HTTP/1.1\r\n" +
                                 "Accept: text/html\r\n" +
@@ -47,12 +47,12 @@ public class MemoryRequestTest {
 
     @Test
     public void shouldSupportRetrievingResourcePath() throws Exception {
-        assertThat(resourcePathOf(get("http://www.myserver.com/foobar/spaz")), is(resourcePath("/foobar/spaz")));
+        assertThat(resourcePathOf(Request.get("http://www.myserver.com/foobar/spaz")), is(resourcePath("/foobar/spaz")));
     }
 
     @Test
     public void shouldSupportEquals() {
-        assertEquals(get("http://www.google.com"), get("http://www.google.com"));
+        assertEquals(Request.get("http://www.google.com"), Request.get("http://www.google.com"));
     }
 
 }

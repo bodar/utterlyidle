@@ -1,13 +1,14 @@
 package com.googlecode.utterlyidle.cookies;
 
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.httpOnly;
@@ -35,7 +36,7 @@ public class CookieCutterResponseTest {
 
     @Test
     public void ignoresMalformedCookies() throws Exception {
-        Request request = get("/", header(SET_COOKIE, "hello; Path=/malformed;"));
+        Request request = Request.get("/", HttpMessage.Builder.header(SET_COOKIE, "hello; Path=/malformed;"));
         assertThat(cookies(request), isEmpty());
     }
 

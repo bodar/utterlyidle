@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
@@ -19,7 +20,7 @@ public class HeadRequestHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         if (request.method().equals(HttpMethod.HEAD) && matcher.match(request).isLeft()) {
-            Response response = decorated.handle(Request.Builder.modify(request, Request.Builder.method(HttpMethod.GET)));
+            Response response = decorated.handle(HttpMessage.Builder.modify(request, Request.Builder.method(HttpMethod.GET)));
             return ResponseBuilder.modify(response).removeEntity().build();
         }
 

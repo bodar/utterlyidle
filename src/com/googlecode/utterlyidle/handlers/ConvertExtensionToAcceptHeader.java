@@ -8,6 +8,7 @@ import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.io.HierarchicalPath;
@@ -18,7 +19,7 @@ import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.Request.Builder.uri;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
@@ -85,8 +86,8 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     private Function2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
-        return (request, extensionAndReplacementMimeType) -> Request.Builder.modify(request,
-                header(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()),
+        return (request, extensionAndReplacementMimeType) -> HttpMessage.Builder.modify(request,
+                HttpMessage.Builder.header(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()),
                 uri(removeExtension(request.uri())));
     }
 

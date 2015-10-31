@@ -43,7 +43,7 @@ public class Form extends BlockLevelElement {
         String method = selectContent("@method");
 
         Sequence<Pair<String, String>> inputs = nameValuePairs(fieldExpressions).map(nameValue -> Pair.pair(nameValue.name(), nameValue.value()));
-        return Request.Builder.request(method, action,
+        return Request.request(method, action,
                 method.equalsIgnoreCase(HttpMethod.POST) ? Request.Builder.form(inputs) : Request.Builder.query(inputs));
     }
 

@@ -27,7 +27,7 @@ public class PageMap extends UnsupportedMap {
         String url = key.toString();
         return cache.computeIfAbsent(url, n -> {
             try {
-                Response response = httpHandler.handle(Request.Builder.get(url));
+                Response response = httpHandler.handle(Request.get(url));
                 if(!response.status().isSuccessful()) {
                     if(debugging()) System.err.printf("Failed to include '%s' received '%s'%n", url, response.status());
                     return null;

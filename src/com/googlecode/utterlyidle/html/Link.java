@@ -3,7 +3,7 @@ package com.googlecode.utterlyidle.html;
 import com.googlecode.utterlyidle.Request;
 import org.w3c.dom.Element;
 
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 
 public class Link extends AbstractElement implements NameValue {
     public Link(Element link) {
@@ -11,7 +11,7 @@ public class Link extends AbstractElement implements NameValue {
     }
 
     public Request click() {
-        return get(value());
+        return Request.get(value());
     }
 
     public String value() {

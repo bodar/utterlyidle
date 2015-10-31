@@ -11,7 +11,7 @@ import static com.googlecode.utterlyidle.HttpMessageParser.toFieldNameAndValue;
 import static com.googlecode.utterlyidle.HttpMessageParser.toMethodAndPath;
 import static com.googlecode.utterlyidle.HttpMessageParser.toStatus;
 import static com.googlecode.utterlyidle.Request.Builder.form;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.BAD_REQUEST;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
@@ -27,13 +27,13 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseRequests() {
-        canParseRequest(Builder.post("/my/path",
-                Builder.header("header 1", "header 1 value"),
-                Builder.header("header 2", "header 2 value"),
+        canParseRequest(Request.post("/my/path",
+                HttpMessage.Builder.header("header 1", "header 1 value"),
+                HttpMessage.Builder.header("header 2", "header 2 value"),
                 form("form 1", "form 1 value"),
                 form("form 2", "form 2 value")));
-        canParseRequest(Builder.get("/test"));
-        canParseRequest(Builder.get("/test", Builder.header("name", "value")));
+        canParseRequest(Request.get("/test"));
+        canParseRequest(Request.get("/test", HttpMessage.Builder.header("name", "value")));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseRequestWithoutBodyWithoutCRLF() {
-        assertThat(Request.Builder.get("/path"), is(HttpMessageParser.parseRequest("GET /path HTTP/1.1")));
+        assertThat(Request.get("/path"), is(HttpMessageParser.parseRequest("GET /path HTTP/1.1")));
     }
 
     @Test
@@ -87,7 +87,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void handlesHeadersParamsWithNoValue() {
-        String input = get("/", Builder.header("header", "")).toString();
+        String input = Request.get("/", HttpMessage.Builder.header("header", "")).toString();
 
         Request parsed = HttpMessageParser.parseRequest(input);
 
@@ -96,7 +96,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void handlesFormParamsWithNoValue() {
-        String input = get("/", Builder.form("form", "")).toString();
+        String input = Request.get("/", Builder.form("form", "")).toString();
 
         Request parsed = HttpMessageParser.parseRequest(input);
 
@@ -105,7 +105,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void canParseRequestWithOnlyRequestLine() {
-        Request originalRequest = Request.Builder.get("/my/path");
+        Request originalRequest = Request.get("/my/path");
         Request parsedRequest = HttpMessageParser.parseRequest(originalRequest.toString());
 
         assertThat(parsedRequest.method(), is(equalTo("GET")));

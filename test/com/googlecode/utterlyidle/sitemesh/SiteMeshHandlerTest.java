@@ -20,7 +20,7 @@ import static com.googlecode.totallylazy.io.URLs.packageUrl;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.MediaType.TEXT_XML;
 import static com.googlecode.utterlyidle.PathMatcher.path;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.Builder.query;
 import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentType;
 import static com.googlecode.utterlyidle.sitemesh.MetaTagRule.metaTagRule;
@@ -122,7 +122,7 @@ public class SiteMeshHandlerTest {
         Response response = application().
                 addAnnotated(resourceClass).
                 add(stringTemplateDecorators(packageUrl(SiteMeshHandlerTest.class), decoratorRules)).
-                handle(get(path, query("decorator", VALID_TEMPLATE_NAME)));
+                handle(Request.get(path, query("decorator", VALID_TEMPLATE_NAME)));
         assertThat(response.entity().toString(), is(result));
     }
 

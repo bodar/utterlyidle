@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.handlers.HttpClient;
 import com.googlecode.utterlyidle.handlers.RedirectHttpHandler;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
 import static com.googlecode.utterlyidle.s3.AnyS3Request.anyS3Request;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
 

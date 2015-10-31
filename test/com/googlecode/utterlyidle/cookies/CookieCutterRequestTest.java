@@ -1,13 +1,14 @@
 package com.googlecode.utterlyidle.cookies;
 
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
-import static com.googlecode.utterlyidle.Request.Builder.get;
-import static com.googlecode.utterlyidle.Request.Builder.header;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieCutter.cookies;
 import static com.googlecode.utterlyidle.cookies.EmptyCookiesMatcher.isEmpty;
@@ -33,7 +34,7 @@ public class CookieCutterRequestTest {
 
     @Test
     public void ignoresMalformedCookies() throws Exception {
-        Request request = get("/", header(COOKIE, "hello;" + cookie1));
+        Request request = Request.get("/", HttpMessage.Builder.header(COOKIE, "hello;" + cookie1));
         assertThat(cookies(request), contains(cookie1));
     }
 
@@ -48,6 +49,6 @@ public class CookieCutterRequestTest {
     }
 
     private Request requestWithCookies(Cookie... cookies) {
-        return Request.Builder.get("/", Request.Builder.cookie(CookieParameters.pairs(sequence(cookies))));
+        return Request.get("/", Request.Builder.cookie(CookieParameters.pairs(sequence(cookies))));
     }
 }

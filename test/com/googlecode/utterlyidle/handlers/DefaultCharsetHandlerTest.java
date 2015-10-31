@@ -21,7 +21,7 @@ public class DefaultCharsetHandlerTest {
     public void passesThroughCharsetWhenSpecified() throws Exception {
         String contentType = "text/html; charset=\"UTF-16\"";
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Bar.class).hello())).produces(contentType));
-        Response response = application.handle(Request.Builder.get("/bar"));
+        Response response = application.handle(Request.get("/bar"));
 
         assertThat(header(response, CONTENT_TYPE), CoreMatchers.is(contentType));
     }
@@ -29,7 +29,7 @@ public class DefaultCharsetHandlerTest {
     @Test
     public void choosesUtf8WhenCharsetNotSpecified() throws Exception {
         ApplicationBuilder application = application().add(get("/bar").resource(method(on(Bar.class).hello())).produces(TEXT_HTML));
-        Response response = application.handle(Request.Builder.get("/bar"));
+        Response response = application.handle(Request.get("/bar"));
 
         assertThat(header(response, CONTENT_TYPE), CoreMatchers.is("text/html; charset=\"UTF-8\""));
     }

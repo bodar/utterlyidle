@@ -7,6 +7,7 @@ import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
@@ -19,7 +20,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
-import static com.googlecode.utterlyidle.Request.Builder.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.FOUND;
 import static com.googlecode.utterlyidle.Status.MOVED_PERMANENTLY;
@@ -48,7 +49,7 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
         update(requestWithCurrentState, response);
 
         if (isRedirect(response)) {
-            return handle(Request.Builder.get(header(response, LOCATION)));
+            return handle(Request.get(header(response, LOCATION)));
         } else{
             return response;
         }
@@ -66,7 +67,7 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
         if(request.headers().contains(ACCEPT)) {
             return request;
         }
-        return modify(request, Request.Builder.header(ACCEPT, acceptHeader));
+        return modify(request, HttpMessage.Builder.header(ACCEPT, acceptHeader));
     }
 
     private void update(Request request, final Response response) {

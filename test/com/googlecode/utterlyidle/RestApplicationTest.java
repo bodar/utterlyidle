@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.BasePath.basePath;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +27,7 @@ public class RestApplicationTest {
     public void shouldThrowIfApplicationIsClosedAndThenAccessed() throws Exception {
         Application application = application().build();
         application.close();
-        application.handle(get("should/not/be/handled"));
+        application.handle(Request.get("should/not/be/handled"));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class RestApplicationTest {
                 addAnnotated(DependsOnCloseCounter.class);
         assertThat(started[0], is(0));
         assertThat(stopped[0], is(0));
-        application.handle(get("/foo"));
+        application.handle(Request.get("/foo"));
         assertThat(started[0], is(1));
         assertThat(stopped[0], is(1));
     }
@@ -97,7 +97,7 @@ public class RestApplicationTest {
     @Test
     public void basePathIsStrippedFromRequests() throws Exception {
 
-        final Response response = new RestApplication(basePath("foo")).add((ResourcesModule) resources -> resources.add(annotatedClass(Foo.class))).handle(get("/foo/"));
+        final Response response = new RestApplication(basePath("foo")).add((ResourcesModule) resources -> resources.add(annotatedClass(Foo.class))).handle(Request.get("/foo/"));
 
         assertThat(response.status(), is(Status.OK));
     }

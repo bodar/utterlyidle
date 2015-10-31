@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
@@ -32,6 +33,6 @@ public class EncodingCookieHandler implements HttpHandler {
     }
 
     private Request decode(Request request) {
-        return Request.Builder.modify(request, Request.Builder.cookie(pairs(cookies(request).map(encoder::decode))));
+        return HttpMessage.Builder.modify(request, Request.Builder.cookie(pairs(cookies(request).map(encoder::decode))));
     }
 }

@@ -20,7 +20,7 @@ public class StaticResources {
             Uri normalise = original.removeDotSegments();
             if (!original.equals(normalise)) return Responses.response(Status.NOT_FOUND);
             HttpHandler handler = new ClientHttpHandler();
-            return handler.handle(Request.Builder.get(original));
+            return handler.handle(Request.get(original));
         } catch (Exception e) {
             throw LazyException.lazyException(e);
         }

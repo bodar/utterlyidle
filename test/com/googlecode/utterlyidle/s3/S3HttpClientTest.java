@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
-import static com.googlecode.utterlyidle.Request.Builder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.s3.S3SigningTest.dateInAmazonsExample;
 import static com.googlecode.utterlyidle.s3.S3SigningTest.exampleCredentials;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,14 +24,14 @@ public class S3HttpClientTest {
     @Test
     public void expandsS3Urls() throws Exception {
         assertThat(
-                delegatedRequest(get("s3://johnsmith/photos/puppy.jpg")).uri(),
+                delegatedRequest(Request.get("s3://johnsmith/photos/puppy.jpg")).uri(),
                 is(uri("https://johnsmith.s3.amazonaws.com/photos/puppy.jpg")));
     }
 
     @Test
     public void expandsS3RootUrl() throws Exception {
         assertThat(
-                delegatedRequest(get("s3://")).uri(),
+                delegatedRequest(Request.get("s3://")).uri(),
                 is(uri("https://s3.amazonaws.com/")));
     }
 
@@ -39,7 +39,7 @@ public class S3HttpClientTest {
     // http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#d0e4151
     public void signsS3Requests() throws Exception {
         assertThat(
-                delegatedRequest(get("http://johnsmith.s3.amazonaws.com/photos/puppy.jpg")).headers().getValue(AUTHORIZATION),
+                delegatedRequest(Request.get("http://johnsmith.s3.amazonaws.com/photos/puppy.jpg")).headers().getValue(AUTHORIZATION),
                 is("AWS AKIAIOSFODNN7EXAMPLE:bWq2s1WEIj+Ydj0vQ697zp+IXMU="));
     }
 
@@ -48,7 +48,7 @@ public class S3HttpClientTest {
         // Testing the constructor that only takes credentials
         S3HttpClient client = new S3HttpClient( auditHandler, exampleCredentials);
         assertThat(
-                delegatedRequest(client, get("http://google.com")).headers().getValue(AUTHORIZATION),
+                delegatedRequest(client, Request.get("http://google.com")).headers().getValue(AUTHORIZATION),
                 is(nullValue()));
     }
 

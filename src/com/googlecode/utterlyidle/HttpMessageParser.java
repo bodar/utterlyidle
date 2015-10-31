@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
-import static com.googlecode.utterlyidle.Request.Builder.entity;
-import static com.googlecode.utterlyidle.Request.Builder.header;
-import static com.googlecode.utterlyidle.Request.Builder.request;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.Request.request;
 import static com.googlecode.utterlyidle.Status.status;
 import static java.lang.Integer.parseInt;
 
@@ -44,8 +44,8 @@ public class HttpMessageParser {
     }
 
     private static Request buildRequest(String requestLine, Sequence<String> headerLines, Sequence<String> messageBodyLines) {
-        return request(toMethod(requestLine), toPath(requestLine),
-                header(headerLines.map(HttpMessageParser::toFieldNameAndValue)),
+        return Request.request(toMethod(requestLine), toPath(requestLine),
+                HttpMessage.Builder.header(headerLines.map(HttpMessageParser::toFieldNameAndValue)),
                 entity(toInput(messageBodyLines)));
     }
 

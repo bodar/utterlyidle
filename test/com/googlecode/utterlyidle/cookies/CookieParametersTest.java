@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.ParametersContract;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -78,6 +79,6 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
 
     @SafeVarargs
     private final Request request(Pair<String, String>... headers) {
-        return Request.Builder.get("/", Request.Builder.header(sequence(headers)));
+        return Request.get("/", HttpMessage.Builder.header(sequence(headers)));
     }
 }
