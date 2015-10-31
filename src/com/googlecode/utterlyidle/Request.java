@@ -64,11 +64,6 @@ public interface Request extends HttpMessage<Request> {
         }
 
         @SafeVarargs
-        static <T extends HttpMessage<T>> T modify(T request, Unary<T>... builders) {
-            return apply(request, builders);
-        }
-
-        @SafeVarargs
         static Request get(String uri, Unary<Request>... builders) {
             return get(Uri.uri(uri), builders);
         }
@@ -156,7 +151,7 @@ public interface Request extends HttpMessage<Request> {
 
         @SafeVarargs
         static <T extends HttpMessage<T>> Unary<T> header(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, header(apply(request.headers(), builders)));
+            return request -> modify(request, header(modify(request.headers(), builders)));
         }
 
         static <T extends HttpMessage<T>> Unary<T> header(Iterable<? extends Pair<String,String>> parameters) {
@@ -181,7 +176,7 @@ public interface Request extends HttpMessage<Request> {
 
         @SafeVarargs
         static Unary<Request> query(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, query(apply(QueryParameters.parse(request.uri().query()), builders)));
+            return request -> modify(request, query(modify(QueryParameters.parse(request.uri().query()), builders)));
         }
 
         static Unary<Request> query(Iterable<? extends Pair<String,String>> parameters) {
@@ -194,7 +189,7 @@ public interface Request extends HttpMessage<Request> {
 
         @SafeVarargs
         static Unary<Request> form(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, form(apply(FormParameters.parse(request.entity()), builders)));
+            return request -> modify(request, form(modify(FormParameters.parse(request.entity()), builders)));
         }
 
         static Unary<Request> form(Iterable<? extends Pair<String,String>> parameters) {
@@ -213,7 +208,7 @@ public interface Request extends HttpMessage<Request> {
 
         @SafeVarargs
         static Unary<Request> cookie(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, cookie(apply(CookieParameters.cookies(request), builders)));
+            return request -> modify(request, cookie(modify(CookieParameters.cookies(request), builders)));
         }
 
         static Unary<Request> cookie(Iterable<? extends Pair<String,String>> parameters) {
@@ -244,7 +239,7 @@ public interface Request extends HttpMessage<Request> {
         }
 
         @SafeVarargs
-        static <T> T apply(T seed, Unary<T>... builders) {
+        static <T> T modify(T seed, Unary<T>... builders) {
             return sequence(builders).reduce(Compose.<T>compose()).apply(seed);
         }
     }
