@@ -29,14 +29,24 @@ import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 import static java.lang.String.format;
 
-public interface Request {
+public interface Request extends HttpMessage<Request> {
     String method();
+
+    default Request method(String value) {
+        return create(value, uri(), headers(), entity());
+    }
 
     Uri uri();
 
-    HeaderParameters headers();
+    default Request uri(Uri value) {
+        return create(method(), value, headers(), entity());
+    }
 
-    Entity entity();
+    Request create(String method, Uri uri, HeaderParameters headers, Entity entity);
+
+    default Request create(HeaderParameters headers, Entity entity) {
+        return create(method(), uri(), headers, entity);
+    }
 
     interface Builder {
         static Request request(String method, Uri uri, HeaderParameters headers, Entity entity) {
@@ -54,7 +64,7 @@ public interface Request {
         }
 
         @SafeVarargs
-        static Request modify(Request request, Unary<Request>... builders) {
+        static <T extends HttpMessage<T>> T modify(T request, Unary<T>... builders) {
             return apply(request, builders);
         }
 
@@ -129,7 +139,7 @@ public interface Request {
         }
 
         static Unary<Request> method(String value) {
-            return request -> request(value, request.uri(), request.headers(), request.entity());
+            return request -> request.method(value);
         }
 
         static Unary<Request> uri(String value) {
@@ -137,31 +147,32 @@ public interface Request {
         }
 
         static Unary<Request> uri(Uri uri) {
-            return request -> request(request.method(), uri, request.headers(), request.entity());
+            return request -> request.uri(uri);
         }
 
-        static Unary<Request> header(String name, Object value) {
+        static <T extends HttpMessage<T>> Unary<T> header(String name, Object value) {
             return header(replace(name, value));
         }
 
         @SafeVarargs
-        static Unary<Request> header(Unary<Parameters<?>>... builders) {
+        static <T extends HttpMessage<T>> Unary<T> header(Unary<Parameters<?>>... builders) {
             return request -> modify(request, header(apply(request.headers(), builders)));
         }
 
-        static Unary<Request> header(Iterable<? extends Pair<String,String>> parameters) {
-            return request -> request(request.method(), request.uri(), headerParameters(parameters), request.entity());
+        static <T extends HttpMessage<T>> Unary<T> header(Iterable<? extends Pair<String,String>> parameters) {
+            return request -> request.headers(headerParameters(parameters));
         }
 
         static Unary<Request> accept(Object value) {
-            return header(replace(HttpHeaders.ACCEPT, value));
+            return header(HttpHeaders.ACCEPT, value);
         }
+
         static Unary<Request> contentType(Object value) {
-            return header(replace(HttpHeaders.CONTENT_TYPE, value));
+            return header(HttpHeaders.CONTENT_TYPE, value);
         }
 
         static Unary<Request> entity(Object value) {
-            return request -> request(request.method(), request.uri(), request.headers(), Entity.entity(value));
+            return request -> request.entity(Entity.entity(value));
         }
 
         static Unary<Request> query(String name, Object value) {

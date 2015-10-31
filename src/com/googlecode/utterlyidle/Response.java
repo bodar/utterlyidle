@@ -10,14 +10,21 @@ import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 
-public interface Response {
+public interface Response extends HttpMessage<Response> {
     Status status();
 
-    HeaderParameters headers();
+    default Response status(Status value) {
+        return create(value, headers(), entity());
+    }
 
-    Entity entity();
+    Response create(Status status, HeaderParameters headers, Entity entity);
 
-    public static class methods{
+    @Override
+    default Response create(HeaderParameters headers, Entity entity) {
+        return create(status(), headers, entity);
+    }
+
+    class methods{
         private methods() {}
 
         public static String header(Response response, String name) {
@@ -44,7 +51,7 @@ public interface Response {
         }
     }
 
-    public static class functions {
+    class functions {
         public static Function1<Object, Response> asResponse() {
             return asResponse(response());
         }

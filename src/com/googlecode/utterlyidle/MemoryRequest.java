@@ -32,6 +32,11 @@ public class MemoryRequest implements Request {
         return uri;
     }
 
+    @Override
+    public Request create(String method, Uri uri, HeaderParameters headers, Entity entity) {
+        return memoryRequest(method, uri, headers, entity);
+    }
+
     public Entity entity() {
         return entity;
     }

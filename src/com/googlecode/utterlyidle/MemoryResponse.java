@@ -23,6 +23,11 @@ public class MemoryResponse implements Response {
         return status;
     }
 
+    @Override
+    public Response create(Status status, HeaderParameters headers, Entity entity) {
+        return memoryResponse(status, headers, entity);
+    }
+
     public HeaderParameters headers() {
         return headers;
     }
