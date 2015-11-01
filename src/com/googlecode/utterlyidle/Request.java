@@ -13,7 +13,7 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
 import static com.googlecode.utterlyidle.MemoryRequest.memoryRequest;
 import static com.googlecode.utterlyidle.Parameters.Builder.replace;

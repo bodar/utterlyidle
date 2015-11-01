@@ -22,7 +22,7 @@ public class QueryParametersTest extends ParametersContract<QueryParameters> {
 
     @Test
     public void supportsToString() throws Exception {
-        assertThat(queryParameters().add("foo", "bar").add("foo", "bob").toString(), is("?foo=bar&foo=bob"));
-        assertThat(queryParameters().add("foo", "bar").add("bob", "rob").toString(), is("?foo=bar&bob=rob"));
+        assertThat(queryParameters().add("foo", "bar").add("foo", "bob").toString(), is("foo=bar&foo=bob"));
+        assertThat(queryParameters().add("foo", "bar").add("bob", "rob").toString(), is("foo=bar&bob=rob"));
     }
 }

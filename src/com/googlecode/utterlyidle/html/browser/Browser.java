@@ -20,7 +20,7 @@ import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.FOUND;
 import static com.googlecode.utterlyidle.Status.MOVED_PERMANENTLY;

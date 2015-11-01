@@ -29,7 +29,6 @@ import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.QueryParameters.queryParameters;
-import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.cookies.CookieCutter.parseRequestHeader;
 import static java.lang.String.format;
 
@@ -147,7 +146,7 @@ public class RequestBuilder implements Callable<Request> {
     }
 
     public Request build() {
-        return request(method, uri, headerParameters(headers), entity);
+        return Request.request(method, uri, headerParameters(headers), Entity.entity(entity));
     }
 
     public static RequestBuilder get(Uri uri) {

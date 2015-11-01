@@ -8,7 +8,6 @@ import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.Request.post;
-import static com.googlecode.utterlyidle.Requests.request;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePath;
 import static com.googlecode.utterlyidle.ResourcePath.resourcePathOf;
 import static junit.framework.Assert.assertEquals;
@@ -39,7 +38,7 @@ public class MemoryRequestTest {
 
     @Test
     public void toStringCanBeCalledMultipleTimes() throws Exception {
-        Request request = request("GET", uri("smoosh"), HeaderParameters.headerParameters(), "some input".getBytes());
+        Request request = Request.request("GET", uri("smoosh"), HeaderParameters.headerParameters(), Entity.entity("some input".getBytes()));
 
         assertThat(request.toString(), containsString("some input"));
         assertThat(request.toString(), containsString("some input"));

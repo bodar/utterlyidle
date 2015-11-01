@@ -2,12 +2,13 @@ package com.googlecode.utterlyidle.undertow;
 
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.functions.Function2;
+import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import io.undertow.server.HttpHandler;
@@ -74,12 +75,7 @@ class RestHttpHandler implements HttpHandler {
     }
 
     private Request request(HttpServerExchange exchange) throws IOException {
-        Request request = Requests.request(
-                exchange.getRequestMethod().toString(),
-                exchange.getRequestPath(),
-                query(exchange),
-                headers(exchange),
-                exchange.getInputStream());
+        Request request = Request.request(exchange.getRequestMethod().toString(), Uri.uri(exchange.getRequestPath()).query(query(exchange).toString()), headers(exchange), Entity.entity(exchange.getInputStream()));
         return requestEnricher(
                 clientAddress(exchange.getSourceAddress().getAddress()),
                 exchange.getRequestScheme())

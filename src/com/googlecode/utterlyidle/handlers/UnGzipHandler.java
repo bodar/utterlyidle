@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 
 public class UnGzipHandler implements HttpClient {
     private final HttpHandler handler;

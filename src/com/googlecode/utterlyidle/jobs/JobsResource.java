@@ -29,7 +29,7 @@ import java.util.UUID;
 import static com.googlecode.totallylazy.functions.Callables.descending;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.jobs.Job.functions.created;
 
 @Path(JobsResource.JOBS)

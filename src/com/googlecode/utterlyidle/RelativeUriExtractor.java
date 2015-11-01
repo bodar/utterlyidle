@@ -11,7 +11,7 @@ public class RelativeUriExtractor {
         PathParameters parameters = Extractors.extractParameters(binding, arguments, PathParameters.pathParameters());
         String path = binding.uriTemplate().generate(parameters).toString();
         QueryParameters query = Extractors.extractParameters(binding, arguments, QueryParameters.queryParameters());
-        return Uri.uri(path + extractParametersFromQueryArgument(arguments, query).toString());
+        return Uri.uri(path).query(extractParametersFromQueryArgument(arguments, query).toString());
     }
 
     private static QueryParameters extractParametersFromQueryArgument(Object[] arguments, QueryParameters sourceParameters) {

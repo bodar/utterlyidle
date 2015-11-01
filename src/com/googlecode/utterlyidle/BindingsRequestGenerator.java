@@ -8,7 +8,7 @@ import com.googlecode.utterlyidle.annotations.HttpMethod;
 
 import static com.googlecode.utterlyidle.Extractors.extractForm;
 import static com.googlecode.utterlyidle.Request.Builder.form;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 
 public class BindingsRequestGenerator implements RequestGenerator {
     private final Redirector redirector;

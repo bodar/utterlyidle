@@ -21,7 +21,7 @@ import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.head;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.Request.Builder.method;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Request.options;
 import static com.googlecode.utterlyidle.Parameters.Builder.param;
 import static com.googlecode.utterlyidle.Request.patch;

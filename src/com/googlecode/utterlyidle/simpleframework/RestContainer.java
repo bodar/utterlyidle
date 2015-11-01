@@ -4,10 +4,10 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -77,12 +77,7 @@ public class RestContainer implements Container {
     }
 
     private com.googlecode.utterlyidle.Request request(Request frameworkRequest) throws IOException {
-        com.googlecode.utterlyidle.Request request = Requests.request(
-                frameworkRequest.getMethod(),
-                frameworkRequest.getPath().toString(),
-                query(frameworkRequest),
-                headers(frameworkRequest),
-                frameworkRequest.getInputStream());
+        com.googlecode.utterlyidle.Request request = com.googlecode.utterlyidle.Request.request(frameworkRequest.getMethod(), uri(frameworkRequest.getPath().toString()).query(query(frameworkRequest).toString()), headers(frameworkRequest), Entity.entity(frameworkRequest.getInputStream()));
         return requestEnricher(
                 clientAddress(frameworkRequest.getClientAddress().getAddress()),
                 frameworkRequest.isSecure() ? HTTPS : HTTP)

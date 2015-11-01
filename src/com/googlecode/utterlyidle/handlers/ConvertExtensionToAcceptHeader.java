@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.functions.Function2;
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.utterlyidle.HttpHandler;
@@ -86,7 +87,7 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
     }
 
     private Function2<? super Request, ? super Pair<String, String>, Request> applyReplacement() {
-        return (request, extensionAndReplacementMimeType) -> HttpMessage.Builder.modify(request,
+        return (request, extensionAndReplacementMimeType) -> Functions.modify(request,
                 HttpMessage.Builder.header(HttpHeaders.ACCEPT, extensionAndReplacementMimeType.second()),
                 uri(removeExtension(request.uri())));
     }

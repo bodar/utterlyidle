@@ -1,7 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
@@ -23,7 +23,7 @@ public class RedirectHttpHandler implements HttpClient {
         if (response.status().isRedirect() && header(response, LOCATION) != null) {
             return SEE_OTHER.equals(response.status()) ?
                     handle(Request.get(header(response, LOCATION))) :
-                    handle(HttpMessage.Builder.modify(request, Request.Builder.uri(uri(header(response, LOCATION)))));
+                    handle(Functions.modify(request, Request.Builder.uri(uri(header(response, LOCATION)))));
         }
         return response;
     }

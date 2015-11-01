@@ -12,14 +12,13 @@ import static com.googlecode.utterlyidle.MediaType.APPLICATION_ATOM_XML;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_JSON;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.Requests.request;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ConsumesMimeMatcherTest {
 
     private final HeaderParameters headers = headerParameters().add(CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
     private final Uri uri = Uri.uri("http://example.com");
-    private final Request request = request("GET", uri, headers, null);
+    private final Request request = Request.request("GET", uri, headers, Entity.entity(null));
 
     @Test
     public void returnsFalseIfNoMatch() throws Exception {
@@ -42,7 +41,7 @@ public class ConsumesMimeMatcherTest {
     @Test
     public void matchesPartialContentType() throws Exception {
         Predicate<Request> matcher = new ConsumesMimeMatcher(sequence(APPLICATION_ATOM_XML, APPLICATION_FORM_URLENCODED, APPLICATION_JSON));
-        assertThat(matcher.matches(request("GET", uri, headerParameters().add(CONTENT_TYPE, APPLICATION_FORM_URLENCODED + "; charset=UTF-8"), null)), is(true));
+        assertThat(matcher.matches(Request.request("GET", uri, headerParameters().add(CONTENT_TYPE, APPLICATION_FORM_URLENCODED + "; charset=UTF-8"), Entity.entity(null))), is(true));
     }
 
     @Test

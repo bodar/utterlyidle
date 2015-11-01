@@ -30,7 +30,7 @@ import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.RelativeUriExtractor.relativeUriOf;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Request.Builder.uri;
 import static com.googlecode.utterlyidle.Status.CREATED;

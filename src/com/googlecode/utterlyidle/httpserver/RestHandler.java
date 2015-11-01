@@ -3,10 +3,10 @@ package com.googlecode.utterlyidle.httpserver;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Value;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
@@ -57,12 +57,7 @@ public class RestHandler implements HttpHandler {
 
 
     private Request request(HttpExchange httpExchange) {
-        Request request = Requests.request(
-                httpExchange.getRequestMethod(),
-                uri(httpExchange.getRequestURI().toString()),
-                headerParameters(httpExchange.getRequestHeaders()),
-                httpExchange.getRequestBody()
-        );
+        Request request = Request.request(httpExchange.getRequestMethod(), uri(httpExchange.getRequestURI().toString()), headerParameters(httpExchange.getRequestHeaders()), Entity.entity(httpExchange.getRequestBody()));
         return requestEnricher(
                 clientAddress(httpExchange.getRemoteAddress().getAddress()),
                 httpExchange instanceof HttpsExchange ? Protocol.HTTPS : Protocol.HTTP)

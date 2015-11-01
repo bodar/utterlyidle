@@ -2,6 +2,7 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.io.Uri;
 
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
@@ -46,7 +47,7 @@ public class BasePathHandler implements HttpHandler {
     }
 
     private Request removeBasePathFromUri(Request request) {
-        return HttpMessage.Builder.modify(request,
+        return Functions.modify(request,
                 Request.Builder.uri(request.uri().path(removeBasePath(request.uri().path()))));
     }
 

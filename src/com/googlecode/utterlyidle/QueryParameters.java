@@ -40,7 +40,6 @@ public class QueryParameters extends Parameters<QueryParameters> {
 
     @Override
     public String toString() {
-        String value = UrlEncodedMessage.toString(this);
-        return value.equals("") ? "" : "?" + value;
+        return UrlEncodedMessage.toString(this);
     }
 }

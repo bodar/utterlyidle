@@ -9,7 +9,7 @@ import com.googlecode.utterlyidle.handlers.HttpClient;
 import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static java.lang.String.format;
 
 public class BasicHttpClient implements HttpClient {

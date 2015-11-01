@@ -18,7 +18,7 @@ import static com.googlecode.totallylazy.predicates.Predicates.by;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 
 public class InternalHttpHandler implements HttpHandler {
     private static final Sequence<String> HEADER_WHITE_LIST = sequence(COOKIE, AUTHORIZATION);

@@ -1,6 +1,6 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Compose;
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.utterlyidle.proxies.NoProxy;
 import com.googlecode.utterlyidle.proxies.ProxyFor;
@@ -10,8 +10,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import java.time.Duration;
-
-import static com.googlecode.totallylazy.Sequences.sequence;
 
 public interface ClientConfiguration {
     default Duration timeout() { return Duration.ofSeconds(0); }
@@ -59,7 +57,7 @@ public interface ClientConfiguration {
 
         @SafeVarargs
         static ClientConfiguration modify(final ClientConfiguration clientConfiguration, final Unary<ClientConfiguration>... builders) {
-            return sequence(builders).reduce(Compose.<ClientConfiguration>compose()).apply(clientConfiguration);
+            return Functions.modify(clientConfiguration, builders);
         }
 
         static Unary<ClientConfiguration> timeout(Duration duration){

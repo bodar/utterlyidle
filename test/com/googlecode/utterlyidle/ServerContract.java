@@ -228,7 +228,7 @@ public abstract class ServerContract<T extends Server> {
     public void retainsOrderOfQueryParameters() throws Exception {
         Response response = handle(Request.get("echoquery", query(add("a", "1"), add("b", "2"), add("a", "3"), add("b", "4")), accept(WILDCARD)), server);
 
-        assertThat(response.entity().toString(), is("?a=1&b=2&a=3&b=4"));
+        assertThat(response.entity().toString(), is("a=1&b=2&a=3&b=4"));
     }
 
     @Test

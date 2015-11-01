@@ -14,7 +14,7 @@ import static com.googlecode.totallylazy.predicates.Predicates.always;
 import static com.googlecode.totallylazy.predicates.Predicates.matches;
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.modify;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.functions.credentials;
 import static com.googlecode.utterlyidle.s3.AwsCredentialsRule.rule;
 

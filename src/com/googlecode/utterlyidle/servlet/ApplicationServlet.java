@@ -3,10 +3,10 @@ package com.googlecode.utterlyidle.servlet;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Application;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
@@ -73,12 +73,7 @@ public class ApplicationServlet extends HttpServlet {
 
     public static Request request(HttpServletRequest servletRequest) {
         try {
-            Request request = Requests.request(
-                    servletRequest.getMethod(),
-                    Uri.uri(servletRequest.getRequestURI() + queryString(servletRequest.getQueryString())),
-                    convertToHeaderParameters(servletRequest),
-                    servletRequest.getInputStream()
-            );
+            Request request = Request.request(servletRequest.getMethod(), Uri.uri(servletRequest.getRequestURI() + queryString(servletRequest.getQueryString())), convertToHeaderParameters(servletRequest), Entity.entity(servletRequest.getInputStream()));
             return requestEnricher(
                     clientAddress(servletRequest.getRemoteAddr()),
                     servletRequest.getScheme().toLowerCase())
