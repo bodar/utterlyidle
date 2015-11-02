@@ -9,7 +9,6 @@ import com.googlecode.yadic.Container;
 import static com.googlecode.utterlyidle.Accept.accept;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.bindings.MatchedBinding.constructors.matchedBinding;
@@ -62,7 +61,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Response setContentType(String mimeType, Response response) {
-        if (header(response, CONTENT_TYPE) == null) {
+        if (response.header(CONTENT_TYPE).isEmpty()) {
             return modify(response).
                     contentType(defaultIfCharsetNotSpecified(mimeType)).
                     build();

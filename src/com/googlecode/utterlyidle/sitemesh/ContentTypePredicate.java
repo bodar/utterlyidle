@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.utterlyidle.Request;
@@ -9,7 +10,6 @@ import com.googlecode.utterlyidle.Response;
 import static com.googlecode.totallylazy.functions.Callables.second;
 import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
-import static com.googlecode.utterlyidle.Response.methods.header;
 
 public class ContentTypePredicate implements Predicate<Response> {
     private final String value;
@@ -19,10 +19,8 @@ public class ContentTypePredicate implements Predicate<Response> {
     }
 
     public boolean matches(Response response) {
-        String contentType = header(response, CONTENT_TYPE);
-        return contentType != null && contentType.contains(value);
+        return response.header(CONTENT_TYPE).exists(Strings.contains(value));
     }
-
 
     public static Predicate<Response> containsContentType(final String value) {
         return new ContentTypePredicate(value);

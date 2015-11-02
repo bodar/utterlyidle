@@ -1,15 +1,15 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 
 import java.io.IOException;
 
+import static com.googlecode.totallylazy.Strings.contains;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
-import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 
 public class SiteMeshHandler implements HttpHandler {
     private final HttpHandler httpHandler;
@@ -29,9 +29,7 @@ public class SiteMeshHandler implements HttpHandler {
     }
 
     private boolean shouldDecorate(Response response) {
-        String header = header(response, CONTENT_TYPE);
-        return header != null && header.contains(MediaType.TEXT_HTML);
-
+        return response.header(CONTENT_TYPE).exists(contains(TEXT_HTML));
     }
 
     private Response decorate(Request request, Response response) throws IOException {

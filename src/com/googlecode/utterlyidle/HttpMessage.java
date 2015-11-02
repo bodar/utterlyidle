@@ -2,18 +2,25 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.Parameters.Builder.replace;
+import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
 
 public interface HttpMessage<T extends HttpMessage<T>> {
     default Option<String> header(String name) {
         return headers().valueOption(name);
+    }
+
+    default Sequence<String> headers(String name) {
+        return headers().getValues(name);
     }
 
     default T header(String name, Object value) {
@@ -33,6 +40,16 @@ public interface HttpMessage<T extends HttpMessage<T>> {
     }
 
     T create(HeaderParameters headers, Entity entity);
+
+    default String version() {
+        return "HTTP/1.1";
+    }
+
+    String startLine();
+
+    static String toString(HttpMessage<?> message){
+        return sequence(message.startLine(), message.headers(), message.entity()).toString(HTTP_LINE_SEPARATOR);
+    }
 
     interface Builder {
         static <T extends HttpMessage<T>> Unary<T> header(String name, Object value) {

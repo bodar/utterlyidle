@@ -39,7 +39,6 @@ import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Request.put;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.handlers.RequestTimeout.requestTimeout;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -143,7 +142,7 @@ public class ClientHttpHandlerTest {
         String content = "hairy monkey";
         Response response = client.handle(Request.put(uri, HttpMessage.Builder.header(LAST_MODIFIED, lastModified), entity(content)));
         assertThat(response.status(), is(Status.CREATED));
-        assertThat(header(response, HttpHeaders.LOCATION), is(uri.toString()));
+        assertThat(response.header(HttpHeaders.LOCATION).get(), is(uri.toString()));
         assertThat(file.exists(), is(true));
         assertThat(file.lastModified(), is(lastModified.getTime()));
         assertThat(Strings.toString(file), is(content));
@@ -155,7 +154,7 @@ public class ClientHttpHandlerTest {
         HttpHandler urlHandler = new ClientHttpHandler();
         Response response = urlHandler.handle(Request.get(uri(file)));
         assertThat(response.status(), is(Status.OK));
-        assertThat(header(response, LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
+        assertThat(response.header(LAST_MODIFIED).get(), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
     }
 
     @Test
@@ -168,7 +167,7 @@ public class ClientHttpHandlerTest {
         String jarUrl = String.format("jar:%s!/%s", zipFile.toURI(), Files.relativePath(parentTempDir, file));
         Response response = urlHandler.handle(Request.get(jarUrl));
         assertThat(response.status(), is(Status.OK));
-        assertThat(header(response, LAST_MODIFIED), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
+        assertThat(response.header(LAST_MODIFIED).get(), is(Dates.RFC822().format(Dates.date(file.lastModified()))));
     }
 
     @Test

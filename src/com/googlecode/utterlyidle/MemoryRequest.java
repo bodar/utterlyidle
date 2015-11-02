@@ -47,11 +47,7 @@ public class MemoryRequest implements Request {
 
     @Override
     public String toString() {
-        return new StringBuilder(format("%s %s HTTP/1.1%s", method, uri, HTTP_LINE_SEPARATOR)).
-                append(headers()).
-                append(HTTP_BODY_SEPARATOR).
-                append(entity()).
-                toString();
+        return HttpMessage.toString(this);
     }
 
     @Override

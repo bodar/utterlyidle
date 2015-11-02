@@ -7,7 +7,6 @@ import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.HOST;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
 import static org.hamcrest.CoreMatchers.is;
@@ -28,7 +27,7 @@ public class BasePathHandlerTest {
     public void shouldPrependPathWithBasePathForRedirectsWithRelativePaths() throws Exception {
         Response response = new BasePathHandler(returnsResponse(seeOther("bar")), basePath("/foo")).
                 handle(Request.get("", HttpMessage.Builder.header(HOST, "mayhost:8080")));
-        assertThat(header(response, LOCATION), is("http://mayhost:8080/foo/bar"));
+        assertThat(response.header(LOCATION).get(), is("http://mayhost:8080/foo/bar"));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }
 
@@ -51,7 +50,7 @@ public class BasePathHandlerTest {
     private void assertLocationIsCorrectlyModified(String originalLocation, String basePath, String finalLocation) throws Exception {
         Response response = new BasePathHandler(returnsResponse(seeOther(originalLocation)), basePath(basePath)).
                 handle(Request.get("", HttpMessage.Builder.header(HOST, "mayhost:8080")));
-        assertThat(header(response, LOCATION), is(finalLocation));
+        assertThat(response.header(LOCATION).get(), is(finalLocation));
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
     }
 }

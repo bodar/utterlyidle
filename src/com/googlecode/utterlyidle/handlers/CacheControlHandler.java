@@ -14,7 +14,6 @@ import static com.googlecode.totallylazy.time.Dates.RFC822;
 import static com.googlecode.utterlyidle.HttpHeaders.CACHE_CONTROL;
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
 import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static java.lang.String.format;
 
@@ -41,7 +40,7 @@ public class CacheControlHandler implements HttpHandler {
                     build();
         }
 
-        Date now = Dates.RFC822().parse(header(response, DATE));
+        Date now = Dates.RFC822().parse(response.header(DATE).get());
         String date = RFC822().format(Seconds.add(now, cachePolicy.value()));
         return modify(response).
                 header(CACHE_CONTROL, format("public, max-age=%s", cachePolicy.value())).

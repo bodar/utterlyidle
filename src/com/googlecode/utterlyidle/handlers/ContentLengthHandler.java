@@ -10,6 +10,7 @@ import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThanOrEqualTo;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
+import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 
 public class ContentLengthHandler implements HttpHandler {
     private final HttpHandler httpHandler;
@@ -30,8 +31,8 @@ public class ContentLengthHandler implements HttpHandler {
         if(status.isInformational() || status.equals(Status.NO_CONTENT) || status.equals(Status.NOT_MODIFIED)) {
             return builder.removeEntity().removeHeaders(CONTENT_LENGTH).build();
         }
-        return response.entity().length().fold(response, Response.functions.replaceHeader(CONTENT_LENGTH));
-
+        return response.entity().length().fold(response, (acc, value) ->
+                modify(acc).replaceHeaders(CONTENT_LENGTH, value).build());
     }
 
     public static HeaderParameters setContentLength(Entity entity, HeaderParameters headers) {

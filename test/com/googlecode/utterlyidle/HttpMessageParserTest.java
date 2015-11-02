@@ -12,7 +12,6 @@ import static com.googlecode.utterlyidle.HttpMessageParser.toMethodAndPath;
 import static com.googlecode.utterlyidle.HttpMessageParser.toStatus;
 import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.BAD_REQUEST;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -76,7 +75,7 @@ public class HttpMessageParserTest {
     public void parseResponseWithExtraSpaces() {
         Response response = HttpMessageParser.parseResponse(" HTTP/1.1  200  OK \r\n Content-Type: text/plain \r\n\r\n body ");
         assertThat(response.status(), is(OK));
-        assertThat(header(response, "Content-Type"), is("text/plain"));
+        assertThat(response.header("Content-Type").get(), is("text/plain"));
         assertThat(response.entity().toString(), is(" body "));
     }
 

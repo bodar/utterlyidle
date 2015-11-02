@@ -9,7 +9,6 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Responses.seeOther;
 import static com.googlecode.utterlyidle.handlers.ConvertExtensionToAcceptHeader.Replacements.replacements;
@@ -59,12 +58,12 @@ public class ConvertExtensionToAcceptHeaderTest {
     public void addsExtensionBackInToLocationHeaderForRedirects() throws Exception {
         ConvertExtensionToAcceptHeader converter = converter(respondsWith(seeOther("/redirect/to/here")));
         assertThat(
-                header(converter.handle(Request.get("anything.properties")), LOCATION),
+                converter.handle(Request.get("anything.properties")).header(LOCATION).get(),
                 is("/redirect/to/here.properties"));
 
         converter = converter(respondsWith(seeOther("/redirect/to/here.moo?queryparams=some")));
         assertThat(
-                header(converter.handle(Request.get("anything.properties")), LOCATION),
+                converter.handle(Request.get("anything.properties")).header(LOCATION).get(),
                 is("/redirect/to/here.moo.properties?queryparams=some"));
     }
 

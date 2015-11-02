@@ -38,7 +38,7 @@ public class MemoryResponse implements Response {
 
     @Override
     public String toString() {
-        return methods.asString(this);
+        return HttpMessage.toString(this);
     }
 
     @Override

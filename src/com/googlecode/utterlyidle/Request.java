@@ -43,6 +43,10 @@ public interface Request extends HttpMessage<Request> {
         return create(method(), value, headers(), entity());
     }
 
+    default String startLine(){
+        return String.format("%s %s %s", method(), uri(), version());
+    }
+
     default Option<String> query(String name) {
         return query().valueOption(name);
     }

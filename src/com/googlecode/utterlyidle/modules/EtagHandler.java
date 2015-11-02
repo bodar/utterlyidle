@@ -20,7 +20,6 @@ import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.NOT_MODIFIED;
@@ -55,7 +54,7 @@ public class EtagHandler implements HttpHandler {
     }
 
     private static Function2<ResponseBuilder, String, ResponseBuilder> copyFrom(final Response source) {
-        return (destination, header) -> destination.header(header, header(source, header));
+        return (destination, header) -> destination.header(header, source.header(header).getOrNull());
     }
 
     private String strongEtag(Digest digest) {

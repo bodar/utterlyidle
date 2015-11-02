@@ -21,7 +21,6 @@ import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 import static com.googlecode.totallylazy.functions.Functions.modify;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Status.FOUND;
 import static com.googlecode.utterlyidle.Status.MOVED_PERMANENTLY;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
@@ -49,7 +48,7 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
         update(requestWithCurrentState, response);
 
         if (isRedirect(response)) {
-            return handle(Request.get(header(response, LOCATION)));
+            return handle(Request.get(response.header(LOCATION).get()));
         } else{
             return response;
         }

@@ -17,7 +17,6 @@ import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.pathParam;
@@ -113,7 +112,7 @@ public class BaseUriRedirectorTest {
 
     private void assertLocation(Response response, String location) {
         assertThat(response.status(), is(Status.SEE_OTHER));
-        assertThat(header(response, LOCATION), is(location));
+        assertThat(response.header(LOCATION).get(), is(location));
     }
 
     public static BaseUriRedirector redirector(Binding... values) {

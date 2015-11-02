@@ -45,8 +45,6 @@ import static com.googlecode.utterlyidle.Request.patch;
 import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Request.put;
 import static com.googlecode.utterlyidle.Request.Builder.query;
-import static com.googlecode.utterlyidle.Response.methods.header;
-import static com.googlecode.utterlyidle.Response.methods.headerOption;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.handlers.ClientHttpHandlerTest.handle;
@@ -99,13 +97,13 @@ public abstract class ServerContract<T extends Server> {
         Response responseWithEtag = handle(Request.get("etag"), server);
 
         assertThat(responseWithEtag.status(), Matchers.is(Status.OK));
-        assertThat(header(responseWithEtag, ETAG), CoreMatchers.is("\"900150983cd24fb0d6963f7d28e17f72\""));
-        assertThat(header(responseWithEtag, CONTENT_LENGTH), CoreMatchers.is("3"));
+        assertThat(responseWithEtag.header(ETAG).get(), CoreMatchers.is("\"900150983cd24fb0d6963f7d28e17f72\""));
+        assertThat(responseWithEtag.header(CONTENT_LENGTH).get(), CoreMatchers.is("3"));
 
-        Response response = handle(Request.get("etag", HttpMessage.Builder.header(IF_NONE_MATCH, header(responseWithEtag, ETAG))), server);
+        Response response = handle(Request.get("etag", HttpMessage.Builder.header(IF_NONE_MATCH, responseWithEtag.header(ETAG).get())), server);
 
         assertThat(response.status(), Matchers.is(Status.NOT_MODIFIED));
-        assertThat(headerOption(response, CONTENT_LENGTH).filter(not(Predicates.is("0"))), CoreMatchers.is(none(String.class)));
+        assertThat(response.header(CONTENT_LENGTH).filter(not(Predicates.is("0"))), CoreMatchers.is(none(String.class)));
     }
 
     @Test
@@ -113,7 +111,7 @@ public abstract class ServerContract<T extends Server> {
         Response response = handle(Request.get("helloworld/redirect"), server);
 
         assertThat(response.status(), Matchers.is(Status.SEE_OTHER));
-        assertThat(header(response, LOCATION), CoreMatchers.startsWith(server.uri().toString()));
+        assertThat(response.header(LOCATION).get(), CoreMatchers.startsWith(server.uri().toString()));
     }
 
     @Test
@@ -204,7 +202,7 @@ public abstract class ServerContract<T extends Server> {
     public void mapsResponseHeaders() throws Exception {
         Response response = handle(Request.get("helloworld/inresponseheaders?name=mike", Request.Builder.accept(WILDCARD)), server);
 
-        assertThat(header(response, "greeting"), is("Hello mike"));
+        assertThat(response.header("greeting").get(), is("Hello mike"));
     }
 
     @Test

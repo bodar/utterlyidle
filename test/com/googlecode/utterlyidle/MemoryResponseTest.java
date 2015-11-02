@@ -10,7 +10,6 @@ import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
@@ -34,7 +33,7 @@ public class MemoryResponseTest {
                 cookie(cookie("a", "1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(calendar.getTime()))).build();
 
         assertThat(
-                header(response, SET_COOKIE),
+                response.header(SET_COOKIE).get(),
                 is("a=\"1\"; Comment=some comment; Domain=.acme.com; Max-Age=123; Path=/products; Secure=; Expires=Sun, 04 Sep 2011 06:15:36 GMT"));
     }
 

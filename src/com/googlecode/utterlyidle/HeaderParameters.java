@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.Strings;
 import com.googlecode.totallylazy.collections.PersistentList;
 
 import java.util.Map;
@@ -58,6 +59,7 @@ public class HeaderParameters extends Parameters<HeaderParameters> {
 
     @Override
     public String toString() {
-        return sequence(this).map(pairToString("", ": ", "")).toString(HTTP_LINE_SEPARATOR);
+        if(size() == 0) return Strings.EMPTY;
+        return sequence(this).map(pairToString("", ": ", "")).toString("",HTTP_LINE_SEPARATOR, HTTP_LINE_SEPARATOR);
     }
 }

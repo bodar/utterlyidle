@@ -19,7 +19,6 @@ import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Request.Builder.accept;
 import static com.googlecode.utterlyidle.Request.Builder.query;
-import static com.googlecode.utterlyidle.Response.methods.header;
 import static com.googlecode.utterlyidle.annotations.View.constructors.view;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.definedParam;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.entity;
@@ -66,7 +65,7 @@ public class DslTest {
                 add(get("target").resource(method(on(Redirect.class).target())));
         Response response = application.handle(Request.get("/redirect"));
         assertThat(response.status(), is(Status.SEE_OTHER));
-        assertThat(header(response, LOCATION), is("/target"));
+        assertThat(response.header(LOCATION).get(), is("/target"));
     }
 
     @Test
