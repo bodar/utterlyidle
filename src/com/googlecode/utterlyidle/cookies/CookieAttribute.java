@@ -25,16 +25,6 @@ public class CookieAttribute {
         this.value = value;
     }
 
-    @Deprecated //remove after build 639
-    public String getName() {
-        return name();
-    }
-
-    @Deprecated //remove after build 639
-    public String getValue() {
-        return value();
-    }
-
     public String name() {
         return name;
     }

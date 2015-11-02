@@ -5,9 +5,9 @@ import com.googlecode.totallylazy.Pair;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 
 public class MemoryResponse implements Response {
-    private Status status;
+    private final Status status;
     private final HeaderParameters headers;
-    private Entity entity;
+    private final Entity entity;
 
     private MemoryResponse(Status status, Iterable<? extends Pair<String, String>> headerParameters, Entity entity) {
         this.status = status;
