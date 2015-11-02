@@ -28,7 +28,6 @@ import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.RegisteredResources;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestGenerator;
-import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.ResourcePath;
 import com.googlecode.utterlyidle.ResourcePathActivator;
 import com.googlecode.utterlyidle.Resources;
@@ -145,8 +144,8 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
         return (Container) argumentScope.addActivator(PathParameters.class, PathParametersActivator.class).
                 addInstance(HeaderParameters.class, request.headers()).
                 addInstance(QueryParameters.class, request.query()).
-                addInstance(FormParameters.class, Requests.form(request)).
-                addInstance(CookieParameters.class, Requests.cookies(request)).
+                addInstance(FormParameters.class, request.form()).
+                addInstance(CookieParameters.class, request.cookies()).
                 addInstance(Entity.class, request.entity()).
                 addInstance(InputStream.class, request.entity().inputStream()).
                 addActivator(UUID.class, UUIDActivator.class).

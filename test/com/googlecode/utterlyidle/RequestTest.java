@@ -41,152 +41,152 @@ import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 public class RequestTest {
     @Test
     public void supportsGet() throws Exception {
-        Request request = Request.get("http://localhost/");
+        Request request = get("http://localhost/");
         assertThat(request.method(), is(GET));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void supportsPost() throws Exception {
-        Request request = Request.post("http://localhost/");
+        Request request = post("http://localhost/");
         assertThat(request.method(), is(POST));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void supportsPut() throws Exception {
-        Request request = Request.put("http://localhost/");
+        Request request = put("http://localhost/");
         assertThat(request.method(), is(PUT));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void supportsPatch() throws Exception {
-        Request request = Request.patch("http://localhost/");
+        Request request = patch("http://localhost/");
         assertThat(request.method(), is(PATCH));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void supportsDelete() throws Exception {
-        Request request = Request.delete("http://localhost/");
+        Request request = delete("http://localhost/");
         assertThat(request.method(), is(DELETE));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void supportsHead() throws Exception {
-        Request request = Request.head("http://localhost/");
+        Request request = head("http://localhost/");
         assertThat(request.method(), is(HEAD));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void supportsOptions() throws Exception {
-        Request request = Request.options("http://localhost/");
+        Request request = options("http://localhost/");
         assertThat(request.method(), is(OPTIONS));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void supportsCustomMethod() throws Exception {
-        Request request = Request.request("TICKLE", Uri.uri("http://localhost/"));
+        Request request = request("TICKLE", Uri.uri("http://localhost/"));
         assertThat(request.method(), is("TICKLE"));
         assertThat(request.uri(), is(uri("http://localhost/")));
     }
 
     @Test
     public void canChangeMethod() throws Exception {
-        Request request = modify(Request.get("/"), method(POST));
+        Request request = modify(get("/"), method(POST));
         assertThat(request.method(), is(POST));
     }
 
     @Test
     public void canChangeUri() throws Exception {
-        Request request = modify(Request.get("/"), Builder.uri("/different"));
+        Request request = modify(get("/"), Builder.uri("/different"));
         assertThat(request.uri(), is(uri("/different")));
     }
 
     @Test
     public void canSetHeaderParameters() throws Exception {
-        assertThat(Request.get("/", HttpMessage.Builder.header(ACCEPT, "Chickens")).headers().getValue(ACCEPT), is("Chickens"));
-        HeaderParameters headers = Request.get("/", HttpMessage.Builder.header(ACCEPT, "Chickens"), HttpMessage.Builder.header(CONTENT_TYPE, "Cats")).headers();
+        assertThat(get("/", header(ACCEPT, "Chickens")).headers().getValue(ACCEPT), is("Chickens"));
+        HeaderParameters headers = get("/", header(ACCEPT, "Chickens"), header(CONTENT_TYPE, "Cats")).headers();
         assertThat(headers.getValue(ACCEPT), is("Chickens"));
         assertThat(headers.getValue(CONTENT_TYPE), is("Cats"));
     }
 
     @Test
     public void canSetMultipleHeaderParametersInOneGoForPerformanceReasons() throws Exception {
-        assertThat(Request.get("/", HttpMessage.Builder.header(Parameters.Builder.param(ACCEPT, list("Chickens", "Cats")))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
-        assertThat(Request.get("/", HttpMessage.Builder.header(add(ACCEPT, "Chickens"), add(ACCEPT, "Cats"))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
+        assertThat(get("/", header(param(ACCEPT, list("Chickens", "Cats")))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
+        assertThat(get("/", header(add(ACCEPT, "Chickens"), add(ACCEPT, "Cats"))).headers().getValues(ACCEPT), is(sequence("Chickens", "Cats")));
     }
 
     @Test
     public void canRemoveAHeader() throws Exception {
-        Request original = Request.get("/", HttpMessage.Builder.header(ACCEPT, "Chickens"), HttpMessage.Builder.header(CONTENT_TYPE, "Cats"));
-        HeaderParameters headers = modify(original, HttpMessage.Builder.header(remove(ACCEPT))).headers();
+        Request original = get("/", header(ACCEPT, "Chickens"), header(CONTENT_TYPE, "Cats"));
+        HeaderParameters headers = modify(original, header(remove(ACCEPT))).headers();
         assertThat(headers.contains(ACCEPT), is(false));
         assertThat(headers.getValue(CONTENT_TYPE), is("Cats"));
     }
 
     @Test
     public void canSetEntity() throws Exception {
-        Request request = Request.get("/", entity("Hello"));
+        Request request = get("/", entity("Hello"));
         assertThat(request.entity().toString(), is("Hello"));
     }
 
     @Test
     public void canSetQueryParameters() throws Exception {
-        assertThat(Request.get("/", query("name", "Dan")).uri(), is(uri("/?name=Dan")));
-        assertThat(Request.get("/", query("first", "Dan"), query("last", "Bod")).uri(), is(uri("/?first=Dan&last=Bod")));
+        assertThat(get("/", query("name", "Dan")).uri(), is(uri("/?name=Dan")));
+        assertThat(get("/", query("first", "Dan"), query("last", "Bod")).uri(), is(uri("/?first=Dan&last=Bod")));
     }
 
     @Test
     public void canSetMultipleQueryParametersInOneGoForPerformanceReasons() throws Exception {
-        assertThat(Request.get("/", query(Parameters.Builder.param("name", list("Dan", "Matt")))).uri(), is(uri("/?name=Dan&name=Matt")));
-        assertThat(Request.get("/", query(add("name", "Dan"), add("name", "Matt"))).uri(), is(uri("/?name=Dan&name=Matt")));
+        assertThat(get("/", query(param("name", list("Dan", "Matt")))).uri(), is(uri("/?name=Dan&name=Matt")));
+        assertThat(get("/", query(add("name", "Dan"), add("name", "Matt"))).uri(), is(uri("/?name=Dan&name=Matt")));
     }
 
     @Test
     public void canRemoveAQuery() throws Exception {
-        Request original = Request.get("/", query("first", "Dan"), query("last", "Bod"));
+        Request original = get("/", query("first", "Dan"), query("last", "Bod"));
         assertThat(modify(original, query(remove("first"))).uri(), is(uri("/?last=Bod")));
     }
 
     @Test
     public void canSetFormParameters() throws Exception {
-        assertThat(Request.get("/", form("name", "Dan")).entity().toString(), is("name=Dan"));
-        assertThat(Request.get("/", form("first", "Dan"), form("last", "Bod")).entity().toString(), is("first=Dan&last=Bod"));
+        assertThat(get("/", form("name", "Dan")).entity().toString(), is("name=Dan"));
+        assertThat(get("/", form("first", "Dan"), form("last", "Bod")).entity().toString(), is("first=Dan&last=Bod"));
     }
 
     @Test
     public void canSetMultipleFormParametersInOneGoForPerformanceReasons() throws Exception {
-        assertThat(Request.get("/", form(Parameters.Builder.param("name", list("Dan", "Matt")))).entity().toString(), is("name=Dan&name=Matt"));
-        assertThat(Request.get("/", form(add("name", "Dan"), add("name", "Matt"))).entity().toString(), is("name=Dan&name=Matt"));
+        assertThat(get("/", form(param("name", list("Dan", "Matt")))).entity().toString(), is("name=Dan&name=Matt"));
+        assertThat(get("/", form(add("name", "Dan"), add("name", "Matt"))).entity().toString(), is("name=Dan&name=Matt"));
     }
 
     @Test
     public void canRemoveAForm() throws Exception {
-        Request original = Request.get("/", form("first", "Dan"), form("last", "Bod"));
+        Request original = get("/", form("first", "Dan"), form("last", "Bod"));
         assertThat(modify(original, form(remove("first"))).entity().toString(), is("last=Bod"));
     }
 
     @Test
     public void canSetCookieParameters() throws Exception {
-        String value = Request.get("/", cookie("name", "Dan")).headers().getValue(COOKIE);
+        String value = get("/", cookie("name", "Dan")).headers().getValue(COOKIE);
         assertThat(value, is("name=\"Dan\"; "));
-        assertThat(Request.get("/", cookie("first", "Dan"), cookie("last", "Bod")).headers().getValues(COOKIE), is(sequence("first=\"Dan\"; ", "last=\"Bod\"; ")));
+        assertThat(get("/", cookie("first", "Dan"), cookie("last", "Bod")).headers().getValues(COOKIE), is(sequence("first=\"Dan\"; ", "last=\"Bod\"; ")));
     }
 
     @Test
     public void canSetMultipleCookieParametersInOneGoForPerformanceReasons() throws Exception {
-        assertThat(Request.get("/", cookie(Parameters.Builder.param("name", list("Dan", "Matt")))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
-        assertThat(Request.get("/", cookie(add("name", "Dan"), add("name", "Matt"))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
+        assertThat(get("/", cookie(param("name", list("Dan", "Matt")))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
+        assertThat(get("/", cookie(add("name", "Dan"), add("name", "Matt"))).headers().getValues(COOKIE), is(sequence("name=\"Dan\"; ", "name=\"Matt\"; ")));
     }
 
     @Test
     public void canRemoveACookie() throws Exception {
-        Request original = Request.get("/", cookie("first", "Dan"), cookie("last", "Bod"));
+        Request original = get("/", cookie("first", "Dan"), cookie("last", "Bod"));
         assertThat(modify(original, cookie(remove("first"))).headers().getValues(COOKIE), is(sequence("last=\"Bod\"; ")));
     }
 

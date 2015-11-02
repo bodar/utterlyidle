@@ -11,7 +11,6 @@ import static com.googlecode.utterlyidle.Entities.inputStreamOf;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
-import static com.googlecode.utterlyidle.Requests.form;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static java.lang.String.valueOf;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -109,7 +108,7 @@ public class RequestBuilderTest {
         assertThat(queryParameters.getValue("one"), is(equalTo("1")));
         assertThat(queryParameters.getValue("two"), is(equalTo("2")));
         assertThat(queryParameters.getValue("three"), is(equalTo("3")));
-        FormParameters formParameters = form(modified);
+        FormParameters formParameters = modified.form();
         assertThat(formParameters.size(), is(2));
     }
 }

@@ -10,7 +10,6 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Strings.isBlank;
-import static com.googlecode.utterlyidle.Requests.cookies;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 
@@ -51,7 +50,7 @@ public class FlashHandler implements HttpHandler {
 	}
 
 	private static void setIncomingFlashValues(Request request, Flash flash) {
-		CookieParameters requestCookies = cookies(request);
+		CookieParameters requestCookies = request.cookies();
 
 		if(!requestCookies.contains(FLASH_COOKIE) || isEmptyJson(requestCookies.getValue(FLASH_COOKIE)) || isBlank(requestCookies.getValue(FLASH_COOKIE))) return;
 
@@ -63,7 +62,7 @@ public class FlashHandler implements HttpHandler {
 	}
 
 	private Response set(final Request request, final Response response, final Cookie cookie) {
-		if (cookieAlreadyHasSameValue(request, cookie)  || (isEmptyJson(cookie.value()) && !cookies(request).contains(FLASH_COOKIE))) {
+		if (cookieAlreadyHasSameValue(request, cookie)  || (isEmptyJson(cookie.value()) && !request.cookies().contains(FLASH_COOKIE))) {
 			return response;
 		}
 		return modify(response).cookie(cookie).build();
@@ -74,7 +73,7 @@ public class FlashHandler implements HttpHandler {
 	}
 
 	private boolean cookieAlreadyHasSameValue(final Request request, final Cookie cookie) {
-		return cookie.value().equals(cookies(request).getValue(FLASH_COOKIE));
+		return cookie.value().equals(request.cookies().getValue(FLASH_COOKIE));
 	}
 
 	private static boolean isEmptyJson(final String value) {
