@@ -39,6 +39,14 @@ public interface Request extends HttpMessage<Request> {
         return create(method(), value, headers(), entity());
     }
 
+    default QueryParameters query() {
+        return QueryParameters.parse(uri().query());
+    }
+
+    default Request query(Iterable<? extends Pair<String,String>> parameters) {
+        return uri(uri().query(UrlEncodedMessage.toString(parameters)));
+    }
+
     Request create(String method, Uri uri, HeaderParameters headers, Entity entity);
 
     default Request create(HeaderParameters headers, Entity entity) {
@@ -156,11 +164,11 @@ public interface Request extends HttpMessage<Request> {
 
         @SafeVarargs
         static Unary<Request> query(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, query(modify(QueryParameters.parse(request.uri().query()), builders)));
+            return request -> modify(request, query(modify(request.query(), builders)));
         }
 
         static Unary<Request> query(Iterable<? extends Pair<String,String>> parameters) {
-            return request -> modify(request, uri(request.uri().query(UrlEncodedMessage.toString(parameters))));
+            return request -> request.query(parameters);
         }
 
         static Unary<Request> form(String name, Object value) {

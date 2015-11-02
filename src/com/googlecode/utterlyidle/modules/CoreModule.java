@@ -144,7 +144,7 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
         Request request = argumentScope.get(Request.class);
         return (Container) argumentScope.addActivator(PathParameters.class, PathParametersActivator.class).
                 addInstance(HeaderParameters.class, request.headers()).
-                addInstance(QueryParameters.class, Requests.query(request)).
+                addInstance(QueryParameters.class, request.query()).
                 addInstance(FormParameters.class, Requests.form(request)).
                 addInstance(CookieParameters.class, Requests.cookies(request)).
                 addInstance(Entity.class, request.entity()).

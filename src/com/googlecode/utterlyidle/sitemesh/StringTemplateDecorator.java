@@ -6,7 +6,6 @@ import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Requests;
 import com.googlecode.utterlyidle.handlers.HttpClient;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class StringTemplateDecorator implements Decorator {
     }
 
     public StringTemplateDecorator(Renderer<Map<String, Object>> template, HttpClient httpHandlerForIncludes, BasePath base, Request request) {
-        this(template, httpHandlerForIncludes, base, Requests.query(request));
+        this(template, httpHandlerForIncludes, base, request.query());
     }
 
     public String decorate(String content) throws IOException {

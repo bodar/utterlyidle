@@ -10,7 +10,6 @@ import com.googlecode.utterlyidle.sitemesh.PropertyMapParser;
 
 import java.io.IOException;
 
-import static com.googlecode.utterlyidle.Requests.query;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.profiling.ProfilingClient.profile;
 
@@ -34,7 +33,7 @@ public class ProfilingHandler implements HttpHandler {
     }
 
     public static boolean shouldProfile(Request request) {
-        return query(request).contains(QUERY_PARAMETER);
+        return request.query().contains(QUERY_PARAMETER);
     }
 
     private Response decorate(Response response) throws IOException {
