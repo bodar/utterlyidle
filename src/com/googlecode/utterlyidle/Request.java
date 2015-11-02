@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UrlEncodedMessage;
 import com.googlecode.totallylazy.functions.Unary;
@@ -11,6 +12,7 @@ import static com.googlecode.totallylazy.Strings.startsWith;
 import static com.googlecode.utterlyidle.Entity.DEFAULT_CHARACTER_SET;
 import static com.googlecode.utterlyidle.Entity.empty;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
+import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
@@ -41,12 +43,28 @@ public interface Request extends HttpMessage<Request> {
         return create(method(), value, headers(), entity());
     }
 
+    default Option<String> query(String name) {
+        return query().valueOption(name);
+    }
+
+    default Request query(String name, Object value) {
+        return modify(this, Builder.query(replace(name, value)));
+    }
+
     default QueryParameters query() {
         return QueryParameters.parse(uri().query());
     }
 
-    default Request query(Iterable<? extends Pair<String,String>> parameters) {
+    default Request query(Iterable<? extends Pair<String, String>> parameters) {
         return uri(uri().query(UrlEncodedMessage.toString(parameters)));
+    }
+
+    default Option<String> form(String name) {
+        return form().valueOption(name);
+    }
+
+    default Request form(String name, Object value) {
+        return modify(this, Builder.form(replace(name, value)));
     }
 
     default FormParameters form() {
@@ -54,19 +72,25 @@ public interface Request extends HttpMessage<Request> {
         return FormParameters.formParameters();
     }
 
-    default Request form(Iterable<? extends Pair<String,String>> parameters) {
-        return modify(this,
-                header(CONTENT_TYPE, format("%s; charset=%s", APPLICATION_FORM_URLENCODED, DEFAULT_CHARACTER_SET)),
-                HttpMessage.Builder.entity(UrlEncodedMessage.toString(parameters)));
+    default Request form(Iterable<? extends Pair<String, String>> parameters) {
+        return header(CONTENT_TYPE, format("%s; charset=%s", APPLICATION_FORM_URLENCODED, DEFAULT_CHARACTER_SET)).
+                entity(Entity.entity(UrlEncodedMessage.toString(parameters)));
+    }
+
+    default Option<String> cookie(String name) {
+        return cookies().valueOption(name);
+    }
+
+    default Request cookie(String name, Object value) {
+        return modify(this, Builder.cookie(replace(name, value)));
     }
 
     default CookieParameters cookies() {
         return CookieParameters.cookies(this);
     }
 
-    default Request cookies(Iterable<? extends Pair<String,String>> parameters) {
-        return modify(this,
-                header(param(COOKIE, CookieParameters.cookies(parameters).toList())));
+    default Request cookies(Iterable<? extends Pair<String, String>> parameters) {
+        return modify(this, HttpMessage.Builder.header(param(COOKIE, CookieParameters.cookies(parameters).toList())));
     }
 
     Request create(String method, Uri uri, HeaderParameters headers, Entity entity);
@@ -173,11 +197,7 @@ public interface Request extends HttpMessage<Request> {
         }
 
         static Unary<Request> accept(Object value) {
-            return header(HttpHeaders.ACCEPT, value);
-        }
-
-        static Unary<Request> contentType(Object value) {
-            return header(HttpHeaders.CONTENT_TYPE, value);
+            return HttpMessage.Builder.header(ACCEPT, value);
         }
 
         static Unary<Request> query(String name, Object value) {

@@ -46,7 +46,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Request.Builder.accept;
-import static com.googlecode.utterlyidle.Request.Builder.contentType;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.contentType;
 import static com.googlecode.utterlyidle.Request.delete;
 import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;

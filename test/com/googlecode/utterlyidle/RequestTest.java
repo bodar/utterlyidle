@@ -2,6 +2,8 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Request.Builder;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Assert.assertThat;
@@ -9,9 +11,7 @@ import static com.googlecode.totallylazy.Lists.list;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
-import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
-import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.Parameters.Builder.add;
 import static com.googlecode.utterlyidle.Request.Builder.cookie;
 import static com.googlecode.utterlyidle.Request.delete;
@@ -37,8 +37,21 @@ import static com.googlecode.utterlyidle.annotations.HttpMethod.OPTIONS;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PATCH;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
+import static org.junit.Assert.assertEquals;
 
 public class RequestTest {
+    @Test
+    public void supportsChainingAsWellAsFunctionalBuilderStyle() throws Exception {
+        Request request = get("/").query("name", "Dan").form("name", "Matt").cookie("name", "Bob").header(HOST, "localhost");
+        assertThat(request.toString(), is("GET /?name=Dan HTTP/1.1\r\n" +
+                "Content-Type: application/x-www-form-urlencoded; charset=UTF-8\r\n" +
+                "Cookie: name=\"Bob\"; \r\n" +
+                "Host: localhost\r\n" +
+                "Content-Length: 9\r\n" +
+                "\r\n" +
+                "name=Matt"));
+    }
+
     @Test
     public void supportsGet() throws Exception {
         Request request = get("http://localhost/");

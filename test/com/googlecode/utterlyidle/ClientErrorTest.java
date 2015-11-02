@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.Request.Builder.accept;
-import static com.googlecode.utterlyidle.Request.Builder.contentType;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.contentType;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Request.Builder.query;

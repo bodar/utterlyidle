@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_JSON;
-import static com.googlecode.utterlyidle.Request.Builder.contentType;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.contentType;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.head;
