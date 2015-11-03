@@ -29,13 +29,8 @@ public interface Response extends HttpMessage<Response> {
     }
 
     @Override
-    default Response cookie(String name, Object value) {
-        return modify(this, HttpMessage.Builder.cookie(replace(name, value)));
-    }
-
-    @Override
     default Response cookie(Cookie cookie) {
-        return cookies(cookies().remove(cookie.name()).add(cookie));
+        return cookies(cookies().replace(cookie));
     }
 
     @Override

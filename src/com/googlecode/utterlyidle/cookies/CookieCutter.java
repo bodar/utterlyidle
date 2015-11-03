@@ -58,7 +58,7 @@ public class CookieCutter {
         return regex("\\s*;\\s*").split(header)
                 .filter(correctlyFormed())
                 .map(splitOnFirst("="))
-                .map(Callables.<String, String, String>second(Rfc2616.toUnquotedString()));
+                .map(Callables.<String, String, String>second(Rfc2616::toUnquotedString));
     }
 
     private static Predicate<? super String> correctlyFormed() {

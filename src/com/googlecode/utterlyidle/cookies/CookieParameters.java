@@ -49,6 +49,10 @@ public class CookieParameters extends Parameters<CookieParameters> {
         return self(values.append(cookie));
     }
 
+    public CookieParameters replace(Cookie cookie) {
+        return remove(cookie.name()).add(cookie);
+    }
+
     public List<Cookie> toList() {
         return values.map(pair -> {
             if(pair instanceof Cookie) {

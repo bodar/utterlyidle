@@ -1,6 +1,5 @@
 package com.googlecode.utterlyidle;
 
-import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.predicates.Predicate;
 
 import static com.googlecode.totallylazy.Sequences.characters;
@@ -10,8 +9,7 @@ import static com.googlecode.totallylazy.numbers.Numbers.toCharacter;
 public class Rfc2616 {
     public static final String SEPARATORS = "()<>@,;:\\\"/[]?={} \t";
     public static final String CTLs = range(0,31).append(127).map(toCharacter()).toString("");
-    static final String HTTP_LINE_SEPARATOR = "\r\n";
-    static final String HTTP_BODY_SEPARATOR = HTTP_LINE_SEPARATOR + HTTP_LINE_SEPARATOR;
+    public static final String HTTP_LINE_SEPARATOR = "\r\n";
 
     public static boolean isValidToken(String value) {
         if(value == null || value.length()==0)return false;
@@ -28,9 +26,5 @@ public class Rfc2616 {
 
     public static String toUnquotedString(String value) {
         return value.replaceFirst("^\"", "").replaceFirst("\"$", "").replace("\\\"", "\"");
-    }
-
-    public static Function1<String, String> toUnquotedString() {
-        return Rfc2616::toUnquotedString;
     }
 }

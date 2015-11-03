@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
@@ -38,7 +39,9 @@ public interface HttpMessage<T extends HttpMessage<T>> {
         return cookies().valueOption(name);
     }
 
-    T cookie(String name, Object value);
+    default T cookie(String name, Object value) {
+        return modify(cast(this), Builder.<T>cookie(replace(name, value)));
+    }
 
     T cookie(Cookie cookie);
 

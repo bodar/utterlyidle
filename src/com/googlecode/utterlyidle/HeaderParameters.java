@@ -35,7 +35,7 @@ public class HeaderParameters extends Parameters<HeaderParameters> {
     }
 
     public static HeaderParameters headerParameters(final Iterable<? extends Pair<String, String>> pairs) {
-        if(pairs instanceof HeaderParameters) return (HeaderParameters) pairs;
+        if (pairs instanceof HeaderParameters) return (HeaderParameters) pairs;
         return sequence(pairs).foldLeft(new HeaderParameters(), Parameters.<HeaderParameters>pairIntoParameters());
     }
 
@@ -51,7 +51,7 @@ public class HeaderParameters extends Parameters<HeaderParameters> {
 
     @Override
     public HeaderParameters add(String name, String value) {
-        if(name == null) {
+        if (name == null) {
             return this;
         }
         return super.add(name, value);
@@ -59,7 +59,7 @@ public class HeaderParameters extends Parameters<HeaderParameters> {
 
     @Override
     public String toString() {
-        if(size() == 0) return Strings.EMPTY;
-        return sequence(this).map(pairToString("", ": ", "")).toString("",HTTP_LINE_SEPARATOR, HTTP_LINE_SEPARATOR);
+        if (size() == 0) return Strings.EMPTY;
+        return sequence(this).map(pairToString("", ": ", "")).toString("", HTTP_LINE_SEPARATOR, HTTP_LINE_SEPARATOR);
     }
 }

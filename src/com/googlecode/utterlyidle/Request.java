@@ -86,10 +86,6 @@ public interface Request extends HttpMessage<Request> {
         return cookies().valueOption(name);
     }
 
-    default Request cookie(String name, Object value) {
-        return modify(this, HttpMessage.Builder.cookie(replace(name, value)));
-    }
-
     /**
      * This is designed to be lossy as Request Cookies never have attributes
      */
