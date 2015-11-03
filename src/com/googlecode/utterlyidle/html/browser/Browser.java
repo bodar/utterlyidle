@@ -19,6 +19,8 @@ import com.googlecode.utterlyidle.html.RelativeUrlHandler;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Status.FOUND;
@@ -59,14 +61,14 @@ public class Browser implements HttpClient, BrowserCookies<Browser>, BrowserStat
     }
 
     private Request setCookies(Request request) {
-        return modify(request, Request.Builder.cookie(cookies.cookies()));
+        return modify(request, cookie(cookies.cookies()));
     }
 
     private Request ensureAcceptHeader(Request request) {
         if(request.headers().contains(ACCEPT)) {
             return request;
         }
-        return modify(request, HttpMessage.Builder.header(ACCEPT, acceptHeader));
+        return modify(request, header(ACCEPT, acceptHeader));
     }
 
     private void update(Request request, final Response response) {

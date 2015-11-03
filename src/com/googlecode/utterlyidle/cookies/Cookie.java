@@ -7,9 +7,7 @@ import com.googlecode.utterlyidle.Rfc2616;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.lang.String.format;
 
-public class Cookie {
-    private final String name;
-    private final String value;
+public class Cookie extends Pair<String, String> {
     private final Sequence<CookieAttribute> attributes;
 
     public static Cookie cookie(String name, String value, CookieAttribute... attributes) {
@@ -17,30 +15,25 @@ public class Cookie {
     }
 
     public Cookie(String name, String value, CookieAttribute... attributes) {
-        this.name = name;
-        this.value = value;
+        super(() -> name, () -> value);
         this.attributes = sequence(attributes);
     }
 
     public String name() {
-        return name;
+        return first();
     }
 
     public String value() {
-        return value;
+        return second();
     }
 
     public Iterable<CookieAttribute> attributes() {
         return attributes;
     }
 
-    public Pair<String, String> toPair() {
-        return Pair.pair(name(), value());
-    }
-
     @Override
     public String toString() {
-        return string(name, value, attributes);
+        return string(name(), value(), attributes);
     }
 
     public static String string(String name, String value, CookieAttribute... attributes) {

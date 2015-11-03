@@ -16,6 +16,7 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.COOKIE;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_FORM_URLENCODED;
 import static com.googlecode.utterlyidle.MemoryRequest.memoryRequest;
 import static com.googlecode.utterlyidle.Parameters.Builder.param;
@@ -42,7 +43,7 @@ public interface Request extends HttpMessage<Request> {
         return create(method(), value, headers(), entity());
     }
 
-    default String startLine(){
+    default String startLine() {
         return String.format("%s %s %s", method(), uri(), version());
     }
 
@@ -71,7 +72,8 @@ public interface Request extends HttpMessage<Request> {
     }
 
     default FormParameters form() {
-        if (headers().valueOption(CONTENT_TYPE).exists(startsWith(APPLICATION_FORM_URLENCODED))) return FormParameters.parse(entity());
+        if (headers().valueOption(CONTENT_TYPE).exists(startsWith(APPLICATION_FORM_URLENCODED)))
+            return FormParameters.parse(entity());
         return FormParameters.formParameters();
     }
 
@@ -85,7 +87,14 @@ public interface Request extends HttpMessage<Request> {
     }
 
     default Request cookie(String name, Object value) {
-        return modify(this, Builder.cookie(replace(name, value)));
+        return modify(this, HttpMessage.Builder.cookie(replace(name, value)));
+    }
+
+    /**
+     * This is designed to be lossy as Request Cookies never have attributes
+     */
+    default Request cookie(Cookie cookie) {
+        return cookie(cookie.name(), cookie.value());
     }
 
     default CookieParameters cookies() {
@@ -212,7 +221,7 @@ public interface Request extends HttpMessage<Request> {
             return request -> modify(request, query(modify(request.query(), builders)));
         }
 
-        static Unary<Request> query(Iterable<? extends Pair<String,String>> parameters) {
+        static Unary<Request> query(Iterable<? extends Pair<String, String>> parameters) {
             return request -> request.query(parameters);
         }
 
@@ -225,25 +234,8 @@ public interface Request extends HttpMessage<Request> {
             return request -> modify(request, form(modify(request.form(), builders)));
         }
 
-        static Unary<Request> form(Iterable<? extends Pair<String,String>> parameters) {
+        static Unary<Request> form(Iterable<? extends Pair<String, String>> parameters) {
             return request -> request.form(parameters);
-        }
-
-        static Unary<Request> cookie(Cookie cookie) {
-            return cookie(cookie.name(), cookie.value());
-        }
-
-        static Unary<Request> cookie(String name, Object value) {
-            return cookie(replace(name, value));
-        }
-
-        @SafeVarargs
-        static Unary<Request> cookie(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, cookie(modify(request.cookies(), builders)));
-        }
-
-        static Unary<Request> cookie(Iterable<? extends Pair<String,String>> parameters) {
-            return request -> request.cookies(parameters);
         }
     }
 }

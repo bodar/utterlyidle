@@ -24,7 +24,7 @@ import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.MediaType.APPLICATION_XHTML_XML;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
-import static com.googlecode.utterlyidle.Request.Builder.cookie;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
 import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.totallylazy.functions.Functions.modify;

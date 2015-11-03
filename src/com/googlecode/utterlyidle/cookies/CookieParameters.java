@@ -8,8 +8,10 @@ import com.googlecode.utterlyidle.Response;
 
 import java.util.List;
 
+import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
+import static com.googlecode.totallylazy.Unchecked.cast;
 
 public class CookieParameters extends Parameters<CookieParameters> {
     private CookieParameters(PersistentList<Pair<String, String>> values) {
@@ -34,15 +36,25 @@ public class CookieParameters extends Parameters<CookieParameters> {
     }
 
     public static CookieParameters pairs(final Iterable<? extends Cookie> cookies) {
-        return cookies(sequence(cookies).map(Cookie::toPair));
+        return cookies(sequence(cookies));
     }
 
     public static CookieParameters cookies(Iterable<? extends Pair<String, String>> pairs) {
         if(pairs instanceof CookieParameters) return (CookieParameters) pairs;
+        if(pairs instanceof PersistentList) return new CookieParameters(cast(pairs));
         return new CookieParameters(sequence(pairs).toPersistentList());
     }
 
+    public CookieParameters add(Cookie cookie) {
+        return self(values.append(cookie));
+    }
+
     public List<Cookie> toList() {
-        return values.map(pair -> new Cookie(pair.first(), pair.second()));
+        return values.map(pair -> {
+            if(pair instanceof Cookie) {
+                return (Cookie) pair;
+            }
+            return new Cookie(pair.first(), pair.second());
+        });
     }
 }

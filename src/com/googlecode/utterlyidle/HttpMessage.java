@@ -3,8 +3,9 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
+import com.googlecode.utterlyidle.cookies.Cookie;
+import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
@@ -32,6 +33,18 @@ public interface HttpMessage<T extends HttpMessage<T>> {
     default T headers(HeaderParameters value) {
         return create(value, entity());
     }
+
+    default Option<String> cookie(String name) {
+        return cookies().valueOption(name);
+    }
+
+    T cookie(String name, Object value);
+
+    T cookie(Cookie cookie);
+
+    CookieParameters cookies();
+
+    T cookies(Iterable<? extends Pair<String, String>> parameters);
 
     Entity entity();
 
@@ -63,6 +76,23 @@ public interface HttpMessage<T extends HttpMessage<T>> {
 
         static <T extends HttpMessage<T>> Unary<T> header(Iterable<? extends Pair<String, String>> parameters) {
             return message -> message.headers(headerParameters(parameters));
+        }
+
+        static <T extends HttpMessage<T>> Unary<T> cookie(Cookie cookie) {
+            return message -> message.cookie(cookie);
+        }
+
+        static <T extends HttpMessage<T>> Unary<T> cookie(String name, Object value) {
+            return cookie(replace(name, value));
+        }
+
+        @SafeVarargs
+        static <T extends HttpMessage<T>> Unary<T> cookie(Unary<Parameters<?>>... builders) {
+            return message -> modify(message, cookie(modify(message.cookies(), builders)));
+        }
+
+        static <T extends HttpMessage<T>> Unary<T> cookie(Iterable<? extends Pair<String,String>> parameters) {
+            return message -> message.cookies(parameters);
         }
 
         static <T extends HttpMessage<T>> Unary<T> entity(Object value) {

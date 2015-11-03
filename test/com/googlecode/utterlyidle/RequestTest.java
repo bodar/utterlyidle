@@ -13,7 +13,7 @@ import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
 import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.Parameters.Builder.add;
-import static com.googlecode.utterlyidle.Request.Builder.cookie;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
 import static com.googlecode.utterlyidle.Request.delete;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
 import static com.googlecode.utterlyidle.Request.Builder.form;

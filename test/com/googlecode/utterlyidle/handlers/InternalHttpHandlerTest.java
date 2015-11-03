@@ -23,7 +23,7 @@ public class InternalHttpHandlerTest {
     @Test
     public void shouldPassWhitelistedHeadersThrough() throws Exception {
         Cookie cookie = cookie("monster", "chocolate");
-        Request cookieRequest = Request.get("/foo", Request.Builder.cookie(cookie), HttpMessage.Builder.header(AUTHORIZATION, "basic auth string"));
+        Request cookieRequest = Request.get("/foo", HttpMessage.Builder.cookie(cookie), HttpMessage.Builder.header(AUTHORIZATION, "basic auth string"));
         Request sitemeshRequest = Request.get("/bar");
         SnoopingRequestMarker snoopingRequestMarker = new SnoopingRequestMarker(applicationId());
 

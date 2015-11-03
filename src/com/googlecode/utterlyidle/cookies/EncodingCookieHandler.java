@@ -2,11 +2,13 @@ package com.googlecode.utterlyidle.cookies;
 
 import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieCutter.cookies;
 import static com.googlecode.utterlyidle.cookies.CookieEncoder.cookieEncoder;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.pairs;
@@ -28,11 +30,12 @@ public class EncodingCookieHandler implements HttpHandler {
 
     private Response encode(Response response) {
         ResponseBuilder builder = ResponseBuilder.modify(response);
-        sequence(cookies(response)).fold(builder, (builder1, cookie) -> builder1.replaceCookie(encoder.encode(cookie)));
-        return builder.build();
+        return sequence(cookies(response)).
+                fold(builder, (acc, cookie) -> acc.replaceCookie(encoder.encode(cookie))).
+                build();
     }
 
     private Request decode(Request request) {
-        return Functions.modify(request, Request.Builder.cookie(pairs(cookies(request).map(encoder::decode))));
+        return Functions.modify(request, cookie(pairs(cookies(request).map(encoder::decode))));
     }
 }

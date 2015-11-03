@@ -20,7 +20,7 @@ public class CookieBuilder implements Callable<Cookie> {
         this.name = cookie.name();
         this.value = cookie.value();
 
-        sequence(cookie.attributes()).fold(this, (cookieBuilder, cookieAttribute) -> cookieBuilder.attribute(cookieAttribute));
+        sequence(cookie.attributes()).fold(this, CookieBuilder::attribute);
     }
 
     public CookieBuilder name(String name) {

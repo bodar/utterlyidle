@@ -49,6 +49,6 @@ public class CookieCutterRequestTest {
     }
 
     private Request requestWithCookies(Cookie... cookies) {
-        return Request.get("/", Request.Builder.cookie(CookieParameters.pairs(sequence(cookies))));
+        return Request.get("/", HttpMessage.Builder.cookie(CookieParameters.pairs(sequence(cookies))));
     }
 }

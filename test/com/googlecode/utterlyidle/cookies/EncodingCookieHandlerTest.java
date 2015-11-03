@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.cookies;
 
+import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.RecordingHttpHandler;
@@ -23,7 +24,7 @@ public class EncodingCookieHandlerTest {
         Cookie cookie = cookie("cookie1", "utterlyidle:v1:SMWNYiBOxZHhuIM=");
         Cookie expected = modify(cookie).value("Hōb Nőḃ").build();
 
-        Request request = Request.get("/", Request.Builder.cookie(cookie));
+        Request request = Request.get("/", HttpMessage.Builder.cookie(cookie));
         RecordingHttpHandler delegate = RecordingHttpHandler.recordingHttpHandler();
         EncodingCookieHandler handler = new EncodingCookieHandler(delegate, BASE64_ENCODING);
 
