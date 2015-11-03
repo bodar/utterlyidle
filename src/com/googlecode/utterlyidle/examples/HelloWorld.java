@@ -9,7 +9,6 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.StreamingWriter;
@@ -72,7 +71,7 @@ public class HelloWorld {
     @GET
     @Path("helloworld/redirect")
     public Response redirect() {
-        return Responses.seeOther("helloworld/queryparam");
+        return Response.seeOther("helloworld/queryparam");
     }
 
     @GET

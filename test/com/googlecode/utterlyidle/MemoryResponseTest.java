@@ -10,7 +10,6 @@ import static com.googlecode.totallylazy.Sequences.one;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
@@ -39,7 +38,7 @@ public class MemoryResponseTest {
 
     @Test
     public void canRemoveCookieFromBothClientAndResponse() throws Exception {
-        Response response = ResponseBuilder.modify(Responses.seeOther("/go")).cookie(cookie("a", "1")).build();
+        Response response = ResponseBuilder.modify(Response.seeOther("/go")).cookie(cookie("a", "1")).build();
         Response shouldClearCookie = ResponseBuilder.modify(response).removeCookie("a").build();
         assertThat(shouldClearCookie.toString(), is("HTTP/1.1 303 See Other\r\n" +
                 "Location: /go\r\n" +
@@ -51,28 +50,28 @@ public class MemoryResponseTest {
     @Test
     public void shouldPrintContent() throws Exception {
         String content = "<blah></blah>";
-        Response response = response(Status.OK, one(pair(X_FORWARDED_FOR, "192.168.0.1")), content);
+        Response response = Response.response(Status.OK, one(pair(X_FORWARDED_FOR, "192.168.0.1")), Entity.entity(content));
         assertThat(response.toString(), endsWith(content));
     }
 
     @Test
     public void shouldSupportEquals() {
-        assertThat(response(OK), is(response(OK)));
+        assertThat(Response.response(OK), is(Response.response(OK)));
     }
 
     @Test
     public void fieldNamesAreCaseInsensitive() {
-        assertThat(response(OK, one(pair("Content-Type", "text/plain"))), is(response(OK, one(pair("content-type", "text/plain")))));
+        assertThat(Response.response(OK, one(pair("Content-Type", "text/plain"))), is(Response.response(OK, one(pair("content-type", "text/plain")))));
     }
 
     @Test
     public void fieldValuesAreCaseSensitive() {
-        assertThat(response(OK, one(pair("Content-Type", "TEXT/PLAIN"))), is(not(response(OK, one(pair("Content-Type", "text/plain"))))));
+        assertThat(Response.response(OK, one(pair("Content-Type", "TEXT/PLAIN"))), is(not(Response.response(OK, one(pair("Content-Type", "text/plain"))))));
     }
 
     @Test
     public void orderOfHeadersDoesMatter() {
-        assertThat(response(OK, sequence(pair("name1", "value1"), pair("name2", "value2"))), is(response(OK, sequence(pair("name1", "value1"), pair("name2", "value2")))));
-        assertThat(response(OK, sequence(pair("name1", "value1"), pair("name2", "value2"))), is(not(response(OK, sequence(pair("name2", "value2"), pair("name1", "value1"))))));
+        assertThat(Response.response(OK, sequence(pair("name1", "value1"), pair("name2", "value2"))), is(Response.response(OK, sequence(pair("name1", "value1"), pair("name2", "value2")))));
+        assertThat(Response.response(OK, sequence(pair("name1", "value1"), pair("name2", "value2"))), is(not(Response.response(OK, sequence(pair("name2", "value2"), pair("name1", "value1"))))));
     }
 }

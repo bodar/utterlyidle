@@ -9,7 +9,6 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
 
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.handlers.Handlers.asFunction;
 
 public class CompositeHandler implements HttpHandler, HttpClient {
@@ -31,7 +30,7 @@ public class CompositeHandler implements HttpHandler, HttpClient {
     public Response handle(final Request request) throws Exception {
         return rules.find(request).
                 map(Callables.<Request, Response>callWith(request)).
-                getOrElse(response(Status.NOT_FOUND));
+                getOrElse(Response.response(Status.NOT_FOUND));
     }
 
     public CompositeHandler add(Predicate<? super Request> predicate, HttpHandler httpHandler) {

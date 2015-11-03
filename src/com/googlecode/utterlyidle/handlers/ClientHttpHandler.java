@@ -11,13 +11,7 @@ import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
-import com.googlecode.utterlyidle.ClientConfiguration;
-import com.googlecode.utterlyidle.HttpHeaders;
-import com.googlecode.utterlyidle.MediaType;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.proxies.NoProxy;
 import com.googlecode.utterlyidle.proxies.ProxyFor;
 
@@ -59,7 +53,6 @@ import static com.googlecode.totallylazy.reflection.Fields.name;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
@@ -230,7 +223,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public static Response errorResponse(Status status, Exception e) {
-        return response(status, sequence(pair(CONTENT_TYPE, MediaType.TEXT_PLAIN)), Exceptions.asString(e));
+        return Response.response(status, sequence(pair(CONTENT_TYPE, MediaType.TEXT_PLAIN)), Entity.entity(Exceptions.asString(e)));
     }
 
     private Response createResponse(URLConnection connection, Status status, Object entity) {

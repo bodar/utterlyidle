@@ -8,7 +8,6 @@ import com.googlecode.totallylazy.predicates.Predicates;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
@@ -148,7 +147,7 @@ public class SiteMeshHandlerTest {
         @Path("not200")
         @Produces(MediaType.TEXT_HTML)
         public Response not200() {
-            return Responses.response(Status.UNAUTHORIZED);
+            return Response.response(Status.UNAUTHORIZED);
         }
 
         @GET

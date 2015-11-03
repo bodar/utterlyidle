@@ -10,7 +10,6 @@ import static com.googlecode.utterlyidle.Accept.accept;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
 import static com.googlecode.utterlyidle.ResponseBuilder.modify;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.bindings.MatchedBinding.constructors.matchedBinding;
 
 public class BaseHandler implements HttpHandler {
@@ -44,7 +43,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Object convertNullToNoContent(final Object instance) {
-        if(instance == null) return Responses.response(Status.NO_CONTENT);
+        if(instance == null) return Response.response(Status.NO_CONTENT);
         return instance;
     }
 
@@ -54,7 +53,7 @@ public class BaseHandler implements HttpHandler {
 
 
     private Response failure(final MatchFailure matchFailure) {
-        return modify(response(matchFailure.status())).
+        return modify(Response.response(matchFailure.status())).
                 contentType(TEXT_HTML).
                 entity(matchFailure).
                 build();

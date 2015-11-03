@@ -10,14 +10,13 @@ import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.Responses.response;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DateHandlerTest {
     @Test
     public void addsDate() throws Exception {
-        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(response()), new StoppedClock(Dates.date(2000, 1, 1)));
+        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(Response.ok()), new StoppedClock(Dates.date(2000, 1, 1)));
         Response response = handler.handle(Request.get("/foo"));
 
         assertThat(response.header(DATE).get(), is("Sat, 01 Jan 2000 00:00:00 GMT"));

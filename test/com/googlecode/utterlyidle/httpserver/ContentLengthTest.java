@@ -13,7 +13,6 @@ import java.util.List;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.Entity.empty;
 import static com.googlecode.utterlyidle.Entity.entity;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.httpserver.ContentLength.NoContent;
 import static com.googlecode.utterlyidle.httpserver.ContentLength.Streaming;
@@ -25,7 +24,7 @@ public class ContentLengthTest {
 
     @Test
     public void noContentWhenContentLengthIsZero() {
-        Response emptyResponse = response(OK, singleton(pair(HttpHeaders.CONTENT_LENGTH, "0")), empty());
+        Response emptyResponse = Response.response(OK, singleton(pair(HttpHeaders.CONTENT_LENGTH, "0")), entity(empty()));
 
         assertEquals(NoContent.value(), ContentLength.handle(emptyResponse).value());
     }
@@ -34,21 +33,21 @@ public class ContentLengthTest {
     public void streamingWhenStreaming() throws Exception {
         Entity streamingEntity = entity(new ByteArrayInputStream("balh".getBytes()));
 
-        Response streamingResponse = response(OK, EMPTY_HEADERS, streamingEntity);
+        Response streamingResponse = Response.response(OK, EMPTY_HEADERS, entity(streamingEntity));
 
         assertEquals(Streaming.value(), ContentLength.handle(streamingResponse).value());
     }
 
     @Test
     public void noContentWhenNoContentLengthHeader() throws Exception {
-        Response emptyResponse = response(OK, EMPTY_HEADERS, empty());
+        Response emptyResponse = Response.response(OK, EMPTY_HEADERS, entity(empty()));
 
         assertEquals(NoContent.value(), ContentLength.handle(emptyResponse).value());
     }
 
     @Test
     public void contentWhenContentLengthIsNotZero() throws Exception {
-        Response emptyResponse = response(OK, singleton(pair(HttpHeaders.CONTENT_LENGTH, "55")), empty());
+        Response emptyResponse = Response.response(OK, singleton(pair(HttpHeaders.CONTENT_LENGTH, "55")), entity(empty()));
 
         assertEquals((Long) 55L, ContentLength.handle(emptyResponse).value());
     }

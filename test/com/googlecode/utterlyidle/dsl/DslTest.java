@@ -6,7 +6,6 @@ import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
@@ -148,7 +147,7 @@ public class DslTest {
         }
 
         public Response target() {
-            return Responses.response(Status.NO_CONTENT);
+            return Response.response(Status.NO_CONTENT);
         }
     }
 

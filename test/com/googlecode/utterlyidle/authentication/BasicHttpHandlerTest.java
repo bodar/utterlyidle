@@ -2,11 +2,7 @@ package com.googlecode.utterlyidle.authentication;
 
 import com.googlecode.totallylazy.Sets;
 import com.googlecode.totallylazy.security.Base64;
-import com.googlecode.utterlyidle.BaseUri;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.HttpMessage;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.*;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Strings.bytes;
@@ -15,7 +11,6 @@ import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.WWW_AUTHENTICATE;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
-import static com.googlecode.utterlyidle.Responses.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.UNAUTHORIZED;
 import static com.googlecode.utterlyidle.authentication.Credentials.credential;
@@ -40,7 +35,7 @@ public class BasicHttpHandlerTest {
 
     @Test
     public void letsRequestThroughWhenCredentialsMatch() throws Exception {
-        Response response = basicServer(returns(response(OK))).
+        Response response = basicServer(returns(Response.response(OK))).
                 handle(Request.get("/", HttpMessage.Builder.header(AUTHORIZATION, "Basic " + Base64.encode(bytes("dan:right")))));
         assertThat(response.status(), is(OK));
     }

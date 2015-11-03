@@ -23,17 +23,17 @@ public class BaseUriRedirector implements Redirector {
 
     @Override
     public Response seeOther(final Uri relativeUri) {
-        return Responses.seeOther(toFullyQualified(relativeUri, baseUri));
+        return Response.seeOther(toFullyQualified(relativeUri, baseUri));
     }
 
     @Override
     public Response seeOther(final Invocation invocation) {
-        return Responses.seeOther(uriOf(invocation));
+        return Response.seeOther(uriOf(invocation));
     }
 
     @Override
     public Response seeOther(final Binding binding, final Object... arguments) {
-        return Responses.seeOther(uriOf(binding, arguments));
+        return Response.seeOther(uriOf(binding, arguments));
     }
 
     @Override

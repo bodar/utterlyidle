@@ -71,7 +71,7 @@ public class ResponseBuilder {
     }
 
     public Response build() {
-        return Responses.response(status, HeaderParameters.headerParameters(headers), entity);
+        return Response.response(status, HeaderParameters.headerParameters(headers), Entity.entity(entity));
     }
 
 

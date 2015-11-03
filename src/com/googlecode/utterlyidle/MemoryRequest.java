@@ -3,9 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.handlers.ContentLengthHandler;
 
-import static com.googlecode.utterlyidle.Rfc2616.HTTP_BODY_SEPARATOR;
-import static com.googlecode.utterlyidle.Rfc2616.HTTP_LINE_SEPARATOR;
-import static java.lang.String.format;
 
 public class MemoryRequest implements Request {
     private final String method;

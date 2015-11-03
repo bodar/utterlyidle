@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.handlers.ClientHttpHandler;
 
@@ -18,7 +17,7 @@ public class StaticResources {
         try {
             Uri original = uri(baseUrl).mergePath(filename);
             Uri normalise = original.removeDotSegments();
-            if (!original.equals(normalise)) return Responses.response(Status.NOT_FOUND);
+            if (!original.equals(normalise)) return Response.response(Status.NOT_FOUND);
             HttpHandler handler = new ClientHttpHandler();
             return handler.handle(Request.get(original));
         } catch (Exception e) {

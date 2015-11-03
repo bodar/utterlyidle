@@ -12,7 +12,6 @@ import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
-import com.googlecode.utterlyidle.Responses;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.ANY;
 import com.googlecode.utterlyidle.annotations.GET;
@@ -79,7 +78,7 @@ public class JobsResource {
     private Response jobResponse(final UUID id, final Function1<? super Job, ? extends Option<Response>> mapper) {
         return storage.get(id).
                 flatMap(mapper).
-                getOrElse(Responses.response(Status.NOT_FOUND));
+                getOrElse(Response.response(Status.NOT_FOUND));
     }
 
     @POST

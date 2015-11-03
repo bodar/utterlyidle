@@ -23,7 +23,6 @@ import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.ClientAddress.clientAddress;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.RequestEnricher.requestEnricher;
-import static com.googlecode.utterlyidle.Responses.response;
 
 public class RestHandler implements HttpHandler {
     private final Application application;
@@ -68,7 +67,7 @@ public class RestHandler implements HttpHandler {
     private Response exceptionResponse(Request request, final Exception e) throws IOException {
         System.err.println(String.format("%s %s -> %s", request.method(), request.uri(), e));
         e.printStackTrace(System.err);
-        Response response = response(Status.INTERNAL_SERVER_ERROR);
+        Response response = Response.response(Status.INTERNAL_SERVER_ERROR);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stream));
         return ResponseBuilder.modify(response).entity(stream.toByteArray()).build();

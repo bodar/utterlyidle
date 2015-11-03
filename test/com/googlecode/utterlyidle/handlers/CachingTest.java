@@ -6,7 +6,6 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Responses;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.predicates.Predicates.always;
@@ -58,8 +57,8 @@ public class CachingTest {
 
     @Test
     public void canControlPolicyBasedOnPath() throws Exception {
-        assertThat(cachePolicy(60).add(path("foo")).matches(Pair.pair(Request.get("/foo"), Responses.response())), is(true));
-        assertThat(cachePolicy(60).add(path("bar")).matches(Pair.pair(Request.get("/foo"), Responses.response())), is(false));
+        assertThat(cachePolicy(60).add(path("foo")).matches(Pair.pair(Request.get("/foo"), Response.ok())), is(true));
+        assertThat(cachePolicy(60).add(path("bar")).matches(Pair.pair(Request.get("/foo"), Response.ok())), is(false));
     }
 
     @Test
