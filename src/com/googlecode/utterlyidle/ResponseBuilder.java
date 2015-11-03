@@ -22,6 +22,8 @@ import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 
+@Deprecated
+@SuppressWarnings("deprecation")
 public class ResponseBuilder {
     private Status status;
     private List<Pair<String, String>> headers;

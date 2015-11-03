@@ -14,7 +14,6 @@ import static com.googlecode.utterlyidle.cookies.CookieEncoder.cookieEncoder;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.pairs;
 
 public class EncodingCookieHandler implements HttpHandler {
-
     private final HttpHandler delegate;
     private final CookieEncoder encoder;
 
@@ -29,10 +28,7 @@ public class EncodingCookieHandler implements HttpHandler {
     }
 
     private Response encode(Response response) {
-        ResponseBuilder builder = ResponseBuilder.modify(response);
-        return sequence(cookies(response)).
-                fold(builder, (acc, cookie) -> acc.replaceCookie(encoder.encode(cookie))).
-                build();
+        return Functions.modify(response, cookie(cookies(response).map(encoder::encode)));
     }
 
     private Request decode(Request request) {

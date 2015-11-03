@@ -1,15 +1,10 @@
 package com.googlecode.utterlyidle.handlers;
 
-import com.googlecode.totallylazy.Bytes;
-import com.googlecode.totallylazy.Exceptions;
-import com.googlecode.totallylazy.Files;
-import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.*;
 import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.CloseableList;
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.io.Uri;
-import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.proxies.NoProxy;
@@ -38,6 +33,7 @@ import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Maps.pairs;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Pair.pair;
+import static com.googlecode.totallylazy.Sequences.repeat;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.collections.CloseableList.constructors.closeableList;
@@ -50,9 +46,7 @@ import static com.googlecode.totallylazy.predicates.Predicates.where;
 import static com.googlecode.totallylazy.reflection.Fields.access;
 import static com.googlecode.totallylazy.reflection.Fields.fields;
 import static com.googlecode.totallylazy.reflection.Fields.name;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
-import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
+import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
@@ -145,7 +139,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
             File file = request.uri().toFile();
             Files.write(request.entity().asBytes(), file);
             for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
-            return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, request.uri()).build();
+            return Response.created(request.uri());
     }
 
     @multimethod
@@ -227,29 +221,19 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private Response createResponse(URLConnection connection, Status status, Object entity) {
-        final ResponseBuilder builder = pairs(connection.getHeaderFields()).
-                filter(where(first(String.class), is(not(equalIgnoringCase(HttpHeaders.TRANSFER_ENCODING))))).
-                fold(ResponseBuilder.response(status).entity(entity),
-                        responseHeaders());
-        builder.replaceHeaders(LAST_MODIFIED, new Date(connection.getLastModified()));
-        return builder.build();
+        Sequence<Pair<String, String>> headers = pairs(connection.getHeaderFields()).
+                reject(where(first(String.class), is(equalIgnoringCase(TRANSFER_ENCODING)))).
+                flatMap(pair -> repeat(pair.first()).zip(Sequences.<String>sequence(pair.second())));
+        return Response.response(status).
+                entity(entity).
+                headers(headers).
+                header(LAST_MODIFIED, new Date(connection.getLastModified()));
     }
 
     private static Function2<? super URLConnection, ? super Pair<String, String>, URLConnection> requestHeaders() {
         return (connection, header) -> {
             connection.setRequestProperty(header.first(), header.second());
             return connection;
-        };
-    }
-
-    private static Function2<ResponseBuilder, Pair<String, List<String>>, ResponseBuilder> responseHeaders() {
-        return (response, entry) -> sequence(entry.second()).fold(response, responseHeader(entry.first()));
-    }
-
-    private static Function2<ResponseBuilder, String, ResponseBuilder> responseHeader(final String key) {
-        return (response, value) -> {
-            if (key != null) return response.header(key, value);
-            return response;
         };
     }
 

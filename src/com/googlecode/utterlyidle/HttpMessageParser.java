@@ -17,8 +17,7 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
-import static com.googlecode.utterlyidle.Request.request;
+import static com.googlecode.utterlyidle.Response.response;
 import static com.googlecode.utterlyidle.Status.status;
 import static java.lang.Integer.parseInt;
 
@@ -50,9 +49,9 @@ public class HttpMessageParser {
     }
 
     private static Response buildResponse(String statusLine, Sequence<String> headerLines, String body) {
-        ResponseBuilder responseBuilder = ResponseBuilder.response(toStatus(statusLine));
-        headerLines.fold(responseBuilder, responseHeader());
-        return responseBuilder.entity(body).build();
+        return response(toStatus(statusLine)).
+                headers(headerLines.map(HttpMessageParser::toFieldNameAndValue)).
+                entity(body);
     }
 
     private static Sequence<Sequence<String>> httpMessageLines(String requestMessage) {
@@ -128,13 +127,6 @@ public class HttpMessageParser {
 
     private static Function2<StringBuilder, String, StringBuilder> addInputLine() {
         return StringBuilder::append;
-    }
-
-    private static Function2<ResponseBuilder, String, ResponseBuilder> responseHeader() {
-        return (responseBuilder, messageHeader) -> {
-            Pair<String, String> fieldNameAndValue = toFieldNameAndValue(messageHeader);
-            return responseBuilder.header(fieldNameAndValue.first(), fieldNameAndValue.second());
-        };
     }
 
     private static Sequence<String> trim(Sequence<String> linesToTrim) {

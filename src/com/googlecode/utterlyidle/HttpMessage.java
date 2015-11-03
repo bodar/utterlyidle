@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
@@ -31,8 +30,12 @@ public interface HttpMessage<T extends HttpMessage<T>> {
 
     HeaderParameters headers();
 
-    default T headers(HeaderParameters value) {
-        return create(value, entity());
+    default T headers(Iterable<? extends Pair<String, String>> value) {
+        return create(HeaderParameters.headerParameters(value), entity());
+    }
+
+    default T contentType(String mediaType){
+        return header(CONTENT_TYPE, mediaType);
     }
 
     default Option<Cookie> cookie(String name) {
@@ -50,6 +53,10 @@ public interface HttpMessage<T extends HttpMessage<T>> {
     T cookies(Iterable<? extends Pair<String, String>> parameters);
 
     Entity entity();
+
+    default T entity(Object value) {
+        return entity(Entity.entity(value));
+    }
 
     default T entity(Entity value) {
         return create(headers(), value);

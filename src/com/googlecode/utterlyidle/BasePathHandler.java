@@ -5,8 +5,11 @@ import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.io.Uri;
 
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.BaseUri.baseUri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.Parameters.Builder.param;
 import static java.util.regex.Pattern.quote;
 
 public class BasePathHandler implements HttpHandler {
@@ -21,17 +24,9 @@ public class BasePathHandler implements HttpHandler {
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(removeBasePathFromUri(request));
         Sequence<Uri> absoluteLocations = response.headers(LOCATION).
-                map(uri()).
+                map(Uri::uri).
                 map(asFullyQualified(baseUri(request, basePath)));
-        ResponseBuilder responseBuilder = ResponseBuilder.modify(response).removeHeaders(LOCATION);
-        for (Uri absoluteLocation : absoluteLocations) {
-            responseBuilder.header(LOCATION, absoluteLocation.toString());
-        }
-        return responseBuilder.build();
-    }
-
-    private Function1<? super String, Uri> uri() {
-        return Uri::uri;
+        return modify(response, header(param(LOCATION, absoluteLocations.toList())));
     }
 
     public static Uri toFullyQualified(Uri uri, BaseUri baseUri) {
@@ -46,7 +41,7 @@ public class BasePathHandler implements HttpHandler {
     }
 
     private Request removeBasePathFromUri(Request request) {
-        return Functions.modify(request,
+        return modify(request,
                 Request.Builder.uri(request.uri().path(removeBasePath(request.uri().path()))));
     }
 

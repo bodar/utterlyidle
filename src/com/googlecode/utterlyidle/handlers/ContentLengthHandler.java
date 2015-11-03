@@ -5,12 +5,10 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThanOrEqualTo;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_LENGTH;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 
 public class ContentLengthHandler implements HttpHandler {
     private final HttpHandler httpHandler;
@@ -25,14 +23,13 @@ public class ContentLengthHandler implements HttpHandler {
     }
 
     public static Response setContentLength(Response response) {
-        ResponseBuilder builder = ResponseBuilder.modify(response);
         Status status = response.status();
 
         if(status.isInformational() || status.equals(Status.NO_CONTENT) || status.equals(Status.NOT_MODIFIED)) {
-            return builder.removeEntity().removeHeaders(CONTENT_LENGTH).build();
+            return response.headers(response.headers().remove(CONTENT_LENGTH)).entity(Entity.empty());
         }
         return response.entity().length().fold(response, (acc, value) ->
-                modify(acc).replaceHeaders(CONTENT_LENGTH, value).build());
+                acc.header(CONTENT_LENGTH, value));
     }
 
     public static HeaderParameters setContentLength(Entity entity, HeaderParameters headers) {

@@ -9,7 +9,9 @@ import com.googlecode.yadic.Container;
 import static com.googlecode.utterlyidle.Accept.accept;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
 import static com.googlecode.utterlyidle.MediaType.TEXT_HTML;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
+import static com.googlecode.utterlyidle.Response.ok;
+import static com.googlecode.utterlyidle.Response.response;
+import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.bindings.MatchedBinding.constructors.matchedBinding;
 
 public class BaseHandler implements HttpHandler {
@@ -43,7 +45,7 @@ public class BaseHandler implements HttpHandler {
     }
 
     private Object convertNullToNoContent(final Object instance) {
-        if(instance == null) return Response.response(Status.NO_CONTENT);
+        if (instance == null) return response(NO_CONTENT);
         return instance;
     }
 
@@ -53,17 +55,14 @@ public class BaseHandler implements HttpHandler {
 
 
     private Response failure(final MatchFailure matchFailure) {
-        return modify(Response.response(matchFailure.status())).
+        return response(matchFailure.status()).
                 contentType(TEXT_HTML).
-                entity(matchFailure).
-                build();
+                entity(matchFailure);
     }
 
     private Response setContentType(String mimeType, Response response) {
         if (response.header(CONTENT_TYPE).isEmpty()) {
-            return modify(response).
-                    contentType(defaultIfCharsetNotSpecified(mimeType)).
-                    build();
+            return response.contentType(defaultIfCharsetNotSpecified(mimeType));
         }
         return response;
     }
@@ -80,7 +79,7 @@ public class BaseHandler implements HttpHandler {
             return (Response) instance;
         }
 
-        return ResponseBuilder.response().entity(instance).build();
+        return ok().entity(instance);
     }
 
     private Object unwrapEither(Object instance) {
