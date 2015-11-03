@@ -11,7 +11,9 @@ import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.predicates.Predicate;
+import com.googlecode.totallylazy.time.Dates;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -130,12 +132,17 @@ public abstract class Parameters<Self extends Parameters<Self>> implements Itera
     public interface Builder {
         static Unary<Parameters<?>> add(String name, Object value){
             if(value == null) return identity();
-            return params -> params.add(name, value.toString());
+            return params -> params.add(name, convert(value));
+        }
+
+        static String convert(Object value) {
+            if(value instanceof Date) return Dates.RFC822().format((Date) value);
+            return value.toString();
         }
 
         static Unary<Parameters<?>> replace(String name, Object value){
             if(value == null) return remove(name);
-            return params -> params.replace(name, value.toString());
+            return params -> params.replace(name, convert(value));
         }
 
         static Unary<Parameters<?>> remove(String name){
@@ -147,7 +154,7 @@ public abstract class Parameters<Self extends Parameters<Self>> implements Itera
         }
 
         static Unary<Parameters<?>> param(String name, List<?> values){
-            return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, item.toString()));
+            return params -> sequence(values).fold(params.remove(name), (acc, item) -> acc.add(name, convert(item)));
         }
     }
 }
