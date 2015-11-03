@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import static com.googlecode.totallylazy.matchers.Matchers.is;
 import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.Response.ok;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.handlers.RecordingHttpHandler.recordingHttpHandler;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
@@ -18,7 +19,7 @@ public class CookieHandlerTest {
     @Test
     public void setsCookiesOnFollowingRequests() throws Exception {
         Cookie cookie = new Cookie("user", "dan");
-        RecordingHttpHandler recording = recordingHttpHandler(returnsResponse(response().cookie(cookie)));
+        RecordingHttpHandler recording = recordingHttpHandler(returnsResponse(ok().cookie(cookie)));
         HttpHandler handler = new CookieHandler(recording);
 
         handler.handle(Request.get("no-cookie"));

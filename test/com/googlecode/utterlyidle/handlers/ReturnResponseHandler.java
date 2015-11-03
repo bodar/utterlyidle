@@ -25,7 +25,7 @@ public class ReturnResponseHandler implements HttpHandler, HttpClient {
     }
 
     public static HttpHandler returnsResponse(final String response) {
-        return returnsResponse(ResponseBuilder.response().entity(response));
+        return returnsResponse(Response.ok().entity(response));
     }
 
     public static HttpHandler returnsResponse(final ResponseBuilder builder) {

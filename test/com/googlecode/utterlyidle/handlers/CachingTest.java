@@ -18,7 +18,7 @@ import static com.googlecode.utterlyidle.MediaType.TEXT_JAVASCRIPT;
 import static com.googlecode.utterlyidle.PathMatcher.path;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.post;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.ok;
 import static com.googlecode.utterlyidle.handlers.CachePolicy.cachePolicy;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
 import static com.googlecode.utterlyidle.sitemesh.ContentTypePredicate.contentType;
@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.is;
 public class CachingTest {
     @Test
     public void setsCacheControlHeaders() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response().header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60).add(always()));
+        HttpHandler handler = new CacheControlHandler(returnsResponse(ok().header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60).add(always()));
         Response response = handler.handle(Request.get("/"));
         assertThat(response.header(CACHE_CONTROL).get(), is("public, max-age=60"));
         assertThat(response.header(EXPIRES).get(), is("Sat, 01 Jan 2000 00:01:00 GMT"));
@@ -36,7 +36,7 @@ public class CachingTest {
 
     @Test
     public void disablesCachingWhenItDoesNotMatch() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response()), cachePolicy(60));
+        HttpHandler handler = new CacheControlHandler(returnsResponse(ok()), cachePolicy(60));
         Response response = handler.handle(Request.get("/"));
         assertThat(response.header(CACHE_CONTROL).get(), is("private, must-revalidate"));
         assertThat(response.header(EXPIRES).get(), is("0"));
@@ -44,12 +44,12 @@ public class CachingTest {
 
     @Test
     public void passesExistingCacheHeaderThrough() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response().header(CACHE_CONTROL, "foo")), null);
+        HttpHandler handler = new CacheControlHandler(returnsResponse(ok().header(CACHE_CONTROL, "foo")), null);
         Response response = handler.handle(Request.get("/"));
         assertThat(response.header(CACHE_CONTROL).get(), is("foo"));
         assertThat(response.headers().contains(EXPIRES), is(false));
 
-        HttpHandler handler1 = new CacheControlHandler(returnsResponse(response().header(EXPIRES, "bar")), null);
+        HttpHandler handler1 = new CacheControlHandler(returnsResponse(ok().header(EXPIRES, "bar")), null);
         Response response1 = handler1.handle(Request.get("/"));
         assertThat(response1.header(EXPIRES).get(), is("bar"));
         assertThat(response1.headers().contains(CACHE_CONTROL), is(false));
@@ -57,21 +57,21 @@ public class CachingTest {
 
     @Test
     public void canControlPolicyBasedOnPath() throws Exception {
-        assertThat(cachePolicy(60).add(path("foo")).matches(Pair.pair(Request.get("/foo"), Response.ok())), is(true));
-        assertThat(cachePolicy(60).add(path("bar")).matches(Pair.pair(Request.get("/foo"), Response.ok())), is(false));
+        assertThat(cachePolicy(60).add(path("foo")).matches(Pair.pair(Request.get("/foo"), ok())), is(true));
+        assertThat(cachePolicy(60).add(path("bar")).matches(Pair.pair(Request.get("/foo"), ok())), is(false));
     }
 
     @Test
     public void canControlPolicyBasedOnContentType() throws Exception {
         assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
-                matches(Pair.pair(Request.get("/foo"), response().contentType(TEXT_JAVASCRIPT).build())), is(true));
+                matches(Pair.pair(Request.get("/foo"), ok().contentType(TEXT_JAVASCRIPT))), is(true));
         assertThat(cachePolicy(60).add(contentType(TEXT_CSS).or(contentType(TEXT_JAVASCRIPT))).
-                matches(Pair.pair(Request.get("/foo"), response().contentType(MediaType.APPLICATION_ATOM_XML).build())), is(false));
+                matches(Pair.pair(Request.get("/foo"), ok().contentType(MediaType.APPLICATION_ATOM_XML))), is(false));
     }
 
     @Test
     public void onlyAppliesForGetRequestsAndResponseIsOk() throws Exception {
-        HttpHandler handler = new CacheControlHandler(returnsResponse(response() .header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
+        HttpHandler handler = new CacheControlHandler(returnsResponse(ok() .header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60));
         Response response = handler.handle(Request.post("/"));
         assertThat(response.headers().contains(CACHE_CONTROL), is(false));
         assertThat(response.headers().contains(EXPIRES), is(false));
