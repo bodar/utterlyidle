@@ -35,8 +35,8 @@ public interface HttpMessage<T extends HttpMessage<T>> {
         return create(value, entity());
     }
 
-    default Option<String> cookie(String name) {
-        return cookies().valueOption(name);
+    default Option<Cookie> cookie(String name) {
+        return cookies().get(name);
     }
 
     default T cookie(String name, Object value) {

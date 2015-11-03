@@ -2,15 +2,18 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.Request.Builder;
+import com.googlecode.utterlyidle.cookies.Cookie;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Assert.assertThat;
 import static com.googlecode.totallylazy.Lists.list;
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.Parameters.Builder.add;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
@@ -37,6 +40,8 @@ import static com.googlecode.utterlyidle.annotations.HttpMethod.OPTIONS;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PATCH;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.POST;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
+import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 import static org.junit.Assert.assertEquals;
 
 public class RequestTest {
@@ -189,6 +194,13 @@ public class RequestTest {
         String value = get("/", cookie("name", "Dan")).headers().getValue(COOKIE);
         assertThat(value, is("name=\"Dan\"; "));
         assertThat(get("/", cookie("first", "Dan"), cookie("last", "Bod")).headers().getValues(COOKIE), is(sequence("first=\"Dan\"; ", "last=\"Bod\"; ")));
+    }
+
+    @Test
+    public void doesNotStoreCookieAttributes() throws Exception {
+        Cookie cookie = cookie("name", "Dan", expires(date(2001, 1, 1)));
+        Request request = Request.get("/").cookie(cookie);
+        assertThat(request.cookie(cookie.name()), is(some(Cookie.cookie("name", "Dan"))));
     }
 
     @Test

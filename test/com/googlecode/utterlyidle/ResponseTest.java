@@ -1,13 +1,16 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.cookies.Cookie;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Assert.assertThat;
+import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
+import static com.googlecode.totallylazy.time.Dates.date;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.Status.ACCEPTED;
-import static com.googlecode.utterlyidle.Status.CREATED;
-import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
 
 public class ResponseTest {
     @Test
@@ -29,7 +32,8 @@ public class ResponseTest {
 
     @Test
     public void supportsCookiesWithAttributes() throws Exception {
-
+        Cookie cookie = cookie("name", "Dan", expires(date(2001, 1, 1)));
+        Response response = Response.ok().cookie(cookie);
+        assertThat(response.cookies().get(cookie.name()), is(some(cookie)));
     }
-
 }

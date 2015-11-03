@@ -73,13 +73,17 @@ public abstract class Parameters<Self extends Parameters<Self>> implements Itera
         return values.iterator();
     }
 
-    private Sequence<Pair<String, String>> filterByKey(String key) {
+    protected Sequence<Pair<String, String>> filterByKey(String key) {
         Predicate<First<String>> predicate = by(Callables.<String>first(), call(this.predicate, key));
         return filter(predicate).realise();
     }
 
     public Sequence<Pair<String, String>> filter(final Predicate<First<String>> predicate) {
         return sequence(values).filter(predicate);
+    }
+
+    public Option<Pair<String, String>> find(final Predicate<First<String>> predicate) {
+        return filter(predicate).headOption();
     }
 
     public static <Self extends Parameters<Self>> Function2<Self, Pair<String, String>, Self> pairIntoParameters() {

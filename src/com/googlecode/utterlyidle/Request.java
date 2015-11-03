@@ -82,10 +82,6 @@ public interface Request extends HttpMessage<Request> {
                 entity(Entity.entity(UrlEncodedMessage.toString(parameters)));
     }
 
-    default Option<String> cookie(String name) {
-        return cookies().valueOption(name);
-    }
-
     /**
      * This is designed to be lossy as Request Cookies never have attributes
      */

@@ -1,7 +1,9 @@
 package com.googlecode.utterlyidle.cookies;
 
+import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.collections.PersistentList;
+import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -53,12 +55,16 @@ public class CookieParameters extends Parameters<CookieParameters> {
         return remove(cookie.name()).add(cookie);
     }
 
+    public Option<Cookie> get(String name){
+        return find(p -> p.first().equals(name)).map(CookieParameters::toCookie);
+    }
+
     public List<Cookie> toList() {
-        return values.map(pair -> {
-            if(pair instanceof Cookie) {
-                return (Cookie) pair;
-            }
-            return new Cookie(pair.first(), pair.second());
-        });
+        return values.map(CookieParameters::toCookie);
+    }
+
+    public static Cookie toCookie(Pair<String, String> pair) {
+        if (pair instanceof Cookie) return (Cookie) pair;
+        return new Cookie(pair.first(), pair.second());
     }
 }
