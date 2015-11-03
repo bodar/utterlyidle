@@ -55,9 +55,9 @@ public class HttpMessageParserTest {
 
     @Test
     public void parseResponses() {
-        canParseResponse(ResponseBuilder.response(OK).header("header name", "header value").entity("entity"));
-        canParseResponse(ResponseBuilder.response(OK).entity("response"));
-        canParseResponse(ResponseBuilder.response(OK));
+        canParseResponse(Response.response(OK).header("header name", "header value").entity("entity"));
+        canParseResponse(Response.response(OK).entity("response"));
+        canParseResponse(Response.response(OK));
     }
 
     @Test
@@ -79,8 +79,7 @@ public class HttpMessageParserTest {
         assertThat(response.entity().toString(), is(" body "));
     }
 
-    private void canParseResponse(ResponseBuilder builder) {
-        Response response = builder.build();
+    private void canParseResponse(Response response) {
         assertThat(response, is(HttpMessageParser.parseResponse(response.toString())));
     }
 
@@ -144,7 +143,7 @@ public class HttpMessageParserTest {
 
     @Test
     public void reasonPhaseIsOptional() {
-        assertThat(parseResponse(ResponseBuilder.response(status(200, "")).build().toString()).status().code(), is(200));
+        assertThat(parseResponse(Response.response(status(200, "")).toString()).status().code(), is(200));
     }
 
     @Test

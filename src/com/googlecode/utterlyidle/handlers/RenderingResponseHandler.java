@@ -35,7 +35,7 @@ public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     }
 
     public Response handle(Response response) throws Exception {
-        return ResponseBuilder.modify(response).entity(getRenderer().render(Unchecked.<T>cast(response.entity().value()))).build();
+        return response.entity(getRenderer().render(Unchecked.<T>cast(response.entity().value())));
     }
 
     protected abstract Renderer<T> getRenderer() throws Exception;

@@ -24,6 +24,6 @@ public class DateHandler implements HttpHandler{
         if(response.headers().contains(DATE)){
             return response;
         }
-        return ResponseBuilder.modify(response).header(DATE, Dates.RFC822().format(clock.now())).build();
+        return response.header(DATE, clock.now());
     }
 }

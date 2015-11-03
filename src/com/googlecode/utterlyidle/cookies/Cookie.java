@@ -4,7 +4,11 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.utterlyidle.Rfc2616;
 
+import java.util.Date;
+
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 import static java.lang.String.format;
 
 public class Cookie extends Pair<String, String> {
@@ -12,6 +16,10 @@ public class Cookie extends Pair<String, String> {
 
     public static Cookie cookie(String name, String value, CookieAttribute... attributes) {
         return new Cookie(name, value, attributes);
+    }
+
+    public static Cookie expire(String name) {
+        return cookie(name, "", maxAge(0), expires(new Date(0)));
     }
 
     public Cookie(String name, String value, CookieAttribute... attributes) {

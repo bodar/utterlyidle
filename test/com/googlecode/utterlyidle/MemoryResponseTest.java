@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle;
 
+import com.googlecode.utterlyidle.cookies.Cookie;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -28,8 +29,8 @@ public class MemoryResponseTest {
     public void shouldSupportSettingCookieAttributes() throws Exception {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Australia/Sydney"));
         calendar.set(2011, 8, 4, 16, 15, 36);
-        Response response = ResponseBuilder.response().
-                cookie(cookie("a", "1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(calendar.getTime()))).build();
+        Response response = Response.ok().
+                cookie(cookie("a", "1", comment("some comment"), domain(".acme.com"), maxAge(123), path("/products"), secure(), expires(calendar.getTime())));
 
         assertThat(
                 response.header(SET_COOKIE).get(),
@@ -38,8 +39,8 @@ public class MemoryResponseTest {
 
     @Test
     public void canRemoveCookieFromBothClientAndResponse() throws Exception {
-        Response response = ResponseBuilder.modify(Response.seeOther("/go")).cookie(cookie("a", "1")).build();
-        Response shouldClearCookie = ResponseBuilder.modify(response).removeCookie("a").build();
+        Response response = Response.seeOther("/go").cookie(cookie("a", "1"));
+        Response shouldClearCookie = response.cookie(Cookie.expire("a"));
         assertThat(shouldClearCookie.toString(), is("HTTP/1.1 303 See Other\r\n" +
                 "Location: /go\r\n" +
                 "Set-Cookie: a=\"\"; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT\r\n" +

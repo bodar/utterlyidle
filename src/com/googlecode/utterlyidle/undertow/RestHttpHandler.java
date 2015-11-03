@@ -51,10 +51,9 @@ class RestHttpHandler implements HttpHandler {
         } catch (Throwable e) {
             StringWriter stringWriter = new StringWriter();
             using(new PrintWriter(stringWriter), printStackTrace(e));
-            return ResponseBuilder.response(INTERNAL_SERVER_ERROR).
+            return Response.response(INTERNAL_SERVER_ERROR).
                     contentType(TEXT_PLAIN).
-                    entity(stringWriter.toString()).
-                    build();
+                    entity(stringWriter.toString());
         }
     }
 

@@ -36,13 +36,13 @@ public class ExceptionHandler implements HttpHandler {
 
     private Response findAndHandle(Request request, Throwable throwable) {
         if (debugging()) throwable.printStackTrace();
-        ResponseBuilder response = ResponseBuilder.response(INTERNAL_SERVER_ERROR).
+        final Response response = Response.response(INTERNAL_SERVER_ERROR).
                 contentType(TEXT_PLAIN).
                 entity(throwable);
         try {
-            return handlers.findAndHandle(request, response.build());
+            return handlers.findAndHandle(request, response);
         } catch (Throwable t) {
-            return response.entity(ExceptionRenderer.toString(t)).build();
+            return response.entity(ExceptionRenderer.toString(t));
         }
     }
 }

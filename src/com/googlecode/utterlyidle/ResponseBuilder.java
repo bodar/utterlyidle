@@ -19,8 +19,6 @@ import static com.googlecode.totallylazy.predicates.Predicates.and;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
 import static com.googlecode.totallylazy.predicates.Predicates.not;
 import static com.googlecode.totallylazy.predicates.Predicates.where;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.maxAge;
 
 @Deprecated
 @SuppressWarnings("deprecation")
@@ -65,7 +63,7 @@ public class ResponseBuilder {
 
     public ResponseBuilder removeCookie(String name) {
         return removeHeaders(HttpHeaders.SET_COOKIE, startsWith(name + "=")).
-            cookie(Cookie.cookie(name, "", maxAge(0), expires(new Date(0))));
+            cookie(Cookie.expire(name));
     }
 
     public ResponseBuilder replaceCookie(Cookie cookie) {

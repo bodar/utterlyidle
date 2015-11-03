@@ -19,7 +19,7 @@ public class BasePathHandlerTest {
     }
 
     private HttpHandler returnsRequestUri() {
-        return request -> ResponseBuilder.response().entity(request.uri().toString()).build();
+        return request -> Response.ok().entity(request.uri().toString());
     }
 
     @Test

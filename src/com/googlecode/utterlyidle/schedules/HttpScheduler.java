@@ -98,7 +98,7 @@ public class HttpScheduler implements Service {
             } catch (Exception e) {
                 Date completed = clock.now();
                 return application.usingRequestScope(update(
-                        Schedule.schedule(id).response(ResponseBuilder.response(Status.INTERNAL_SERVER_ERROR).
+                        Schedule.schedule(id).response(Response.response(Status.INTERNAL_SERVER_ERROR).
                                 entity(ExceptionRenderer.toString(e)).toString()).
                                 duration(Seconds.between(started, completed)).
                                 completed(completed).running(false)));

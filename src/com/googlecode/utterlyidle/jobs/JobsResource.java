@@ -89,15 +89,14 @@ public class JobsResource {
     }
 
     private Response response(final Job job) {
-        return setResultLocation(job, ResponseBuilder.response(status(job)).
-                entity(jobModel(job)).
-                build());
+        return setResultLocation(job, Response.response(status(job)).
+                entity(jobModel(job)));
     }
 
     private Response setResultLocation(final Job job, final Response response) {
         if (response.status().equals(Status.OK)) {
-            return ResponseBuilder.modify(response).
-                    header(HttpHeaders.CONTENT_LOCATION, resultUri(job)).build();
+            return response.
+                    header(HttpHeaders.CONTENT_LOCATION, resultUri(job));
         }
         return response;
     }

@@ -13,7 +13,7 @@ public class WriteMessageToResponseHandler implements ResponseHandler {
     }
 
     public Response handle(final Response response) throws Exception {
-        return ResponseBuilder.modify(response).entity(message).build();
+        return response.entity(message);
     }
 
 }

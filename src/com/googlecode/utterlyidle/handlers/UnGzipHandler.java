@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
 import static com.googlecode.totallylazy.functions.Functions.modify;
+import static com.googlecode.utterlyidle.Parameters.Builder.remove;
 
 public class UnGzipHandler implements HttpClient {
     private final HttpHandler handler;
@@ -24,7 +25,7 @@ public class UnGzipHandler implements HttpClient {
     public Response handle(final Request request) throws Exception {
         Response response = handler.handle(modify(request, HttpMessage.Builder.header(HttpHeaders.ACCEPT_ENCODING, "gzip")));
         if("gzip".equalsIgnoreCase(response.headers().getValue(HttpHeaders.CONTENT_ENCODING))) {
-            return ResponseBuilder.modify(response).entity(gzipInputStream(response.entity().inputStream())).removeHeaders(HttpHeaders.CONTENT_ENCODING).build();
+            return response.entity(gzipInputStream(response.entity().inputStream())).headers(remove(HttpHeaders.CONTENT_ENCODING));
         }
         return response;
     }

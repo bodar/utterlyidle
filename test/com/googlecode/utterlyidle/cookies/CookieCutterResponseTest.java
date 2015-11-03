@@ -6,6 +6,7 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseBuilder;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
@@ -45,10 +46,6 @@ public class CookieCutterResponseTest {
     }
 
     private Response responseWithCookies(Cookie... cookies) {
-        ResponseBuilder builder = ResponseBuilder.response();
-        for (Cookie cookie : cookies) {
-            builder.cookie(cookie);
-        }
-        return builder.build();
+        return Response.ok().cookies(sequence(cookies));
     }
 }

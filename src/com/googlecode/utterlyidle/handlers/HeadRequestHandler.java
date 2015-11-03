@@ -1,10 +1,7 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.functions.Functions;
-import com.googlecode.utterlyidle.HttpHandler;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 
@@ -21,9 +18,8 @@ public class HeadRequestHandler implements HttpHandler {
     public Response handle(Request request) throws Exception {
         if (request.method().equals(HttpMethod.HEAD) && matcher.match(request).isLeft()) {
             Response response = decorated.handle(Functions.modify(request, Request.Builder.method(HttpMethod.GET)));
-            return ResponseBuilder.modify(response).removeEntity().build();
+            return response.entity(Entity.empty());
         }
-
         return decorated.handle(request);
     }
 

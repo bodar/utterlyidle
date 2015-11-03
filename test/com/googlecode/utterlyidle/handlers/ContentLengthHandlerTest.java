@@ -17,19 +17,19 @@ import static org.hamcrest.Matchers.is;
 public class ContentLengthHandlerTest {
     @Test
     public void doesNotSetContentLengthForNotModifiedResponses() throws Exception {
-        Response response = ContentLengthHandler.setContentLength(ResponseBuilder.response(Status.NOT_MODIFIED).build());
+        Response response = ContentLengthHandler.setContentLength(Response.response(Status.NOT_MODIFIED));
         assertThat(response.headers().valueOption(CONTENT_LENGTH), is(none(String.class)));
     }
 
     @Test
     public void doesNotSetContentLengthForNoContentResponses() throws Exception {
-        Response response = ContentLengthHandler.setContentLength(ResponseBuilder.response(Status.NO_CONTENT).build());
+        Response response = ContentLengthHandler.setContentLength(Response.response(Status.NO_CONTENT));
         assertThat(response.headers().valueOption(CONTENT_LENGTH), is(none(String.class)));
     }
 
     @Test
     public void doesNotSetContentLengthForInformationalResponses() throws Exception {
-        Response response = ContentLengthHandler.setContentLength(ResponseBuilder.response(Status.CONTINUE).build());
+        Response response = ContentLengthHandler.setContentLength(Response.response(Status.CONTINUE));
         assertThat(response.headers().valueOption(CONTENT_LENGTH), is(none(String.class)));
     }
 

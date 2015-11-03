@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
@@ -29,6 +30,10 @@ public interface HttpMessage<T extends HttpMessage<T>> {
     }
 
     HeaderParameters headers();
+
+    default T headers(Unary<Parameters<?>> builder) {
+        return headers(Functions.modify(headers(), builder));
+    }
 
     default T headers(Iterable<? extends Pair<String, String>> value) {
         return create(HeaderParameters.headerParameters(value), entity());

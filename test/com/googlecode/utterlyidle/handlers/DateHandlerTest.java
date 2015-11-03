@@ -24,7 +24,7 @@ public class DateHandlerTest {
 
     @Test
     public void neverOverridesDate() throws Exception{
-        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(ResponseBuilder.response(Status.OK).header(DATE, "simon")), null);
+        DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(Response.response(Status.OK).header(DATE, "simon")), null);
         Response response = handler.handle(Request.get("/foo"));
 
         assertThat(response.header(DATE).get(), is("simon"));

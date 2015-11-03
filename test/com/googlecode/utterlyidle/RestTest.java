@@ -502,11 +502,11 @@ public class RestTest {
     @Path("foo")
     public static class Headable {
         @HEAD
-        public Response head() { return ResponseBuilder.response(OK).header(CONTENT_LENGTH, "569").build(); }
+        public Response head() { return Response.response(OK).header(CONTENT_LENGTH, "569"); }
 
         @HEAD
         @Path("bar")
-        public Response headForbidden() { return ResponseBuilder.response(FORBIDDEN).build(); }
+        public Response headForbidden() { return Response.response(FORBIDDEN); }
 
         @GET
         public Response get() {
@@ -534,7 +534,7 @@ public class RestTest {
         @GET
         @Path("foo")
         public Response getAndSet(@CookieParam("name") String name) {
-            return ResponseBuilder.response().cookie(cookie("anotherName", "anotherValue")).entity(name).build();
+            return Response.ok().cookie(cookie("anotherName", "anotherValue")).entity(name);
         }
 
         @GET
@@ -779,7 +779,7 @@ public class RestTest {
         @GET
         @Path("bar")
         public Response redirect() {
-            return ResponseBuilder.response(Status.SEE_OTHER).header(HttpHeaders.LOCATION, baseUri.value().mergePath("baz")).build();
+            return Response.seeOther(baseUri.value().mergePath("baz"));
         }
     }
 

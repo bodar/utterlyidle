@@ -70,7 +70,7 @@ public class RestHandler implements HttpHandler {
         Response response = Response.response(Status.INTERNAL_SERVER_ERROR);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         e.printStackTrace(new PrintStream(stream));
-        return ResponseBuilder.modify(response).entity(stream.toByteArray()).build();
+        return response.entity(stream.toByteArray());
     }
 }
 

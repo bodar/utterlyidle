@@ -44,16 +44,16 @@ public class EtagHandler implements HttpHandler {
         Digest digest = md5(response.entity().asBytes());
         String etag = strongEtag(digest);
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
-            return copySafeHeaders(response, response(NOT_MODIFIED)).build();
+            return copySafeHeaders(response, Response.response(NOT_MODIFIED));
         }
-        return modify(response).header(ETAG, etag).header(Content_MD5, digest.asBase64()).build();
+        return response.header(ETAG, etag).header(Content_MD5, digest.asBase64());
     }
 
-    private ResponseBuilder copySafeHeaders(final Response source, ResponseBuilder destination) {
+    private Response copySafeHeaders(final Response source, Response destination) {
         return sequence(safeHeaders).fold(destination, copyFrom(source));
     }
 
-    private static Function2<ResponseBuilder, String, ResponseBuilder> copyFrom(final Response source) {
+    private static Function2<Response, String, Response> copyFrom(final Response source) {
         return (destination, header) -> destination.header(header, source.header(header).getOrNull());
     }
 
