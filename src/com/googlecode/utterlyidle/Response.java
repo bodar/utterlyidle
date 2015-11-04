@@ -1,6 +1,7 @@
 package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Pair;
+import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
@@ -86,4 +87,9 @@ public interface Response extends HttpMessage<Response> {
         return response(SEE_OTHER, one(pair(HttpHeaders.LOCATION, location)), Entity.entity(location));
     }
 
+    interface Builder {
+        static Unary<Response> status(Status value){
+            return response -> response.status(value);
+        }
+    }
 }
