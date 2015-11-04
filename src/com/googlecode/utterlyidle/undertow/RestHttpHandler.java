@@ -10,7 +10,6 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;

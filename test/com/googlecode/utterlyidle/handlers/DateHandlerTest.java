@@ -4,12 +4,10 @@ import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.StoppedClock;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.DATE;
-import static com.googlecode.utterlyidle.Request.get;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -23,7 +21,7 @@ public class DateHandlerTest {
     }
 
     @Test
-    public void neverOverridesDate() throws Exception{
+    public void neverOverridesDate() throws Exception {
         DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(Response.response(Status.OK).header(DATE, "simon")), null);
         Response response = handler.handle(Request.get("/foo"));
 

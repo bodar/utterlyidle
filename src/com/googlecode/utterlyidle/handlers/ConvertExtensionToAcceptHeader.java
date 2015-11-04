@@ -21,8 +21,8 @@ import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
+import static com.googlecode.utterlyidle.Parameters.Builder.remove;
 import static com.googlecode.utterlyidle.Request.Builder.uri;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;
 
 public class ConvertExtensionToAcceptHeader implements HttpHandler {
@@ -44,10 +44,9 @@ public class ConvertExtensionToAcceptHeader implements HttpHandler {
         return new Function2<Response, Pair<String, String>, Response>() {
             public Response call(Response response, Pair<String, String> extensionAndReplacementMimeType) throws Exception {
                 if (response.headers().contains(LOCATION)) {
-                    return modify(response).
-                            removeHeaders(LOCATION).
-                            header(LOCATION, addExtension(response.headers().getValue(LOCATION), extensionAndReplacementMimeType.first())).
-                            build();
+                    return response.
+                            headers(remove(LOCATION)).
+                            header(LOCATION, addExtension(response.headers().getValue(LOCATION), extensionAndReplacementMimeType.first()));
                 }
                 return response;
             }

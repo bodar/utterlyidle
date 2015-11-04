@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.QueryParameters;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;

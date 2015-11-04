@@ -8,9 +8,7 @@ import com.googlecode.utterlyidle.handlers.RecordingHttpHandler;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.matchers.Matchers.is;
-import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Response.ok;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.handlers.RecordingHttpHandler.recordingHttpHandler;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
 import static org.hamcrest.MatcherAssert.assertThat;

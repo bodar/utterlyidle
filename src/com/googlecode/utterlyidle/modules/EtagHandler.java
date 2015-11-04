@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 
 import java.util.List;
@@ -20,8 +19,6 @@ import static com.googlecode.utterlyidle.HttpHeaders.EXPIRES;
 import static com.googlecode.utterlyidle.HttpHeaders.IF_NONE_MATCH;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.Status.NOT_MODIFIED;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.modules.Digest.md5;

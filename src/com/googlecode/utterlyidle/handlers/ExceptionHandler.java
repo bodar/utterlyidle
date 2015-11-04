@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.LazyException;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 
 import java.lang.reflect.InvocationTargetException;

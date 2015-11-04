@@ -3,17 +3,12 @@ package com.googlecode.utterlyidle.cookies;
 import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
-import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.httpOnly;
-import static com.googlecode.utterlyidle.cookies.CookieAttribute.secure;
+import static com.googlecode.utterlyidle.cookies.CookieAttribute.*;
 import static com.googlecode.utterlyidle.cookies.CookieCutter.cookies;
 import static com.googlecode.utterlyidle.cookies.EmptyCookiesMatcher.isEmpty;
 import static org.hamcrest.Matchers.containsInAnyOrder;

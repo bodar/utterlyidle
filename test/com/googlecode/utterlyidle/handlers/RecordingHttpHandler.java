@@ -5,11 +5,7 @@ import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
-import static com.googlecode.totallylazy.collections.PersistentList.constructors.cons;
-import static com.googlecode.totallylazy.collections.PersistentList.constructors.empty;
-import static com.googlecode.totallylazy.collections.PersistentList.constructors.reverse;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
-import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.totallylazy.collections.PersistentList.constructors.*;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returns;
 
 public class RecordingHttpHandler implements HttpHandler, HttpClient {
@@ -25,7 +21,7 @@ public class RecordingHttpHandler implements HttpHandler, HttpClient {
     }
 
     public static RecordingHttpHandler recordingHttpHandler() {
-        return recordingHttpHandler(returns(response(OK).build()));
+        return recordingHttpHandler(returns(Response.ok()));
     }
 
     public Response handle(Request request) throws Exception {

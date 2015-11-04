@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 public class EtagHandlerTest {
     @Test
     public void onlyPassesThroughSafeHeaders() throws Exception {
-        HttpHandler handler = new EtagHandler(returnsResponse(ResponseBuilder.response(OK).entity("abc").header(HttpHeaders.DATE, "passesThrough").header("X-foo", "doesntPassThrough").build()));
+        HttpHandler handler = new EtagHandler(returnsResponse(Response.ok().entity("abc").header(HttpHeaders.DATE, "passesThrough").header("X-foo", "doesntPassThrough")));
         Response response = handler.handle(Request.get("/", HttpMessage.Builder.header(IF_NONE_MATCH, "\"900150983cd24fb0d6963f7d28e17f72\"")));
 
         assertThat(response.headers().contains("X-foo"), is(false));

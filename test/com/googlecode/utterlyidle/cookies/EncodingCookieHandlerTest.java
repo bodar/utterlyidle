@@ -7,7 +7,6 @@ import com.googlecode.utterlyidle.handlers.RecordingHttpHandler;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.comment;
 import static com.googlecode.utterlyidle.cookies.CookieBuilder.modify;
@@ -37,7 +36,7 @@ public class EncodingCookieHandlerTest {
         Cookie cookie = cookie("cookie1", "Hōb Nőḃ", comment("comment"));
         Cookie expected = modify(cookie).value("utterlyidle:v1:SMWNYiBOxZHhuIM=").build();
 
-        Response response = response().cookie(cookie).build();
+        Response response = Response.ok().cookie(cookie);
         EncodingCookieHandler handler = new EncodingCookieHandler(returns(response), BASE64_ENCODING);
         assertThat(cookies(handler.handle(anyRequest())), contains(expected));
     }

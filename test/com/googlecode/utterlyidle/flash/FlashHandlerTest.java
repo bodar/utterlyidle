@@ -29,7 +29,7 @@ import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Request.post;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.response;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.cookies.CookieParameters.cookies;
@@ -153,7 +153,7 @@ public class FlashHandlerTest {
 		@Path("addAndError")
 		public Response error(@FormParam("value") String value){
 			this.flash.add("key", value);
-			return response(Status.INTERNAL_SERVER_ERROR).build();
+			return response(Status.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

@@ -3,7 +3,6 @@ package com.googlecode.utterlyidle.handlers;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 
 public class ReturnResponseHandler implements HttpHandler, HttpClient {
     private final Response response;
@@ -26,9 +25,5 @@ public class ReturnResponseHandler implements HttpHandler, HttpClient {
 
     public static HttpHandler returnsResponse(final String response) {
         return returnsResponse(Response.ok().entity(response));
-    }
-
-    public static HttpHandler returnsResponse(final ResponseBuilder builder) {
-        return returnsResponse(builder.build());
     }
 }

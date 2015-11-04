@@ -55,7 +55,6 @@ import static com.googlecode.utterlyidle.Request.patch;
 import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Request.put;
 import static com.googlecode.utterlyidle.Request.Builder.query;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.Status.FORBIDDEN;
 import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.Status.OK;
@@ -902,7 +901,7 @@ public class RestTest {
         public Response get(@QueryParam("override") Boolean override) {
             Response response = Response.response(Status.SEE_OTHER);
             if (override) {
-                return modify(response).contentType(MediaType.APPLICATION_JSON).build();
+                return response.contentType(MediaType.APPLICATION_JSON);
             }
             return response;
         }

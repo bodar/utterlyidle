@@ -14,7 +14,8 @@ import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.head;
 import static com.googlecode.utterlyidle.Request.post;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.ok;
+import static com.googlecode.utterlyidle.Response.response;
 import static com.googlecode.utterlyidle.Status.FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
@@ -28,8 +29,8 @@ public class RedirectHttpHandlerTest {
     private final Request REDIRECTED_GET_REQUEST = Request.get("http://newtarg.et");
     private final Request POST_REQUEST_WITH_ENTITY_AND_HEADERS = Request.post("http://redirected.url", entity("{'name': 'value'}"), contentType(APPLICATION_JSON));
     private final Request REDIRECTED_REQUEST_WITH_ENTITY_AND_HEADERS = Request.post("http://newtarg.et", entity("{'name': 'value'}"), contentType(APPLICATION_JSON));
-    private final Response ANY_REDIRECTING_RESPONSE_BUT_SEE_OTHER = response(FOUND).header(LOCATION, "http://newtarg.et").build();
-    private final Response REDIRECTING_RESPONSE_SEE_OTHER = response(SEE_OTHER).header(LOCATION, "http://newtarg.et").build();
+    private final Response ANY_REDIRECTING_RESPONSE_BUT_SEE_OTHER = response(FOUND).header(LOCATION, "http://newtarg.et");
+    private final Response REDIRECTING_RESPONSE_SEE_OTHER = response(SEE_OTHER).header(LOCATION, "http://newtarg.et");
     private final StubHttpHandler stubHttpHandler = new StubHttpHandler();
     private final RedirectHttpHandler redirectHttpHandler = new RedirectHttpHandler(stubHttpHandler);
 
@@ -75,7 +76,7 @@ public class RedirectHttpHandlerTest {
             this.lastRequest = request;
             final Response response = rules.get(request);
             if (response == null)
-                return response(OK).entity("Success!").build();
+                return ok().entity("Success!");
             return response;
         }
 

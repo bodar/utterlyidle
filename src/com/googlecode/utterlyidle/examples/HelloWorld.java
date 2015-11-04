@@ -33,7 +33,7 @@ import static com.googlecode.totallylazy.functions.Callables.toString;
 import static com.googlecode.utterlyidle.Entities.streamingOutputOf;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_FOR;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.ok;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
@@ -52,7 +52,7 @@ public class HelloWorld {
     @GET
     @Path("cacheable")
     public Response cacheable() {
-        return response(Status.OK).header(HttpHeaders.CACHE_CONTROL, "public, max-age=60").entity("cacheable").build();
+        return ok().header(HttpHeaders.CACHE_CONTROL, "public, max-age=60").entity("cacheable");
     }
 
     @GET
@@ -77,7 +77,7 @@ public class HelloWorld {
     @GET
     @Path("helloworld/inresponseheaders")
     public Response getx(@QueryParam("name") String name) {
-        return response(Status.OK).header("greeting", hello(name)).entity("").build();
+        return ok().header("greeting", hello(name)).entity("");
     }
 
     @OPTIONS
@@ -156,7 +156,7 @@ public class HelloWorld {
     @ANY
     @Path("any")
     public Response any() {
-        return response().header("x-custom-header", "smile").entity(hello("everyone")).build();
+        return ok().header("x-custom-header", "smile").entity(hello("everyone"));
     }
 
     @DELETE

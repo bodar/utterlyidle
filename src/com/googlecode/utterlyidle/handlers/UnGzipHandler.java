@@ -5,7 +5,6 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;

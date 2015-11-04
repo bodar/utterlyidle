@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;

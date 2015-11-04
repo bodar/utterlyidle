@@ -9,7 +9,6 @@ import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
 import static com.googlecode.utterlyidle.handlers.ConvertExtensionToAcceptHeader.Replacements.replacements;
 import static com.googlecode.utterlyidle.handlers.RecordingHttpHandler.recordingHttpHandler;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
@@ -67,7 +66,7 @@ public class ConvertExtensionToAcceptHeaderTest {
     }
 
     private void assertHeaderConversion(String url, String expectedMimeType) throws Exception {
-        RecordingHttpHandler httpHandler = respondsWith(response().build());
+        RecordingHttpHandler httpHandler = respondsWith(Response.ok());
 
         ConvertExtensionToAcceptHeader converter = converter(httpHandler);
 
@@ -88,7 +87,7 @@ public class ConvertExtensionToAcceptHeaderTest {
     }
 
     private void assertUrlConversion(String original, String expectedAfterConversion) throws Exception {
-        RecordingHttpHandler httpHandler = respondsWith(response().build());
+        RecordingHttpHandler httpHandler = respondsWith(Response.ok());
 
         ConvertExtensionToAcceptHeader converter = converter(httpHandler);
 

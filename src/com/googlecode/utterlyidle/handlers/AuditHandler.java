@@ -12,7 +12,6 @@ import java.io.OutputStream;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Pair.pair;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 
 public class AuditHandler implements HttpClient {
     private final HttpHandler handler;
@@ -47,9 +46,9 @@ public class AuditHandler implements HttpClient {
     private Response streamedResponse(final OutputStream outputStream, final Response response, final Block<OutputStream> writer) throws Exception {
         try {
             writer.call(outputStream);
-            return modify(response).entity("Streaming succeeded").build();
+            return response.entity("Streaming succeeded");
         } catch (Exception e) {
-            return modify(response).entity("Streaming failed:\n" + ExceptionRenderer.toString(e)).build();
+            return response.entity("Streaming failed:\n" + ExceptionRenderer.toString(e));
         }
     }
 }

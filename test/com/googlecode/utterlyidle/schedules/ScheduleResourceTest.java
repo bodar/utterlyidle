@@ -11,7 +11,6 @@ import com.googlecode.utterlyidle.InternalRequestMarker;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.handlers.ApplicationId;
 import com.googlecode.utterlyidle.jobs.SpyExceptionLogger;
 import com.googlecode.utterlyidle.jobs.UtterlyIdleRecords;
@@ -110,7 +109,7 @@ public class ScheduleResourceTest {
             }
 
             private Response noResponse() {
-                return ResponseBuilder.response().build();
+                return Response.ok();
             }
 
             @Override

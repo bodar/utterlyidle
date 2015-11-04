@@ -10,7 +10,7 @@ import org.junit.Test;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.time.Dates.date;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.ok;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.cookies.Cookie.cookie;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.expires;
@@ -66,7 +66,7 @@ public class CookieParametersTest extends ParametersContract<CookieParameters> {
 
     @Test
     public void parsesResponseCookies() {
-        Response response = response(OK).cookie(cookie("test", "test value", expires(date(2013, 1, 1)))).build();
+        Response response = ok().cookie(cookie("test", "test value", expires(date(2013, 1, 1))));
 
         CookieParameters cookies = CookieParameters.cookies(response);
 

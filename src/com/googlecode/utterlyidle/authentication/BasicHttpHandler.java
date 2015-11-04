@@ -10,7 +10,7 @@ import java.util.Set;
 import static com.googlecode.totallylazy.predicates.Predicates.in;
 import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpHeaders.WWW_AUTHENTICATE;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.response;
 import static com.googlecode.utterlyidle.Status.UNAUTHORIZED;
 import static com.googlecode.utterlyidle.authentication.BasicGrammar.parseCredential;
 import static java.lang.String.format;
@@ -30,8 +30,7 @@ public class BasicHttpHandler implements HttpHandler {
     public Response handle(final Request request) throws Exception {
         if (notAuthenticated(request)) {
             return response(UNAUTHORIZED).
-                    header(WWW_AUTHENTICATE, format("Basic realm=\"%s\"", baseUri.value().host())).
-                    build();
+                    header(WWW_AUTHENTICATE, format("Basic realm=\"%s\"", baseUri.value().host()));
         }
         return handler.handle(request);
     }

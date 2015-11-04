@@ -10,7 +10,6 @@ import com.googlecode.totallylazy.time.Seconds;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import com.googlecode.utterlyidle.services.Service;

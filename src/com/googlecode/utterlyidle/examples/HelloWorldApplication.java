@@ -17,7 +17,6 @@ import static com.googlecode.totallylazy.predicates.Predicates.instanceOf;
 import static com.googlecode.totallylazy.predicates.WherePredicate.where;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.get;
 import static com.googlecode.utterlyidle.dsl.BindingBuilder.queryParam;
@@ -47,9 +46,7 @@ public class HelloWorldApplication extends RestApplication {
 
     private static <T> ResponseHandler streamingRenderer(final WritingRenderer<T> writingRenderer) {
         return response ->
-                modify(response).
-                        entity((StreamingWriter) writer ->
-                                writingRenderer.renderTo(Unchecked.<T>cast(response.entity().value()), writer)).
-                        build();
+                        response.entity((StreamingWriter) writer ->
+                                writingRenderer.renderTo(Unchecked.<T>cast(response.entity().value()), writer));
     }
 }

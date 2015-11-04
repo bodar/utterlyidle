@@ -1,18 +1,13 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.Either;
-import com.googlecode.utterlyidle.Binding;
-import com.googlecode.utterlyidle.MatchFailure;
-import com.googlecode.utterlyidle.Request;
-import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.Entity.empty;
-import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.utterlyidle.Request.head;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.ok;
+import static com.googlecode.utterlyidle.Response.response;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
@@ -34,7 +29,7 @@ public class HeadRequestHandlerTest {
 
     @Test
     public void shouldReturnResponseWithNoEntityWhenTheResponseStatusIsOkAndNoHeadBindingMatch() throws Exception {
-        HeadRequestHandler headHandler = respondsWith(response(OK).entity(ENTITY).build());
+        HeadRequestHandler headHandler = respondsWith(ok().entity(ENTITY));
 
         Response response = headHandler.handle(HEAD_REQUEST);
 
@@ -45,7 +40,7 @@ public class HeadRequestHandlerTest {
 
     @Test
     public void shouldReturnResponseWithNoEntityWhenTheResponseStatusIsOtherThanOk() throws Exception {
-        HeadRequestHandler headHandler = respondsWith(response(NOT_SUCCESSFUL_STATUS).entity(ENTITY).build());
+        HeadRequestHandler headHandler = respondsWith(response(NOT_SUCCESSFUL_STATUS).entity(ENTITY));
 
         Response response = headHandler.handle(HEAD_REQUEST);
 
@@ -56,7 +51,7 @@ public class HeadRequestHandlerTest {
 
     @Test
     public void shouldReturnResponseWithEntityIfTheRequestMethodOtherThanHead() throws Exception {
-        HeadRequestHandler headHandler = respondsWith(response(OK).entity(ENTITY).build());
+        HeadRequestHandler headHandler = respondsWith(ok().entity(ENTITY));
 
         Response response = headHandler.handle(NOT_HEAD_REQUEST);
 
@@ -67,7 +62,7 @@ public class HeadRequestHandlerTest {
 
     @Test
     public void shouldReturnResponseForHeadRequestIfTheHeadBindingMatches() throws Exception {
-        HeadRequestHandler headHandler = createHeadRequestHandler(response(OK).build(), new ConstantBindingMatcher(true));
+        HeadRequestHandler headHandler = createHeadRequestHandler(ok(), new ConstantBindingMatcher(true));
 
         headHandler.handle(HEAD_REQUEST);
 

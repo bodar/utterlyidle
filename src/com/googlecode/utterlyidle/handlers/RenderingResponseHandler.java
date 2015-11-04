@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.Unchecked;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.Renderer;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.modules.DependsOnContainer;
 import com.googlecode.yadic.Container;
@@ -19,19 +18,19 @@ import static com.googlecode.totallylazy.Unchecked.cast;
 
 public abstract class RenderingResponseHandler<T> implements ResponseHandler {
     public static <T> RenderingResponseHandler<T> renderer(Class<? extends Renderer<T>> renderer) {
-        return new ClassRenderingResponseHandler<T>(renderer);
+        return new ClassRenderingResponseHandler<>(renderer);
     }
 
     public static <T> RenderingResponseHandler<T> renderer(Function1<Resolver, ? extends Renderer<T>> renderer) {
-        return new CallableRenderingResponseHandler<T>(renderer);
+        return new CallableRenderingResponseHandler<>(renderer);
     }
 
     public static <T> RenderingResponseHandler<T> renderer(Type renderer) {
-        return new ClassRenderingResponseHandler<T>(renderer);
+        return new ClassRenderingResponseHandler<>(renderer);
     }
 
     public static <T> RenderingResponseHandler<T> renderer(Renderer<T> renderer) {
-        return new InstanceRenderingResponseHandler<T>(renderer);
+        return new InstanceRenderingResponseHandler<>(renderer);
     }
 
     public Response handle(Response response) throws Exception {

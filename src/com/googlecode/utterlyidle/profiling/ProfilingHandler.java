@@ -10,7 +10,6 @@ import com.googlecode.utterlyidle.sitemesh.PropertyMapParser;
 
 import java.io.IOException;
 
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.profiling.ProfilingClient.profile;
 
 public class ProfilingHandler implements HttpHandler {
@@ -39,10 +38,10 @@ public class ProfilingHandler implements HttpHandler {
     private Response decorate(Response response) throws IOException {
         PropertyMap html = new PropertyMapParser().parse(response.entity().toString());
         Templates group = Templates.defaultTemplates(getClass());
-        return modify(response).entity(group.get("profile").render(Maps.map(
+        return response.entity(group.get("profile").render(Maps.map(
                     "response", html,
                     "requests", profilingData.requests(),
                     "queries", profilingData.queries()
-                        ))).build();
+                        )));
     }
 }

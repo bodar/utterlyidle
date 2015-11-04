@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.Runnables.VOID;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
-import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Response.response;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 
 public class RequestJobs implements Jobs {
@@ -53,8 +53,7 @@ public class RequestJobs implements Jobs {
         } catch (Exception e) {
             return response(INTERNAL_SERVER_ERROR).
                     contentType(TEXT_PLAIN).
-                    entity(ExceptionRenderer.toString(e)).
-                    build();
+                    entity(ExceptionRenderer.toString(e));
         }
     }
 

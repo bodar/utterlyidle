@@ -11,7 +11,6 @@ import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Redirector;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.annotations.ANY;
 import com.googlecode.utterlyidle.annotations.GET;

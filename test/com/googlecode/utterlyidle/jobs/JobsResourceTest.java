@@ -12,7 +12,6 @@ import com.googlecode.utterlyidle.ExceptionLogger;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.ResponseBuilder;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
@@ -66,7 +65,7 @@ public class JobsResourceTest {
         RunningJob runningJob = createdJob.start(clock);
         assertThat(JobsResource.status(runningJob), is(Status.ACCEPTED));
 
-        CompletedJob completedJob = runningJob.complete(ResponseBuilder.response().build(), clock);
+        CompletedJob completedJob = runningJob.complete(Response.ok(), clock);
         assertThat(JobsResource.status(completedJob), is(Status.OK));
     }
 

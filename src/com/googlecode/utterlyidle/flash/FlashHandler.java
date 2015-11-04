@@ -10,7 +10,6 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Strings.isBlank;
-import static com.googlecode.utterlyidle.ResponseBuilder.modify;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.path;
 
 public class FlashHandler implements HttpHandler {
@@ -65,7 +64,7 @@ public class FlashHandler implements HttpHandler {
 		if (cookieAlreadyHasSameValue(request, cookie)  || (isEmptyJson(cookie.value()) && !request.cookies().contains(FLASH_COOKIE))) {
 			return response;
 		}
-		return modify(response).cookie(cookie).build();
+		return response.cookie(cookie);
 	}
 
 	private boolean shouldClearFlash(Request request, Response response) {
