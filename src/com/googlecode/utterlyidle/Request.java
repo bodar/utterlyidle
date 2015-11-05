@@ -3,12 +3,14 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.UrlEncodedMessage;
+import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import static com.googlecode.totallylazy.Strings.startsWith;
+import static com.googlecode.totallylazy.functions.Functions.compose;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Entity.DEFAULT_CHARACTER_SET;
 import static com.googlecode.utterlyidle.Entity.empty;
@@ -52,7 +54,7 @@ public interface Request extends HttpMessage<Request> {
     }
 
     default Request query(String name, Object value) {
-        return modify(this, Builder.query(replace(name, value)));
+        return query(replace(name, value));
     }
 
     default QueryParameters query() {
@@ -61,6 +63,10 @@ public interface Request extends HttpMessage<Request> {
 
     default Request query(Iterable<? extends Pair<String, String>> parameters) {
         return uri(uri().query(UrlEncodedMessage.toString(parameters)));
+    }
+
+    default Request query(Unary<Parameters<?>> builder){
+        return query(builder.apply(query()));
     }
 
     default Option<String> form(String name) {
@@ -82,9 +88,13 @@ public interface Request extends HttpMessage<Request> {
                 entity(Entity.entity(UrlEncodedMessage.toString(parameters)));
     }
 
-    /**
-     * This is designed to be lossy as Request Cookies never have attributes
-     */
+    default Request form(Unary<Parameters<?>> builder) {
+        return form(builder.apply(form()));
+    }
+
+        /**
+         * This is designed to be lossy as Request Cookies never have attributes
+         */
     default Request cookie(Cookie cookie) {
         return cookie(cookie.name(), cookie.value());
     }
@@ -210,7 +220,7 @@ public interface Request extends HttpMessage<Request> {
 
         @SafeVarargs
         static Unary<Request> query(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, query(modify(request.query(), builders)));
+            return request -> request.query(compose(builders));
         }
 
         static Unary<Request> query(Iterable<? extends Pair<String, String>> parameters) {
@@ -223,7 +233,7 @@ public interface Request extends HttpMessage<Request> {
 
         @SafeVarargs
         static Unary<Request> form(Unary<Parameters<?>>... builders) {
-            return request -> modify(request, form(modify(request.form(), builders)));
+            return request -> request.form(compose(builders));
         }
 
         static Unary<Request> form(Iterable<? extends Pair<String, String>> parameters) {

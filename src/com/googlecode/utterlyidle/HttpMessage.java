@@ -10,6 +10,7 @@ import com.googlecode.utterlyidle.cookies.CookieParameters;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Unchecked.cast;
+import static com.googlecode.totallylazy.functions.Functions.compose;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_TYPE;
@@ -57,6 +58,10 @@ public interface HttpMessage<T extends HttpMessage<T>> {
 
     T cookies(Iterable<? extends Pair<String, String>> parameters);
 
+    default T cookies(Unary<Parameters<?>> builder){
+        return cookies(builder.apply(cookies()));
+    }
+
     Entity entity();
 
     default T entity(Object value) {
@@ -103,7 +108,7 @@ public interface HttpMessage<T extends HttpMessage<T>> {
 
         @SafeVarargs
         static <T extends HttpMessage<T>> Unary<T> cookie(Unary<Parameters<?>>... builders) {
-            return message -> modify(message, cookie(modify(message.cookies(), builders)));
+            return message -> message.cookies(compose(builders));
         }
 
         static <T extends HttpMessage<T>> Unary<T> cookie(Iterable<? extends Pair<String,String>> parameters) {
