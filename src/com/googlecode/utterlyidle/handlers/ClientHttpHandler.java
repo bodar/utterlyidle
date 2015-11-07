@@ -105,12 +105,16 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public Response handle(final Request request) throws Exception {
-        if(request.uri().scheme().equals("file") && request.method().equals(PUT)) return putFile(request);
-        URLConnection connection = openConnection(request.uri());
-        connection.setUseCaches(false);
-        connection.setConnectTimeout(connectTimeoutMillis);
-        connection.setReadTimeout(readTimeoutMillis);
-        return handle(request, connection);
+        try {
+            if("file".equals(request.uri().scheme()) && request.method().equals(PUT)) return putFile(request);
+            URLConnection connection = openConnection(request.uri());
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(connectTimeoutMillis);
+            connection.setReadTimeout(readTimeoutMillis);
+            return handle(request, connection);
+        } catch (LazyException e) {
+            throw e.unwrap(Exception.class);
+        }
     }
 
     private URLConnection openConnection(final Uri uri) {
