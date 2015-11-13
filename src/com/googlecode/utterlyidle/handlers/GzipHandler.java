@@ -8,6 +8,7 @@ import java.io.IOException;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
 import static com.googlecode.utterlyidle.HttpHeaders.*;
+import static com.googlecode.utterlyidle.Parameters.Builder.add;
 
 public class GzipHandler implements HttpHandler {
     public static final String GZIP = "gzip";
@@ -24,7 +25,7 @@ public class GzipHandler implements HttpHandler {
     @Override
     public Response handle(Request request) throws Exception {
         Response response = httpHandler.handle(request);
-        Response result = response.header(VARY, ACCEPT_ENCODING);
+        Response result = response.headers(add(VARY, ACCEPT_ENCODING));
         if (clientAcceptsGZip(request.headers()) &&
                 !marker.isInternal(request) &&
                 response.entity().length().is(greaterThan(0)) &&
