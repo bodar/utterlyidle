@@ -24,7 +24,7 @@ import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
-import com.googlecode.yadic.generics.TypeFor;
+import com.googlecode.totallylazy.reflection.TypeFor;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 

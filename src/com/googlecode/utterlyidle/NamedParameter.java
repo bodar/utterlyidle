@@ -5,7 +5,7 @@ import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.TypeMap;
-import com.googlecode.yadic.generics.TypeFor;
+import com.googlecode.totallylazy.reflection.TypeFor;
 
 import java.util.concurrent.Callable;
 

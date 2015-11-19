@@ -22,7 +22,7 @@ import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.bindings.actions.Action;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import com.googlecode.yadic.generics.TypeFor;
+import com.googlecode.totallylazy.reflection.TypeFor;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;

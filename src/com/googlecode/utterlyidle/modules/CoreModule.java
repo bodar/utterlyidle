@@ -58,7 +58,7 @@ import com.googlecode.utterlyidle.services.Services;
 import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
-import com.googlecode.yadic.generics.TypeFor;
+import com.googlecode.totallylazy.reflection.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;
 
 import java.io.InputStream;

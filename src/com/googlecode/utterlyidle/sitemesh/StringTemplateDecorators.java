@@ -7,7 +7,7 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
-import com.googlecode.yadic.generics.TypeFor;
+import com.googlecode.totallylazy.reflection.TypeFor;
 
 import java.net.URL;
 import java.util.Map;
