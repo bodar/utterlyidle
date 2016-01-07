@@ -1,11 +1,14 @@
 package com.googlecode.utterlyidle.undertow;
 
+import com.googlecode.totallylazy.Classes;
+import com.googlecode.totallylazy.Fields;
+import com.googlecode.totallylazy.Function1;
+import com.googlecode.totallylazy.Lists;
 import com.googlecode.totallylazy.Option;
-import com.googlecode.totallylazy.Sequence;
-import com.googlecode.totallylazy.Sequences;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.ApplicationBuilder;
+import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.ServerConfiguration;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.services.Service;
@@ -16,6 +19,7 @@ import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.util.List;
 
+import static com.googlecode.totallylazy.Fields.access;
 import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Sequences.sequence;
@@ -64,8 +68,9 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
     }
 
     private Undertow startUpServer(Application application, ServerConfiguration configuration) throws Exception {
-        Undertow server = Undertow.builder()
-                .addHttpListener(configuration.port(), configuration.bindAddress().getHostAddress())
+        Undertow.Builder builder = builder(configuration);
+
+        Undertow server = builder
                 .setWorkerThreads(configuration.maxThreadNumber())
                 .setHandler(new RestHttpHandler(application))
                 .build();
@@ -76,45 +81,76 @@ public class RestServer implements com.googlecode.utterlyidle.Server {
         return server;
     }
 
+    private Undertow.Builder builder(final ServerConfiguration configuration) {
+        if(configuration.protocol().equals(Protocol.HTTPS)) {
+            return Undertow.builder().addHttpsListener(configuration.port(), configuration.bindAddress().getHostAddress(), configuration.sslContext().get());
+        }
+        return Undertow.builder().addHttpListener(configuration.port(), configuration.bindAddress().getHostAddress());
+    }
+
     private int findPortInUse(Undertow server) {
-        for (Object channel : listValueOf(declaredField(server, "channels"), server)) {
-            Option<Integer> port = portFrom(channel);
-            if (port.isDefined()) {
-                return port.get();
-            }
-        }
-        throw new IllegalStateException("Cannot find port from Undertow");
+        return declaredField(server, "channels")
+                .map(listValueOf(server))
+                .flatMap(new Function1<List<Object>, Option<Integer>>() {
+                    @Override
+                    public Option<Integer> call(final List<Object> channels) throws Exception {
+                        return sequence(channels)
+                                .flatMap(portFrom())
+                                .headOption();
+                    }
+                })
+                .getOrThrow(new IllegalStateException("Cannot find port from Undertow using reflection!"));
     }
 
-    private Option<Integer> portFrom(Object channel) {
-        Option<Field> socketField = declaredField(channel, "socket");
-        if (socketField.isDefined()) {
-            try {
-                return option(((ServerSocket) socketField.get().get(channel)).getLocalPort());
-            } catch (IllegalAccessException ignored) {
-                // ignored
-            }
+    private static Class<?> sslChannel = Classes.forName("io.undertow.protocols.ssl.UndertowAcceptingSslChannel").get();
+
+    private Option<Integer> portFrom(Object channel) throws Exception {
+        if(sslChannel.isInstance(channel)) {
+            channel = declaredField(channel, "tcpServer").map(Fields.value(channel)).get();
         }
-        return none();
+        return socket(channel);
     }
 
-    @SuppressWarnings("unchecked")
-    private Sequence<Object> listValueOf(Option<Field> field, Object object) {
+    private Function1<? super Object, Option<Integer>> portFrom() {
+        return new Function1<Object, Option<Integer>>() {
+            @Override
+            public Option<Integer> call(final Object channel) throws Exception {
+                return portFrom(channel);
+            }
+        };
+    }
+
+    private Option<Integer> socket(final Object channel) throws IllegalAccessException {
+        return declaredField(channel, "socket")
+                .map(new Function1<Field, Integer>() {
+                    @Override
+                    public Integer call(final Field socketField) throws Exception {
+                        final ServerSocket serverSocket = (ServerSocket) socketField.get(channel);
+                        return serverSocket.getLocalPort();
+                    }
+                });
+    }
+
+    private List<Object> listValueOf(Field field, Object object) {
         try {
-            if (field.isDefined()) {
-                return sequence((List<Object>) field.get().get(object));
-            }
-        } catch (IllegalAccessException ignored) {
-            // ignored
+            return Fields.get(field, object);
+        } catch (IllegalAccessException e) {
+            return Lists.list();
         }
-        return Sequences.empty();
+    }
+
+    private Function1<? super Field, List<Object>> listValueOf(final Undertow server) {
+        return new Function1<Field, List<Object>>() {
+            @Override
+            public List<Object> call(final Field field) throws Exception {
+                return listValueOf(field, server);
+            }
+        };
     }
 
     private Option<Field> declaredField(Object object, String fieldName) {
         try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return option(field);
+            return option(access(object.getClass().getDeclaredField(fieldName)));
         } catch (NoSuchFieldException e) {
             return none();
         }
