@@ -18,6 +18,13 @@ mvn:org.eclipse.jetty:jetty-servlet:jar|sources:9.2.12.v20150709
 mvn:org.eclipse.jetty:jetty-webapp:jar|sources:9.2.12.v20150709
 mvn:org.eclipse.jetty:jetty-security:jar|sources:9.2.12.v20150709
 
+# Undertow
+mvn:io.undertow:undertow-core:jar|sources:1.2.12.Final
+mvn:io.undertow:undertow-servlet:jar|sources:1.2.12.Final
+mvn:org.jboss.xnio:xnio-api:jar|sources:3.3.2.Final
+mvn:org.jboss.xnio:xnio-nio:jar|sources:3.3.2.Final
+mvn:org.jboss.logging:jboss-logging:jar|sources:3.1.4.GA
+
 mvn:javax.servlet:javax.servlet-api:jar|sources:3.1.0
 
 mvn:org.ccil.cowan.tagsoup:tagsoup:jar:1.2
