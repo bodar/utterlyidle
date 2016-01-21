@@ -9,10 +9,13 @@ import com.googlecode.utterlyidle.rendering.ExceptionRenderer;
 import java.lang.reflect.InvocationTargetException;
 
 import static com.googlecode.totallylazy.Debug.debugging;
+import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.Status.INTERNAL_SERVER_ERROR;
 
 public class ExceptionHandler implements HttpHandler {
+    private static final String LOG_PROPERTY = "com.googlecode.utterlyidle.exceptions.log";
+
     private final HttpHandler httpHandler;
     private final ResponseHandlersFinder handlers;
 
@@ -34,7 +37,7 @@ public class ExceptionHandler implements HttpHandler {
     }
 
     private Response findAndHandle(Request request, Throwable throwable) {
-        if (debugging()) throwable.printStackTrace();
+        if (debugging() && shouldLogExceptions()) throwable.printStackTrace();
         final Response response = Response.response(INTERNAL_SERVER_ERROR).
                 contentType(TEXT_PLAIN).
                 entity(throwable);
@@ -43,5 +46,11 @@ public class ExceptionHandler implements HttpHandler {
         } catch (Throwable t) {
             return response.entity(ExceptionRenderer.toString(t));
         }
+    }
+
+    private boolean shouldLogExceptions() {
+        return option(System.getProperty(LOG_PROPERTY))
+                .map(Boolean::parseBoolean)
+                .getOrElse(true);
     }
 }
