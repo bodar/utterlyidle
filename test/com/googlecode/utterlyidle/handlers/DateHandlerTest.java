@@ -20,7 +20,7 @@ public class DateHandlerTest {
         DateHandler handler = new DateHandler(ReturnResponseHandler.returnsResponse(response()), new StoppedClock(Dates.date(2000, 1, 1)));
         Response response = handler.handle(RequestBuilder.get("/foo").build());
 
-        assertThat(header(response, DATE), is("Sat, 01 Jan 2000 00:00:00 UTC"));
+        assertThat(header(response, DATE), is("Sat, 01 Jan 2000 00:00:00 GMT"));
     }
 
     @Test
