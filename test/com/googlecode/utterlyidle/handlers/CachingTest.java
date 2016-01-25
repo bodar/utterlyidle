@@ -32,7 +32,7 @@ public class CachingTest {
         HttpHandler handler = new CacheControlHandler(returnsResponse(response().header(DATE, Dates.RFC822().format(date(2000, 1, 1)))), cachePolicy(60).add(always()));
         Response response = handler.handle(get("/").build());
         assertThat(header(response, CACHE_CONTROL), is("public, max-age=60"));
-        assertThat(header(response, EXPIRES), is("Sat, 01 Jan 2000 00:01:00 UTC"));
+        assertThat(header(response, EXPIRES), is("Sat, 01 Jan 2000 00:01:00 GMT"));
     }
 
     @Test

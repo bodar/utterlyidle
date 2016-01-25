@@ -35,7 +35,7 @@ public class MemoryResponseTest {
 
         assertThat(
                 header(response, SET_COOKIE),
-                is("a=\"1\"; Comment=some comment; Domain=.acme.com; Max-Age=123; Path=/products; Secure=; Expires=Sun, 04 Sep 2011 06:15:36 UTC"));
+                is("a=\"1\"; Comment=some comment; Domain=.acme.com; Max-Age=123; Path=/products; Secure=; Expires=Sun, 04 Sep 2011 06:15:36 GMT"));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class MemoryResponseTest {
         Response shouldClearCookie = ResponseBuilder.modify(response).removeCookie("a").build();
         assertThat(shouldClearCookie.toString(), is("HTTP/1.1 303 See Other\r\n" +
                 "Location: /go\r\n" +
-                "Set-Cookie: a=\"\"; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 UTC\r\n" +
+                "Set-Cookie: a=\"\"; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT\r\n" +
                 "\r\n" +
                 "/go"));
     }
