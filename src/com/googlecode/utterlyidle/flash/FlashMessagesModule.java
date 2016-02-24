@@ -9,6 +9,7 @@ public class FlashMessagesModule implements RequestScopedModule {
 	public Container addPerRequestObjects(Container container) throws Exception {
 		return container.
 				add(ClearFlashPredicate.class, ClearFlashOnSuccessfulNonInternalHtmlResponse.class).
+				add(FlashCookieAttributes.class).
 				add(Flash.class).
 				decorate(HttpHandler.class, FlashHandler.class);
 	}
