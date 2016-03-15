@@ -57,7 +57,15 @@ public class FlashHandler implements HttpHandler {
         if (!requestCookies.contains(FLASH_COOKIE) || isEmptyJson(requestCookies.getValue(FLASH_COOKIE)) || isBlank(requestCookies.getValue(FLASH_COOKIE)))
             return;
 
-        flash.merge(Model.persistent.parse(requestCookies.getValue(FLASH_COOKIE)));
+        flash.merge(safelyParse(requestCookies.getValue(FLASH_COOKIE)));
+    }
+
+    private static Model safelyParse(final String value) {
+        try {
+            return Model.persistent.parse(value);
+        } catch (Exception ignore) {
+        }
+        return Model.persistent.model();
     }
 
     private Response setFlashCookie(Request request, Response response) {
