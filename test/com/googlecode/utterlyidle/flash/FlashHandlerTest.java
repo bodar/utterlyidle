@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.Predicate;
 import com.googlecode.utterlyidle.Application;
 import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.Redirector;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Resources;
 import com.googlecode.utterlyidle.Response;
@@ -36,6 +37,7 @@ import static com.googlecode.utterlyidle.MediaType.TEXT_PLAIN;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.ResponseBuilder.response;
+import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.httpOnly;
@@ -100,6 +102,13 @@ public class FlashHandlerTest {
                 is(toJson(model().
                         add("key", "Error 1").
                         add("key", "Error 2"))));
+    }
+
+    @Test
+    public void handlesCorruptedJsonCookie() throws Exception {
+        Response response = application.handle(get("/get").cookie(FLASH_COOKIE, "invalid cookie").build());
+
+        assertThat(response.status(), is(NO_CONTENT));
     }
 
     @Test
