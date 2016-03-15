@@ -9,6 +9,9 @@ import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieAttribute;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
+import java.util.Map;
+
+import static com.googlecode.totallylazy.Maps.map;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.isBlank;
@@ -54,7 +57,15 @@ public class FlashHandler implements HttpHandler {
         if (!requestCookies.contains(FLASH_COOKIE) || isEmptyJson(requestCookies.getValue(FLASH_COOKIE)) || isBlank(requestCookies.getValue(FLASH_COOKIE)))
             return;
 
-        flash.merge(Json.parseMap(requestCookies.getValue(FLASH_COOKIE)).value());
+        flash.merge(safelyParse(requestCookies.getValue(FLASH_COOKIE)));
+    }
+
+    private static Map<String, Object> safelyParse(final String value) {
+        try {
+            return Json.parseMap(value).value();
+        } catch (RuntimeException ignored) {
+        }
+        return map();
     }
 
     private Response setFlashCookie(Request request, Response response) {
