@@ -38,6 +38,7 @@ import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.post;
 import static com.googlecode.utterlyidle.Response.response;
+import static com.googlecode.utterlyidle.Status.NO_CONTENT;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.annotations.AnnotatedBindings.annotatedClass;
 import static com.googlecode.utterlyidle.cookies.CookieAttribute.httpOnly;
@@ -93,6 +94,13 @@ public class FlashHandlerTest {
                 "Should append flash cookies on non-2xx response",
                 secondErrorFlashCookie,
                 is(Json.json(Maps.map("key", list("Error 1", "Error 2")))));
+    }
+
+    @Test
+    public void handlesCorruptedJsonCookie() throws Exception {
+        Response response = application.handle(Request.get("/get", cookie(FLASH_COOKIE, "invalid cookie")));
+
+        assertThat(response.status(), is(NO_CONTENT));
     }
 
     @Test
