@@ -60,7 +60,7 @@ public class CookieParameters extends Parameters<CookieParameters> {
     }
 
     public List<Cookie> toList() {
-        return values.map(CookieParameters::toCookie);
+        return values.toSequence().map(CookieParameters::toCookie).toPersistentList();
     }
 
     public static Cookie toCookie(Pair<String, String> pair) {

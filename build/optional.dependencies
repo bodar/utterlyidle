@@ -29,4 +29,4 @@ mvn:javax.servlet:javax.servlet-api:jar|sources:3.1.0
 
 mvn:org.ccil.cowan.tagsoup:tagsoup:jar:1.2
 
-mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:pack|sources:2.24
+mvn://repo.bodar.com/com.googlecode.lazyrecords:lazyrecords:pack|sources:2.30

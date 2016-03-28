@@ -10,6 +10,7 @@ import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.functions.Unary;
+import com.googlecode.totallylazy.predicates.LogicalPredicate;
 import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.totallylazy.time.Dates;
 
@@ -44,7 +45,7 @@ public abstract class Parameters<Self extends Parameters<Self>> implements Itera
     }
 
     public Self remove(String name) {
-        return self(values.deleteAll(filterByKey(name)));
+        return self(values.toSequence().reject(keyPredicate(name)).toPersistentList());
     }
 
     public Self replace(String name, String value) {
@@ -76,8 +77,11 @@ public abstract class Parameters<Self extends Parameters<Self>> implements Itera
     }
 
     protected Sequence<Pair<String, String>> filterByKey(String key) {
-        Predicate<First<String>> predicate = by(Callables.<String>first(), call(this.predicate, key));
-        return filter(predicate).realise();
+        return filter(keyPredicate(key)).realise();
+    }
+
+    private LogicalPredicate<First<String>> keyPredicate(String key) {
+        return by(Callables.<String>first(), call(this.predicate, key));
     }
 
     public Sequence<Pair<String, String>> filter(final Predicate<First<String>> predicate) {
