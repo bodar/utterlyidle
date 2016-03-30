@@ -15,7 +15,7 @@ public class SeeOtherRenderer implements Renderer<String> {
 
     @Override
     public String render(String value) throws Exception {
-        return Templates.defaultTemplates(getClass()).get("seeOther").
+        return Templates.templates(getClass()).addDefault().extension("html").get("seeOther").
                 render(Maps.map("base", basePath, "location", value));
     }
 }

@@ -46,7 +46,7 @@ public class LastExceptionsModule implements ResourcesModule, ApplicationScopedM
 
     private Renderer<Map<String,Object>> lastExceptionsRenderer() {
         return model -> {
-            Templates group = Templates.defaultTemplates(LastExceptionsResource.class);
+            Templates group = Templates.templates(LastExceptionsResource.class).addDefault().extension("html");
             return group.get("lastExceptions").render(model);
         };
     }

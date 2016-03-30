@@ -28,7 +28,7 @@ public class MatchFailureRenderer implements Renderer<MatchFailure> {
     }
 
     public String render(MatchFailure value) throws IOException {
-        Templates group = Templates.defaultTemplates(getClass());
+        Templates group = Templates.templates(getClass()).addDefault().extension("html");
         Map<String,Object> model = new HashMap<>();
         model.put("base", basePath);
         model.put("status", value.status());

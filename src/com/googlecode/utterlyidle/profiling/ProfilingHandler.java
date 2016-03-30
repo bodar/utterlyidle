@@ -37,7 +37,7 @@ public class ProfilingHandler implements HttpHandler {
 
     private Response decorate(Response response) throws IOException {
         PropertyMap html = new PropertyMapParser().parse(response.entity().toString());
-        Templates group = Templates.defaultTemplates(getClass());
+        Templates group = Templates.templates(getClass()).addDefault().extension("html");
         return response.entity(group.get("profile").render(Maps.map(
                     "response", html,
                     "requests", profilingData.requests(),

@@ -26,7 +26,7 @@ public class StringTemplateDecorators implements DecoratorProvider {
     }
 
     public StringTemplateDecorators(final URL templatesUrl, final Resolver resolver) {
-        this(Templates.defaultTemplates(uri(templatesUrl)), resolver);
+        this(Templates.templates(uri(templatesUrl)).addDefault().extension("st"), resolver);
     }
 
     public Decorator get(TemplateName templateName, Request request) {
