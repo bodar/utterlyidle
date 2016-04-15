@@ -9,4 +9,5 @@ utterlyidle.ipr
 lib/*
 .idea/dictionaries/*
 test/**/s3.properties
+test/**/aws.properties
 *~
