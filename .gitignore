@@ -12,4 +12,5 @@ lib/runtime
 lib/optional
 .idea/dictionaries/*
 test/**/s3.properties
+test/**/aws.properties
 *~
