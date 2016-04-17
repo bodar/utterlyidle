@@ -10,7 +10,7 @@ import com.googlecode.utterlyidle.s3.EmptyResponseHandler;
 import org.junit.Test;
 
 import static com.googlecode.totallylazy.Option.some;
-import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.aws.AwsCredentialScope.awsCredentialScope;
 import static com.googlecode.utterlyidle.s3.AwsCredentials.awsCredentials;
 import static org.hamcrest.core.Is.is;
@@ -30,7 +30,7 @@ public class AwsHttpClientTest {
     @Test
     public void adds_authorization() throws Exception {
         assertThat(
-                delegatedRequest(get("/test").build()).header("Authorization"),
+                delegatedRequest(get("/test")).header("Authorization"),
                 is(some("AWS4-HMAC-SHA256 Credential=access/20160127/us-east/s3/aws4_request, SignedHeaders=content-length;x-amz-date, Signature=cfb15309d8787bd6879c2c01f805c2d6d648b3fd0719fe43647a6831fbce2774"))
         );
     }
@@ -38,7 +38,7 @@ public class AwsHttpClientTest {
     @Test
     public void adds_time_header() throws Exception {
         assertThat(
-                delegatedRequest(get("/test").build()).header(AwsHeaders.DATE),
+                delegatedRequest(get("/test")).header(AwsHeaders.DATE),
                 is(some("20160127T153250Z"))
         );
     }
@@ -46,7 +46,7 @@ public class AwsHttpClientTest {
     @Test
     public void adds_content_sha256() throws Exception {
         assertThat(
-                delegatedRequest(get("/test").build()).header(AwsHeaders.CONTENT_SHA256),
+                delegatedRequest(get("/test")).header(AwsHeaders.CONTENT_SHA256),
                 is(some("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
         );
     }

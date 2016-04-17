@@ -3,8 +3,8 @@ package com.googlecode.utterlyidle.aws;
 import com.googlecode.utterlyidle.Request;
 import org.junit.Test;
 
-import static com.googlecode.utterlyidle.RequestBuilder.get;
-import static com.googlecode.utterlyidle.RequestBuilder.put;
+import static com.googlecode.utterlyidle.Request.get;
+import static com.googlecode.utterlyidle.Request.put;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -12,7 +12,7 @@ public class AwsCanonicalRequestTest {
 
     @Test
     public void transform_minimal_request() {
-        final Request build = get("/test").build();
+        final Request build = get("/test");
 
         AwsCanonicalRequest canonical = new AwsCanonicalRequest(build);
 
@@ -32,8 +32,7 @@ public class AwsCanonicalRequestTest {
                 .query("S param", "s value")
                 .header("z-header", "  a   value  ")
                 .header("a-header", "  another value  ")
-                .entity("hello world")
-                .build();
+                .entity("hello world");
 
         AwsCanonicalRequest canonical = new AwsCanonicalRequest(build);
 
