@@ -1,27 +1,28 @@
 package com.googlecode.utterlyidle.s3;
 
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.utterlyidle.aws.AwsHeaders;
 
 import static com.googlecode.totallylazy.Strings.isBlank;
 
-public class S3 {
-    public static final String dateHeader = "x-amz-date";
-    public static final String baseAuthority = "s3.amazonaws.com";
-    public static final String scheme = "s3";
+public interface S3 {
+    String dateHeader = AwsHeaders.DATE;
+    String baseAuthority = "s3.amazonaws.com";
+    String scheme = "s3";
 
-    public static Uri rootUri() {
+    static Uri rootUri() {
         return Uri.uri(scheme + "://");
     }
 
-    public static Uri uri(String bucketName){
+    static Uri uri(String bucketName){
         return rootUri().authority(bucketName).path("/");
     }
 
-    public static Uri uri(String bucketName, String key){
+    static Uri uri(String bucketName, String key){
         return uri(bucketName).path("/" + key);
     }
 
-    public static Uri toHttpUri(final Uri uri) {
+    static Uri toHttpUri(final Uri uri) {
         if(!scheme.equalsIgnoreCase(uri.scheme()))
             return uri;
         return isBlank(uri.authority()) ?

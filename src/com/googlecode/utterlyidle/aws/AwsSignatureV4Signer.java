@@ -8,13 +8,31 @@ import static com.googlecode.utterlyidle.aws.AwsHmacSha256.hex;
 import static com.googlecode.utterlyidle.aws.AwsHmacSha256.hmacSHA256;
 
 public class AwsSignatureV4Signer {
+    private final AwsCredentialScope scope;
+    private final AwsCredentials credentials;
 
-    public String sign(AwsCanonicalRequest request, AwsCredentialScope scope, AwsCredentials awsCredentials, AwsRequestDate date) {
+    public AwsSignatureV4Signer(AwsCredentialScope scope, AwsCredentials credentials) {
+        this.scope = scope;
+        this.credentials = credentials;
+    }
+
+    public String sign(AwsCanonicalRequest request, AwsRequestDate date) {
         AwsStringToSign awsStringToSign = new AwsStringToSign(request, scope, date);
-        byte[] signatureKey = getSignatureKey(awsCredentials.secretKey(), date.basic(), scope.region(), scope.service());
+        byte[] signatureKey = getSignatureKey(credentials.secretKey(), date.basic(), scope.region(), scope.service());
         byte[] signature = hmacSHA256(signatureKey, awsStringToSign.toString());
         return hex(signature);
     }
+
+    public String authHeader(AwsCanonicalRequest canonicalRequest, AwsRequestDate date) {
+        String signature = sign(canonicalRequest, date);
+
+        return String.format("%s Credential=%s/%s, SignedHeaders=%s, Signature=%s",
+                AwsStringToSign.ALGORITHM,
+                credentials.accessKeyId(), scope.awsCredentialScope(date),
+                canonicalRequest.signedHeaders(),
+                signature);
+    }
+
 
     private byte[] getSignatureKey(String key, String dateStamp, String regionName, String serviceName) {
         try {

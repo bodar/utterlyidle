@@ -25,7 +25,7 @@ public class AwsHttpClientTest {
     private final AwsCredentials credentials = awsCredentials("access", "secret");
 
     private final SettableClock clock = new SettableClock(Dates.date(2016, 1, 27, 15, 32, 50, 27));
-    private final AwsHttpClient client = new AwsHttpClient(auditHandler, clock, scope, credentials);
+    private final AwsHttpClient client = new AwsHttpClient(auditHandler, clock, new AwsSignatureV4Signer(scope, credentials));
 
     @Test
     public void adds_authorization() throws Exception {
@@ -38,7 +38,7 @@ public class AwsHttpClientTest {
     @Test
     public void adds_time_header() throws Exception {
         assertThat(
-                delegatedRequest(get("/test").build()).header("x-amz-date"),
+                delegatedRequest(get("/test").build()).header(AwsHeaders.DATE),
                 is(some("20160127T153250Z"))
         );
     }
@@ -46,7 +46,7 @@ public class AwsHttpClientTest {
     @Test
     public void adds_content_sha256() throws Exception {
         assertThat(
-                delegatedRequest(get("/test").build()).header("x-amz-content-sha256"),
+                delegatedRequest(get("/test").build()).header(AwsHeaders.CONTENT_SHA256),
                 is(some("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
         );
     }

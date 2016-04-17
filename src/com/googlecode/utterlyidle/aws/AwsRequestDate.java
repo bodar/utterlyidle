@@ -1,10 +1,11 @@
 package com.googlecode.utterlyidle.aws;
 
+import com.googlecode.totallylazy.Value;
 import com.googlecode.totallylazy.time.Dates;
 
 import java.util.Date;
 
-public class AwsRequestDate {
+public class AwsRequestDate implements Value<Date> {
     private final Date date;
 
     private AwsRequestDate(Date date) {
@@ -21,5 +22,10 @@ public class AwsRequestDate {
 
     public String full() {
         return Dates.format("yyyyMMdd'T'HHmmss'Z'").format(date);
+    }
+
+    @Override
+    public Date value() {
+        return date;
     }
 }
