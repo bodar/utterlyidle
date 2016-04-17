@@ -30,7 +30,7 @@ public class GzipHandler implements HttpHandler {
                 !marker.isInternal(request) &&
                 response.entity().length().is(greaterThan(0)) &&
                 gZipPolicy.matches(pair(request, response))) {
-            return result.header(CONTENT_ENCODING, GZIP).entity(GZip.gzip(response.entity().asBytes()));
+            return result.header(CONTENT_ENCODING, GZIP).entity(GZip.gzip(response.entity().toBytes()));
         }
         return result;
     }

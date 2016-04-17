@@ -1,12 +1,12 @@
 package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.handlers.EtagHandler;
 import org.junit.Test;
 
 import static com.googlecode.utterlyidle.HttpHeaders.*;
 import static com.googlecode.utterlyidle.Response.ok;
 import static com.googlecode.utterlyidle.Response.seeOther;
-import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.handlers.ReturnResponseHandler.returnsResponse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

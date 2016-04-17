@@ -53,7 +53,7 @@ public class AwsCanonicalRequest {
     }
 
     private String payloadHash(Request request) {
-        return AwsHmacSha256.hash(request.entity().asBytes());
+        return AwsHmacSha256.hash(request.entity().toBytes());
     }
 
     public String signedHeaders() {

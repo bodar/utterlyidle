@@ -47,10 +47,10 @@ public class Entity implements Value<Object>, Closeable {
     }
 
     public String toString() {
-        return string(asBytes());
+        return string(toBytes());
     }
 
-    public byte[] asBytes() {
+    public byte[] toBytes() {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         writer.apply(outputStream);
         byte[] bytes = outputStream.toByteArray();
@@ -87,7 +87,7 @@ public class Entity implements Value<Object>, Closeable {
 
     public Option<Integer> length() {
         if(isStreaming()) return none();
-        return some(asBytes().length);
+        return some(toBytes().length);
     }
 
     @Override

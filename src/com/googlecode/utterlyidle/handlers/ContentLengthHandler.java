@@ -35,7 +35,7 @@ public class ContentLengthHandler implements HttpHandler {
 
     public static HeaderParameters setContentLength(Entity entity, HeaderParameters headers) {
         if(headers.contains(CONTENT_LENGTH)) {
-            byte[] bytes = entity.asBytes();
+            byte[] bytes = entity.toBytes();
             headers.replace(CONTENT_LENGTH, String.valueOf(bytes.length));
         }
 

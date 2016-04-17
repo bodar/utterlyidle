@@ -1,10 +1,11 @@
-package com.googlecode.utterlyidle.modules;
+package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.totallylazy.security.Digest;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,7 +22,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.Status.NOT_MODIFIED;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
-import static com.googlecode.utterlyidle.modules.Digest.md5;
+import static com.googlecode.totallylazy.security.Digest.md5;
 
 public class EtagHandler implements HttpHandler {
     public static final List<String> safeHeaders = new CopyOnWriteArrayList<String>(list(DATE, LAST_MODIFIED, CACHE_CONTROL, EXPIRES, SET_COOKIE));
@@ -38,12 +39,12 @@ public class EtagHandler implements HttpHandler {
             return response;
         }
 
-        Digest digest = md5(response.entity().asBytes());
+        Digest digest = md5(response.entity().toBytes());
         String etag = strongEtag(digest);
         if (etag.equals(request.headers().getValue(IF_NONE_MATCH))) {
             return copySafeHeaders(response, Response.response(NOT_MODIFIED));
         }
-        return response.header(ETAG, etag).header(Content_MD5, digest.asBase64());
+        return response.header(ETAG, etag).header(Content_MD5, digest.toBase64());
     }
 
     private Response copySafeHeaders(final Response source, Response destination) {
@@ -55,7 +56,7 @@ public class EtagHandler implements HttpHandler {
     }
 
     private String strongEtag(Digest digest) {
-        return "\"" + digest.asHex() + "\"";
+        return "\"" + digest.toHex() + "\"";
     }
 
 }

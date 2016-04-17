@@ -9,7 +9,6 @@ import static com.googlecode.utterlyidle.aws.AwsHmacSha256.hmacSHA256;
 import static org.junit.Assert.assertThat;
 
 public class AwsHmacSha256Test {
-
     @Test
     public void hash_content() {
         assertThat(hash("test string"), is("d5579c46dfcc7f18207013e65b44e4cb4e2c2298f4ac457ba8f82743f31e930b"));

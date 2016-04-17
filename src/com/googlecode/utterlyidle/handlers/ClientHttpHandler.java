@@ -26,7 +26,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.List;
 
 import static com.googlecode.totallylazy.Closeables.using;
 import static com.googlecode.totallylazy.LazyException.lazyException;
@@ -141,7 +140,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
 
     private Response putFile(Request request) throws IOException {
             File file = request.uri().toFile();
-            Files.write(request.entity().asBytes(), file);
+            Files.write(request.entity().toBytes(), file);
             for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
             return Response.created(request.uri());
     }

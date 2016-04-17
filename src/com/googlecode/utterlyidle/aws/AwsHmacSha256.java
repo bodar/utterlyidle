@@ -1,42 +1,37 @@
 package com.googlecode.utterlyidle.aws;
 
+import com.googlecode.totallylazy.security.Digest;
+import com.googlecode.totallylazy.security.Hex;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class AwsHmacSha256 {
+import static com.googlecode.totallylazy.Bytes.bytes;
 
-    public static String hash(String payload) {
-        return hash(payload.getBytes());
+public interface AwsHmacSha256 {
+    static String hash(String payload) {
+        return hash(bytes(payload));
     }
 
-    public static String hash(byte[] payload) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] res = digest.digest(payload);
-            return hex(res);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    static String hash(byte[] payload) {
+        return Digest.sha256(payload).toHex();
     }
 
-    public static byte[] hmacSHA256(byte[] key, String data) {
+    static byte[] hmacSHA256(byte[] key, String data) {
         try {
             String algorithm = "HmacSHA256";
             Mac mac = Mac.getInstance(algorithm);
             mac.init(new SecretKeySpec(key, algorithm));
-            return mac.doFinal(data.getBytes("UTF8"));
+            return mac.doFinal(bytes(data));
         } catch (Exception e) {
             throw new RuntimeException("Could not run HMAC SHA256", e);
         }
     }
 
-    public static String hex(byte[] data) {
-        StringBuilder result = new StringBuilder();
-        for (byte aByte : data) {
-            result.append(String.format("%02x", aByte));
-        }
-        return result.toString().toLowerCase();
+    static String hex(byte[] data) {
+        return Hex.encode(data);
     }
 }
