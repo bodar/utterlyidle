@@ -18,6 +18,6 @@ public class BasicHttpClient implements HttpClient {
 
     @Override
     public Response handle(final Request request) throws Exception {
-        return client.handle(BasicAuthorisation.authorise(request, credentials));
+        return client.handle(BasicAuthorisation.authorise(credentials, request));
     }
 }

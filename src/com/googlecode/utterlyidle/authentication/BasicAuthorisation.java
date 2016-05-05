@@ -8,7 +8,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static java.lang.String.format;
 
 public interface BasicAuthorisation {
-    static Request authorise(final Request request, final Credentials credentials) {
+    static Request authorise(final Credentials credentials, final Request request) {
         return request.header(AUTHORIZATION, authorisation(credentials));
     }
 
