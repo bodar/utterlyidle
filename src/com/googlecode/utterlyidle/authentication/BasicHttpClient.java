@@ -1,15 +1,10 @@
 package com.googlecode.utterlyidle.authentication;
 
-import com.googlecode.totallylazy.security.Base64;
-import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.handlers.HttpClient;
 
-import static com.googlecode.totallylazy.Strings.bytes;
-import static com.googlecode.utterlyidle.HttpHeaders.AUTHORIZATION;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
-import static com.googlecode.totallylazy.functions.Functions.modify;
 import static java.lang.String.format;
 
 public class BasicHttpClient implements HttpClient {
@@ -23,10 +18,6 @@ public class BasicHttpClient implements HttpClient {
 
     @Override
     public Response handle(final Request request) throws Exception {
-        return client.handle(modify(request, HttpMessage.Builder.header(AUTHORIZATION, authorisation(credentials))));
-    }
-
-    public String authorisation(final Credentials credentials) {
-        return format("Basic %s", Base64.encode(bytes(credentials.username + ":" + credentials.password)));
+        return client.handle(BasicAuthorisation.authorise(request, credentials));
     }
 }
