@@ -26,7 +26,7 @@ public class BasicHttpClient implements HttpClient {
         return client.handle(modify(request, HttpMessage.Builder.header(AUTHORIZATION, authorisation(credentials))));
     }
 
-    private String authorisation(final Credentials credentials) {
+    public String authorisation(final Credentials credentials) {
         return format("Basic %s", Base64.encode(bytes(credentials.username + ":" + credentials.password)));
     }
 }
