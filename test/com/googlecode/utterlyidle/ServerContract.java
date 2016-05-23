@@ -249,7 +249,6 @@ public abstract class ServerContract<T extends Server> {
             assertThat(response.status(), is(Status.OK));
             assertThat(response.entity().toString(), is(Protocol.HTTPS));
         }
-
     }
 
 }

@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.annotations.multimethod;
 import com.googlecode.totallylazy.collections.CloseableList;
 import com.googlecode.totallylazy.functions.Function2;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.totallylazy.reflection.Fields;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.*;
 import com.googlecode.utterlyidle.proxies.NoProxy;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -28,7 +28,6 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Closeables.using;
-import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Maps.pairs;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -50,6 +49,7 @@ import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
+import static java.lang.reflect.Modifier.FINAL;
 
 public class ClientHttpHandler implements HttpClient, Closeable {
     public static final int DEFAULT_TIMEOUT = 0;
@@ -65,6 +65,24 @@ public class ClientHttpHandler implements HttpClient, Closeable {
 
     static {
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+        allowHttpMethods("PATCH");
+    }
+
+    public static void allowHttpMethods(String... newMethods) {
+        try {
+            Field methods = removeFinal(fields(HttpURLConnection.class).find(where(name, is("methods"))).get());
+            String[] existingMethods = Fields.get(methods, null);
+            String[] combined = sequence(existingMethods).join(sequence(newMethods)).unique().toArray(String.class);
+            methods.set(null, combined);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Field removeFinal(final Field field) throws NoSuchFieldException, IllegalAccessException {
+        Field modifiers = access(Field.class.getDeclaredField("modifiers"));
+        modifiers.setInt(access(field), field.getModifiers() & ~FINAL);
+        return field;
     }
 
     public ClientHttpHandler() {
@@ -156,30 +174,13 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     private Response handle(Request request, HttpURLConnection connection) throws IOException {
         try {
             connection.setInstanceFollowRedirects(false);
-            setHttpMethod(request, connection);
+            connection.setRequestMethod(request.method());
             Status status = sendHttpRequest(request, connection);
             return createResponse(connection, status, entity(connection));
         } catch (SocketException ex) {
             return errorResponse(Status.CONNECTION_REFUSED, ex);
         } catch (SocketTimeoutException ex) {
             return errorResponse(Status.CLIENT_TIMEOUT, ex);
-        }
-    }
-
-    private static final Field httpMethod = access(fields(HttpURLConnection.class).find(where(name, is("method"))).get());
-    private void setHttpMethod(final Request request, final HttpURLConnection connection) {
-        try {
-            connection.setRequestMethod(request.method());
-        } catch (ProtocolException e) {
-            useReflection(request, connection);
-        }
-    }
-
-    private void useReflection(final Request request, final HttpURLConnection connection) {
-        try {
-            httpMethod.set(connection, request.method());
-        } catch (IllegalAccessException e) {
-            throw lazyException(e);
         }
     }
 
