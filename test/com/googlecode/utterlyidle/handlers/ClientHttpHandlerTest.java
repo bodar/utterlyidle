@@ -13,6 +13,7 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.HttpMessage;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.RestTest;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
@@ -29,6 +30,7 @@ import java.util.Date;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.bytes;
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
@@ -37,9 +39,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
 import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;
-import static com.googlecode.totallylazy.functions.Functions.modify;
-import static com.googlecode.utterlyidle.Request.post;
-import static com.googlecode.utterlyidle.Request.put;
+import static com.googlecode.utterlyidle.Request.patch;
 import static com.googlecode.utterlyidle.handlers.RequestTimeout.requestTimeout;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,6 +51,15 @@ public class ClientHttpHandlerTest {
         new ClientHttpHandler().handle(get("relative/uri"));
     }
 
+    @Test
+    public void supportsPatch() throws Exception {
+        Server server = application().addAnnotated(RestTest.PatchContent.class).start();
+        Response response = new ClientHttpHandler().handle(patch(server.uri().mergePath("path/bar")).entity("input"));
+
+        assertThat(response.status(), is(Status.OK));
+        assertThat(response.entity().toString(), is("input"));
+        server.close();
+    }
 
     @Test
     public void canCloseClient() throws Exception {
