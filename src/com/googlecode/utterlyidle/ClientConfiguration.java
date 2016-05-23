@@ -75,7 +75,7 @@ public interface ClientConfiguration {
             };
         }
 
-        static Unary<ClientConfiguration> proxyFor(final ProxyFor proxyFor){
+        public static Unary<ClientConfiguration> proxyFor(final ProxyFor proxyFor){
             return new Unary<ClientConfiguration>() {
                 @Override
                 public ClientConfiguration call(final ClientConfiguration config) throws Exception {
@@ -84,7 +84,7 @@ public interface ClientConfiguration {
             };
         }
 
-        static Unary<ClientConfiguration> hostnameVerifier(final HostnameVerifier hostnameVerifier){
+        public static Unary<ClientConfiguration> hostnameVerifier(final HostnameVerifier hostnameVerifier){
             return new Unary<ClientConfiguration>() {
                 @Override
                 public ClientConfiguration call(final ClientConfiguration config) throws Exception {
@@ -93,7 +93,7 @@ public interface ClientConfiguration {
             };
         }
 
-        static Unary<ClientConfiguration> sslContext(final SSLContext sslContext){
+        public static Unary<ClientConfiguration> sslContext(final SSLContext sslContext){
             return new Unary<ClientConfiguration>() {
                 @Override
                 public ClientConfiguration call(final ClientConfiguration config) throws Exception {

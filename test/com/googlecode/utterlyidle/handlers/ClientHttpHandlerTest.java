@@ -8,20 +8,26 @@ import com.googlecode.totallylazy.URLs;
 import com.googlecode.totallylazy.Uri;
 import com.googlecode.totallylazy.Zip;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.utterlyidle.ClientConfiguration;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.RequestBuilder;
 import com.googlecode.utterlyidle.Response;
+import com.googlecode.utterlyidle.RestTest;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
+import com.googlecode.utterlyidle.ssl.SecureString;
+import com.googlecode.utterlyidle.ssl.SecureStringTest;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 
@@ -30,13 +36,19 @@ import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.Uri.uri;
 import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
+import static com.googlecode.utterlyidle.ClientConfiguration.Builder.clientConfiguration;
 import static com.googlecode.utterlyidle.Entities.inputStreamOf;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.RequestBuilder.get;
+import static com.googlecode.utterlyidle.RequestBuilder.patch;
 import static com.googlecode.utterlyidle.RequestBuilder.post;
 import static com.googlecode.utterlyidle.RequestBuilder.put;
 import static com.googlecode.utterlyidle.Response.methods.header;
+import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
 import static com.googlecode.utterlyidle.handlers.RequestTimeout.requestTimeout;
+import static com.googlecode.utterlyidle.ssl.SSL.keyStore;
+import static com.googlecode.utterlyidle.ssl.SSL.sslContext;
+import static com.googlecode.utterlyidle.ssl.SecureString.secureString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -57,6 +69,22 @@ public class ClientHttpHandlerTest {
             fail("Should have closed");
         } catch (IOException e) {
 
+        }
+    }
+
+
+    @Test
+    public void supportsPatchOverHttps() throws Exception {
+        try (InputStream resource = SecureStringTest.class.getResourceAsStream("localhost.jks");
+             SecureString password = secureString('p', 'a', 's', 's', 'w', 'o', 'r', 'd')) {
+            SSLContext context = sslContext(keyStore(password, resource), password);
+            Server server = application().addAnnotated(RestTest.PatchContent.class).start(defaultConfiguration().sslContext(context));
+            ClientHttpHandler client = new ClientHttpHandler(clientConfiguration(ClientConfiguration.Builder.sslContext(context)));
+            Response response = client.handle(patch(server.uri().mergePath("path/bar")).entity("input").build());
+
+            assertThat(response.status(), is(Status.OK));
+            assertThat(response.entity().toString(), is("input"));
+            server.close();
         }
     }
 
