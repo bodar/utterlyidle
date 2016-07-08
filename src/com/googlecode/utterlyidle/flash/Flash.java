@@ -79,11 +79,11 @@ public class Flash {
     }
 
     public Flash error(String value) {
-        return add(ERRORS, value);
+        return add(ERRORS, values.containsKey(ERRORS) ? value : list(value));
     }
 
     public Flash message(String value) {
-        return add(MESSAGES, value);
+        return add(MESSAGES, values.containsKey(MESSAGES) ? value : list(value));
     }
 
     public List<String> removeErrors(){
