@@ -29,12 +29,15 @@ public class PageMap extends UnsupportedMap {
             getAndCache(path);
         }
         return true;
-
     }
 
     @Override
     public Object get(Object url) {
         String path = url.toString();
+        if (!cache.containsKey(path)) {
+            getAndCache(path);
+        }
+
         return cache.get(path);
     }
 
