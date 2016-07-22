@@ -17,6 +17,14 @@ public class FlashTest {
     }
 
     @Test
+    public void supportsASingleError() {
+        Flash flash = new Flash();
+        flash.error("Only error");
+
+        assertThat(flash.errors(), hasExactly("Only error"));
+    }
+
+    @Test
     public void supportsMessagesAsAListOfStrings() {
         Flash flash = new Flash().
                 message("First message").
@@ -24,5 +32,12 @@ public class FlashTest {
                 message("Third message");
 
         assertThat(flash.messages(), hasExactly("First message", "Second message", "Third message"));
+    }
+
+    @Test
+    public void supportsASingleMessage() {
+        Flash flash = new Flash();
+        flash.message("Only message");
+        assertThat(flash.messages(), hasExactly("Only message"));
     }
 }
