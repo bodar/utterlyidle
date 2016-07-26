@@ -8,7 +8,9 @@ import com.googlecode.totallylazy.Value;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.MediaType.WILDCARD;
 
-public class MediaRange implements Value<String>{
+public class MediaRange implements Value<String> {
+    private static final String SUBTYPE_WILDCARD = "*";
+
     private final String value;
     private final float quality;
 
@@ -31,15 +33,29 @@ public class MediaRange implements Value<String>{
                 if (mimeType.equals(WILDCARD) || value.equals(WILDCARD)) {
                     return true;
                 }
+                if (SUBTYPE_WILDCARD.equals(subType(mimeType)) || SUBTYPE_WILDCARD.equals(subType(value))) {
+                    return primaryType(mimeType).equals(primaryType(value));
+                }
                 return mimeType.equals(value);
             }
         };
     }
 
+    private static String subType(final String mimeType) {
+        String[] parts = mimeType.split("/");
+        return parts.length > 1 ? parts[1] : null;
+    }
+
+    private static String primaryType(final String mimeType) {
+        String[] parts = mimeType.split("/");
+        return parts[0];
+    }
+
     public static Callable1<? super MediaRange, Iterable<MediaRange>> convertWildCardsTo(final Sequence<String> possibleContentTypes) {
         return new Callable1<MediaRange, Iterable<MediaRange>>() {
             public Iterable<MediaRange> call(MediaRange mediaRange) throws Exception {
-                if(mediaRange.value().equals(WILDCARD)){
+                if (mediaRange.value().equals(WILDCARD)
+                        || SUBTYPE_WILDCARD.equals(subType(mediaRange.value()))) {
                     return possibleContentTypes.map(toMediaType(mediaRange.quality()));
                 }
                 return sequence(mediaRange);
