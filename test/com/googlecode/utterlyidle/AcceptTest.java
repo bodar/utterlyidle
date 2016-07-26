@@ -3,6 +3,7 @@ package com.googlecode.utterlyidle;
 import com.googlecode.totallylazy.matchers.NumberMatcher;
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.Accept.accept;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -47,6 +48,27 @@ public class AcceptTest {
 
         assertThat(accept.matches("application/xml"), is(true));
         assertThat(accept.quality("application/xml"), NumberMatcher.is(0.2f));
+    }
+
+    @Test
+    public void canHandleSubtypeWildcard() {
+        Accept accept = accept("image/png");
+
+        assertThat(accept.matches("image/*"), is(true));
+    }
+
+    @Test
+    public void subtypeWildcardWillMatch() {
+        Accept accept = accept("image/*");
+
+        assertThat(accept.matches("image/png"), is(true));
+    }
+
+    @Test
+    public void subtypeWildcardWillMatchFullMimeType() throws Exception {
+        Accept accept = accept("image/*");
+
+        assertThat(accept.bestMatch(sequence("image/png")), is("image/png"));
     }
 
 }
