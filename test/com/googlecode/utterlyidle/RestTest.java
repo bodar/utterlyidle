@@ -25,6 +25,7 @@ import com.googlecode.utterlyidle.examples.HelloWorld;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
 import com.googlecode.totallylazy.reflection.TypeFor;
+import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -80,7 +81,8 @@ public class RestTest {
             container.decorateType(renderer, MyCustomClassRendererDecorator.class);
             return container;
         });
-        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(renderer));
+        application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                handlers.add(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(requestScope, renderer)));
         assertThat(application.responseAsString(Request.get("path")), is("foobar"));
 
     }
@@ -468,7 +470,8 @@ public class RestTest {
                 }
             });
         });
-        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
+        application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                handlers.add(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(requestScope, MyCustomClassRenderer.class)));
         assertThat(application.responseAsString(Request.get("path")), is("foo"));
         assertThat(called[0], is(true));
     }
@@ -476,7 +479,8 @@ public class RestTest {
     @Test
     public void supportsCustomRendererWithActivator() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
-        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
+        application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                handlers.add(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(requestScope, MyCustomClassRenderer.class)));
         assertThat(application.responseAsString(Request.get("path")), is("foo"));
     }
 

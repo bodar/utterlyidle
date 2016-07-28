@@ -87,10 +87,11 @@ public class ApplicationBuilder {
         return this;
     }
 
+    @Deprecated
     public <T> ApplicationBuilder addResponseHandler(final Predicate<? super Pair<Request, Response>> predicate, final ResponseHandler responseHandler) {
         return add(new ResponseHandlersModule() {
             @Override
-            public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers) throws Exception {
+            public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers, final Container requestScope) throws Exception {
                 return handlers.add(predicate, responseHandler);
             }
         });

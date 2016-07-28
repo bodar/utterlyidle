@@ -40,7 +40,7 @@ public class LastExceptionsModule implements ResourcesModule, ApplicationScopedM
     }
 
     @Override
-    public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) throws Exception {
+    public ResponseHandlers addResponseHandlers(ResponseHandlers handlers, final Container requestScope) throws Exception {
         return handlers.add(isAModel().and(where(first(Request.class), and(where((Function1<Request,String>) request -> request.uri().path(), contains(LastExceptionsResource.PATH))))), renderer(lastExceptionsRenderer()));
     }
 

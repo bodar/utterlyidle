@@ -128,14 +128,14 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
     }
 
     @Override
-    public ResponseHandlers addResponseHandlers(ResponseHandlers handlers) {
+    public ResponseHandlers addResponseHandlers(ResponseHandlers handlers, final Container requestScope) {
         return handlers.
                 addGuard(where(entity(), is(instanceOf(byte[].class)).or(instanceOf(StreamingWriter.class)).
                         or(instanceOf(StreamingOutput.class)).or(instanceOf(InputStream.class))), IdentityHandler.class).
-                addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(SeeOtherRenderer.class)).
-                addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(MatchFailureRenderer.class)).
-                addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(ExceptionRenderer.class)).
-                addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(ObjectRenderer.class));
+                addCatchAll(where(status(), is(SEE_OTHER)).and(where(entity(), is(instanceOf(String.class)))), renderer(requestScope, SeeOtherRenderer.class)).
+                addCatchAll(where(entity(), is(instanceOf(MatchFailure.class))), renderer(requestScope, (MatchFailureRenderer.class))).
+                addCatchAll(where(entity(), is(instanceOf(Exception.class))), renderer(requestScope, (ExceptionRenderer.class))).
+                addCatchAll(where(entity(), is(instanceOf(Object.class))), renderer(requestScope, (ObjectRenderer.class)));
     }
 
     @Override

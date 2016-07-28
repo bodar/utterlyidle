@@ -4,7 +4,6 @@ import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.ResponseHandler;
-import com.googlecode.utterlyidle.modules.DependsOnContainer;
 import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.handlers.HandlerRule.getHandlerFromRule;
@@ -27,17 +26,7 @@ public class ResponseHandlersFinder{
                 map(getHandlerFromRule()).
                 headOption().
                 map(createHandlerIfNeeded()).
-                map(injectResolverIfNeeded()).
                 get();
-    }
-
-    private Function1<? super ResponseHandler, ResponseHandler> injectResolverIfNeeded() {
-        return handler -> {
-            if(handler instanceof DependsOnContainer){
-                ((DependsOnContainer) handler).setContainer(container);
-            }
-            return handler;
-        };
     }
 
     private Function1<Object, ResponseHandler> createHandlerIfNeeded() {

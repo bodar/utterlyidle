@@ -42,7 +42,7 @@ public class ScheduleModule implements ResourcesModule, ApplicationScopedModule,
     }
 
     @Override
-    public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers) throws Exception {
+    public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers, final Container requestScope) throws Exception {
         return handlers.add(where(entity(), is(instanceOf(Map.class))).and(path(ScheduleResource.PATH)), renderer(Json::json));
     }
 

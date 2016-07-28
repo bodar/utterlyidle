@@ -6,10 +6,12 @@ import com.googlecode.utterlyidle.BasePath;
 import com.googlecode.utterlyidle.ResponseHandler;
 import com.googlecode.utterlyidle.RestApplication;
 import com.googlecode.utterlyidle.StreamingWriter;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.jobs.JobsModule;
 import com.googlecode.utterlyidle.modules.PerformanceModule;
 import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.utterlyidle.profiling.ProfilingModule;
+import com.googlecode.yadic.Container;
 
 import java.util.Properties;
 
@@ -33,9 +35,8 @@ public class HelloWorldApplication extends RestApplication {
     public HelloWorldApplication(BasePath basePath) {
         super(basePath,
                 bindingsModule(annotatedClass(HelloWorld.class)),
-                (ResponseHandlersModule) handlers -> {
-                    return handlers.add(where(entity(), instanceOf(Sequence.class)), streamingRenderer(new SequenceRenderer()));
-                },
+                (ResponseHandlersModule) (ResponseHandlers handlers, final Container requestScope) ->
+                        handlers.add(where(entity(), instanceOf(Sequence.class)), streamingRenderer(new SequenceRenderer())),
                 new ProfilingModule(),
                 bindingsModule(binding(get("/dsl").
                         resource(method(on(Properties.class).getProperty(queryParam(String.class, "name"), queryParam(String.class, "default")))))),

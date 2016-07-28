@@ -5,6 +5,7 @@ import com.googlecode.totallylazy.predicates.Predicate;
 import com.googlecode.utterlyidle.annotations.GET;
 import com.googlecode.utterlyidle.annotations.Path;
 import com.googlecode.utterlyidle.handlers.WriteMessageToResponseHandler;
+import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.yadic.ContainerException;
 import org.junit.Test;
 
@@ -26,7 +27,8 @@ public class ServerErrorTest {
     public void supportsInterceptingRuntimeException() throws Exception {
         final String message = "Caught exception";
         ApplicationBuilder application = application().addAnnotated(ThrowingRuntimeResource.class);
-        application.addResponseHandler(where(entity(), instanceOf(IllegalArgumentException.class)), new WriteMessageToResponseHandler(message));
+        application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                handlers.add(where(entity(), instanceOf(IllegalArgumentException.class)), new WriteMessageToResponseHandler(message)));
 
         Response response = application.handle(Request.get("exception"));
 
@@ -37,7 +39,8 @@ public class ServerErrorTest {
     public void supportsInterceptingCheckedException() throws Exception {
         final String message = "Caught exception";
         ApplicationBuilder application = application().addAnnotated(ThrowingCheckedResource.class);
-        application.addResponseHandler(where(entity(), instanceOf(IOException.class)), new WriteMessageToResponseHandler(message));
+        application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                handlers.add(where(entity(), instanceOf(IOException.class)), new WriteMessageToResponseHandler(message)));
 
         Response response = application.handle(Request.get("exception"));
 
@@ -65,7 +68,8 @@ public class ServerErrorTest {
     @Test
     public void shouldReturn500whenARendererThrowsException() throws Exception {
         ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
-        application.addResponseHandler(always(), throwOnRender(new RuntimeException("Boom")));
+        application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                handlers.add(always(), throwOnRender(new RuntimeException("Boom"))));
         Response response = application.handle(Request.get("noProblems"));
         assertResponseContains(response, RuntimeException.class);
     }
@@ -73,7 +77,8 @@ public class ServerErrorTest {
     @Test
     public void shouldReturn500whenARendererThrowsError() throws Exception {
         ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
-        application.addResponseHandler(always(), throwError(new AssertionError()));
+        application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                handlers.add(always(), throwError(new AssertionError())));
         Response response = application.handle(Request.get("noProblems"));
         assertResponseContains(response, AssertionError.class);
     }
@@ -81,7 +86,8 @@ public class ServerErrorTest {
      @Test
     public void shouldReturn500whenAResponseMatcherThrowsException() throws Exception {
         ApplicationBuilder application = application().addAnnotated(NoProblemsResource.class);
-        application.addResponseHandler(alwaysThrows(), doNothingRenderer());
+         application.add((ResponseHandlersModule) (handlers, requestScope) ->
+                 handlers.add(alwaysThrows(), doNothingRenderer()));
         Response response = application.handle(Request.get("noProblems"));
         assertResponseContains(response, RuntimeException.class);
     }
