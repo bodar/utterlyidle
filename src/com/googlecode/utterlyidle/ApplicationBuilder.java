@@ -6,6 +6,7 @@ import com.googlecode.utterlyidle.dsl.BindingBuilder;
 import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.Module;
 import com.googlecode.utterlyidle.modules.Modules;
+import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.utterlyidle.services.Service;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Containers;
@@ -34,8 +35,6 @@ import static com.googlecode.utterlyidle.modules.Modules.serviceClass;
 public class ApplicationBuilder {
     private final Container container = new SimpleContainer();
     private List<Module> modules = new ArrayList<Module>();
-    private List<Pair<? extends Predicate<? super Pair<Request, Response>>, ResponseHandler>> responseHandlers
-            = new ArrayList<Pair<? extends Predicate<? super Pair<Request, Response>>, ResponseHandler>>();
 
     public static ApplicationBuilder application(Application application) {
         return new ApplicationBuilder(application);
@@ -88,10 +87,13 @@ public class ApplicationBuilder {
         return this;
     }
 
-    public <T> ApplicationBuilder addResponseHandler(Predicate<? super Pair<Request, Response>> predicate, ResponseHandler responseHandler) {
-        Pair<? extends Predicate<? super Pair<Request, Response>>, ResponseHandler> pair = pair(predicate, responseHandler);
-        responseHandlers.add(pair);
-        return this;
+    public <T> ApplicationBuilder addResponseHandler(final Predicate<? super Pair<Request, Response>> predicate, final ResponseHandler responseHandler) {
+        return add(new ResponseHandlersModule() {
+            @Override
+            public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers) throws Exception {
+                return handlers.add(predicate, responseHandler);
+            }
+        });
     }
 
     @SuppressWarnings("deprecation")
@@ -174,9 +176,6 @@ public class ApplicationBuilder {
         public Application call() throws Exception {
             for (Module module : builder.modules) {
                 application.add(module);
-            }
-            for (Pair<? extends Predicate<? super Pair<Request, Response>>, ResponseHandler> pair : builder.responseHandlers) {
-                application.applicationScope().get(ResponseHandlers.class).add(pair.first(), pair.second());
             }
             return application;
         }

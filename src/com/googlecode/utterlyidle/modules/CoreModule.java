@@ -86,9 +86,9 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
         return moduleDefinitions.
                 addApplicationModule(ApplicationScopedModule.class).
                 addApplicationModule(ResourcesModule.class).
-                addApplicationModule(ResponseHandlersModule.class).
                 addApplicationModule(ServicesModule.class).
                 addRequestModule(RequestScopedModule.class).
+                addRequestModule(ResponseHandlersModule.class).
                 addRequestModule(AuditModule.class).
                 addArgumentModule(ArgumentScopedModule.class);
     }
@@ -102,6 +102,7 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
                 add(Redirector.class, BaseUriRedirector.class).
                 add(RequestGenerator.class, BindingsRequestGenerator.class).
                 add(ResponseHandlersFinder.class).
+                add(ResponseHandlers.class).
                 add(Auditors.class, Auditors.class).
                 addActivator(Auditor.class, container.getActivator(Auditors.class)).
                 add(HttpClient.class, ClientHttpHandler.class).
@@ -116,7 +117,6 @@ public class CoreModule implements ModuleDefiner, RequestScopedModule, Applicati
         return container.add(Clock.class, SystemClock.class).
                 add(Resources.class, RegisteredResources.class).
                 addActivator(Bindings.class, container.getActivator(Resources.class)).
-                add(ResponseHandlers.class).
                 add(ApplicationId.class).
                 add(InternalRequestMarker.class).
                 add(Services.class);
