@@ -88,6 +88,8 @@ public class ApplicationBuilder {
         return this;
     }
 
+    /** @deprecated Replaced by {@link com.googlecode.utterlyidle.modules.ResponseHandlersModule} */
+    @Deprecated()
     public <T> ApplicationBuilder addResponseHandler(final Predicate<? super Pair<Request, Response>> predicate, final ResponseHandler responseHandler) {
         return add(new ResponseHandlersModule() {
             @Override

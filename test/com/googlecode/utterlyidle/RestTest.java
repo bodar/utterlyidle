@@ -22,8 +22,10 @@ import com.googlecode.utterlyidle.annotations.Produces;
 import com.googlecode.utterlyidle.annotations.QueryParam;
 import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.examples.HelloWorld;
+import com.googlecode.utterlyidle.handlers.ResponseHandlers;
 import com.googlecode.utterlyidle.modules.ArgumentScopedModule;
 import com.googlecode.utterlyidle.modules.RequestScopedModule;
+import com.googlecode.utterlyidle.modules.ResponseHandlersModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.generics.TypeFor;
 import org.hamcrest.Matchers;
@@ -83,7 +85,12 @@ public class RestTest {
                 return container;
             }
         });
-        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(renderer));
+        application.add(new ResponseHandlersModule() {
+            @Override
+            public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers) throws Exception {
+                return handlers.add(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(renderer));
+            }
+        });
         assertThat(application.responseAsString(get("path")), is("foobar"));
 
     }
@@ -478,7 +485,12 @@ public class RestTest {
                 });
             }
         });
-        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
+        application.add(new ResponseHandlersModule() {
+            @Override
+            public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers) throws Exception {
+                return handlers.add(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
+            }
+        });
         assertThat(application.responseAsString(get("path")), is("foo"));
         assertThat(called[0], is(true));
     }
@@ -486,7 +498,12 @@ public class RestTest {
     @Test
     public void supportsCustomRendererWithActivator() throws Exception {
         ApplicationBuilder application = application().addAnnotated(GetReturningMyCustomClass.class);
-        application.addResponseHandler(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
+        application.add(new ResponseHandlersModule() {
+            @Override
+            public ResponseHandlers addResponseHandlers(final ResponseHandlers handlers) throws Exception {
+                return handlers.add(where(entity(), Predicates.is(instanceOf(MyCustomClass.class))), renderer(MyCustomClassRenderer.class));
+            }
+        });
         assertThat(application.responseAsString(get("path")), is("foo"));
     }
 
