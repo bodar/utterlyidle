@@ -7,7 +7,7 @@ import javax.net.ssl.SSLSession;
 
 import static com.googlecode.totallylazy.Sequences.sequence;
 
-public class SubDomainWildardVerifier implements HostnameVerifier {
+public class SubDomainWildcardVerifier implements HostnameVerifier {
     public static final String CommonName = "CN";
 
     @Override
