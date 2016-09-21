@@ -41,10 +41,20 @@ public class RelativeUrlHandler implements HttpHandler {
             String absolutePath = currentUri.mergePath(result.path()).path();
             result = result.mergePath(absolutePath);
         }
-        return result;
+        return result.removeDotSegments();
     }
 
+    @Deprecated
     public Uri getCurrentUri() {
         return currentUri;
+    }
+
+    public Uri currentUri() {
+        return currentUri;
+    }
+
+    public RelativeUrlHandler currentUri(Uri uri) {
+        currentUri = uri;
+        return this;
     }
 }
