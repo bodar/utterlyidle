@@ -36,6 +36,34 @@ public class UriTemplateTest {
     }
 
     @Test
+    public void canCaptureSingleElementFromStartOfPath() {
+        UriTemplate uriTemplate = uriTemplate("{name}");
+        assertTrue(uriTemplate.matches("/value/end/123/456"));
+        assertThat(uriTemplate.extract("/value/end/123/456").getValue("name"), is("value"));
+    }
+
+    @Test
+    public void canCaptureWholePathWithStartSlashStripped() {
+        UriTemplate uriTemplate = uriTemplate("{name:.*}");
+        assertTrue(uriTemplate.matches("/value/end/123/456"));
+        assertThat(uriTemplate.extract("/value/end/123/456").getValue("name"), is("value/end/123/456"));
+    }
+
+    @Test
+    public void canCaptureWholePathWithStartAndEndSlashStripped() {
+        UriTemplate uriTemplate = uriTemplate("{name:.*}");
+        assertTrue(uriTemplate.matches("/value/end/123/456/"));
+        assertThat(uriTemplate.extract("/value/end/123/456/").getValue("name"), is("value/end/123/456"));
+    }
+
+    @Test
+    public void canCaptureRestOfPathWithStartSlashIncludedAndEndDropped() {
+        UriTemplate uriTemplate = uriTemplate("/foo/bar{subpath:.*}");
+        assertTrue(uriTemplate.matches("/foo/bar/bob/jim/"));
+        assertThat(uriTemplate.extract("/foo/bar/bob/jim/").getValue("subpath"), is("/bob/jim"));
+    }
+
+    @Test
     public void ignoresPathVariablesContainingSlashes() throws Exception {
         assertThat(uriTemplate("properties/{name:foo/order}").segments(), is(2));
         assertThat(uriTemplate("properties/{name:foo/order}/foo").segments(), is(3));
