@@ -2,11 +2,13 @@ package com.googlecode.utterlyidle;
 
 import org.junit.Test;
 
+import static com.googlecode.totallylazy.Assert.assertFalse;
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 import static com.googlecode.utterlyidle.UriTemplate.uriTemplate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("unchecked")
 public class UriTemplateTest {
@@ -19,11 +21,25 @@ public class UriTemplateTest {
     }
 
     @Test
+    public void whenTrailingSlashWeCanExtractAfterMatching() {
+        UriTemplate uriTemplate = uriTemplate("/{name}/{unused:end$}");
+        assertTrue(uriTemplate.matches("/value/end/"));
+        assertThat(uriTemplate.extract("/value/end/").getValue("name"), is("value"));
+        assertFalse(uriTemplate.matches("/value/end/123"));
+    }
+
+    @Test
+    public void canExtractEntireEndSectionOfPath() {
+        UriTemplate uriTemplate = uriTemplate("/{name}/end/{end:.+}");
+        assertTrue(uriTemplate.matches("/value/end/123/456"));
+        assertThat(uriTemplate.extract("/value/end/123/456").getValue("end"), is("123/456"));
+    }
+
+    @Test
     public void ignoresPathVariablesContainingSlashes() throws Exception {
         assertThat(uriTemplate("properties/{name:foo/order}").segments(), is(2));
         assertThat(uriTemplate("properties/{name:foo/order}/foo").segments(), is(3));
         assertThat(uriTemplate("properties/{name:foo/order}/foo/{id:foo/order}").segments(), is(4));
-
     }
 
     @Test
