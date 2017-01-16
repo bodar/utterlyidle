@@ -10,13 +10,10 @@ import static com.googlecode.totallylazy.Bytes.bytes;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static java.nio.ByteBuffer.wrap;
 
-public class UdpMessenger implements Messenger {
-    private final DatagramChannel channel;
-
-    public UdpMessenger(DatagramChannel channel) {
-        this.channel = channel;
+public class UdpMessenger extends ChannelMessenger<DatagramChannel> {
+    public UdpMessenger(final DatagramChannel channel) {
+        super(channel);
     }
-
 
     public static UdpMessenger udpMessager(SocketAddress socketAddress) {
         try {
@@ -24,15 +21,5 @@ public class UdpMessenger implements Messenger {
         } catch (IOException e) {
             throw LazyException.lazyException(e);
         }
-    }
-
-    @Override
-    public void message(Iterable<? extends String> values) throws IOException {
-        channel.write(wrap(bytes(sequence(values).toString("\n"))));
-    }
-
-    @Override
-    public void close() throws IOException {
-        channel.close();
     }
 }

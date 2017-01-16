@@ -1,5 +1,6 @@
 package com.googlecode.utterlyidle.statsd;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -9,7 +10,7 @@ import static java.lang.String.format;
 /**
  * Taken from https://github.com/b/statsd_spec
  */
-public interface StatsDClient {
+public interface StatsDClient extends Closeable {
     static StatsDClient statsDClient(String host, int port) throws IOException {
         return statsDClient(new InetSocketAddress(host, port));
     }
@@ -20,6 +21,11 @@ public interface StatsDClient {
 
     static StatsDClient statsDClient(final Messenger messenger) {
         return () -> messenger;
+    }
+
+    @Override
+    default void close() throws IOException{
+        messager().close();
     }
 
     Messenger messager();
