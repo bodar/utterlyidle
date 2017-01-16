@@ -11,8 +11,12 @@ import java.nio.channels.SocketChannel;
 
 import static java.lang.String.format;
 
-public interface CarbonSender extends Closeable{
+public interface CarbonSender extends Closeable {
     void counter(String name, long value) throws IOException;
+
+    @Override
+    default void close() throws IOException {
+    }
 
     static CarbonSender carbonSender(SocketAddress socketAddress, Clock clock) throws IOException {
         TcpMessenger messenger = new TcpMessenger(SocketChannel.open(socketAddress));
@@ -26,6 +30,11 @@ public interface CarbonSender extends Closeable{
             public void close() throws IOException {
                 messenger.close();
             }
+        };
+    }
+
+    static CarbonSender noOp() {
+        return (name, value) -> {
         };
     }
 }
