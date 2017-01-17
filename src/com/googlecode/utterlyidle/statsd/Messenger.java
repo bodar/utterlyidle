@@ -17,7 +17,7 @@ public interface Messenger extends Closeable {
     default void close() throws IOException {
     }
 
-    static Messenger messager() throws IOException {
+    static Messenger noOp() {
         return value -> { };
     }
 }

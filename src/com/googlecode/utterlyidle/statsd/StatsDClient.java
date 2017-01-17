@@ -22,6 +22,10 @@ public interface StatsDClient extends Closeable {
     static StatsDClient statsDClient(final Messenger messenger) {
         return () -> messenger;
     }
+    
+    static StatsDClient noOp() {
+        return Messenger::noOp;
+    }
 
     @Override
     default void close() throws IOException{
