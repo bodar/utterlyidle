@@ -21,7 +21,7 @@ public interface CarbonClient extends Closeable {
     default void close() throws IOException {
     }
 
-    static CarbonClient carbonSender(SocketAddress socketAddress, Clock clock) throws IOException {
+    static CarbonClient carbonClient(SocketAddress socketAddress, Clock clock) throws IOException {
         TcpMessenger messenger = new TcpMessenger(SocketChannel.open(socketAddress));
         return new CarbonClient() {
             @Override

@@ -14,7 +14,7 @@ public interface JsonLinesClient extends Closeable {
     default void close() throws IOException {
     }
 
-    static JsonLinesClient jsonSender(SocketAddress socketAddress) throws IOException {
+    static JsonLinesClient jsonClient(SocketAddress socketAddress) throws IOException {
         TcpMessenger messenger = new TcpMessenger(SocketChannel.open(socketAddress));
         return new JsonLinesClient() {
             @Override
