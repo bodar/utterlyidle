@@ -1,6 +1,5 @@
-package com.googlecode.utterlyidle.statsd;
+package com.googlecode.utterlyidle.monitoring;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ import java.util.List;
 import static com.googlecode.totallylazy.Assert.assertThat;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.predicates.Predicates.is;
-import static com.googlecode.utterlyidle.statsd.StatsDClient.statsDClient;
+import static com.googlecode.utterlyidle.monitoring.StatsDClient.statsDClient;
 
 public class StatsDClientTest {
     private List<String> messages = new ArrayList<>();

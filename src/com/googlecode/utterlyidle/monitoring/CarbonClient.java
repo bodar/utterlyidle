@@ -1,8 +1,7 @@
-package com.googlecode.utterlyidle.graphite;
+package com.googlecode.utterlyidle.monitoring;
 
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Seconds;
-import com.googlecode.utterlyidle.statsd.TcpMessenger;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.nio.channels.SocketChannel;
 
 import static java.lang.String.format;
 
-public interface CarbonSender extends Closeable {
+public interface CarbonClient extends Closeable {
     /**
      * A gauge is an instantaneous measurement of a value, like the gas gauge in a car. It differs from a counter by being
      * calculated at the client rather than the server.
@@ -22,9 +21,9 @@ public interface CarbonSender extends Closeable {
     default void close() throws IOException {
     }
 
-    static CarbonSender carbonSender(SocketAddress socketAddress, Clock clock) throws IOException {
+    static CarbonClient carbonSender(SocketAddress socketAddress, Clock clock) throws IOException {
         TcpMessenger messenger = new TcpMessenger(SocketChannel.open(socketAddress));
-        return new CarbonSender() {
+        return new CarbonClient() {
             @Override
             public void gauge(final String name, final long value) throws IOException {
                 messenger.message(format("%s %s %s", name, value, Seconds.sinceEpoch(clock.now())));
@@ -37,7 +36,7 @@ public interface CarbonSender extends Closeable {
         };
     }
 
-    static CarbonSender noOp() {
+    static CarbonClient noOp() {
         return (name, value) -> {
         };
     }

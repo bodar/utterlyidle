@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.statsd;
+package com.googlecode.utterlyidle.monitoring;
 
 import java.io.Closeable;
 import java.io.IOException;

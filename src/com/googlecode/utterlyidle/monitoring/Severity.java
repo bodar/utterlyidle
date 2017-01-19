@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.gelf;
+package com.googlecode.utterlyidle.monitoring;
 
 import com.googlecode.totallylazy.Value;
 

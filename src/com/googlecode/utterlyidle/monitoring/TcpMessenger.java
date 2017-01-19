@@ -1,10 +1,9 @@
-package com.googlecode.utterlyidle.statsd;
+package com.googlecode.utterlyidle.monitoring;
 
 import com.googlecode.totallylazy.LazyException;
 
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.nio.channels.DatagramChannel;
 import java.nio.channels.SocketChannel;
 
 public class TcpMessenger extends ChannelMessenger<SocketChannel> {

@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.statsd;
+package com.googlecode.utterlyidle.monitoring;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public interface StatsDClient extends Closeable {
     static StatsDClient statsDClient(final Messenger messenger) {
         return () -> messenger;
     }
-    
+
     static StatsDClient noOp() {
         return Messenger::noOp;
     }

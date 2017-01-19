@@ -1,4 +1,4 @@
-package com.googlecode.utterlyidle.gelf;
+package com.googlecode.utterlyidle.monitoring;
 
 import com.googlecode.totallylazy.LazyException;
 import com.googlecode.totallylazy.Maps;
@@ -17,10 +17,10 @@ import static com.googlecode.totallylazy.json.Json.json;
 import static com.googlecode.totallylazy.security.GZip.gzip;
 import static java.nio.ByteBuffer.wrap;
 
-public interface GelfSender {
+public interface GelfClient {
     void send(String host, String shortMessage, Option<Date> timestamp, Severity severity, Map<String, Object> data);
 
-    static GelfSender udpGelfSender(SocketAddress socketAddress, Clock clock) throws IOException {
+    static GelfClient udpGelfClient(SocketAddress socketAddress, Clock clock) throws IOException {
         DatagramChannel channel = DatagramChannel.open().connect(socketAddress);
         return (host, shortMessage, timestamp, severity, data) -> {
             Date time = timestamp.getOrElse(clock.now());
@@ -43,7 +43,7 @@ public interface GelfSender {
         return gelf;
     }
 
-    static GelfSender noOp() {
+    static GelfClient noOp() {
         return (String host, String shortMessage, Option<Date> timestamp, Severity severity, Map<String, Object> data) -> {};
     }
 
