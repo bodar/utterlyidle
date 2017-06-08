@@ -9,7 +9,6 @@ import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.QueryParameters;
 import com.googlecode.utterlyidle.Response;
-import com.googlecode.utterlyidle.Status;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.StreamingWriter;
 import com.googlecode.utterlyidle.annotations.ANY;

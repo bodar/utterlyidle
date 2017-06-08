@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.utterlyidle.handlers.ApplicationId;
 
-import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 
 public class InternalRequestMarker {

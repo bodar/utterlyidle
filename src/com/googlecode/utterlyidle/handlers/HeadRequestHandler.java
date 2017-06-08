@@ -1,7 +1,10 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.functions.Functions;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.Entity;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.bindings.BindingMatcher;
 

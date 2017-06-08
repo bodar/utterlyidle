@@ -4,6 +4,7 @@ import com.googlecode.totallylazy.Either;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.io.Uri;
+import com.googlecode.totallylazy.reflection.TypeFor;
 import com.googlecode.totallylazy.time.Clock;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.totallylazy.time.SystemClock;
@@ -58,7 +59,6 @@ import com.googlecode.utterlyidle.services.Services;
 import com.googlecode.utterlyidle.services.ServicesModule;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
-import com.googlecode.totallylazy.reflection.TypeFor;
 import com.googlecode.yadic.resolvers.OptionResolver;
 
 import java.io.InputStream;

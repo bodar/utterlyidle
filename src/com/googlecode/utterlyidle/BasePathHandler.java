@@ -2,7 +2,6 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.functions.Function1;
-import com.googlecode.totallylazy.functions.Functions;
 import com.googlecode.totallylazy.io.Uri;
 
 import static com.googlecode.totallylazy.functions.Functions.modify;

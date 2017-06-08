@@ -6,10 +6,6 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
 
-import static com.googlecode.totallylazy.Bytes.bytes;
-import static com.googlecode.totallylazy.Sequences.sequence;
-import static java.nio.ByteBuffer.wrap;
-
 public class UdpMessenger extends ChannelMessenger<DatagramChannel> {
     public UdpMessenger(final DatagramChannel channel) {
         super(channel);

@@ -1,13 +1,19 @@
 package com.googlecode.utterlyidle.handlers;
 
 import com.googlecode.totallylazy.security.GZip;
-import com.googlecode.utterlyidle.*;
+import com.googlecode.utterlyidle.HeaderParameters;
+import com.googlecode.utterlyidle.HttpHandler;
+import com.googlecode.utterlyidle.InternalRequestMarker;
+import com.googlecode.utterlyidle.Request;
+import com.googlecode.utterlyidle.Response;
 
 import java.io.IOException;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.numbers.Numbers.greaterThan;
-import static com.googlecode.utterlyidle.HttpHeaders.*;
+import static com.googlecode.utterlyidle.HttpHeaders.ACCEPT_ENCODING;
+import static com.googlecode.utterlyidle.HttpHeaders.CONTENT_ENCODING;
+import static com.googlecode.utterlyidle.HttpHeaders.VARY;
 import static com.googlecode.utterlyidle.Parameters.Builder.add;
 
 public class GzipHandler implements HttpHandler {

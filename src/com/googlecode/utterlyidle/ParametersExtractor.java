@@ -5,8 +5,8 @@ import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.functions.Function1;
 import com.googlecode.totallylazy.predicates.Predicate;
-import com.googlecode.yadic.Container;
 import com.googlecode.totallylazy.reflection.TypeFor;
+import com.googlecode.yadic.Container;
 import com.googlecode.yadic.resolvers.ProgrammerErrorResolver;
 
 import java.lang.reflect.ParameterizedType;

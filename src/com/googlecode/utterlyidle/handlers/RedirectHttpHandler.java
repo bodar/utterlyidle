@@ -8,7 +8,6 @@ import com.googlecode.utterlyidle.Response;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 
 public class RedirectHttpHandler implements HttpClient {

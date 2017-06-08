@@ -1,13 +1,13 @@
 package com.googlecode.utterlyidle.sitemesh;
 
 import com.googlecode.totallylazy.Sequence;
+import com.googlecode.totallylazy.reflection.TypeFor;
 import com.googlecode.totallylazy.template.Renderer;
 import com.googlecode.totallylazy.template.Templates;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.SimpleContainer;
-import com.googlecode.totallylazy.reflection.TypeFor;
 
 import java.net.URL;
 import java.util.Map;

@@ -2,7 +2,11 @@ package com.googlecode.utterlyidle.modules;
 
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.MediaType;
-import com.googlecode.utterlyidle.handlers.*;
+import com.googlecode.utterlyidle.handlers.CacheControlHandler;
+import com.googlecode.utterlyidle.handlers.CachePolicy;
+import com.googlecode.utterlyidle.handlers.EtagHandler;
+import com.googlecode.utterlyidle.handlers.GZipPolicy;
+import com.googlecode.utterlyidle.handlers.GzipHandler;
 import com.googlecode.yadic.Container;
 
 import static com.googlecode.utterlyidle.handlers.CachePolicy.cachePolicy;
