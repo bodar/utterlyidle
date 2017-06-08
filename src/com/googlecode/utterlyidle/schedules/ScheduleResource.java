@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.totallylazy.proxy.Call.method;
 import static com.googlecode.totallylazy.proxy.Call.on;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseRequest;
 import static com.googlecode.utterlyidle.HttpMessageParser.parseResponse;
-import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.utterlyidle.Request.Builder.uri;
 
 @Path(ScheduleResource.PATH)

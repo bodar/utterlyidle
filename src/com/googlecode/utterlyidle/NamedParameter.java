@@ -2,10 +2,10 @@ package com.googlecode.utterlyidle;
 
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.functions.Function1;
+import com.googlecode.totallylazy.reflection.TypeFor;
 import com.googlecode.yadic.Container;
 import com.googlecode.yadic.Resolver;
 import com.googlecode.yadic.TypeMap;
-import com.googlecode.totallylazy.reflection.TypeFor;
 
 import java.util.concurrent.Callable;
 

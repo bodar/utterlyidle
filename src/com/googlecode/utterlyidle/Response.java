@@ -5,7 +5,6 @@ import com.googlecode.totallylazy.functions.Unary;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.utterlyidle.cookies.Cookie;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import javafx.animation.Animation;
 
 import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.one;
@@ -14,8 +13,10 @@ import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
 import static com.googlecode.utterlyidle.HttpHeaders.SET_COOKIE;
 import static com.googlecode.utterlyidle.Parameters.Builder.param;
-import static com.googlecode.utterlyidle.Parameters.Builder.replace;
-import static com.googlecode.utterlyidle.Status.*;
+import static com.googlecode.utterlyidle.Status.ACCEPTED;
+import static com.googlecode.utterlyidle.Status.CREATED;
+import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.utterlyidle.Status.SEE_OTHER;
 
 public interface Response extends HttpMessage<Response> {
     Status status();

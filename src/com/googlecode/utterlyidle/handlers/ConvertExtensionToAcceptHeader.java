@@ -20,7 +20,6 @@ import static com.googlecode.totallylazy.Option.none;
 import static com.googlecode.totallylazy.Option.some;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.utterlyidle.HttpHeaders.LOCATION;
-import static com.googlecode.utterlyidle.HttpMessage.Builder.header;
 import static com.googlecode.utterlyidle.Parameters.Builder.remove;
 import static com.googlecode.utterlyidle.Request.Builder.uri;
 import static com.googlecode.utterlyidle.io.HierarchicalPath.hierarchicalPath;

@@ -3,14 +3,12 @@ package com.googlecode.utterlyidle.cookies;
 import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Pair;
 import com.googlecode.totallylazy.collections.PersistentList;
-import com.googlecode.totallylazy.functions.Callables;
 import com.googlecode.utterlyidle.Parameters;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 
 import java.util.List;
 
-import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.Strings.equalIgnoringCase;
 import static com.googlecode.totallylazy.Unchecked.cast;

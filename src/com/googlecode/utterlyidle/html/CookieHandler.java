@@ -6,8 +6,8 @@ import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
 
-import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
 import static com.googlecode.totallylazy.functions.Functions.modify;
+import static com.googlecode.utterlyidle.HttpMessage.Builder.cookie;
 
 public class CookieHandler implements HttpHandler {
     private final HttpHandler httpHandler;

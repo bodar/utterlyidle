@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static com.googlecode.totallylazy.LazyException.lazyException;
-import static com.googlecode.totallylazy.Pair.pair;
 import static com.googlecode.totallylazy.Strings.EMPTY;
 import static com.googlecode.utterlyidle.BasePath.basePath;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;

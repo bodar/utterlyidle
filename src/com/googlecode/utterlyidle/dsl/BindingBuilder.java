@@ -9,6 +9,7 @@ import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.proxy.CallOn;
 import com.googlecode.totallylazy.proxy.Invocation;
 import com.googlecode.totallylazy.proxy.MethodInvocation;
+import com.googlecode.totallylazy.reflection.TypeFor;
 import com.googlecode.utterlyidle.Binding;
 import com.googlecode.utterlyidle.FormParameters;
 import com.googlecode.utterlyidle.HeaderParameters;
@@ -22,7 +23,6 @@ import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.annotations.View;
 import com.googlecode.utterlyidle.bindings.actions.Action;
 import com.googlecode.utterlyidle.cookies.CookieParameters;
-import com.googlecode.totallylazy.reflection.TypeFor;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
