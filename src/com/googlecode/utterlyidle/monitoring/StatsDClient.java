@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+import static com.googlecode.utterlyidle.monitoring.ChannelMessenger.udpMessager;
 import static java.lang.String.format;
 
 /**
@@ -16,7 +17,7 @@ public interface StatsDClient extends Closeable {
     }
 
     static StatsDClient statsDClient(SocketAddress socketAddress) throws IOException {
-        return statsDClient(UdpMessenger.udpMessager(socketAddress));
+        return statsDClient(udpMessager(socketAddress));
     }
 
     static StatsDClient statsDClient(final Messenger messenger) {

@@ -22,7 +22,7 @@ public interface CarbonClient extends Closeable {
     }
 
     static CarbonClient carbonClient(SocketAddress socketAddress, Clock clock) throws IOException {
-        TcpMessenger messenger = new TcpMessenger(SocketChannel.open(socketAddress));
+        ChannelMessenger messenger = ChannelMessenger.tcpMessager(socketAddress);
         return new CarbonClient() {
             @Override
             public void gauge(final String name, final long value) throws IOException {
