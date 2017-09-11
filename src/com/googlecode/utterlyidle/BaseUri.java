@@ -4,14 +4,14 @@ import com.googlecode.totallylazy.Value;
 import com.googlecode.totallylazy.io.Uri;
 
 import static com.googlecode.totallylazy.io.Uri.uri;
+import static com.googlecode.utterlyidle.HttpHeaders.HOST;
+import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_HOST;
 import static com.googlecode.utterlyidle.HttpHeaders.X_FORWARDED_PROTO;
 import static java.lang.String.format;
 
-public class BaseUri implements Value<Uri> {
-    private final Uri uri;
-
+public class BaseUri extends Value.Type<Uri> implements Value<Uri> {
     public BaseUri(Uri uri) {
-        this.uri = uri;
+        super(uri);
     }
 
     public static BaseUri baseUri(Uri uri){
@@ -23,7 +23,7 @@ public class BaseUri implements Value<Uri> {
     }
 
     public static BaseUri baseUri(Request request, BasePath basePath) {
-        String host = request.headers().getValue(HttpHeaders.HOST);
+        String host = request.headers().valueOption(X_FORWARDED_HOST).getOrElse(request.headers().getValue(HOST));
         if (host == null) {
             return new BaseUri(uri(basePath.toString()));
         }
@@ -34,12 +34,7 @@ public class BaseUri implements Value<Uri> {
     }
 
     @Override
-    public Uri value() {
-        return uri;
-    }
-
-    @Override
     public String toString() {
-        return uri.toString();
+        return value().toString();
     }
 }
