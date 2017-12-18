@@ -135,6 +135,14 @@ public class UriTemplateTest {
     }
 
     @Test
+    public void canExtractFromUriWithEncodedSlash() {
+        UriTemplate template = uriTemplate("path/{id1}");
+        PathParameters pathParameters = template.extract("path/foo%2Fbar");
+        String id1 = pathParameters.getValue("id1");
+        assertThat(id1, is("foo/bar"));
+    }
+
+    @Test
     public void canGenerateUri() {
         UriTemplate template = uriTemplate("path/{id}");
         assertThat(template.generate(pathParameters(pair("id","foo"))), is("path/foo"));
