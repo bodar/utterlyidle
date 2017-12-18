@@ -12,6 +12,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.googlecode.totallylazy.Sequences.sequence;
 import static com.googlecode.totallylazy.regex.Regex.regex;
 import static com.googlecode.utterlyidle.PathParameters.pathParameters;
 
@@ -45,11 +46,8 @@ public class UriTemplate implements Extractor<String, PathParameters>, Predicate
     }
 
     public PathParameters extract(String uri) {
-        List<String> values = groupValues(templateRegex.findMatches(trimSlashes(uri)).head())
-                .stream()
-                .map(UrlEncodedMessage::decode)
-                .collect(Collectors.toList());
-        return pathParameters(names.zip(values));
+        return pathParameters(names.zip(
+                sequence(groupValues(templateRegex.match(trimSlashes(uri)))).map(UrlEncodedMessage::decode)));
     }
 
     private List<String> groupValues(MatchResult matchResult) {
