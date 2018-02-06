@@ -4,10 +4,12 @@ import com.googlecode.totallylazy.Option;
 import com.googlecode.totallylazy.Sequence;
 import com.googlecode.totallylazy.numbers.Numbers;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.utterlyidle.Entity;
 import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.QueryParameters;
+import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.StreamingOutput;
 import com.googlecode.utterlyidle.StreamingWriter;
@@ -36,6 +38,12 @@ import static com.googlecode.utterlyidle.Response.ok;
 
 @Produces(MediaType.TEXT_PLAIN)
 public class HelloWorld {
+    @GET
+    @Path("empty")
+    public boolean empty(Request request) {
+        return request.entity().equals(Entity.empty());
+    }
+
     @GET
     @Path("primes")
     public Sequence<Number> primes() {

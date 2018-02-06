@@ -49,11 +49,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assume.assumeTrue;
 
 public abstract class ServerContract<T extends Server> {
     protected T server;
 
     protected abstract Class<T> server() throws Exception;
+
+    protected boolean isServletBased() {
+        return false;
+    }
 
     @Before
     public void start() throws Exception {
@@ -70,10 +75,18 @@ public abstract class ServerContract<T extends Server> {
     }
 
     @Test
+    public void detectsEmptyInputStreams() throws Exception {
+        assumeTrue(isServletBased());
+        Response response = handle(Request.get("empty"), server);
+        assertThat(response.status(), is(Status.OK));
+        assertThat(response.entity().toString(), is("true"));
+    }
+
+    @Test
     public void handlesChunking() throws Exception {
         Response response = handle(Request.get("chunk"), server);
 
-        assertThat(response.status(), is(Status.OK));
+        assertThat(response.entity().toString(), response.status(), is(Status.OK));
         assertThat(response.entity().toString(), is("chunk"));
     }
 
