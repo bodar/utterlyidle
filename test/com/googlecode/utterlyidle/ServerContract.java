@@ -76,10 +76,11 @@ public abstract class ServerContract<T extends Server> {
 
     @Test
     public void detectsEmptyInputStreams() throws Exception {
-        assumeTrue(isServletBased());
-        Response response = handle(Request.get("empty"), server);
-        assertThat(response.status(), is(Status.OK));
-        assertThat(response.entity().toString(), is("true"));
+        if(isServletBased()){ // assumeTrue does not work with Teamcity Runner
+            Response response = handle(Request.get("empty"), server);
+            assertThat(response.status(), is(Status.OK));
+            assertThat(response.entity().toString(), is("true"));
+        }
     }
 
     @Test
