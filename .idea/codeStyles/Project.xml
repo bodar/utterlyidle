@@ -1,0 +1,21 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <JavaCodeStyleSettings>
+      <option name="GENERATE_FINAL_LOCALS" value="true" />
+      <option name="GENERATE_FINAL_PARAMETERS" value="true" />
+      <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999" />
+      <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999" />
+      <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
+        <value />
+      </option>
+    </JavaCodeStyleSettings>
+    <XML>
+      <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+    </XML>
+    <codeStyleSettings language="JavaScript">
+      <indentOptions>
+        <option name="CONTINUATION_INDENT_SIZE" value="8" />
+      </indentOptions>
+    </codeStyleSettings>
+  </code_scheme>
+</component>

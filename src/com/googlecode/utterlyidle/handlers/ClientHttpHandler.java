@@ -63,6 +63,7 @@ import static com.googlecode.utterlyidle.HttpHeaders.TRANSFER_ENCODING;
 import static com.googlecode.utterlyidle.Status.NOT_FOUND;
 import static com.googlecode.utterlyidle.Status.OK;
 import static com.googlecode.utterlyidle.Status.status;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.annotations.HttpMethod.PUT;
 import static java.lang.reflect.Modifier.FINAL;
 
@@ -138,7 +139,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
 
     public Response handle(final Request request) throws Exception {
         try {
-            if("file".equals(request.uri().scheme()) && request.method().equals(PUT)) return putFile(request);
+            if ("file".equals(request.uri().scheme()) && request.method().equals(PUT)) return putFile(request);
             URLConnection connection = openConnection(request.uri());
             connection.setUseCaches(false);
             connection.setConnectTimeout(connectTimeoutMillis);
@@ -155,8 +156,10 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private multi multi;
+
     private Response handle(final Request request, final URLConnection connection) throws IOException {
-        if(multi == null) multi = new multi(){};
+        if (multi == null) multi = new multi() {
+        };
         return multi.<Response>methodOption(request, connection).getOrElse(() -> {
             return defaultHandle(request, connection);
         });
@@ -172,10 +175,11 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private Response putFile(Request request) throws IOException {
-            File file = request.uri().toFile();
-            Files.write(request.entity().toBytes(), file);
-            for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
-            return Response.created(request.uri());
+        File file = request.uri().toFile();
+        Files.write(request.entity().toBytes(), file);
+        for (String date : request.headers().valueOption(LAST_MODIFIED))
+            file.setLastModified(Dates.parse(date).getTime());
+        return Response.created(request.uri());
     }
 
     @multimethod
@@ -202,6 +206,8 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     private void sendRequest(Request request, URLConnection connection) throws IOException {
         sequence(request.headers()).fold(connection, requestHeaders());
         if (request.entity().length().is(zero)) return;
+        if (request.method().equals(GET))
+            throw new UnsupportedOperationException("HttpURLConnection does not support GET request with entity body");
 
         connection.setDoOutput(true);
         using(connection.getOutputStream(), request.entity().writer());
@@ -226,7 +232,8 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private Object handleStreamingContent(final Option<Integer> length, final InputStream inputStream) {
-        if( !disableStreaming && (length.isEmpty() || length.is(greaterThan(streamingSize)))) return closeables.manage(inputStream);
+        if (!disableStreaming && (length.isEmpty() || length.is(greaterThan(streamingSize))))
+            return closeables.manage(inputStream);
         return using(inputStream, Bytes::bytes);
     }
 

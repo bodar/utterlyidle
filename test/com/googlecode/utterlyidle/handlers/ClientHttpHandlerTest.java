@@ -8,7 +8,10 @@ import com.googlecode.totallylazy.io.URLs;
 import com.googlecode.totallylazy.io.Uri;
 import com.googlecode.totallylazy.io.Zip;
 import com.googlecode.totallylazy.time.Dates;
+import com.googlecode.utterlyidle.ApplicationBuilder;
 import com.googlecode.utterlyidle.ClientConfiguration;
+import com.googlecode.utterlyidle.Entity;
+import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.HttpMessage;
@@ -18,6 +21,7 @@ import com.googlecode.utterlyidle.Response;
 import com.googlecode.utterlyidle.RestTest;
 import com.googlecode.utterlyidle.Server;
 import com.googlecode.utterlyidle.Status;
+import com.googlecode.utterlyidle.annotations.HttpMethod;
 import com.googlecode.utterlyidle.examples.HelloWorldApplication;
 import com.googlecode.utterlyidle.ssl.SecureString;
 import com.googlecode.utterlyidle.ssl.SecureStringTest;
@@ -34,7 +38,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
+import static com.googlecode.totallylazy.Assert.assertTrue;
 import static com.googlecode.totallylazy.Sequences.sequence;
+import static com.googlecode.totallylazy.Streams.emptyInputStream;
 import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.totallylazy.io.Uri.uri;
@@ -42,12 +48,15 @@ import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.ClientConfiguration.Builder.clientConfiguration;
 import static com.googlecode.utterlyidle.Entities.inputStreamOf;
+import static com.googlecode.utterlyidle.HeaderParameters.headerParameters;
 import static com.googlecode.utterlyidle.HttpHeaders.LAST_MODIFIED;
 import static com.googlecode.utterlyidle.HttpMessage.Builder.entity;
 import static com.googlecode.utterlyidle.Request.Builder.form;
 import static com.googlecode.utterlyidle.Request.get;
 import static com.googlecode.utterlyidle.Request.patch;
 import static com.googlecode.utterlyidle.ServerConfiguration.defaultConfiguration;
+import static com.googlecode.utterlyidle.Status.OK;
+import static com.googlecode.utterlyidle.annotations.HttpMethod.GET;
 import static com.googlecode.utterlyidle.handlers.RequestTimeout.requestTimeout;
 import static com.googlecode.utterlyidle.ssl.SSL.keyStore;
 import static com.googlecode.utterlyidle.ssl.SSL.sslContext;
@@ -57,6 +66,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 public class ClientHttpHandlerTest {
+    @Test(expected = UnsupportedOperationException.class)
+    public void doNotAllowHttpURLConnectionToConvertGetRequestWithEntityToPost() throws Exception {
+        Request request = Request.request(GET, uri("helloworld/queryparam?name=foo"), headerParameters(), Entity.entity(emptyInputStream()));
+        handle(request, server);
+    }
+
     @Test(expected = MalformedURLException.class)
     public void doesNotThrowNullPointerExceptionWhenNoSchema() throws Exception {
         new ClientHttpHandler().handle(get("relative/uri"));
