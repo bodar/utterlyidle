@@ -27,6 +27,7 @@ Some of the core features
   * Resources can consume and return Requests and Responses or any Java classes
     * Renderers can be registered for any response object
 
+
 ##Versions##
 
  * 1.x - Stable - Requires Java 7+
