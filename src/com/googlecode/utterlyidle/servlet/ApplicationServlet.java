@@ -75,7 +75,7 @@ public class ApplicationServlet extends HttpServlet {
         try {
             HeaderParameters headers = convertToHeaderParameters(servletRequest);
             Uri uri = Uri.uri(servletRequest.getRequestURI() + queryString(servletRequest.getQueryString()));
-            Entity entity = servletRequest.getContentLength() < 1 ? Entity.empty() : Entity.entity(servletRequest.getInputStream());
+            Entity entity = servletRequest.getContentLength() == 0 ? Entity.empty() : Entity.entity(servletRequest.getInputStream());
             Request request = Request.request(servletRequest.getMethod(), uri, headers, entity);
             return requestEnricher(
                     clientAddress(servletRequest.getRemoteAddr()),
