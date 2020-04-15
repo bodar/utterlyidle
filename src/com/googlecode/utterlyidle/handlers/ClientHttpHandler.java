@@ -17,6 +17,7 @@ import com.googlecode.totallylazy.multi;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.ClientConfiguration;
 import com.googlecode.utterlyidle.HttpHeaders;
+import com.googlecode.utterlyidle.Java;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -27,7 +28,6 @@ import com.googlecode.utterlyidle.proxies.ProxyFor;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.Closeable;
 import java.io.File;
@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -47,10 +46,10 @@ import java.util.List;
 
 import static com.googlecode.totallylazy.Callables.first;
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Debug.debugging;
 import static com.googlecode.totallylazy.Fields.access;
 import static com.googlecode.totallylazy.Fields.fields;
 import static com.googlecode.totallylazy.Fields.name;
-import static com.googlecode.totallylazy.LazyException.lazyException;
 import static com.googlecode.totallylazy.Maps.pairs;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -96,7 +95,13 @@ public class ClientHttpHandler implements HttpClient, Closeable {
             String[] combined = sequence(existingMethods).join(sequence(newMethods)).unique().toArray(String.class);
             methods.set(null, combined);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (Java.majorVersion() >= 12) {
+                if (debugging()) {
+                    System.err.println("Failed to modify HttpURLConnection to allow PATCH method - this will not work on JVMs >= 12");
+                }
+            } else {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -143,7 +148,7 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     public Response handle(final Request request) throws Exception {
-        if(request.uri().scheme().equals("file") && request.method().equals(PUT)) return putFile(request);
+        if (request.uri().scheme().equals("file") && request.method().equals(PUT)) return putFile(request);
         URLConnection connection = openConnection(request.uri());
         connection.setUseCaches(false);
         connection.setConnectTimeout(connectTimeoutMillis);
@@ -167,8 +172,10 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private multi multi;
+
     private Response handle(final Request request, final URLConnection connection) throws IOException {
-        if(multi == null) multi = new multi(){};
+        if (multi == null) multi = new multi() {
+        };
         return multi.<Response>methodOption(request, connection).getOrElse(new Function<Response>() {
             @Override
             public Response call() throws Exception {
@@ -187,10 +194,11 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private Response putFile(Request request) throws IOException {
-            File file = request.uri().toFile();
-            Files.write(request.entity().asBytes(), file);
-            for (String date : request.headers().valueOption(LAST_MODIFIED)) file.setLastModified(Dates.parse(date).getTime());
-            return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, request.uri()).build();
+        File file = request.uri().toFile();
+        Files.write(request.entity().asBytes(), file);
+        for (String date : request.headers().valueOption(LAST_MODIFIED))
+            file.setLastModified(Dates.parse(date).getTime());
+        return ResponseBuilder.response(Status.CREATED).header(HttpHeaders.LOCATION, request.uri()).build();
     }
 
     @multimethod
@@ -241,7 +249,8 @@ public class ClientHttpHandler implements HttpClient, Closeable {
     }
 
     private Object handleStreamingContent(final Option<Integer> length, final InputStream inputStream) {
-        if( !disableStreaming && (length.isEmpty() || length.is(greaterThan(streamingSize)))) return closeables.manage(inputStream);
+        if (!disableStreaming && (length.isEmpty() || length.is(greaterThan(streamingSize))))
+            return closeables.manage(inputStream);
         return using(inputStream, bytes());
     }
 
