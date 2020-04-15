@@ -17,6 +17,7 @@ import com.googlecode.totallylazy.reflection.Fields;
 import com.googlecode.totallylazy.time.Dates;
 import com.googlecode.utterlyidle.ClientConfiguration;
 import com.googlecode.utterlyidle.Entity;
+import com.googlecode.utterlyidle.Java;
 import com.googlecode.utterlyidle.MediaType;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -41,6 +42,7 @@ import java.net.URLConnection;
 import java.util.Date;
 
 import static com.googlecode.totallylazy.Closeables.using;
+import static com.googlecode.totallylazy.Debug.debugging;
 import static com.googlecode.totallylazy.Maps.pairs;
 import static com.googlecode.totallylazy.Option.option;
 import static com.googlecode.totallylazy.Pair.pair;
@@ -91,7 +93,13 @@ public class ClientHttpHandler implements HttpClient, Closeable {
             String[] combined = sequence(existingMethods).join(sequence(newMethods)).unique().toArray(String.class);
             methods.set(null, combined);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (Java.majorVersion() >= 12) {
+                if (debugging()) {
+                    System.err.println("Failed to modify HttpURLConnection to allow PATCH method - this will not work on JVMs >= 12");
+                }
+            } else {
+                throw new RuntimeException(e);
+            }
         }
     }
 

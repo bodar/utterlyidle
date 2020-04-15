@@ -15,6 +15,7 @@ import com.googlecode.utterlyidle.HeaderParameters;
 import com.googlecode.utterlyidle.HttpHandler;
 import com.googlecode.utterlyidle.HttpHeaders;
 import com.googlecode.utterlyidle.HttpMessage;
+import com.googlecode.utterlyidle.Java;
 import com.googlecode.utterlyidle.Protocol;
 import com.googlecode.utterlyidle.Request;
 import com.googlecode.utterlyidle.Response;
@@ -45,6 +46,7 @@ import static com.googlecode.totallylazy.Strings.bytes;
 import static com.googlecode.totallylazy.functions.Functions.modify;
 import static com.googlecode.totallylazy.io.Uri.uri;
 import static com.googlecode.totallylazy.matchers.NumberMatcher.greaterThan;
+import static com.googlecode.totallylazy.matchers.NumberMatcher.lessThanOrEqualTo;
 import static com.googlecode.utterlyidle.ApplicationBuilder.application;
 import static com.googlecode.utterlyidle.ClientConfiguration.Builder.clientConfiguration;
 import static com.googlecode.utterlyidle.Entities.inputStreamOf;
@@ -64,6 +66,7 @@ import static com.googlecode.utterlyidle.ssl.SecureString.secureString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeThat;
 
 public class ClientHttpHandlerTest {
     @Test(expected = UnsupportedOperationException.class)
@@ -79,6 +82,8 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void supportsPatch() throws Exception {
+        assumeThat(Java.majorVersion(), lessThanOrEqualTo(11));
+
         Server server = application().addAnnotated(RestTest.PatchContent.class).start();
         Response response = new ClientHttpHandler().handle(patch(server.uri().mergePath("path/bar")).entity("input"));
 
@@ -89,6 +94,8 @@ public class ClientHttpHandlerTest {
 
     @Test
     public void supportsPatchOverHttps() throws Exception {
+        assumeThat(Java.majorVersion(), lessThanOrEqualTo(11));
+
         try (InputStream resource = SecureStringTest.class.getResourceAsStream("localhost.jks");
              SecureString password = secureString('p', 'a', 's', 's', 'w', 'o', 'r', 'd')) {
             SSLContext context = sslContext(keyStore(password, resource), password);
