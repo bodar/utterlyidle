@@ -2,5 +2,5 @@
 mvn:cglib:cglib-nodep:jar:2.2
 mvn:org.objenesis:objenesis:jar:1.2
 
-mvn://repo.bodar.com/com.googlecode.totallylazy:totallylazy:pack|sources:1.85
-mvn://repo.bodar.com/com.googlecode.yadic:yadic:pack|sources:1.19
+mvn://dl.bintray.com/bodar/maven/com.googlecode.totallylazy:totallylazy:jar|sources:1.87
+mvn://dl.bintray.com/bodar/maven/com.googlecode.yadic:yadic:jar|sources:1.20
