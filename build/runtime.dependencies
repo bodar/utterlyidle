@@ -1,2 +1,2 @@
-mvn://dl.bintray.com/bodar/maven/com.googlecode.totallylazy:totallylazy:jar|sources:2.286
-mvn://dl.bintray.com/bodar/maven/com.googlecode.yadic:yadic:jar|sources:2.49
+https://github.com/bodar/totallylazy/releases/download/2.287/totallylazy-2.287.jar
+https://github.com/bodar/yadic.java/releases/download/2.50/yadic-2.50.jar
